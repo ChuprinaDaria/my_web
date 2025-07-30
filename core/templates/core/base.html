@@ -1,0 +1,52 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Lazysoft{% endblock %}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body data-current-lang="{{ LANGUAGE_CODE }}">
+    <div class="bg-animation">
+      {% for i in "123456789abc" %}
+        <span class="bg-shape"></span>
+      {% endfor %}
+    </div>
+
+    <nav class="navbar">
+      <div class="burger" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul class="nav-links" id="mobileMenu">
+        <li>
+          <a href="{% url 'home' %}">{% trans "Home" %}</a>
+          <a href="{% url 'projects' %}">{% trans "Projects" %}</a>
+          <a href="#contact-form-top">{% trans "Contact" %}</a>
+        </li>
+        <li class="lang-switcher">
+          <a href="/uk/" class="lang-btn {% if LANGUAGE_CODE == 'uk' %}active{% endif %}">UA</a>
+          <a href="/pl/" class="lang-btn {% if LANGUAGE_CODE == 'pl' %}active{% endif %}">PL</a>
+          <a href="/en/" class="lang-btn {% if LANGUAGE_CODE == 'en' %}active{% endif %}">EN</a>
+        </li>
+      </ul>
+    </nav>
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}{% endblock %}
+
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>window.addEventListener("load", () => lucide.createIcons());</script>
+  </body>
+</html>

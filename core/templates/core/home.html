@@ -1,0 +1,72 @@
+<p style="color:red;">ТЕСТОВИЙ КОНТЕНТ</p>
+
+
+{% extends "core/base.html" %}
+
+{% load static %}
+
+{% block title %}Lazysoft — Home{% endblock %}
+
+{% block content %}
+<section id="home" class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1 data-lang="en">Lazysoft</h1>
+      <h1 data-lang="uk">Lazysoft</h1>
+      <h1 data-lang="pl">Lazysoft</h1>
+
+      <p class="subtitle" data-lang="en">Daria Chuprina Full-Stack Developer & IT Specialist</p>
+      <p class="subtitle" data-lang="uk">Дар'я Чупріна Full-Stack Розробник та IT Спеціаліст</p>
+      <p class="subtitle" data-lang="pl">Daria Chuprina Full-Stack Developer i Specjalista IT</p>
+
+      <p class="description" data-lang="en">Passionate about creating innovative digital solutions with cutting-edge technologies. Specialized in modern web development and user experience design.</p>
+      <p class="description" data-lang="uk">Захоплююся створенням інноваційних цифрових рішень з використанням сучасних технологій. Спеціалізуюся на сучасній веб-розробці та дизайні користувацького досвіду.</p>
+      <p class="description" data-lang="pl">Pasjonuję się tworzeniem innowacyjnych rozwiązań cyfrowych z wykorzystaniem najnowszych technologii. Specjalizuję się w nowoczesnym rozwoju stron internetowych i projektowaniu doświadczeń użytkownika.</p>
+
+      <div class="tech-stack">
+        <span class="tech-item">Python</span>
+        <span class="tech-item">JavaScript</span>
+        <span class="tech-item">Node.js</span>
+        <span class="tech-item">React</span>
+        <span class="tech-item">Telegram API</span>
+        <span class="tech-item">Playwright</span>
+        <span class="tech-item">Selenium</span>
+        <span class="tech-item">SQLite</span>
+        <span class="tech-item">MongoDB</span>
+        <span class="tech-item">Make (Integromat)</span>
+        <span class="tech-item">WayForPay</span>
+        <span class="tech-item">Stripe</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about">
+  <div class="about-language-block" data-lang="en">
+    {% include "core/about_en.html" %}
+  </div>
+  <div class="about-language-block" data-lang="uk">
+    {% include "core/about_uk.html" %}
+  </div>
+  <div class="about-language-block" data-lang="pl">
+    {% include "core/about_pl.html" %}
+  </div>
+</section>
+
+<section id="projects" class="projects">
+  <div class="container">
+    <h2 class="section-title" data-lang="en">Featured Projects</h2>
+    <h2 class="section-title" data-lang="uk">Обрані Проєкти</h2>
+    <h2 class="section-title" data-lang="pl">Wybrane Projekty</h2>
+    <div class="projects-carousel">
+      <div class="projects-container" id="projectsContainer">
+        <!-- Projects will be loaded dynamically via JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  {% include "core/contact_form.html" %}
+</section>
+{% endblock %}

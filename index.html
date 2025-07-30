@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lazysoft</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-current-lang="en">
+    <div class="bg-animation"></div>
+    <div class="bg-animation">
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+      <span class="bg-shape"></span>
+    </div>
+
+   <nav class="navbar">
+  <div class="burger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <ul class="nav-links" id="mobileMenu">
+    <li>
+      <a href="#home" data-lang="en">Home</a>
+      <a href="#home" data-lang="ua">Головна</a>
+      <a href="#home" data-lang="pl">Strona główna</a>
+    </li>
+    <li>
+      <a href="#projects" data-lang="en">Projects</a>
+      <a href="#projects" data-lang="ua">Проєкти</a>
+      <a href="#projects" data-lang="pl">Projekty</a>
+    </li>
+    <li>
+      <a href="#contact-form-top" data-lang="en">Contact</a>
+      <a href="#contact-form-top" data-lang="ua">Контакти</a>
+      <a href="#contact-form-top" data-lang="pl">Kontakt</a>
+    </li>
+    <li class="lang-switcher">
+      <span class="lang-btn active" data-lang-code="en">EN</span>
+      <span class="lang-btn" data-lang-code="ua">UA</span>
+      <span class="lang-btn" data-lang-code="pl">PL</span>
+    </li>
+  </ul>
+</nav>
+
+    <main>
+      <section id="home" class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <h1 data-lang="en">Lazysoft</h1>
+            <h1 data-lang="ua">Lazysoft</h1>
+            <h1 data-lang="pl">Lazysoft</h1>
+
+            <p class="subtitle" data-lang="en">
+              Daria Chuprina Full-Stack Developer & IT Specialist
+            </p>
+            <p class="subtitle" data-lang="ua">
+              Дар'я Чупріна Full-Stack Розробник та IT Спеціаліст
+            </p>
+            <p class="subtitle" data-lang="pl">
+              Daria Chuprina Full-Stack Developer i Specjalista IT
+            </p>
+
+            <p class="description" data-lang="en">
+              Passionate about creating innovative digital solutions with
+              cutting-edge technologies. Specialized in modern web development
+              and user experience design.
+            </p>
+            <p class="description" data-lang="ua">
+              Захоплююся створенням інноваційних цифрових рішень з використанням
+              сучасних технологій. Спеціалізуюся на сучасній веб-розробці та
+              дизайні користувацького досвіду.
+            </p>
+            <p class="description" data-lang="pl">
+              Pasjonuję się tworzeniem innowacyjnych rozwiązań cyfrowych z
+              wykorzystaniem najnowszych technologii. Specjalizuję się w
+              nowoczesnym rozwoju stron internetowych i projektowaniu
+              doświadczeń użytkownika.
+            </p>
+            <div style="height: 30px;"></div>
+            <div class="tech-stack">
+              <span class="tech-item">Python</span>
+              <span class="tech-item">JavaScript</span>
+              <span class="tech-item">Node.js</span>
+              <span class="tech-item">React</span>
+              <span class="tech-item">Telegram API</span>
+              <span class="tech-item">Playwright</span>
+              <span class="tech-item">Selenium</span>
+              <span class="tech-item">SQLite</span>
+              <span class="tech-item">MongoDB</span>
+              <span class="tech-item">Make (Integromat)</span>
+              <span class="tech-item">WayForPay</span>
+              <span class="tech-item">Stripe</span>
+            </div>
+            
+<div style="height: 100px;"></div>
+
+<!-- 🇬🇧 English -->
+<div class="about-language-block" data-lang="en">
+  <div class="about-columns">
+    <div class="about-col">
+      <ul class="about-list">
+        <li><i data-lucide="message-circle" class="neon-icon"></i> Chatbots for Telegram, WhatsApp, Messenger</li>
+        <li><i data-lucide="calendar" class="neon-icon"></i> Booking systems with calendar sync</li>
+        <li><i data-lucide="credit-card" class="neon-icon"></i> Online payments (Stripe, WayForPay, Przelewy24)</li>
+        <li><i data-lucide="link" class="neon-icon"></i> CRM integrations (Bitrix24, Hubspot, Zoho)</li>
+        <li><i data-lucide="layout-dashboard" class="neon-icon"></i> Admin panels & client dashboards</li>
+      </ul>
+    </div>
+    <div class="about-col">
+      <ul class="about-list">
+        <li><i data-lucide="brain" class="neon-icon"></i> Data scraping & parsing (CSV/XML/API)</li>
+        <li><i data-lucide="mail" class="neon-icon"></i> Email automation (Mailchimp, SMTP, Sendgrid)</li>
+        <li><i data-lucide="settings" class="neon-icon"></i> Micro-tools for business (trackers, forms, reports)</li>
+        <li><i data-lucide="globe" class="neon-icon"></i> Multilingual apps & SEO-ready sites</li>
+        <li><i data-lucide="trending-up" class="neon-icon"></i> Automation focused on UX & sales</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 🇺🇦 Українська -->
+<div class="about-language-block" data-lang="ua">
+  <div class="about-columns">
+    <div class="about-col">
+      <ul class="about-list">
+        <li><i data-lucide="message-circle" class="neon-icon"></i> Чат-боти для Telegram, WhatsApp, Messenger</li>
+        <li><i data-lucide="calendar" class="neon-icon"></i> Системи онлайн-бронювання з календарем</li>
+        <li><i data-lucide="credit-card" class="neon-icon"></i> Онлайн-оплати (Stripe, WayForPay, Przelewy24)</li>
+        <li><i data-lucide="link" class="neon-icon"></i> Інтеграції з CRM (Bitrix24, Hubspot, Zoho)</li>
+        <li><i data-lucide="layout-dashboard" class="neon-icon"></i> Кабінети клієнтів та адмін-панелі</li>
+      </ul>
+    </div>
+    <div class="about-col">
+      <ul class="about-list">
+        <li><i data-lucide="brain" class="neon-icon"></i> Скрапінг і парсинг даних (CSV/XML/API)</li>
+        <li><i data-lucide="mail" class="neon-icon"></i> Email-автоматизація (Mailchimp, SMTP, Sendgrid)</li>
+        <li><i data-lucide="settings" class="neon-icon"></i> Міні-інструменти для бізнесу (форми, трекери)</li>
+        <li><i data-lucide="globe" class="neon-icon"></i> Багатомовні застосунки та SEO-сайти</li>
+        <li><i data-lucide="trending-up" class="neon-icon"></i> UX-орієнтовані рішення для зростання продажів</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- 🇵🇱 Polski -->
+<div class="about-language-block" data-lang="pl">
+  <div class="about-columns">
+    <div class="about-col">
+      <ul class="about-list">
+        <li><i data-lucide="message-circle" class="neon-icon"></i> Chatboty dla Telegram, WhatsApp, Messenger</li>
+        <li><i data-lucide="calendar" class="neon-icon"></i> Systemy rezerwacji online z kalendarzem</li>
+        <li><i data-lucide="credit-card" class="neon-icon"></i> Płatności online (Stripe, WayForPay, Przelewy24)</li>
+        <li><i data-lucide="link" class="neon-icon"></i> Integracje z CRM (Bitrix24, Hubspot, Zoho)</li>
+        <li><i data-lucide="layout-dashboard" class="neon-icon"></i> Panele klienta i administracyjne</li>
+      </ul>
+    </div>
+    <div class="about-col">
+      <ul class="about-list">
+        <li><i data-lucide="brain" class="neon-icon"></i> Scraping danych (CSV/XML/API)</li>
+        <li><i data-lucide="mail" class="neon-icon"></i> Automatyzacja e-mail (Mailchimp, SMTP, Sendgrid)</li>
+        <li><i data-lucide="settings" class="neon-icon"></i> Narzędzia biznesowe (formularze, raporty)</li>
+        <li><i data-lucide="globe" class="neon-icon"></i> Strony wielojęzyczne z SEO</li>
+        <li><i data-lucide="trending-up" class="neon-icon"></i> Automatyzacja ukierunkowana na UX i sprzedaż</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" class="projects">
+  <div class="container">
+    <h2 class="section-title" data-lang="en">Featured Projects</h2>
+    <h2 class="section-title" data-lang="ua">Обрані Проєкти</h2>
+    <h2 class="section-title" data-lang="pl">Wybrane Projekty</h2>
+
+    <!-- КАРУСЕЛЬ КАРТОК -->
+    <div class="projects-carousel">
+      <div class="projects-container" id="projectsContainer">
+        <!-- Projects will be loaded dynamically via JS -->
+      </div>
+    </div>
+
+    <!-- КНОПКИ — винесені ЗА межі каруселі -->
+    <div class="carousel-nav">
+      <button class="nav-btn" onclick="prevProject()" data-lang="en">← Previous</button>
+      <button class="nav-btn" onclick="prevProject()" data-lang="ua">← Попередній</button>
+      <button class="nav-btn" onclick="prevProject()" data-lang="pl">← Poprzedni</button>
+
+      <button class="nav-btn" onclick="nextProject()" data-lang="en">Next →</button>
+      <button class="nav-btn" onclick="nextProject()" data-lang="ua">Наступний →</button>
+      <button class="nav-btn" onclick="nextProject()" data-lang="pl">Następny →</button>
+    </div>
+  </div>
+</section>
+
+      <section id="contact" class="contact">
+        <div class="container">
+          <div class="contact-top">
+            <!-- Ліва частина -->
+            <div class="contact-info">
+              <h3 data-lang="en">Get In Touch</h3>
+              <h3 data-lang="ua">Зв'язатися</h3>
+              <h3 data-lang="pl">Skontaktuj się</h3>
+      
+              <div class="contact-item">
+                <span>📧</span>
+                <span>info@lazysoft.pl</span>
+              </div>
+      
+              <div class="contact-item">
+                <span>📱</span>
+                <span>+4 727 842 737 </span>
+              </div>
+      
+              <div class="contact-item">
+                <span>🌍</span>
+                <span data-lang="en">Available worldwide</span>
+                <span data-lang="ua">Доступно по всьому світу</span>
+                <span data-lang="pl">Dostępne na całym świecie</span>
+              </div>
+            </div>
+      
+            <!-- Права частина -->
+            <div class="social-media">
+              <h3 data-lang="en">Follow Me</h3>
+<h3 data-lang="ua">Слідкуйте за мною</h3>
+<h3 data-lang="pl">Śledź mnie</h3>
+      
+              <div class="social-links">
+                <a href="https://github.com/ChuprinaDaria" target="_blank" class="social-link">
+                  <span class="social-icon">🐙</span><span>GitHub</span>
+                </a>
+                <a href="https://www.linkedin.com/in/dchuprina/" target="_blank" class="social-link">
+                  <span class="social-icon">💼</span><span>LinkedIn</span>
+                </a>
+                <a href="https://www.instagram.com/lazysoft_/" target="_blank" class="social-link">
+                  <span class="social-icon">📸</span><span>Instagram</span>
+                </a>
+                <a href="https://dribbble.com/yourusername" target="_blank" class="social-link">
+                  <span class="social-icon">🏀</span><span>Facebook</span>
+                </a>
+              </div>
+            </div>
+          </div>
+      
+          <!-- Форма по центру -->
+<div id="contact-form-top">
+ <h3 class="contact-form-title" data-lang="en">Send Me a Message</h3>
+ <h3 class="contact-form-title" data-lang="ua">Напиши мені</h3>
+ <h3 class="contact-form-title" data-lang="pl">Napisz do mnie</h3>
+
+ <form class="contact-form" onsubmit="submitForm(event)">
+   <div class="form-group">
+     <label data-lang="en">Name</label>
+     <label data-lang="ua">Ім'я</label>
+     <label data-lang="pl">Imię</label>
+     <input type="text" name="name" required />
+   </div>
+
+   <div class="form-group">
+     <label>Email</label>
+     <input type="email" name="email" required />
+   </div>
+
+   <div class="form-group">
+     <label data-lang="en">Subject</label>
+     <label data-lang="ua">Тема</label>
+     <label data-lang="pl">Temat</label>
+     <input type="text" name="subject" required />
+   </div>
+
+   <div class="form-group">
+     <label data-lang="en">Message</label>
+     <label data-lang="ua">Повідомлення</label>
+     <label data-lang="pl">Wiadomość</label>
+     <textarea name="message" rows="5" required></textarea>
+   </div>
+
+   <button type="submit" class="submit-btn">
+     <span data-lang="en">Send Message</span>
+     <span data-lang="ua">Надіслати Повідомлення</span>
+     <span data-lang="pl">Wyślij Wiadomość</span>
+   </button>
+ </form>
+</div>
+
+      </section>
+      
+    </main>
+
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+      <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  window.addEventListener("load", () => {
+    lucide.createIcons();
+  });
+</script>
+  </body>
+</html>
