@@ -27,6 +27,38 @@ body {
   line-height: 1.6;
 }
 
+/* 🌐 LANGUAGE SWITCHING RULES - ДОДАНО */
+[data-lang] {
+  display: none !important;
+}
+
+[data-lang].active {
+  display: block !important;
+}
+
+/* Для inline елементів */
+span[data-lang].active {
+  display: inline !important;
+}
+
+/* Для заголовків */
+h1[data-lang].active,
+h2[data-lang].active,
+h3[data-lang].active {
+  display: block !important;
+}
+
+/* Для параграфів */
+p[data-lang].active {
+  display: block !important;
+}
+
+/* Для секцій */
+div[data-lang].active,
+section[data-lang].active {
+  display: block !important;
+}
+
 .bg-animation {
   position: fixed;
   top: 0;
@@ -224,7 +256,7 @@ transform: translateY(-2px);
 
 /* Main Content */
 main {
-  padding-top: 100px;
+  padding-top: 40px;
 }
 
 .container {
@@ -309,23 +341,16 @@ main {
 
 /* About Section */
 .about {
-  margin-top: 80px;
+  margin-top: 8px;
   padding: 60px 0;
   background-color: rgba(255, 255, 255, 0.03);
   animation: fadeInUp 0.5s ease-in-out;
 }
 
-.about-columns {
-display: grid;
-grid-template-columns: repeat(2, 1fr); /* Дві рівні колонки */
-gap: 30px 60px; /* більше повітря між колонками */
-align-items: start;
-align-content: start;
-justify-content: center;
-max-width: 1000px;
-margin: 0 auto;
-padding: 0 20px;
-box-sizing: border-box;
+
+
+.about-card:hover {
+  transform: translateY(-3px);
 }
 
 .about-list {
@@ -359,6 +384,93 @@ min-height: 1.6em; /* додати мінімальну висоту */
   stroke: var(--accent-pink);
   filter: drop-shadow(0 0 6px var(--accent-pink));
 }
+
+.about-preview {
+  width: 100%;
+  padding: 40px 20px;
+  display: grid;
+  gap: 40px;
+  place-items: center;
+}
+
+.about-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
+  
+  max-width: 1200px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 30px;
+  padding: 20px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.4s ease;
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  flex-wrap: nowrap;
+}
+
+.about-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.about-card:hover::before {
+  left: 100%;
+}
+
+.about-card:hover {
+  transform: scale(1.01);
+  box-shadow: 
+    0 0 20px rgba(0, 255, 100, 0.3),
+    0 0 40px rgba(0, 255, 100, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-color: rgba(0, 255, 100, 0.6);
+}
+
+
+
+
+
+.about-image {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  border-radius: 15px;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+.about-text {
+  flex: 1;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+}
+
+.about-text h3 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.about-text p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
 
 /* Projects Section */
 .projects {
@@ -418,4 +530,139 @@ box-sizing: border-box;
 content: "";
 position: absolute;
 top: 0;
+}
+
+/* 🌐 LANGUAGE SWITCHING RULES - БОЛЕЕ СИЛЬНЫЕ ПРАВИЛА */
+[data-lang]:not(.active) {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+[data-lang].active {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Для inline элементов */
+span[data-lang].active {
+  display: inline !important;
+}
+
+/* Для заголовків */
+h1[data-lang].active,
+h2[data-lang].active, 
+h3[data-lang].active,
+h4[data-lang].active,
+h5[data-lang].active,
+h6[data-lang].active {
+  display: block !important;
+}
+
+/* Для параграфів */
+p[data-lang].active {
+  display: block !important;
+}
+
+/* Для секцій та дівів */
+div[data-lang].active,
+section[data-lang].active {
+  display: block !important;
+}
+
+/* Для списків */
+ul[data-lang].active,
+ol[data-lang].active,
+li[data-lang].active {
+  display: block !important;
+}
+
+
+
+
+
+h1 {
+  font-size: clamp(2.8rem, 8vw, 5rem); /* більший максимум */
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(
+    135deg,
+    var(--text-primary),
+    var(--accent-green)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--accent-green);
+  text-align: center;
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+
+.about-content {
+  width: 100%;
+ 
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 clamp(16px, 5vw, 60px);
+  text-align: left;
+}
+
+.highlight-green {
+  color: #b0ff66; /* м'який салатовий */
+  font-weight: 500;
+  text-shadow: 0 0 3px rgba(158, 255, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.highlight-green:hover {
+  color: var(--accent-green);
+  text-shadow: 0 0 8px var(--accent-green);
+}
+
+.about-content {
+  padding-top: 2px; /* або інше значення, якщо хочеш ще ближче */
+}
+
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+  .about-content {
+    padding: 0 20px;
+    font-size: 0.95rem;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .about-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+  }
+
+  .about-text {
+    align-items: center;
+  }
 }

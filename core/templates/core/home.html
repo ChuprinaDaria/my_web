@@ -1,11 +1,9 @@
-<p style="color:red;">ТЕСТОВИЙ КОНТЕНТ</p>
-
-
 {% extends "core/base.html" %}
 
-{% load static %}
+{% load static i18n %}
 
-{% block title %}Lazysoft — Home{% endblock %}
+
+{% block title %}Lazysoft — AI Automation & Custom Software Development{% endblock %}
 
 {% block content %}
 <section id="home" class="hero">
@@ -15,49 +13,81 @@
       <h1 data-lang="uk">Lazysoft</h1>
       <h1 data-lang="pl">Lazysoft</h1>
 
-      <p class="subtitle" data-lang="en">Daria Chuprina Full-Stack Developer & IT Specialist</p>
-      <p class="subtitle" data-lang="uk">Дар'я Чупріна Full-Stack Розробник та IT Спеціаліст</p>
-      <p class="subtitle" data-lang="pl">Daria Chuprina Full-Stack Developer i Specjalista IT</p>
+      <p class="subtitle" data-lang="en">Leading AI Automation & Custom Software Development Company</p>
+      <p class="subtitle" data-lang="uk">Провідна Компанія ШІ Автоматизації та Розробки Програмного Забезпечення</p>
+      <p class="subtitle" data-lang="pl">Wiodąca Firma Automatyzacji AI i Rozwoju Oprogramowania na Zamówienie</p>
 
-      <p class="description" data-lang="en">Passionate about creating innovative digital solutions with cutting-edge technologies. Specialized in modern web development and user experience design.</p>
-      <p class="description" data-lang="uk">Захоплююся створенням інноваційних цифрових рішень з використанням сучасних технологій. Спеціалізуюся на сучасній веб-розробці та дизайні користувацького досвіду.</p>
-      <p class="description" data-lang="pl">Pasjonuję się tworzeniem innowacyjnych rozwiązań cyfrowych z wykorzystaniem najnowszych technologii. Specjalizuję się w nowoczesnym rozwoju stron internetowych i projektowaniu doświadczeń użytkownika.</p>
+      <p class="description" data-lang="en">Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency.</p>
+      <p class="description" data-lang="uk">Трансформуйте свій бізнес за допомогою передових рішень штучного інтелекту, розумних чат-ботів та індивідуальної веб-розробки. Ми спеціалізуємося на послугах автоматизації ШІ, оптимізації даних та просунутих рішеннях електронної комерції.</p>
+      <p class="description" data-lang="pl">Przekształć swój biznes dzięki najnowocześniejszym rozwiązaniom AI, inteligentnym chatbotom i niestandardowemu rozwojowi stron internetowych. Specjalizujemy się w usługach automatyzacji AI, optymalizacji danych i zaawansowanych rozwiązaniach e-commerce.</p>
 
       <div class="tech-stack">
         <span class="tech-item">Python</span>
         <span class="tech-item">JavaScript</span>
         <span class="tech-item">Node.js</span>
         <span class="tech-item">React</span>
+        <span class="tech-item">OpenAI GPT</span>
+        <span class="tech-item">TensorFlow</span>
         <span class="tech-item">Telegram API</span>
+        <span class="tech-item">WhatsApp API</span>
         <span class="tech-item">Playwright</span>
         <span class="tech-item">Selenium</span>
         <span class="tech-item">SQLite</span>
         <span class="tech-item">MongoDB</span>
         <span class="tech-item">Make (Integromat)</span>
+        <span class="tech-item">Zapier</span>
         <span class="tech-item">WayForPay</span>
         <span class="tech-item">Stripe</span>
+        <span class="tech-item">Docker</span>
+        <span class="tech-item">AWS</span>
+        <span class="tech-item">Google Cloud</span>
+        <span class="tech-item">Shopify</span>
+        <span class="tech-item">WooCommerce</span>
       </div>
     </div>
   </div>
 </section>
 
-<section class="about">
-  <div class="about-language-block" data-lang="en">
-    {% include "core/about_en.html" %}
+<section class="about-preview">
+
+  <!-- 🇬🇧 English -->
+  <div class="about-card about-lang clickable" data-lang="en" data-href="/about/">
+    <img src="{% static 'images/about-preview.jpg' %}" alt="About Lazysoft" class="about-image" />
+    <div class="about-text">
+      <h3>Born to automate. Fired for it.</h3>
+      <p>The story of how laziness became a philosophy, a tech stack, and a damn efficient business model. Discover Lazysoft — where automation meets rebellion.</p>
+    </div>
   </div>
-  <div class="about-language-block" data-lang="uk">
-    {% include "core/about_uk.html" %}
+
+  <!-- 🇺🇦 Українська -->
+  <div class="about-card about-lang clickable" data-lang="uk" data-href="/uk/about/">
+    <img src="{% static 'images/about-preview.jpg' %}" alt="Про Lazysoft" class="about-image" />
+    <div class="about-text">
+      <h3>Народжена автоматизувати. Звільнена за це.</h3>
+      <p>Історія про те, як лінь перетворилась на філософію, технології та ефективний бізнес. Дізнайся більше про Lazysoft — де автоматизація стає формою бунту.</p>
+    </div>
   </div>
-  <div class="about-language-block" data-lang="pl">
-    {% include "core/about_pl.html" %}
+
+  <!-- 🇵🇱 Polski -->
+  <div class="about-card about-lang clickable" data-lang="pl" data-href="/pl/about/">
+    <img src="{% static 'images/about-preview.jpg' %}" alt="O Lazysoft" class="about-image" />
+    <div class="about-text">
+      <h3>Urodzona, by automatyzować. Zwolniona za to.</h3>
+      <p>Historia o tym, jak lenistwo stało się filozofią, technologią i skutecznym modelem biznesowym. Poznaj Lazysoft — gdzie automatyzacja spotyka się z buntem.</p>
+    </div>
   </div>
+
 </section>
+
+
+
+
 
 <section id="projects" class="projects">
   <div class="container">
-    <h2 class="section-title" data-lang="en">Featured Projects</h2>
-    <h2 class="section-title" data-lang="uk">Обрані Проєкти</h2>
-    <h2 class="section-title" data-lang="pl">Wybrane Projekty</h2>
+    <h2 class="section-title" data-lang="en">Featured AI & Automation Projects</h2>
+    <h2 class="section-title" data-lang="uk">Обрані ШІ та Автоматизаційні Проєкти</h2>
+    <h2 class="section-title" data-lang="pl">Wybrane Projekty AI i Automatyzacji</h2>
     <div class="projects-carousel">
       <div class="projects-container" id="projectsContainer">
         <!-- Projects will be loaded dynamically via JS -->

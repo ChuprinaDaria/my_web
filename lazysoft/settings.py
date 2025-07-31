@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -27,9 +26,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
-
+# Application definition - SINGLE DEFINITION
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,12 +34,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # 📦 Third party apps
+    'parler',
+    
+    # 🧠 Your apps
+    'core',
+    'blog',
+    'news',
+    'projects',
+    'services',
+    'jobs',
+    'accounts',
 ]
 
+# SINGLE MIDDLEWARE DEFINITION
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',  # ← 🧠 ДОДАЙ ОЦЕ
+    'django.middleware.locale.LocaleMiddleware',  # For i18n
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -50,9 +60,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 ROOT_URLCONF = 'lazysoft.urls'
 
+# SINGLE TEMPLATES DEFINITION
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -71,10 +81,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'lazysoft.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -82,10 +90,8 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -101,16 +107,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
+# 🌐 Multi-language support: UA, PL, EN
+LANGUAGES = [
+    ('uk', 'Українська'),
+    ('pl', 'Polski'),
+    ('en', 'English'),
+]
 
+LANGUAGE_CODE = 'en'  # Default language
+USE_I18N = True       # Enable i18n
+USE_L10N = True       # Date, time, number formatting according to localization
+USE_TZ = True         # Timezone
 
+# 📁 Path to translation files
+LOCALE_PATHS = [BASE_DIR / 'locale']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
@@ -119,77 +135,9 @@ STATICFILES_DIRS = [
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# 🌐 Багатомовність: підтримка UA, PL, EN
-LANGUAGES = [
-    ('uk', 'Українська'),  # ← правильно
-    ('pl', 'Polski'),
-    ('en', 'English'),
-]
-
-LANGUAGE_CODE = 'uk'  # мова за замовчуванням
-
-USE_I18N = True       # включити i18n
-USE_L10N = True       # форматування дати, часу, чисел згідно з локалізацією
-USE_TZ = True         # таймзона
-
-# 📁 Шлях до файлів перекладів
-from pathlib import Path
-BASE_DIR = Path(__file__).resolve().parent.parent
-LOCALE_PATHS = [BASE_DIR / 'locale']
-
-# 🧩 Middleware для перемикання мов
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',  # ← сюди!
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
-
-# 🧩 Підключення аплікацій
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
-    # 📦 Сторонні
-    'parler',
-
-    # 🧠 Твої апки
-    'core',
-    'blog',
-    'news',
-    'projects',
-    'services',
-    'jobs',
-    'accounts',
-]
-
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
-
+# Parler configuration for multi-language content
 PARLER_LANGUAGES = {
     None: (
         {'code': 'uk'},

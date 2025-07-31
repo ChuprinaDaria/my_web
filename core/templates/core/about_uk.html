@@ -1,4 +1,80 @@
-<div class="about">
-  <h2>About Me</h2>
-  <p>Hello! I'm Dasha, a full-stack developer and digital craftswoman.</p>
-</div>
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+  <div class="about-content">
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Lazysoft</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Discover how Lazysoft was born — a project driven by automation, creativity, and strategic laziness. Read the story of how our founder transitioned into tech at 37 and built a future out of Python and purpose." />
+  <meta name="keywords" content="Lazysoft, Python, automation, IT collective, software development, SMM, AI tools, full-stack, Django, tech story, data processing" />
+  <meta name="author" content="Lazysoft Team" />
+
+  <!-- Open Graph / Facebook / LinkedIn / Threads -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourdomain.com/about/" />
+  <meta property="og:title" content="About Lazysoft — Tech meets Laziness" />
+  <meta property="og:description" content="A tech collective born from automation, humor, and one woman’s lazy genius." />
+  <meta property="og:image" content="https://yourdomain.com/static/og-about.jpg" />
+  <meta property="og:site_name" content="Lazysoft" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://yourdomain.com/about/" />
+  <meta name="twitter:title" content="About Lazysoft — Tech meets Laziness" />
+  <meta name="twitter:description" content="We automate, we innovate, we’re Lazysoft. Learn the story behind the name." />
+  <meta name="twitter:image" content="https://yourdomain.com/static/og-about.jpg" />
+  <meta name="twitter:creator" content="@LazysoftOfficial" />
+
+  <!-- Instagram / Threads -->
+  <meta name="instagram:card" content="summary_large_image" />
+  <meta property="instapp:owner_user_id" content="1234567890" />
+
+  <!-- LinkedIn -->
+  <meta name="linkedin:card" content="summary_large_image" />
+  <meta name="linkedin:title" content="About Lazysoft — Tech meets Laziness" />
+  <meta name="linkedin:description" content="A collective where laziness meets innovation. Discover the story of Lazysoft." />
+  <meta name="linkedin:image" content="https://yourdomain.com/static/og-about.jpg" />
+
+  {% load static %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+
+</head>
+<body>
+  <main class="container about">
+
+<section class="about-content" data-lang="uk">
+  <h2>Народжена автоматизувати.<br>Звільнена за це.</h2>
+
+  <p>Привіт! Я засновниця <span class="highlight-green">Lazysoft</span>, і вже скоро ви зрозумієте, чому саме таку назву обрала для свого проєкту — бо <span class="highlight-green">лінь</span> рушійна сила.</p>
+
+  <p>У <span class="highlight-green">ІТ</span> я прийшла у <span class="highlight-green">37</span>. До цього працювала в <span class="highlight-green">туризмі</span>, <span class="highlight-green">логістиці</span> та <span class="highlight-green">маркетингу</span>, в основному спілкуючись з людьми (а я <span class="highlight-green">інтроверт</span>, якщо що).</p>
+
+  <p>Коли я вийшла з декрету (дитині було 5 місяців), роботи для мене вже не було. Я брала будь-які завдання. Аж поки не отримала <span class="highlight-green">тонну даних у Google Sheets</span> — сотні тисяч рядків.</p>
+
+  <p>У мене не працювали формули, таблиці ламались, звіти створювались годинами. Я працювала в <span class="highlight-green">СММ</span>, а не в аналітиці. Так я відкрила для себе <span class="highlight-green">Python</span>. Перші скрипти писала в блокноті. Через місяць звіти створювались за 5 хвилин. І тоді роботи для мене знову не стало.</p>
+
+  <p>Я створила <span class="highlight-green">клікер мишки</span>, щоб виглядати активною в Teams. Потім мене <span class="highlight-green">звільнили</span>. Але я не жалкую. <span class="highlight-green">Лінь перемогла бюрократію</span>.</p>
+
+  <p>Так з’явився <span class="highlight-green">Lazysoft</span> — платформа, що <span class="highlight-green">автоматизує</span>, будує, допомагає. Ми створюємо <span class="highlight-green">боти</span>, аналізуємо <span class="highlight-green">дані</span>, генеруємо <span class="highlight-green">рішення</span>.</p>
+
+  <h2>Наш сайт — приклад філософії:</h2>
+  <ul class="about-list">
+    <li>⚡ <span class="highlight-green">Автопостинг</span> у соцмережах</li>
+    <li>🧠 <span class="highlight-green">AI-добірка</span> наукових і tech-новин</li>
+    <li>🧰 Платформа <span class="highlight-green">LazyJob</span></li>
+    <li>🌍 <span class="highlight-green">Багатомовність</span>, <span class="highlight-green">SEO</span> та адаптивний дизайн</li>
+    <li>🎨 Сучасний, анімований, <span class="highlight-green">адаптивний дизайн</span></li>
+  </ul>
+
+  <p>Ми <span class="highlight-green">оптимізуємо</span> все, що можна. Навіть себе :)</p>
+</section>
+  </div>
+{% endblock %}
