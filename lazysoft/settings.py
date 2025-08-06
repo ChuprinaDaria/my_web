@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     
     # 📦 Third party apps
     'parler',
+    'ckeditor',
+    'ckeditor_uploader',
     
     # 🧠 Your apps
     'core',
@@ -148,4 +150,23 @@ PARLER_LANGUAGES = {
         'fallbacks': ['uk', 'en'],
         'hide_untranslated': False,
     }
+}
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+# CKEditor config
+CKEDITOR_UPLOAD_PATH = "uploads/"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Full',
+        'height': 300,
+        'width': '100%',
+        'tabSpaces': 4,
+        'extraPlugins': ','.join([
+            'codesnippet',  # якщо треба підсвітка коду
+        ]),
+    },
 }

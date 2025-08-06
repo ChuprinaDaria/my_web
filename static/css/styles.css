@@ -41,12 +41,7 @@ span[data-lang].active {
   display: inline !important;
 }
 
-/* Для заголовків */
-h1[data-lang].active,
-h2[data-lang].active,
-h3[data-lang].active {
-  display: block !important;
-}
+
 
 /* Для параграфів */
 p[data-lang].active {
@@ -256,57 +251,49 @@ transform: translateY(-2px);
 
 /* Main Content */
 main {
-  padding-top: 40px;
+  padding-top: 120px;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 100%; 
   margin: 0 auto;
-  padding: 0 20px;
+  padding-top: 30px;
+  
 }
 
 /* Hero Section */
 .hero {
-  min-height: 60vh;
+  /* Прибираємо min-height: 30vh; */
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   position: relative;
-  padding: 40px 0;
+  padding: 0px 0; /* Зменшили з 60px 0 */
 }
 
 .hero-content {
   animation: fadeInUp 1s ease-out;
   width: 100%;
+  line-height: normal; /* Скидаємо великий line-height */
+  /* або */
+  line-height: 1.6; /* Встановлюємо нормальний line-height */
 }
 
-.hero h1 {
-  font-size: clamp(2.5rem, 8vw, 6rem);
-  font-weight: 700;
-  margin-bottom: 20px;
-  background: linear-gradient(
-    135deg,
-    var(--text-primary),
-    var(--accent-green)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: textGlow 3s ease-in-out infinite alternate;
-}
+
+
 
 .hero .subtitle {
   font-size: clamp(1.1rem, 4vw, 1.5rem);
-  color: var(--text-secondary);
-  margin-bottom: 30px;
+  color: antiquewhite;
+  margin-bottom: 0px; /* Зменшили з 30px */
   animation: fadeInUp 1s ease-out 0.3s both;
 }
 
 .hero .description {
   font-size: clamp(1rem, 2.5vw, 1.1rem);
   max-width: 600px;
-  margin: 0 auto 40px;
+  margin: 0 auto; /* Прибрали margin-bottom: 5px */
   color: var(--text-secondary);
   animation: fadeInUp 1s ease-out 0.6s both;
 }
@@ -316,8 +303,8 @@ main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
-  margin-top: 40px;
+  gap: 10px;
+  margin-top: 0px;
   animation: fadeInUp 1s ease-out 0.9s both;
 }
 
@@ -327,7 +314,7 @@ main {
   padding: 10px 20px;
   border-radius: 25px;
   font-family: "JetBrains Mono", monospace;
-  font-size: clamp(12px, 2vw, 14px);
+  font-size: clamp(10px, 2vw, 12px);
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
 }
@@ -387,7 +374,7 @@ min-height: 1.6em; /* додати мінімальну висоту */
 
 .about-preview {
   width: 100%;
-  padding: 40px 20px;
+  padding: 0px 20px;
   display: grid;
   gap: 40px;
   place-items: center;
@@ -455,7 +442,7 @@ min-height: 1.6em; /* додати мінімальну висоту */
   flex-shrink: 0;
   object-fit: cover;
 }
-.about-text {
+h3, .about-text {
   flex: 1;
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
@@ -472,64 +459,326 @@ min-height: 1.6em; /* додати мінімальну висоту */
 }
 
 
+
+/*Services*/
+
+
+
+
+
+.services-preview {
+  width: 100%;
+  padding: 0px 20px;
+  margin-top: 8px;
+  background-color: rgba(255, 255, 255, 0.03);
+  display: grid;
+  gap: 20px;
+  place-items: center;
+  animation: fadeInUp 0.5s ease-in-out;
+}
+
+.service-card {
+  margin: 30px auto 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 30px;
+  width: 100%;
+  max-width: 1200px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 30px;
+  padding: 20px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.4s ease;
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  flex-wrap: nowrap;
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.service-card:hover::before {
+  left: 100%;
+}
+
+.service-card:hover {
+  transform: scale(1.01);
+  box-shadow: 
+    0 0 20px rgba(0, 255, 100, 0.3),
+    0 0 40px rgba(0, 255, 100, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-color: rgba(0, 255, 100, 0.6);
+}
+
+/* Зображення */
+.service-image {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  border-radius: 15px;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+/* Текст */
+.service-text {
+  flex: 1;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+}
+
+.service-text h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.service-text p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+
+
+
 /* Projects Section */
-.projects {
-padding: 80px 0;
+
+h2, .section-title {
+font-size: clamp(2rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent-green);
+  text-align: center;
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGlow 3s ease-in-out infinite alternate;
 }
 
-.section-title {
-font-size: clamp(2rem, 6vw, 3rem);
-text-align: center;
-margin-bottom: 60px;
-background: linear-gradient(
-  135deg,
-  var(--accent-green),
-  var(--accent-pink)
-);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
+/* Projects Section - ОНОВЛЕНО */
+.projects-page {
+  padding: 30px 0;
 }
 
-.projects-carousel {
-overflow-x: auto;
-overflow-y: hidden;
-width: 100%;
-scroll-snap-type: x mandatory;
--webkit-overflow-scrolling: touch;
-padding: 0 20px; /* Додаємо падінг для мобільних */
+/* Сітка для проєктів по категоріях */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px 0;
 }
 
-.projects-container {
-display: flex;
-flex-wrap: nowrap; /* Для горизонтального скролу */
-gap: 20px;
-width: max-content; /* Дозволяємо контейнеру розширюватися */
-padding: 20px 0;
-box-sizing: border-box;
-}
-
+/* Оновлення для project-card */
 .project-card {
-min-width: 300px;
-max-width: 350px; /* Обмежуємо максимальну ширину */
-background: var(--glass-bg);
-border: 1px solid var(--glass-border);
-border-radius: 20px;
-padding: 20px;
-cursor: pointer;
-transition: all 0.4s ease;
-backdrop-filter: blur(20px);
-position: relative;
-overflow: hidden; /* Важливо для правильного відображення */
-flex-shrink: 0;
-scroll-snap-align: start;
-box-sizing: border-box;
+  min-width: 300px;
+  max-width: 350px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+}
+
+/* Стилі для зображень в картках проєктів */
+.project-card img {
+  width: 100%;
+  height: 180px; /* Фіксована висота */
+  object-fit: cover; /* Обрізає зображення зберігаючи пропорції */
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.project-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 
+    0 0 20px rgba(158, 255, 0, 0.3),
+    0 0 40px rgba(158, 255, 0, 0.2);
+  border-color: rgba(158, 255, 0, 0.6);
 }
 
 .project-card::before {
-content: "";
-position: absolute;
-top: 0;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(158, 255, 0, 0.1),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.project-card:hover::before {
+  left: 100%;
+}
+
+/* Заголовки та тексти в картках */
+.project-card h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.project-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Категорії проєктів */
+.project-category-block {
+  margin-bottom: 3rem;
+}
+
+.project-category-block h2 {
+  color: var(--accent-green);
+  margin-bottom: 0.5rem;
+}
+
+.project-category-block > p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* Горизонтальний скрол для проєктів на головній */
+.projects-carousel {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 20px;
+}
+
+.projects-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.projects-carousel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.projects-carousel::-webkit-scrollbar-thumb {
+  background: var(--accent-green);
+  border-radius: 10px;
+}
+
+.projects-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  width: max-content;
+  padding: 20px 0;
+}
+
+/* На головній картки не розтягуються */
+.projects .project-card {
+  min-width: 300px;
+  max-width: 350px;
+}
+
+/* Project Detail Page */
+.project-detail-page img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 400px !important; /* Обмежуємо максимальну висоту */
+  object-fit: cover !important;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+/* Альтернативний більш специфічний селектор */
+.project-detail-page .container img,
+.project-detail-page .container-reg img,
+main.project-detail-page img {
+  width: 100%;
+  height: auto;
+  max-height: 400px !important;
+  object-fit: contain !important; /* або cover, залежно від потреби */
+  display: block;
+  margin: 0 auto 20px;
+}
+
+/* Додаткові стилі для сторінки деталей */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.prose {
+  color: #e5e5e5;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  color: white;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.prose ul, .prose ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tech-item {
+  background: rgba(158, 255, 0, 0.1);
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.tech-item:hover {
+  background: var(--accent-green);
+  color: black;
 }
 
 /* 🌐 LANGUAGE SWITCHING RULES - БОЛЕЕ СИЛЬНЫЕ ПРАВИЛА */
@@ -581,11 +830,9 @@ li[data-lang].active {
 
 
 h1 {
-  font-size: clamp(2.8rem, 8vw, 5rem); /* більший максимум */
-  font-weight: 900;
-  line-height: 1.2;
-  text-align: center;
-  margin-bottom: 1.5rem;
+   font-size: clamp(3rem, 4vw, 2rem);
+  font-weight: 600;
+  margin-bottom: 20px;
   background: linear-gradient(
     135deg,
     var(--text-primary),
@@ -597,19 +844,17 @@ h1 {
   animation: textGlow 3s ease-in-out infinite alternate;
 }
 
-h2 {
-  font-size: clamp(1.8rem, 5vw, 2.5rem);
-  font-weight: 700;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  color: var(--accent-green);
-  text-align: center;
-  background: linear-gradient(135deg, var(--accent-green), var(--accent-pink));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: textGlow 3s ease-in-out infinite alternate;
+
+h3 {
+  font-size: 1.5rem;
+  color: antiquewhite;
 }
+
+h4 {
+  font-size: 1.1rem;
+  color: rgb(236, 224, 207);
+}
+
 
 
 .about-content {
@@ -664,5 +909,20 @@ h2 {
 
   .about-text {
     align-items: center;
+  }
+}
+@media (max-width: 768px) {
+  .service-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .service-image {
+    max-width: 120px;
+  }
+
+  .service-text h3 {
+    font-size: 1.4rem;
   }
 }

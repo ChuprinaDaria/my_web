@@ -1,0 +1,309 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}{{ seo_title }}{% endblock %}
+{% block meta_description %}{{ seo_description }}{% endblock %}
+{% block og_title %}{{ seo_title }}{% endblock %}
+{% block og_description %}{{ seo_description }}{% endblock %}
+{% block og_image %}{% if project.featured_image %}https://lazysoft.dev{{ project.featured_image.url }}{% else %}https://lazysoft.dev/static/images/projects-og.jpg{% endif %}{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" />
+  
+  <link rel="alternate" href="https://lazysoft.dev/en/projects/{{ project.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.dev/uk/projects/{{ project.slug }}/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.dev/pl/projects/{{ project.slug }}/" hreflang="pl">
+{% endblock %}
+
+{% block content %}
+<main class="project-detail-page py-16">
+  <div class="container max-w-4xl mx-auto px-4">
+    
+    <!-- Заголовок -->
+    <h1 class="text-4xl font-bold mb-6 text-center">{{ title }}</h1>
+    
+    <!-- Основне зображення -->
+    {% if project.featured_image %}
+      <img src="{{ project.featured_image.url }}" 
+           alt="{{ title }}" 
+           style="width: 100%; height: auto; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 30px;">
+    {% endif %}
+    
+    <!-- Галерея зображень -->
+    {% if project.gallery_image_1 or project.gallery_image_2 or project.gallery_image_3 %}
+    <div class="gallery-section mb-8" style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+      {% if project.gallery_image_1 %}
+        <img src="{{ project.gallery_image_1.url }}" alt="Gallery 1" style="width: 30%; max-width: 300px; height: 200px; object-fit: cover; border-radius: 8px;">
+      {% endif %}
+      {% if project.gallery_image_2 %}
+        <img src="{{ project.gallery_image_2.url }}" alt="Gallery 2" style="width: 30%; max-width: 300px; height: 200px; object-fit: cover; border-radius: 8px;">
+      {% endif %}
+      {% if project.gallery_image_3 %}
+        <img src="{{ project.gallery_image_3.url }}" alt="Gallery 3" style="width: 30%; max-width: 300px; height: 200px; object-fit: cover; border-radius: 8px;">
+      {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- Короткий опис -->
+    {% if project.short_description_uk or project.short_description_en or project.short_description_pl %}
+    <section class="mb-8 glass p-6 rounded-2xl">
+      <div class="prose prose-invert max-w-none">
+        {% if CURRENT_LANG == 'uk' %}
+          {{ project.short_description_uk|safe }}
+        {% elif CURRENT_LANG == 'pl' %}
+          {{ project.short_description_pl|safe }}
+        {% else %}
+          {{ project.short_description_en|safe }}
+        {% endif %}
+      </div>
+    </section>
+    {% endif %}
+    
+    <!-- Запит клієнта -->
+    <section class="mb-8 glass p-6 rounded-2xl">
+      <h2 class="text-2xl font-semibold mb-4 text-accent-green">
+        {% if CURRENT_LANG == 'uk' %}Запит клієнта
+        {% elif CURRENT_LANG == 'pl' %}Zapytanie klienta
+        {% else %}Client Request{% endif %}
+      </h2>
+      <div class="prose prose-invert max-w-none">
+        {% if CURRENT_LANG == 'uk' %}
+          {{ project.client_request_uk|safe }}
+        {% elif CURRENT_LANG == 'pl' %}
+          {{ project.client_request_pl|safe }}
+        {% else %}
+          {{ project.client_request_en|safe }}
+        {% endif %}
+      </div>
+    </section>
+    
+    <!-- Реалізація -->
+    <section class="mb-8 glass p-6 rounded-2xl">
+      <h2 class="text-2xl font-semibold mb-4 text-accent-green">
+        {% if CURRENT_LANG == 'uk' %}Реалізація
+        {% elif CURRENT_LANG == 'pl' %}Realizacja
+        {% else %}Implementation{% endif %}
+      </h2>
+      <div class="prose prose-invert max-w-none">
+        {% if CURRENT_LANG == 'uk' %}
+          {{ project.implementation_uk|safe }}
+        {% elif CURRENT_LANG == 'pl' %}
+          {{ project.implementation_pl|safe }}
+        {% else %}
+          {{ project.implementation_en|safe }}
+        {% endif %}
+      </div>
+    </section>
+    
+    <!-- Результати -->
+    <section class="mb-8 glass p-6 rounded-2xl">
+      <h2 class="text-2xl font-semibold mb-4 text-accent-green">
+        {% if CURRENT_LANG == 'uk' %}Результати
+        {% elif CURRENT_LANG == 'pl' %}Wyniki
+        {% else %}Results{% endif %}
+      </h2>
+      <div class="prose prose-invert max-w-none">
+        {% if CURRENT_LANG == 'uk' %}
+          {{ project.results_uk|safe }}
+        {% elif CURRENT_LANG == 'pl' %}
+          {{ project.results_pl|safe }}
+        {% else %}
+          {{ project.results_en|safe }}
+        {% endif %}
+      </div>
+    </section>
+    
+    <!-- Відео -->
+    {% if project.video_url or project.video_file %}
+    <section class="mb-8">
+      <h3 class="text-xl font-semibold mb-4">
+        {% if CURRENT_LANG == 'uk' %}Відео презентація
+        {% elif CURRENT_LANG == 'pl' %}Prezentacja wideo
+        {% else %}Video Presentation{% endif %}
+      </h3>
+      {% if project.video_url %}
+        <!-- YouTube/Vimeo embed -->
+        <div class="video-wrapper" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px;">
+          <iframe src="{{ project.video_url }}" 
+                  style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                  frameborder="0" 
+                  allowfullscreen>
+          </iframe>
+        </div>
+      {% elif project.video_file %}
+        <video controls style="width: 100%; border-radius: 12px;">
+          <source src="{{ project.video_file.url }}" type="video/mp4">
+        </video>
+      {% endif %}
+    </section>
+    {% endif %}
+    
+    <!-- Технології -->
+    {% if project.technologies_used %}
+    <section class="mb-8">
+      <h3 class="text-xl font-semibold mb-4">
+        {% if CURRENT_LANG == 'uk' %}Використані технології
+        {% elif CURRENT_LANG == 'pl' %}Użyte technologie
+        {% else %}Technologies Used{% endif %}
+      </h3>
+      <div class="tech-stack">
+        {% for tech in project.get_technologies_list %}
+          <span class="tech-item">{{ tech }}</span>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+    
+    <!-- Посилання на проєкт -->
+    {% if project.project_url %}
+    <section class="mb-8 text-center">
+      <a href="{{ project.project_url }}" 
+         target="_blank" 
+         class="inline-block px-8 py-3 bg-accent-green text-black font-semibold rounded-full hover:bg-accent-pink transition-all">
+        {% if CURRENT_LANG == 'uk' %}Переглянути проєкт
+        {% elif CURRENT_LANG == 'pl' %}Zobacz projekt
+        {% else %}View Project{% endif %}
+      </a>
+    </section>
+    {% endif %}
+    
+    <!-- Відгук клієнта -->
+    {% if project.review and project.review.is_active %}
+    <section class="mb-8 glass p-6 rounded-2xl">
+      <h3 class="text-xl font-semibold mb-4">
+        {% if CURRENT_LANG == 'uk' %}Відгук клієнта
+        {% elif CURRENT_LANG == 'pl' %}Opinia klienta
+        {% else %}Client Review{% endif %}
+      </h3>
+      
+      <div class="review-content">
+        <div class="flex items-start gap-4 mb-4">
+          {% if project.review.client_avatar %}
+            <img src="{{ project.review.client_avatar.url }}" 
+                 alt="{{ project.review.client_name }}" 
+                 style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
+          {% endif %}
+          <div>
+            <h4 class="font-semibold">{{ project.review.client_name }}</h4>
+            {% if project.review.client_position %}
+              <p class="text-sm text-gray-400">{{ project.review.client_position }}</p>
+            {% endif %}
+            {% if project.review.client_company %}
+              <p class="text-sm text-gray-400">{{ project.review.client_company }}</p>
+            {% endif %}
+          </div>
+        </div>
+        
+        <!-- Рейтинг -->
+        <div class="rating mb-4">
+          {% for i in "12345" %}
+            {% if forloop.counter <= project.review.rating %}
+              <span style="color: var(--accent-green);">★</span>
+            {% else %}
+              <span style="color: #444;">★</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+        
+        <!-- Текст відгуку -->
+        <div class="prose prose-invert max-w-none">
+          {% if CURRENT_LANG == 'uk' %}
+            {{ project.review.review_text_uk|safe }}
+          {% elif CURRENT_LANG == 'pl' %}
+            {{ project.review.review_text_pl|safe }}
+          {% else %}
+            {{ project.review.review_text_en|safe }}
+          {% endif %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+    
+    <!-- Дата проєкту -->
+    <div class="text-center text-gray-400 text-sm mb-8">
+      {% if CURRENT_LANG == 'uk' %}Проєкт виконано:
+      {% elif CURRENT_LANG == 'pl' %}Projekt wykonany:
+      {% else %}Project completed:{% endif %}
+      {{ project.project_date|date:"F Y" }}
+    </div>
+    
+    <!-- Кнопка назад -->
+    <div class="text-center">
+      <a href="/{{ CURRENT_LANG }}/projects/" 
+         class="text-accent-green hover:text-accent-pink transition-colors">
+        ← {% if CURRENT_LANG == 'uk' %}Повернутися до проєктів
+        {% elif CURRENT_LANG == 'pl' %}Powrót do projektów
+        {% else %}Back to projects{% endif %}
+      </a>
+    </div>
+    
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "{{ seo_title|escapejs }}",
+  "description": "{{ seo_description|escapejs }}",
+  "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/projects/{{ project.slug }}/",
+  "inLanguage": "{{ CURRENT_LANG }}",
+  "dateCreated": "{{ project.project_date|date:'c' }}",
+  {% if project.featured_image %}
+  "image": "https://lazysoft.dev{{ project.featured_image.url }}",
+  {% endif %}
+  {% if project.technologies_used %}
+  "keywords": "{{ project.technologies_used }}",
+  {% endif %}
+  {% if project.project_url %}
+  "url": "{{ project.project_url }}",
+  {% endif %}
+  "creator": {
+    "@type": "Organization",
+    "name": "Lazysoft",
+    "url": "https://lazysoft.dev"
+  },
+  {% if project.review and project.review.is_active %}
+  "review": {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": {{ project.review.rating }},
+      "bestRating": "5"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "{{ project.review.client_name|escapejs }}"
+    },
+    "reviewBody": "{{ project.review.review_text_en|striptags|truncatewords:50|escapejs }}"
+  },
+  {% endif %}
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Projects",
+        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/projects/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ title|escapejs }}",
+        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/projects/{{ project.slug }}/"
+      }
+    ]
+  }
+}
+</script>
+{% endblock %}

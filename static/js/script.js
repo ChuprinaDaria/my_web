@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     /* Предотвращаем прыжки страницы */
     .hero-content {
-      min-height: 400px;
+      min-height: 80px;
     }
     
     /* Стили для языковых кнопок */

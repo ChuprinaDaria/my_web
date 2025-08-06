@@ -6,10 +6,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Lazysoft{% endblock %}</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+
+    {% block meta_tags %}
+      <meta name="description" content="{% block meta_description %}Lazysoft automation & development{% endblock %}">
+      <meta property="og:title" content="{% block og_title %}Lazysoft{% endblock %}">
+      <meta property="og:description" content="{% block og_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
+      <meta property="og:image" content="{% block og_image %}https://lazysoft.dev/static/images/og-default.jpg{% endblock %}">
+      <meta property="og:type" content="website">
+      <meta property="og:url" content="https://lazysoft.dev{{ request.path }}">
+      <link rel="canonical" href="https://lazysoft.dev{{ request.path }}" />
+    {% endblock %}
+
+    {% block extra_meta %}{% endblock %}  {# ← SEO canonical + hreflang тут #}
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
     {% block extra_head %}{% endblock %}
   </head>
@@ -20,31 +30,27 @@
       {% endfor %}
     </div>
 
-   
-<nav class="navbar">
-  <div class="burger" onclick="toggleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <ul class="nav-links" id="mobileMenu">
-    <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'projects' %}">{% trans "Projects" %}</a></li>
-    <li><a href="{% url 'about' %}">{% trans "About" %}</a></li>
-    <li><a href="#contact-form-top">{% trans "Contact" %}</a></li>
-  </ul>
-
-
-    <li class="lang-switcher">
-      <!-- ИСПРАВЛЕННАЯ ФОРМА ЯЗЫКОВ - English без префикса -->
-      <div class="language-selector">
-        <a href="/uk/" class="lang-btn {% if CURRENT_LANG == 'uk' %}active{% endif %}">UA</a>
-        <a href="/pl/" class="lang-btn {% if CURRENT_LANG == 'pl' %}active{% endif %}">PL</a>
-        <a href="/" class="lang-btn {% if CURRENT_LANG == 'en' %}active{% endif %}">EN</a>
+    <nav class="navbar">
+      <div class="burger" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
-    </li>
-  </ul>
-</nav>
+      <ul class="nav-links" id="mobileMenu">
+        <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'projects' %}">{% trans "Projects" %}</a></li>
+        <li><a href="{% url 'about' %}">{% trans "About" %}</a></li>
+        <li><a href="#contact-form-top">{% trans "Contact" %}</a></li>
+        
+        <li class="lang-switcher">
+          <div class="language-selector">
+            <a href="/uk/" class="lang-btn {% if CURRENT_LANG == 'uk' %}active{% endif %}">UA</a>
+            <a href="/pl/" class="lang-btn {% if CURRENT_LANG == 'pl' %}active{% endif %}">PL</a>
+            <a href="/" class="lang-btn {% if CURRENT_LANG == 'en' %}active{% endif %}">EN</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
 
     <main>
       {% block content %}{% endblock %}
@@ -54,19 +60,18 @@
 
     <script src="{% static 'js/script.js' %}"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script>window.addEventListener("load", () => lucide.createIcons());</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.clickable').forEach(function (card) {
-      card.addEventListener('click', function () {
-        const href = card.getAttribute('data-href');
-        if (href) window.location.href = href;
+    <script>
+      window.addEventListener("load", () => lucide.createIcons());
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.clickable').forEach(function (card) {
+          card.addEventListener('click', function () {
+            const href = card.getAttribute('data-href');
+            if (href) window.location.href = href;
+          });
+        });
       });
-    });
-  });
-</script>
+    </script>
 
-
+    {% block extra_scripts %}{% endblock %}
   </body>
 </html>

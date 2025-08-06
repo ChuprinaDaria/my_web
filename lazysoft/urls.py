@@ -1,23 +1,33 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.i18n import i18n_patterns
-from django.conf import settings
-from django.conf.urls.static import static
-from django.views.i18n import set_language
-
-# URL без языкового префикса
-urlpatterns = [
-    path('i18n/setlang/', set_language, name='set_language'),
-]
+from services.views import faq_page
 
 print("🧠 i18n_patterns ACTUALLY LOADED")
 
-# URL с языковыми префиксами
+urlpatterns = []
+
+# 🔤 URL з мовними префіксами
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
-    prefix_default_language=False,  # Важно для работы без префикса
+    path('services/', include('services.urls')),
+    path('projects/', include('projects.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('faq/', faq_page, name='faq_page'),
+    # порядок важливий: faq передається напряму
+    # services включає решту
+    # core — це головна, about і т.п.
+    # ckeditor — для медіа редактора
+    # admin — класика
+    # всі ці шляхи будуть працювати як /uk/... /pl/... /en/...
+    # нижче задається параметр, щоб /en не було префіксом по замовчуванню
+    prefix_default_language=True
 )
 
+# 🧪 Статика та медіа під час розробки
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

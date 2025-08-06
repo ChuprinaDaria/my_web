@@ -1,0 +1,58 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}{% trans "FAQ" %} | Lazysoft{% endblock %}
+{% block meta_description %}{% trans "Answers to common questions about automation, pricing, support, and technologies used by Lazysoft." %}{% endblock %}
+{% block og_title %}{% trans "FAQ" %} | Lazysoft{% endblock %}
+{% block og_description %}{% trans "Get clear answers about how we automate, develop and support your digital systems." %}{% endblock %}
+{% block og_image %}https://lazysoft.dev/static/images/faq-og.jpg{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/faq/" />
+  <link rel="alternate" href="https://lazysoft.dev/en/faq/" hreflang="en" />
+  <link rel="alternate" href="https://lazysoft.dev/uk/faq/" hreflang="uk" />
+  <link rel="alternate" href="https://lazysoft.dev/pl/faq/" hreflang="pl" />
+{% endblock %}
+
+{% block content %}
+<main class="faq-page container py-16">
+  <h1 class="neon-text text-4xl text-center mb-10">{% trans "Frequently Asked Questions" %}</h1>
+
+  <div class="faq-list space-y-8 max-w-4xl mx-auto">
+    {% for faq in faqs %}
+      <div class="faq-item bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
+        <h2 class="text-accent-green text-xl font-semibold flex items-center gap-2">
+          <i data-lucide="circle-help" class="w-5 h-5"></i> {{ faq.question|safe }}
+        </h2>
+        <p class="text-gray-300 mt-2">{{ faq.answer|safe }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>window.addEventListener("load", () => lucide.createIcons());</script>
+
+{# JSON-LD для FAQ #}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for faq in faqs %}
+      {
+        "@type": "Question",
+        "name": "{{ faq.question|escapejs }}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{{ faq.answer|escapejs }}"
+        }
+      }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endblock %}

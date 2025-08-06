@@ -1,0 +1,14 @@
+from django.urls import path
+from .views import (
+    projects_list,
+    project_detail,
+    project_contact_submit,
+    projects_api,
+)
+
+urlpatterns = [
+    path('', projects_list, name='projects'),
+    path('<slug:slug>/', project_detail, name='project_detail'),
+    path('<slug:slug>/contact/', project_contact_submit, name='project_contact_submit'),
+    path('api/projects/', projects_api, name='projects_api'),
+]

@@ -1,0 +1,156 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+
+{% block title %}{{ seo_title }}{% endblock %}
+{% block meta_description %}{{ seo_description }}{% endblock %}
+{% block og_title %}{{ seo_title }}{% endblock %}
+{% block og_description %}{{ seo_description }}{% endblock %}
+{% block og_image %}{{ og_image|default:"https://lazysoft.dev/static/images/services-og.jpg" }}{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/services/" />
+  <link rel="alternate" href="https://lazysoft.dev/en/services/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.dev/uk/services/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.dev/pl/services/" hreflang="pl">
+{% endblock %}
+
+{% block content %}
+<main class="services-page">
+
+  <!-- Hero -->
+  <section class="services-header text-center py-16">
+    <div class="container max-w-4xl mx-auto">
+      <h2 class="neon-text text-4xl md:text-5xl">{{ overview_title|safe }}</h2>
+      <p class="mt-4 text-lg text-gray-400">
+        {{ overview_description|safe }}
+      </p>
+    </div>
+  </section>
+
+<div class="tech-stack">
+        <span class="tech-item">Python</span>
+        <span class="tech-item">JavaScript</span>
+        <span class="tech-item">Node.js</span>
+        <span class="tech-item">React</span>
+        <span class="tech-item">OpenAI GPT</span>
+        <span class="tech-item">TensorFlow</span>
+        <span class="tech-item">Telegram API</span>
+        <span class="tech-item">WhatsApp API</span>
+        <span class="tech-item">Playwright</span>
+        <span class="tech-item">Selenium</span>
+        <span class="tech-item">SQLite</span>
+        <span class="tech-item">MongoDB</span>
+        <span class="tech-item">Make (Integromat)</span>
+        <span class="tech-item">Zapier</span>
+        <span class="tech-item">WayForPay</span>
+        <span class="tech-item">Stripe</span>
+        <span class="tech-item">Docker</span>
+        <span class="tech-item">AWS</span>
+        <span class="tech-item">Google Cloud</span>
+        <span class="tech-item">Shopify</span>
+        <span class="tech-item">WooCommerce</span>
+      </div>
+
+
+  
+
+ 
+
+  <section class="services-by-category pt-24 pb-16">
+  <div class="container max-w-6xl mx-auto">
+    {% for category in categories %}
+      <div class="service-category-block mb-12">
+        <h2 class="text-2xl font-semibold text-accent-pink mb-2">{{ category.title|safe }}</h2>
+        <p class="text-gray-300 mb-6">{{ category.description|safe }}</p>
+        
+        <div class="services-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for service in category.services %}
+            <article class="service-card glass p-6 rounded-2xl shadow-xl transition hover:scale-105 cursor-pointer" onclick="location.href='/{{ CURRENT_LANG }}/services/{{ service.slug }}/'">
+              {% if service.icon %}
+                <img src="{{ service.icon.url }}" alt="icon for {{ service.title }}" class="h-10 w-10 mb-4">
+              {% endif %}
+              <h4 class="text-xl font-bold mb-2">{{ service.title|safe }}</h4>
+              <p class="text-sm text-gray-400">{{ service.short_description|safe }}</p>
+            </article>
+          {% endfor %}
+        </div>
+        
+        {% if category.projects %}
+        <h3 class="mt-10 mb-4 text-xl font-semibold text-accent-green">Проєкти з категорії {{ category.title }}</h3>
+        <div class="projects-carousel">
+          <div class="projects-container">
+            {% for project in category.projects %}
+              <div class="project-card" onclick="location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
+                {% if project.featured_image %}
+                  <img src="{{ project.featured_image.url }}" alt="{{ project.title_uk }}">
+                {% endif %}
+                <h4 data-lang="en">{{ project.title_en|safe }}</h4>
+                <h4 data-lang="uk" class="active">{{ project.title_uk|safe }}</h4>
+                <h4 data-lang="pl">{{ project.title_pl|safe }}</h4>
+                
+                <p data-lang="en">{{ project.short_description_en|safe|truncatewords:20 }}</p>
+                <p data-lang="uk" class="active">{{ project.short_description_uk|safe|truncatewords:20 }}</p>
+                <p data-lang="pl">{{ project.short_description_pl|safe|truncatewords:20 }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+
+
+  <!-- FAQ preview -->
+  <section class="faq-section bg-white/5 pt-24 pb-16">
+    <div class="container max-w-5xl mx-auto">
+      <h2 class="text-3xl font-semibold mb-8 text-center">{% trans "Frequently Asked Questions" %}</h2>
+      {% include "services/faq_preview.html" %}
+    </div>
+  </section>
+
+  <!-- Social -->
+  <section class="social-sharing text-center py-10">
+    <p class="mb-2">{% trans "Share this page:" %}</p>
+    <div class="flex justify-center gap-4 text-accent-green">
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank">Facebook</a>
+      <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank">LinkedIn</a>
+    </div>
+  </section>
+
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{ seo_title|escapejs }}",
+  "description": "{{ seo_description|escapejs }}",
+  "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/services/",
+  "inLanguage": "{{ CURRENT_LANG }}",
+  "mainEntity": {
+    "@type": "ItemList",
+    "itemListElement": [
+      {% for category in categories %}
+        {% for service in category.services %}
+        {
+          "@type": "ListItem",
+          "position": {{ forloop.parentloop.counter0|add:forloop.counter }},
+          "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/",
+          "name": "{{ service.title|escapejs }}"
+        }{% if not forloop.last or not forloop.parentloop.last %},{% endif %}
+        {% endfor %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+{% endblock %}
