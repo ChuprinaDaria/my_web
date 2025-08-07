@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
     
     # 📦 Third party apps
     'parler',
@@ -170,3 +171,46 @@ CKEDITOR_CONFIGS = {
         ]),
     },
 }
+# 📊 Логування для RSS парсера
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'news.log',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'news': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+# 🔄 Celery (для асинхронних завдань - опціонально)
+# CELERY_BROKER_URL = 'redis://localhost:6379'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+# 🤖 AI налаштування (додаси пізніше)
+# OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
+# GOOGLE_AI_API_KEY = config('GOOGLE_AI_API_KEY', default='')
+
+# 📄 Пагінація
+NEWS_ARTICLES_PER_PAGE = 12
+NEWS_RELATED_ARTICLES = 3
+
+# 🎯 SEO налаштування
+SITE_URL = 'https://lazysoft.pl'
+SITE_NAME = 'LAZYSOFT'
+
+
+import os
+os.makedirs(BASE_DIR / 'logs', exist_ok=True)

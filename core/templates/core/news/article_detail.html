@@ -1,0 +1,459 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ page_description }}{% endblock %}
+{% block og_title %}{{ og_title }}{% endblock %}
+{% block og_description %}{{ og_description }}{% endblock %}
+{% block og_image %}{{ og_image|default:"https://lazysoft.dev/static/images/news-og.jpg" }}{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="{{ og_url }}" />
+  
+  <!-- Hreflang -->
+  <link rel="alternate" href="https://lazysoft.dev/en/news/article/{{ article.uuid }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.dev/uk/news/article/{{ article.uuid }}/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.dev/pl/news/article/{{ article.uuid }}/" hreflang="pl">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ og_title }}">
+  <meta name="twitter:description" content="{{ og_description }}">
+  <meta name="twitter:image" content="{{ og_image }}">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {{ structured_data|safe }}
+  </script>
+{% endblock %}
+
+{% block content %}
+<main class="article-detail-page">
+
+  <!-- Breadcrumbs -->
+  <nav class="breadcrumbs py-4">
+    <div class="container max-w-4xl mx-auto">
+      <div class="flex items-center space-x-2 text-sm text-gray-400">
+        <a href="/" class="hover:text-accent-green transition">
+          <span data-lang="en">Home</span>
+          <span data-lang="uk">Головна</span>
+          <span data-lang="pl">Strona główna</span>
+        </a>
+        <span class="text-gray-600">/</span>
+        <a href="{% url 'news:news_list' %}" class="hover:text-accent-green transition">
+          <span data-lang="en">News</span>
+          <span data-lang="uk">Новини</span>
+          <span data-lang="pl">Wiadomości</span>
+        </a>
+        <span class="text-gray-600">/</span>
+        <a href="{% url 'news:news_category' article.category.slug %}" class="hover:text-accent-green transition">
+          <span data-lang="en">{{ article.category.name_en }}</span>
+          <span data-lang="uk">{{ article.category.name_uk }}</span>
+          <span data-lang="pl">{{ article.category.name_pl }}</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Article Header -->
+  <header class="article-header py-8">
+    <div class="container max-w-4xl mx-auto">
+      
+      <!-- Category & Date -->
+      <div class="flex items-center justify-between mb-6">
+        <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-accent-pink/20 text-accent-pink">
+          {{ article.category.icon }} 
+          <span data-lang="en">{{ article.category.name_en }}</span>
+          <span data-lang="uk">{{ article.category.name_uk }}</span>
+          <span data-lang="pl">{{ article.category.name_pl }}</span>
+        </span>
+        
+        <div class="flex items-center text-sm text-gray-400 space-x-4">
+          <time datetime="{{ article.published_at|date:'c' }}">
+            📅 {{ article.published_at|date:'j F Y' }}
+          </time>
+          <span>👁️ {{ article.get_total_views }}</span>
+          <span>⏱️ 3хв читання</span>
+        </div>
+      </div>
+      
+      <!-- Article Title -->
+      <h1 class="neon-text text-3xl md:text-4xl lg:text-5xl mb-6 leading-tight">
+        <span data-lang="en">{{ article.title_en|safe }}</span>
+        <span data-lang="uk">{{ article.title_uk|safe }}</span>
+        <span data-lang="pl">{{ article.title_pl|safe }}</span>
+      </h1>
+      
+      <!-- Article Summary -->
+      <div class="text-xl text-gray-300 mb-8 leading-relaxed">
+        <span data-lang="en">{{ article.summary_en|safe }}</span>
+        <span data-lang="uk">{{ article.summary_uk|safe }}</span>
+        <span data-lang="pl">{{ article.summary_pl|safe }}</span>
+      </div>
+      
+      <!-- Social Share Buttons -->
+      <div class="flex items-center space-x-4">
+        <span class="text-gray-400 text-sm">
+          <span data-lang="en">Share:</span>
+          <span data-lang="uk">Поділитися:</span>
+          <span data-lang="pl">Udostępnij:</span>
+        </span>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ og_url }}" 
+           target="_blank" class="text-accent-green hover:text-white transition p-2 rounded-full bg-white/5">
+          📘
+        </a>
+        <a href="https://twitter.com/intent/tweet?url={{ og_url }}&text={{ og_title }}" 
+           target="_blank" class="text-accent-green hover:text-white transition p-2 rounded-full bg-white/5">
+          🐦
+        </a>
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ og_url }}" 
+           target="_blank" class="text-accent-green hover:text-white transition p-2 rounded-full bg-white/5">
+          💼
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- AI Generated Image -->
+  {% if article.ai_image_url %}
+  <section class="article-image py-8">
+    <div class="container max-w-4xl mx-auto">
+      <div class="aspect-video overflow-hidden rounded-2xl shadow-2xl">
+        <img src="{{ article.ai_image_url }}" 
+             alt="{{ article.get_title }}"
+             class="w-full h-full object-cover"
+             loading="lazy">
+      </div>
+      <p class="text-center text-xs text-gray-500 mt-2">
+        🤖 <span data-lang="en">AI Generated Image</span>
+        <span data-lang="uk">Зображення згенероване ШІ</span>
+        <span data-lang="pl">Obraz wygenerowany przez AI</span>
+      </p>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Article Content -->
+  <article class="article-content py-12">
+    <div class="container max-w-3xl mx-auto">
+      
+      <!-- Business Insight -->
+      <section class="business-insight glass p-8 rounded-2xl mb-12 bg-gradient-to-r from-accent-green/10 to-accent-pink/10">
+        <h2 class="text-2xl font-bold mb-4 text-accent-green">
+          💡 <span data-lang="en">Business Insight</span>
+          <span data-lang="uk">Бізнес-інсайт</span>
+          <span data-lang="pl">Biznesowy Wgląd</span>
+        </h2>
+        
+        <div class="text-gray-200 leading-relaxed prose prose-invert max-w-none">
+          <span data-lang="en">{{ article.business_insight_en|safe }}</span>
+          <span data-lang="uk">{{ article.business_insight_uk|safe }}</span>
+          <span data-lang="pl">{{ article.business_insight_pl|safe }}</span>
+        </div>
+      </section>
+      
+      <!-- Local Context -->
+      {% if article.get_local_context %}
+      <section class="local-context mb-12">
+        <h3 class="text-xl font-semibold mb-4 text-accent-pink">
+          🌍 <span data-lang="en">Local Context</span>
+          <span data-lang="uk">Локальний контекст</span>
+          <span data-lang="pl">Lokalny kontekst</span>
+        </h3>
+        
+        <div class="text-gray-300 leading-relaxed">
+          <span data-lang="en">{{ article.local_context_en|safe }}</span>
+          <span data-lang="uk">{{ article.local_context_uk|safe }}</span>
+          <span data-lang="pl">{{ article.local_context_pl|safe }}</span>
+        </div>
+      </section>
+      {% endif %}
+      
+      <!-- Key Takeaways -->
+      {% if article.get_key_takeaways %}
+      <section class="key-takeaways mb-12">
+        <h3 class="text-xl font-semibold mb-6 text-accent-green">
+          🔑 <span data-lang="en">Key Takeaways</span>
+          <span data-lang="uk">Ключові висновки</span>
+          <span data-lang="pl">Kluczowe wnioski</span>
+        </h3>
+        
+        <div class="space-y-3">
+          <div data-lang="en">
+            {% for takeaway in article.key_takeaways_en %}
+            <div class="flex items-start space-x-3">
+              <span class="text-accent-green text-lg">✓</span>
+              <span class="text-gray-300">{{ takeaway }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          
+          <div data-lang="uk">
+            {% for takeaway in article.key_takeaways_uk %}
+            <div class="flex items-start space-x-3">
+              <span class="text-accent-green text-lg">✓</span>
+              <span class="text-gray-300">{{ takeaway }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          
+          <div data-lang="pl">
+            {% for takeaway in article.key_takeaways_pl %}
+            <div class="flex items-start space-x-3">
+              <span class="text-accent-green text-lg">✓</span>
+              <span class="text-gray-300">{{ takeaway }}</span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+      {% endif %}
+      
+    </div>
+  </article>
+
+  <!-- CTA Section -->
+  {% if article.cta_title_uk or article.category.cta_title_uk %}
+  <section class="article-cta py-12">
+    <div class="container max-w-3xl mx-auto">
+      <div class="glass p-8 rounded-2xl text-center bg-gradient-to-r from-accent-green/10 to-accent-pink/10">
+        
+        <h3 class="text-2xl font-bold mb-4 text-accent-green">
+          <span data-lang="en">{{ article.cta_title_en|default:article.category.cta_title_en|safe }}</span>
+          <span data-lang="uk">{{ article.cta_title_uk|default:article.category.cta_title_uk|safe }}</span>
+          <span data-lang="pl">{{ article.cta_title_pl|default:article.category.cta_title_pl|safe }}</span>
+        </h3>
+        
+        <p class="text-gray-300 mb-6">
+          <span data-lang="en">{{ article.cta_description_en|default:article.category.cta_description_en|safe }}</span>
+          <span data-lang="uk">{{ article.cta_description_uk|default:article.category.cta_description_uk|safe }}</span>
+          <span data-lang="pl">{{ article.cta_description_pl|default:article.category.cta_description_pl|safe }}</span>
+        </p>
+        
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap justify-center gap-4">
+          {% if article.cta_buttons %}
+            {% for button in article.cta_buttons %}
+            <a href="{{ button.url }}" 
+               class="inline-flex items-center px-6 py-3 bg-accent-green text-black rounded-full font-semibold hover:bg-white transition-colors">
+              <span data-lang="en">{{ button.text_en }}</span>
+              <span data-lang="uk">{{ button.text_uk }}</span>
+              <span data-lang="pl">{{ button.text_pl }}</span>
+              →
+            </a>
+            {% endfor %}
+          {% else %}
+            <a href="{{ article.category.cta_link }}" 
+               class="inline-flex items-center px-6 py-3 bg-accent-green text-black rounded-full font-semibold hover:bg-white transition-colors">
+              <span data-lang="en">{{ article.category.cta_button_text_en }}</span>
+              <span data-lang="uk">{{ article.category.cta_button_text_uk }}</span>
+              <span data-lang="pl">{{ article.category.cta_button_text_pl }}</span>
+              →
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Related Articles -->
+  {% if related_articles %}
+  <section class="related-articles py-16">
+    <div class="container max-w-6xl mx-auto">
+      <h3 class="text-2xl font-bold text-center mb-8 text-white">
+        🔗 <span data-lang="en">Related Articles</span>
+        <span data-lang="uk">Схожі статті</span>
+        <span data-lang="pl">Powiązane artykuły</span>
+      </h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {% for related in related_articles %}
+        <article class="news-card glass p-6 rounded-2xl shadow-xl transition hover:scale-105 cursor-pointer" 
+                 onclick="location.href='{{ related.get_absolute_url }}'">
+          
+          <!-- Category Badge -->
+          <div class="flex items-center justify-between mb-3">
+            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent-pink/20 text-accent-pink">
+              {{ related.category.icon }} 
+              <span data-lang="en">{{ related.category.name_en }}</span>
+              <span data-lang="uk">{{ related.category.name_uk }}</span>
+              <span data-lang="pl">{{ related.category.name_pl }}</span>
+            </span>
+            <time class="text-xs text-gray-500">{{ related.published_at|date:'j.m' }}</time>
+          </div>
+          
+          <!-- Article Title -->
+          <h4 class="text-lg font-bold text-white mb-3 line-clamp-2">
+            <span data-lang="en">{{ related.title_en|safe }}</span>
+            <span data-lang="uk">{{ related.title_uk|safe }}</span>
+            <span data-lang="pl">{{ related.title_pl|safe }}</span>
+          </h4>
+          
+          <!-- Summary -->
+          <p class="text-gray-300 text-sm mb-4 line-clamp-2">
+            <span data-lang="en">{{ related.summary_en|safe }}</span>
+            <span data-lang="uk">{{ related.summary_uk|safe }}</span>
+            <span data-lang="pl">{{ related.summary_pl|safe }}</span>
+          </p>
+          
+          <!-- Read More -->
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-accent-green font-medium">
+              <span data-lang="en">Read more</span>
+              <span data-lang="uk">Читати далі</span>
+              <span data-lang="pl">Czytaj więcej</span>
+              →
+            </span>
+            <span class="text-gray-500">👁️ {{ related.get_total_views }}</span>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- Source Attribution -->
+  <section class="source-attribution py-8 border-t border-white/10">
+    <div class="container max-w-3xl mx-auto text-center">
+      <p class="text-gray-400 text-sm mb-2">
+        📰 <span data-lang="en">Original source:</span>
+        <span data-lang="uk">Оригінальне джерело:</span>
+        <span data-lang="pl">Oryginalne źródło:</span>
+      </p>
+      <a href="{{ article.raw_article.original_url }}" 
+         target="_blank" rel="noopener noreferrer" 
+         class="text-accent-green hover:text-white transition text-sm">
+        {{ article.raw_article.source.name }} ↗
+      </a>
+      
+      <div class="mt-4 text-xs text-gray-500">
+        <p>
+          🤖 <span data-lang="en">This article was processed by AI and adapted for business insights</span>
+          <span data-lang="uk">Ця стаття була оброблена ШІ та адаптована для бізнес-інсайтів</span>
+          <span data-lang="pl">Ten artykuł został przetworzony przez AI i dostosowany do biznesowych wniosków</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back to News -->
+  <section class="back-navigation text-center py-8">
+    <a href="{% url 'news:news_list' %}" 
+       class="inline-flex items-center text-accent-pink hover:text-white transition font-medium">
+      ← 
+      <span data-lang="en">Back to all news</span>
+      <span data-lang="uk">Назад до всіх новин</span>
+      <span data-lang="pl">Powrót do wszystkich wiadomości</span>
+    </a>
+  </section>
+
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsArticle", 
+  "headline": "{{ article.get_title|escapejs }}",
+  "description": "{{ article.get_summary|escapejs }}",
+  "articleBody": "{{ article.get_business_insight|escapejs }}",
+  "url": "{{ og_url }}",
+  "datePublished": "{{ article.published_at.isoformat }}",
+  "dateModified": "{{ article.updated_at.isoformat }}",
+  "author": {
+    "@type": "Organization",
+    "name": "LAZYSOFT"
+  },
+  "publisher": {
+    "@type": "Organization", 
+    "name": "LAZYSOFT",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://lazysoft.dev/static/images/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ og_url }}"
+  },
+  "articleSection": "{{ article.category.get_name|escapejs }}",
+  "keywords": "tech news, business automation, AI, {{ article.category.get_name|escapejs }}",
+  {% if article.ai_image_url %}
+  "image": {
+    "@type": "ImageObject",
+    "url": "{{ article.ai_image_url }}",
+    "width": 1200,
+    "height": 630
+  },
+  {% endif %}
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/"
+      },
+      {
+        "@type": "ListItem", 
+        "position": 2,
+        "name": "News",
+        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/news/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ article.category.get_name|escapejs }}",
+        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/news/category/{{ article.category.slug }}/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "{{ article.get_title|escapejs }}",
+        "item": "{{ og_url }}"
+      }
+    ]
+  }
+}
+</script>
+
+<!-- Scroll Progress Bar -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Create progress bar
+  const progressBar = document.createElement('div');
+  progressBar.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent-green), var(--accent-pink));
+    z-index: 1000;
+    transition: width 0.3s ease;
+  `;
+  document.body.appendChild(progressBar);
+  
+  // Update progress on scroll
+  window.addEventListener('scroll', function() {
+    const scrollTop = window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    progressBar.style.width = scrollPercent + '%';
+  });
+  
+  // Social share tracking (optional)
+  document.querySelectorAll('a[href*="facebook"], a[href*="twitter"], a[href*="linkedin"]').forEach(link => {
+    link.addEventListener('click', function() {
+      // You can add analytics tracking here
+      console.log('Social share:', this.href);
+    });
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,276 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ page_description }}{% endblock %}
+{% block og_title %}{{ page_title }}{% endblock %}
+{% block og_description %}{{ page_description }}{% endblock %}
+{% block og_image %}https://lazysoft.dev/static/images/news-og.jpg{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.dev{{ request.path }}" />
+  
+  <!-- Hreflang для багатомовності -->
+  <link rel="alternate" href="https://lazysoft.dev/en/news/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.dev/uk/news/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.dev/pl/news/" hreflang="pl">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {{ structured_data|safe }}
+  </script>
+{% endblock %}
+
+{% block content %}
+<main class="news-page">
+
+  <!-- Hero Section -->
+  <section class="news-header text-center py-16">
+    <div class="container max-w-4xl mx-auto">
+      {% if current_category %}
+        <div class="flex justify-center items-center mb-4">
+          <span class="text-6xl mr-4">{{ current_category.icon }}</span>
+          <div>
+            <h1 class="neon-text text-4xl md:text-5xl" data-lang="en">{{ current_category.name_en|safe }}</h1>
+            <h1 class="neon-text text-4xl md:text-5xl" data-lang="uk">{{ current_category.name_uk|safe }}</h1>
+            <h1 class="neon-text text-4xl md:text-5xl" data-lang="pl">{{ current_category.name_pl|safe }}</h1>
+          </div>
+        </div>
+        <p class="mt-4 text-lg text-gray-400" data-lang="en">{{ current_category.description_en|safe }}</p>
+        <p class="mt-4 text-lg text-gray-400" data-lang="uk">{{ current_category.description_uk|safe }}</p>
+        <p class="mt-4 text-lg text-gray-400" data-lang="pl">{{ current_category.description_pl|safe }}</p>
+      {% else %}
+        <h1 class="neon-text text-4xl md:text-5xl" data-lang="en">🧠 TECH INSIGHTS by LAZYSOFT</h1>
+        <h1 class="neon-text text-4xl md:text-5xl" data-lang="uk">🧠 TECH INSIGHTS від LAZYSOFT</h1>
+        <h1 class="neon-text text-4xl md:text-5xl" data-lang="pl">🧠 TECH INSIGHTS od LAZYSOFT</h1>
+        
+        <p class="mt-4 text-lg text-gray-400" data-lang="en">Not just news — business insights for European entrepreneurs</p>
+        <p class="mt-4 text-lg text-gray-400" data-lang="uk">Не просто новини — бізнес-інсайти для європейських підприємців</p>
+        <p class="mt-4 text-lg text-gray-400" data-lang="pl">Nie tylko wiadomości — biznesowe wglądy dla europejskich przedsiębiorców</p>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Tech Stack Moving Banner -->
+  <div class="tech-stack">
+    <span class="tech-item">🤖 AI News</span>
+    <span class="tech-item">⚡ Automation</span>
+    <span class="tech-item">🔧 CRM</span>
+    <span class="tech-item">📈 SEO</span>
+    <span class="tech-item">📱 Social Media</span>
+    <span class="tech-item">💬 Chatbots</span>
+    <span class="tech-item">🛒 E-commerce</span>
+    <span class="tech-item">💰 Fintech</span>
+    <span class="tech-item">🏢 Corporate</span>
+    <span class="tech-item">🌐 Tech Trends</span>
+  </div>
+
+  <!-- Categories Navigation -->
+  <section class="categories-nav py-8">
+    <div class="container max-w-6xl mx-auto">
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="{% url 'news:news_list' %}" 
+           class="category-btn glass p-3 px-6 rounded-full transition hover:scale-105 {% if not current_category %}text-accent-green border-accent-green{% else %}text-gray-400 hover:text-white{% endif %}">
+          📰 <span data-lang="en">All News</span><span data-lang="uk">Всі новини</span><span data-lang="pl">Wszystkie wiadomości</span>
+        </a>
+        
+        {% for category in categories %}
+        <a href="{% url 'news:news_category' category.slug %}" 
+           class="category-btn glass p-3 px-6 rounded-full transition hover:scale-105 {% if current_category.slug == category.slug %}text-accent-green border-accent-green{% else %}text-gray-400 hover:text-white{% endif %}">
+          {{ category.icon }} 
+          <span data-lang="en">{{ category.name_en }}</span>
+          <span data-lang="uk">{{ category.name_uk }}</span>
+          <span data-lang="pl">{{ category.name_pl }}</span>
+          <small class="ml-2 text-xs opacity-70">({{ category.articles_count }})</small>
+        </a>
+        {% endfor %}
+      </div>
+      
+      <!-- Search -->
+      <div class="mt-6 flex justify-center">
+        <form method="GET" class="relative max-w-md w-full">
+          <input type="search" name="search" value="{{ search_query }}" 
+                 placeholder="🔍 Search tech news..." 
+                 class="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/20 rounded-full text-white placeholder-gray-400 focus:ring-2 focus:ring-accent-green focus:border-transparent backdrop-blur">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <span class="text-gray-400">🔍</span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA for Category -->
+  {% if current_category and current_category.cta_title_uk %}
+  <section class="category-cta py-8">
+    <div class="container max-w-4xl mx-auto">
+      <div class="glass p-8 rounded-2xl text-center bg-gradient-to-r from-accent-green/10 to-accent-pink/10">
+        <h3 class="text-2xl font-bold mb-4 text-accent-green" data-lang="en">{{ current_category.cta_title_en|safe }}</h3>
+        <h3 class="text-2xl font-bold mb-4 text-accent-green" data-lang="uk">{{ current_category.cta_title_uk|safe }}</h3>
+        <h3 class="text-2xl font-bold mb-4 text-accent-green" data-lang="pl">{{ current_category.cta_title_pl|safe }}</h3>
+        
+        <p class="text-gray-300 mb-6" data-lang="en">{{ current_category.cta_description_en|safe }}</p>
+        <p class="text-gray-300 mb-6" data-lang="uk">{{ current_category.cta_description_uk|safe }}</p>
+        <p class="text-gray-300 mb-6" data-lang="pl">{{ current_category.cta_description_pl|safe }}</p>
+        
+        <a href="{{ current_category.cta_link }}" 
+           class="inline-flex items-center px-6 py-3 bg-accent-green text-black rounded-full font-semibold hover:bg-white transition-colors">
+          <span data-lang="en">{{ current_category.cta_button_text_en }}</span>
+          <span data-lang="uk">{{ current_category.cta_button_text_uk }}</span>
+          <span data-lang="pl">{{ current_category.cta_button_text_pl }}</span>
+          →
+        </a>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <!-- News Articles Grid -->
+  <section class="news-articles py-16">
+    <div class="container max-w-6xl mx-auto">
+      {% if articles %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for article in articles %}
+          <article class="news-card glass p-6 rounded-2xl shadow-xl transition hover:scale-105 cursor-pointer" 
+                   onclick="location.href='{{ article.get_absolute_url }}'">
+            
+            <!-- Category Badge -->
+            <div class="flex items-center justify-between mb-4">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-accent-pink/20 text-accent-pink">
+                {{ article.category.icon }} 
+                <span data-lang="en">{{ article.category.name_en }}</span>
+                <span data-lang="uk">{{ article.category.name_uk }}</span>
+                <span data-lang="pl">{{ article.category.name_pl }}</span>
+              </span>
+              <time class="text-sm text-gray-400" datetime="{{ article.published_at|date:'c' }}">
+                📅 {{ article.published_at|date:'j.m.Y' }}
+              </time>
+            </div>
+            
+            <!-- AI Generated Image -->
+            {% if article.ai_image_url %}
+            <div class="aspect-video overflow-hidden rounded-lg mb-4">
+              <img src="{{ article.ai_image_url }}" 
+                   alt="{{ article.get_title }}"
+                   class="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                   loading="lazy">
+            </div>
+            {% endif %}
+            
+            <!-- Article Title -->
+            <h3 class="text-xl font-bold text-white mb-3 line-clamp-2">
+              <span data-lang="en">{{ article.title_en|safe }}</span>
+              <span data-lang="uk">{{ article.title_uk|safe }}</span>
+              <span data-lang="pl">{{ article.title_pl|safe }}</span>
+            </h3>
+            
+            <!-- Summary -->
+            <p class="text-gray-300 mb-4 line-clamp-3">
+              <span data-lang="en">{{ article.summary_en|safe }}</span>
+              <span data-lang="uk">{{ article.summary_uk|safe }}</span>
+              <span data-lang="pl">{{ article.summary_pl|safe }}</span>
+            </p>
+            
+            <!-- Meta Info -->
+            <div class="flex items-center justify-between text-sm text-gray-400">
+              <div class="flex items-center space-x-4">
+                <span>👁️ {{ article.get_total_views }}</span>
+                <span>⏱️ 3хв</span>
+              </div>
+              
+              <span class="text-accent-green font-medium">
+                <span data-lang="en">Read more</span>
+                <span data-lang="uk">Читати далі</span>
+                <span data-lang="pl">Czytaj więcej</span>
+                →
+              </span>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="flex justify-center mt-12">
+          <nav class="flex items-center space-x-2">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" 
+               class="px-4 py-2 glass rounded-full text-accent-green hover:bg-white/10 transition">
+              ← <span data-lang="en">Previous</span><span data-lang="uk">Попередня</span><span data-lang="pl">Poprzednia</span>
+            </a>
+            {% endif %}
+            
+            <span class="px-4 py-2 bg-accent-green text-black rounded-full font-semibold">
+              {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" 
+               class="px-4 py-2 glass rounded-full text-accent-green hover:bg-white/10 transition">
+              <span data-lang="en">Next</span><span data-lang="uk">Наступна</span><span data-lang="pl">Następna</span> →
+            </a>
+            {% endif %}
+          </nav>
+        </div>
+        {% endif %}
+        
+      {% else %}
+        <!-- No Articles -->
+        <div class="text-center py-20">
+          <div class="text-8xl mb-6">📰</div>
+          <h3 class="text-2xl font-medium text-white mb-4">
+            <span data-lang="en">No news yet</span>
+            <span data-lang="uk">Поки що немає новин</span>
+            <span data-lang="pl">Jeszcze brak wiadomości</span>
+          </h3>
+          <p class="text-gray-400 max-w-md mx-auto">
+            <span data-lang="en">Fresh tech insights are coming soon. Check back later!</span>
+            <span data-lang="uk">Свіжі технологічні інсайти з'являться незабаром. Поверніться пізніше!</span>
+            <span data-lang="pl">Świeże technologiczne wglądy pojawią się wkrótce. Sprawdź później!</span>
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Social Sharing -->
+  <section class="social-sharing text-center py-10">
+    <p class="mb-4 text-gray-400">
+      <span data-lang="en">Share this page:</span>
+      <span data-lang="uk">Поділитися сторінкою:</span>
+      <span data-lang="pl">Udostępnij tę stronę:</span>
+    </p>
+    <div class="flex justify-center gap-4">
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+         target="_blank" class="text-accent-green hover:text-white transition">Facebook</a>
+      <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" 
+         target="_blank" class="text-accent-green hover:text-white transition">Twitter</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+         target="_blank" class="text-accent-green hover:text-white transition">LinkedIn</a>
+    </div>
+  </section>
+
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "{{ page_title|escapejs }}",
+  "description": "{{ page_description|escapejs }}",
+  "url": "https://lazysoft.dev{{ request.path }}",
+  "inLanguage": "{{ CURRENT_LANG }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "LAZYSOFT",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://lazysoft.dev/static/images/logo.png"
+    }
+  }
+}
+</script>
+{% endblock %}
