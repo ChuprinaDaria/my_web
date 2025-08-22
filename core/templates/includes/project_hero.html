@@ -1,0 +1,69 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 🎯 Project Hero Section -->
+<section class="project-hero-section">
+  <div class="container">
+    <div class="hero-content">
+      <!-- Breadcrumbs -->
+      {% include 'includes/project_breadcrumbs.html' with project=project %}
+
+      <!-- Project Title -->
+      <h1>
+        {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|safe }}
+        {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|safe }}
+        {% else %}{{ project.title_en|safe }}{% endif %}
+      </h1>
+
+      <!-- Project Subtitle -->
+      {% if project.short_description_uk or project.short_description_en or project.short_description_pl %}
+        <div class="project-subtitle">
+          {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:30 }}
+          {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:30 }}
+          {% else %}{{ project.short_description_en|striptags|truncatewords:30 }}{% endif %}
+        </div>
+      {% endif %}
+
+      <!-- Project Meta -->
+      <div class="project-meta">
+        <div class="meta-item">
+          <i data-lucide="calendar" class="meta-icon"></i>
+          <span>{{ project.project_date|date:"F Y" }}</span>
+        </div>
+        {% if project.development_duration_weeks %}
+          <div class="meta-item">
+            <i data-lucide="clock" class="meta-icon"></i>
+            <span>{{ project.development_duration_weeks }} 
+              {% if CURRENT_LANG == 'uk' %}тижнів
+              {% elif CURRENT_LANG == 'pl' %}tygodni
+              {% else %}weeks{% endif %}
+            </span>
+          </div>
+        {% endif %}
+        {% if project.complexity_level %}
+          <div class="meta-item">
+            <i data-lucide="zap" class="meta-icon"></i>
+            <span>{{ project.get_complexity_level_display }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Hero Actions -->
+      <div class="project-hero-actions">
+        {% if project.project_url %}
+          <a href="{{ project.project_url }}" target="_blank" class="btn-primary">
+            <i data-lucide="external-link"></i>
+            {% trans "Live Demo" %}
+          </a>
+        {% endif %}
+        
+        <button class="btn-secondary"
+                data-project-title="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}"
+                onclick="scrollToContact(this.dataset.projectTitle);">
+          <i data-lucide="message-circle"></i>
+          {% trans "Get Similar Project" %}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

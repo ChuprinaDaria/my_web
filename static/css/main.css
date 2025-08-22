@@ -1,0 +1,203 @@
+/* ===============================================
+   🚀 LAZYSOFT - MAIN CSS FILE
+   Modern Modular Architecture
+   =============================================== */
+
+/* 🔧 BASE FOUNDATION */
+@import url('./base/variables.css');
+@import url('./base/reset.css');
+@import url('./base/typography.css');
+@import url('./base/animations.css');
+
+/* 🏗️ LAYOUT STRUCTURE */
+@import url('./layout/navigation.css');
+@import url('./layout/hero.css');
+@import url('./layout/containers.css');
+
+/* 🧩 REUSABLE COMPONENTS */
+@import url('./components/buttons.css');
+@import url('./components/cards.css');
+@import url('./components/forms.css');
+@import url('./components/badges.css');
+
+/* 📄 PAGE SECTIONS */
+@import url('./sections/projects.css');    /* 🌈 Райдужні карти проєктів */
+@import url('./sections/services.css');    /* 🌈 Райдужні карти сервісів */
+@import url('./sections/news.css');        /* 💚 Зелені карти новин */
+@import url('./sections/about.css');       /* 💚 Зелені карти about */
+
+
+/* 🛠️ UTILITIES & HELPERS */
+@import url('./utilities/responsive.css');
+@import url('./utilities/helpers.css');
+
+/* 🧩 REUSABLE COMPONENTS */
+@import url('./components/breadcrumbs.css');
+@import url('./components/footer.css');
+
+@import url('./components/faq.css');
+
+@import url('./sections/contacts.css');
+
+@import url('./sections/contact_form.css');
+
+@import url('./sections/project_detail.css');
+
+@import url('./components/social_share.css'); 
+
+
+@import url('./components/projects_carousel.css');
+
+@import url('./components/service_card.css');
+@import url('./components/service_carousel.css');
+
+/* ===============================================
+   🌟 GLOBAL STYLES
+   =============================================== */
+
+/* 📦 UNIVERSAL BOX MODEL */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 🌐 HTML & BODY SETUP */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--primary-black);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* 🎨 MAIN CONTENT WRAPPER */
+main {
+  padding-top: 120px; /* Space for fixed navbar */
+  position: relative;
+  z-index: var(--z-content);
+}
+
+/* 🌟 ANIMATED BACKGROUND */
+.bg-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-background);
+  pointer-events: none;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--secondary-black));
+}
+
+/* 🔮 FLOATING SHAPES */
+.bg-shape {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(148, 226, 23, 0.3), transparent);
+  border-radius: 50%;
+  animation: floatShape var(--anim-float) ease-in-out infinite;
+  opacity: 1;
+  filter: var(--blur-light);
+}
+
+/* 🎭 SHAPE VARIATIONS */
+.bg-shape:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+.bg-shape:nth-child(2) { top: 10%; left: 20%; animation-delay: 2s; transform: scale(0.8); }
+.bg-shape:nth-child(3) { 
+  top: 70%; left: 30%; animation-delay: 4s;
+  background: radial-gradient(circle, rgba(255, 0, 107, 0.25), transparent);
+}
+.bg-shape:nth-child(4) { 
+  top: 40%; left: 80%; animation-delay: 6s;
+  transform: scale(1.2) rotate(45deg);
+  border-radius: 0;
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.25), transparent);
+}
+.bg-shape:nth-child(5) { 
+  top: 85%; left: 60%; animation-delay: 8s;
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.3), transparent);
+}
+.bg-shape:nth-child(6) { 
+  top: 20%; left: 70%; animation-delay: 10s;
+  transform: scale(0.5) rotate(20deg);
+  border-radius: 20% 80% 30% 70% / 30% 50% 70% 50%;
+}
+.bg-shape:nth-child(7) { 
+  top: 50%; left: 10%; animation-delay: 5s;
+  transform: scale(1.1) rotate(30deg);
+  background: radial-gradient(circle, rgba(255, 204, 0, 0.2), transparent);
+}
+.bg-shape:nth-child(8) { 
+  top: 15%; left: 50%; animation-delay: 7s;
+  transform: scale(0.6);
+  border-radius: 40% 60% 70% 30% / 30% 40% 60% 70%;
+  background: radial-gradient(circle, rgba(255, 0, 107, 0.25), transparent);
+}
+.bg-shape:nth-child(9) { 
+  top: 65%; left: 75%; animation-delay: 3s;
+  transform: scale(0.7) rotate(20deg);
+  background: radial-gradient(circle, rgba(0, 255, 255, 0.2), transparent);
+}
+.bg-shape:nth-child(10) { 
+  top: 25%; left: 85%; animation-delay: 9s;
+  transform: scale(1) rotate(-15deg);
+  background: radial-gradient(circle, rgba(147, 51, 234, 0.25), transparent);
+}
+
+/* ===============================================
+   🎯 PERFORMANCE OPTIMIZATIONS
+   =============================================== */
+
+/* 🚀 GPU ACCELERATION */
+.project-card,
+.service-card,
+.news-card,
+.about-card {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* 🖱️ SMOOTH INTERACTIONS */
+*:focus {
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+/* 📱 MOBILE OPTIMIZATIONS */
+@media (max-width: 768px) {
+  main {
+    padding-top: 100px;
+  }
+  
+  .bg-shape {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* ===============================================
+   🔍 DEBUG HELPERS (Remove in production)
+   =============================================== */
+
+/* Uncomment for development debugging */
+/*
+.debug * {
+  border: 1px solid red;
+}
+
+.debug .container {
+  border: 2px solid yellow;
+}
+
+.debug .project-card {
+  border: 2px solid lime;
+}
+*/

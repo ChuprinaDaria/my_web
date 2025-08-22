@@ -1,0 +1,263 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 🚀 QUICK CTA + FULL FORM для головної сторінки -->
+<div class="container">
+  
+  <!-- Швидкий CTA блок -->
+  <div class="quick-cta-section">
+    <h2 class="quick-cta-title">
+      {% if CURRENT_LANG == 'uk' %}Готові почати?
+      {% elif CURRENT_LANG == 'pl' %}Gotowy zacząć?
+      {% else %}Ready to start?{% endif %}
+    </h2>
+    
+    <div class="quick-cta-buttons">
+      <!-- Quick consultation button -->
+      <button class="btn-consultation-quick" onclick="openConsultationModal()">
+        {% if CURRENT_LANG == 'uk' %}Безкоштовна консультація
+        {% elif CURRENT_LANG == 'pl' %}Darmowa konsultacja  
+        {% else %}Free consultation{% endif %}
+      </button>
+      
+      <!-- Або розгорнути повну форму -->
+      <button class="btn-show-form" onclick="toggleFullForm()">
+        {% if CURRENT_LANG == 'uk' %}Детальний запит
+        {% elif CURRENT_LANG == 'pl' %}Szczegółowe zapytanie
+        {% else %}Detailed request{% endif %}
+      </button>
+    </div>
+  </div>
+
+  <!-- Повна форма (спочатку прихована) -->
+  <div class="full-contact-form" id="fullContactForm" style="display: none;">
+    <div class="card contact-form-card">
+      
+      <h3 class="form-title">
+        {% if CURRENT_LANG == 'uk' %}Розкажіть про ваш проєкт
+        {% elif CURRENT_LANG == 'pl' %}Opowiedz o swoim projekcie
+        {% else %}Tell us about your project{% endif %}
+      </h3>
+      
+      <form id="homeContactForm" class="contact-form-detailed" action="{% url 'contacts:submit_form' %}" method="post">
+        {% csrf_token %}
+        
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" name="name" placeholder="{% trans 'Ваше ім\'я' %}" required class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <input type="email" name="email" placeholder="Email" required class="form-input">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <input type="text" name="subject" placeholder="{% trans 'Тема (наприклад: Чат-бот для сайту)' %}" required class="form-input">
+        </div>
+        
+        <div class="form-group">
+          <textarea name="message" rows="4" required class="form-textarea"
+                    placeholder="{% trans 'Опишіть що вам потрібно, ваші цілі та бюджет...' %}"></textarea>
+        </div>
+        
+        <input type="hidden" name="referred_from" value="home_page_detailed">
+        
+        <button type="submit" class="btn-send-detailed">
+          <span class="btn-text">
+            {% if CURRENT_LANG == 'uk' %}Надіслати запит
+            {% elif CURRENT_LANG == 'pl' %}Wyślij zapytanie
+            {% else %}Send request{% endif %}
+          </span>
+          <span class="btn-loading" style="display: none;">
+            {% trans "Надсилаємо..." %}
+          </span>
+        </button>
+        
+        <div id="detailedFormMessage" class="form-message" style="display: none;"></div>
+      </form>
+      
+    </div>
+  </div>
+
+  <!-- Швидкі контакти -->
+  <div class="quick-contacts-bottom">
+    <a href="mailto:hello@lazysoft.dev" class="quick-contact-link">
+      <i data-lucide="mail"></i>
+      hello@lazysoft.dev
+    </a>
+    
+    <a href="tel:+48727842737" class="quick-contact-link">
+      <i data-lucide="phone"></i>
+      +48 727 842 737
+    </a>
+    
+    <a href="{% url 'contacts:contact_page' %}" class="quick-contact-link">
+      <i data-lucide="map-pin"></i>
+      {% trans "Повна інформація" %}
+    </a>
+  </div>
+  
+</div>
+
+<!-- MODAL для швидкої консультації -->
+<div id="consultationModal" class="consultation-modal" style="display: none;">
+  <div class="modal-overlay" onclick="closeConsultationModal()"></div>
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeConsultationModal()">×</button>
+    
+    <h3 class="modal-title">
+      {% if CURRENT_LANG == 'uk' %}Безкоштовна консультація
+      {% elif CURRENT_LANG == 'pl' %}Darmowa konsultacja
+      {% else %}Free consultation{% endif %}
+    </h3>
+    
+    <p class="modal-subtitle">
+      {% if CURRENT_LANG == 'uk' %}Залиште контакти і ми зв'яжемося протягом години
+      {% elif CURRENT_LANG == 'pl' %}Zostaw kontakt, odezwiemy się w ciągu godziny
+      {% else %}Leave your contact, we'll reach out within an hour{% endif %}
+    </p>
+    
+    <form id="quickConsultationForm" class="quick-form" action="{% url 'contacts:submit_form' %}" method="post">
+      {% csrf_token %}
+      
+      <input type="text" name="name" placeholder="{% trans 'Ваше ім\'я' %}" required class="modal-input">
+      <input type="email" name="email" placeholder="Email" required class="modal-input">
+      <input type="tel" name="phone" placeholder="{% trans 'Телефон (опціонально)' %}" class="modal-input">
+      
+      <input type="hidden" name="subject" value="{% trans 'Запит на безкоштовну консультацію' %}">
+      <input type="hidden" name="message" value="{% trans 'Клієнт запитав безкоштовну консультацію через швидку форму на головній сторінці.' %}">
+      <input type="hidden" name="referred_from" value="home_page_quick_consultation">
+      
+      <button type="submit" class="btn-modal-submit">
+        <span class="btn-text">
+          {% if CURRENT_LANG == 'uk' %}Замовити консультацію
+          {% elif CURRENT_LANG == 'pl' %}Zamów konsultację
+          {% else %}Book consultation{% endif %}
+        </span>
+        <span class="btn-loading" style="display: none;">...</span>
+      </button>
+      
+      <div id="modalFormMessage" class="modal-message" style="display: none;"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+// Відкрити/закрити модальне вікно
+function openConsultationModal() {
+  document.getElementById('consultationModal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeConsultationModal() {
+  document.getElementById('consultationModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// Показати/сховати повну форму
+function toggleFullForm() {
+  const form = document.getElementById('fullContactForm');
+  const btn = document.querySelector('.btn-show-form');
+  
+  if (form.style.display === 'none') {
+    form.style.display = 'block';
+    btn.textContent = '{% if CURRENT_LANG == "uk" %}Сховати форму{% elif CURRENT_LANG == "pl" %}Ukryj formularz{% else %}Hide form{% endif %}';
+    form.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    form.style.display = 'none';
+    btn.textContent = '{% if CURRENT_LANG == "uk" %}Детальний запит{% elif CURRENT_LANG == "pl" %}Szczegółowe zapytanie{% else %}Detailed request{% endif %}';
+  }
+}
+
+// Обробка швидкої форми в модалці
+document.getElementById('quickConsultationForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const form = this;
+  const submitBtn = form.querySelector('.btn-modal-submit');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const btnLoading = submitBtn.querySelector('.btn-loading');
+  const messageDiv = document.getElementById('modalFormMessage');
+  
+  submitBtn.disabled = true;
+  btnText.style.display = 'none';
+  btnLoading.style.display = 'inline';
+  
+  try {
+    const formData = new FormData(form);
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      messageDiv.className = 'modal-message success';
+      messageDiv.innerHTML = '🎉 {% if CURRENT_LANG == "uk" %}Дякуємо! Зв\'яжемося протягом години!{% elif CURRENT_LANG == "pl" %}Dziękujemy! Odezwiemy się w ciągu godziny!{% else %}Thank you! We\'ll contact you within an hour!{% endif %}';
+      form.reset();
+      
+      // Закриваємо модалку через 2 секунди
+      setTimeout(() => closeConsultationModal(), 2000);
+    } else {
+      messageDiv.className = 'modal-message error';
+      messageDiv.innerHTML = '❌ ' + (result.error || 'Помилка');
+    }
+  } catch (error) {
+    messageDiv.className = 'modal-message error';
+    messageDiv.innerHTML = '❌ Помилка мережі';
+  }
+  
+  submitBtn.disabled = false;
+  btnText.style.display = 'inline';
+  btnLoading.style.display = 'none';
+  messageDiv.style.display = 'block';
+});
+
+// Обробка детальної форми
+document.getElementById('homeContactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const form = this;
+  const submitBtn = form.querySelector('.btn-send-detailed');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const btnLoading = submitBtn.querySelector('.btn-loading');
+  const messageDiv = document.getElementById('detailedFormMessage');
+  
+  submitBtn.disabled = true;
+  btnText.style.display = 'none';
+  btnLoading.style.display = 'inline';
+  
+  try {
+    const formData = new FormData(form);
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      messageDiv.className = 'form-message success';
+      messageDiv.textContent = result.message || 'Дякуємо! Ваш запит надіслано.';
+      form.reset();
+    } else {
+      messageDiv.className = 'form-message error';
+      messageDiv.textContent = result.error || 'Помилка при відправці';
+    }
+  } catch (error) {
+    messageDiv.className = 'form-message error';
+    messageDiv.textContent = 'Помилка мережі';
+  }
+  
+  submitBtn.disabled = false;
+  btnText.style.display = 'inline';
+  btnLoading.style.display = 'none';
+  messageDiv.style.display = 'block';
+  
+  setTimeout(() => messageDiv.style.display = 'none', 4000);
+});
+</script>

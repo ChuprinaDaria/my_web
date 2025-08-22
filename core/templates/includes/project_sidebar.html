@@ -1,0 +1,77 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 📊 Project Sidebar -->
+<aside class="project-sidebar">
+  
+  <!-- Technologies -->
+  {% if project.technologies_used %}
+    <div class="sidebar-section glass card">
+      <h3 class="sidebar-title">
+        <i data-lucide="code"></i>
+        {% trans "Technologies" %}
+      </h3>
+      <div class="tech-stack">
+        {% for tech in project.get_technologies_list %}
+          <span class="tech-chip">{{ tech }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Project Info -->
+  <div class="sidebar-section glass card">
+    <h3 class="sidebar-title">
+      <i data-lucide="info"></i>
+      {% trans "Project Info" %}
+    </h3>
+    <div class="project-info-list">
+      <div class="info-item">
+        <div class="info-label">{% trans "Status" %}</div>
+        <div class="info-value">
+          {% if project.project_status == 'completed' %}✅{% elif project.project_status == 'in_progress' %}🔄{% else %}📋{% endif %}
+          {{ project.get_project_status_display }}
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">{% trans "Completed" %}</div>
+        <div class="info-value">{{ project.project_date|date:"F Y" }}</div>
+      </div>
+      {% if project.development_duration_weeks %}
+        <div class="info-item">
+          <div class="info-label">{% trans "Duration" %}</div>
+          <div class="info-value">
+            {{ project.development_duration_weeks }} 
+            {% if CURRENT_LANG == 'uk' %}тижнів
+            {% elif CURRENT_LANG == 'pl' %}tygodni  
+            {% else %}weeks{% endif %}
+          </div>
+        </div>
+      {% endif %}
+      {% if project.client_time_saved_hours %}
+        <div class="info-item">
+          <div class="info-label">{% trans "Time Saved" %}</div>
+          <div class="info-value">{{ project.client_time_saved_hours }}h/{% trans "week" %}</div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- CTA Sidebar -->
+  <div class="sidebar-section glass card cta-sidebar">
+    <h3 class="sidebar-title">
+      <i data-lucide="sparkles"></i>
+      {% trans "Want Similar?" %}
+    </h3>
+    <p class="cta-description">
+      {% trans "Let's discuss how we can create something similar for your business." %}
+    </p>
+    <button class="sidebar-cta-button" 
+            data-project-title="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}"
+            onclick="scrollToContact(this.dataset.projectTitle);">
+      <i data-lucide="arrow-right"></i>
+      {% trans "Start Discussion" %}
+    </button>
+  </div>
+
+</aside>

@@ -1,0 +1,183 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<footer class="footer">
+  <div class="container">
+    
+    <!-- CTA SECTION -->
+    <div class="footer-cta">
+      <h3>
+        {% if CURRENT_LANG == 'uk' %}Готові автоматизувати свій бізнес?
+        {% elif CURRENT_LANG == 'pl' %}Gotowy zautomatyzować swój biznes?
+        {% else %}Ready to Automate Your Business?{% endif %}
+      </h3>
+      <p>
+        {% if CURRENT_LANG == 'uk' %}Отримайте безкоштовну консультацію та дізнайтеся, як ШІ може трансформувати ваш бізнес.
+        {% elif CURRENT_LANG == 'pl' %}Uzyskaj bezpłatną konsultację i dowiedz się, jak AI może przekształcić Twój biznes.
+        {% else %}Get a free consultation and discover how AI can transform your business.{% endif %}
+      </p>
+      <a href="{% url 'contacts:contact_page' %}" class="footer-cta-button">
+        <i data-lucide="message-circle"></i>
+        {% trans "Start Free Consultation" %}
+      </a>
+    </div>
+
+    <!-- FOOTER CONTENT -->
+    <div class="footer-content">
+      
+      <!-- COMPANY INFO -->
+      <div class="footer-section">
+        <h3>Lazysoft</h3>
+        <p class="contact-info">
+          <i data-lucide="building-2"></i>
+          {% if CURRENT_LANG == 'uk' %}Провідна компанія з ШІ автоматизації
+          {% elif CURRENT_LANG == 'pl' %}Wiodąca firma automatyzacji AI
+          {% else %}Leading AI Automation Company{% endif %}
+        </p>
+        <p class="contact-info">
+          <i data-lucide="map-pin"></i>
+          {% if CURRENT_LANG == 'uk' %}Польща
+          {% elif CURRENT_LANG == 'pl' %}Polska
+          {% else %}Poland{% endif %}
+        </p>
+        <p class="contact-info">
+          <i data-lucide="mail"></i>
+          <a href="mailto:hello@lazysoft.dev">hello@lazysoft.dev</a>
+        </p>
+        
+        <!-- SOCIAL MEDIA -->
+        <div class="social-links">
+          <a href="{% if CURRENT_LANG == 'uk' %}https://t.me/Lazysoft_news_ua{% elif CURRENT_LANG == 'pl' %}https://t.me/Lazysoft_news_pl{% else %}https://t.me/Lazysoft_news{% endif %}" 
+             class="social-link telegram" target="_blank" rel="noopener" aria-label="Telegram">
+            <i data-lucide="send"></i>
+          </a>
+          <a href="{% if CURRENT_LANG == 'uk' %}https://linkedin.com/company/lazysoft-ua{% elif CURRENT_LANG == 'pl' %}https://linkedin.com/company/lazysoft-pl{% else %}https://linkedin.com/company/lazysoft{% endif %}" 
+             class="social-link linkedin" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <i data-lucide="linkedin"></i>
+          </a>
+          <a href="{% if CURRENT_LANG == 'uk' %}https://twitter.com/lazysoft_ua{% elif CURRENT_LANG == 'pl' %}https://twitter.com/lazysoft_pl{% else %}https://twitter.com/lazysoft_dev{% endif %}" 
+             class="social-link twitter" target="_blank" rel="noopener" aria-label="Twitter">
+            <i data-lucide="twitter"></i>
+          </a>
+          <a href="{% if CURRENT_LANG == 'uk' %}https://threads.net/@lazysoft_ua{% elif CURRENT_LANG == 'pl' %}https://threads.net/@lazysoft_pl{% else %}https://threads.net/@lazysoft_dev{% endif %}" 
+             class="social-link threads" target="_blank" rel="noopener" aria-label="Threads">
+            <i data-lucide="at-sign"></i>
+          </a>
+          <a href="{% if CURRENT_LANG == 'uk' %}https://facebook.com/lazysoft.ua{% elif CURRENT_LANG == 'pl' %}https://facebook.com/lazysoft.pl{% else %}https://facebook.com/lazysoft.dev{% endif %}" 
+             class="social-link facebook" target="_blank" rel="noopener" aria-label="Facebook">
+            <i data-lucide="facebook"></i>
+          </a>
+          <a href="{% if CURRENT_LANG == 'uk' %}https://instagram.com/lazysoft_ua{% elif CURRENT_LANG == 'pl' %}https://instagram.com/lazysoft_pl{% else %}https://instagram.com/lazysoft_dev{% endif %}" 
+             class="social-link instagram" target="_blank" rel="noopener" aria-label="Instagram">
+            <i data-lucide="instagram"></i>
+          </a>
+          <a href="https://github.com/lazysoft" class="social-link github" target="_blank" rel="noopener" aria-label="GitHub">
+            <i data-lucide="github"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- SERVICES -->
+      <div class="footer-section">
+        <h3>{% trans "Services" %}</h3>
+        <ul class="footer-links">
+          <li><a href="{% url 'services_list' %}">{% trans "All Services" %}</a></li>
+          <li><a href="{% url 'services_list' %}#chatbots">{% trans "AI Chatbots" %}</a></li>
+          <li><a href="{% url 'services_list' %}#automation">{% trans "Business Automation" %}</a></li>
+          <li><a href="{% url 'services_list' %}#webdev">{% trans "Web Development" %}</a></li>
+          <li><a href="{% url 'services_list' %}#integrations">{% trans "API Integrations" %}</a></li>
+        </ul>
+      </div>
+
+      <!-- COMPANY -->
+      <div class="footer-section">
+        <h3>{% trans "Company" %}</h3>
+        <ul class="footer-links">
+          <li><a href="{% url 'about' %}">{% trans "About Us" %}</a></li>
+          <li><a href="{% url 'projects' %}">{% trans "Portfolio" %}</a></li>
+          <li><a href="{% url 'news:news_list' %}">{% trans "Tech News" %}</a></li>
+          <li><a href="{% url 'faq_page' %}">{% trans "FAQ" %}</a></li>
+          <li><a href="{% url 'contacts:contact_page' %}">{% trans "Contact" %}</a></li>
+        </ul>
+      </div>
+
+      <!-- LANGUAGES -->
+      <div class="footer-section">
+        <h3>{% trans "Languages" %}</h3>
+        <div class="footer-lang-selector">
+          <a href="/uk{{ request.get_full_path|slice:'3:' }}" 
+             class="footer-lang-link {% if CURRENT_LANG == 'uk' %}active{% endif %}"
+             hreflang="uk">
+            <i data-lucide="globe"></i>
+            Українська
+          </a>
+          <a href="/pl{{ request.get_full_path|slice:'3:' }}" 
+             class="footer-lang-link {% if CURRENT_LANG == 'pl' %}active{% endif %}"
+             hreflang="pl">
+            <i data-lucide="globe"></i>
+            Polski
+          </a>
+          <a href="/en{{ request.get_full_path|slice:'3:' }}" 
+             class="footer-lang-link {% if CURRENT_LANG == 'en' %}active{% endif %}"
+             hreflang="en">
+            <i data-lucide="globe"></i>
+            English
+          </a>
+        </div>
+        
+        <!-- TRUST BADGES -->
+        <div class="trust-badges">
+          <div class="trust-item">
+            <i data-lucide="check-circle"></i>
+            {% if CURRENT_LANG == 'uk' %}Сертифіковані розробники
+            {% elif CURRENT_LANG == 'pl' %}Certyfikowani programiści
+            {% else %}Certified Developers{% endif %}
+          </div>
+          <div class="trust-item">
+            <i data-lucide="shield-check"></i>
+            {% if CURRENT_LANG == 'uk' %}100% захист даних
+            {% elif CURRENT_LANG == 'pl' %}100% ochrona danych
+            {% else %}100% Data Protection{% endif %}
+          </div>
+          <div class="trust-item">
+            <i data-lucide="zap"></i>
+            {% if CURRENT_LANG == 'uk' %}Швидка доставка
+            {% elif CURRENT_LANG == 'pl' %}Szybka dostawa
+            {% else %}Fast Delivery{% endif %}
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOOTER BOTTOM -->
+    <div class="footer-bottom">
+      <div class="footer-copyright">
+        <p>&copy; {{ "now"|date:"Y" }} Lazysoft. 
+          {% if CURRENT_LANG == 'uk' %}Всі права захищені.
+          {% elif CURRENT_LANG == 'pl' %}Wszelkie prawa zastrzeżone.
+          {% else %}All rights reserved.{% endif %}
+        </p>
+      </div>
+      
+      <div class="footer-legal">
+        <a href="/privacy-policy/">
+          {% if CURRENT_LANG == 'uk' %}Політика конфіденційності
+          {% elif CURRENT_LANG == 'pl' %}Polityka prywatności
+          {% else %}Privacy Policy{% endif %}
+        </a>
+        <a href="/terms-of-service/">
+          {% if CURRENT_LANG == 'uk' %}Умови використання
+          {% elif CURRENT_LANG == 'pl' %}Warunki korzystania
+          {% else %}Terms of Service{% endif %}
+        </a>
+        <a href="/cookies-policy/">
+          {% if CURRENT_LANG == 'uk' %}Політика файлів cookie
+          {% elif CURRENT_LANG == 'pl' %}Polityka plików cookie
+          {% else %}Cookies Policy{% endif %}
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>

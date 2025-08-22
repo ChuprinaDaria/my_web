@@ -1,0 +1,85 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block content %}
+  <div class="about-content">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Lazysoft</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Discover how Lazysoft was born — a project driven by automation, creativity, and strategic laziness. Read the story of how our founder transitioned into tech at 37 and built a future out of Python and purpose." />
+  <meta name="keywords" content="Lazysoft, Python, automation, IT collective, software development, SMM, AI tools, full-stack, Django, tech story, data processing" />
+  <meta name="author" content="Lazysoft Team" />
+
+  <!-- Open Graph / Facebook / LinkedIn / Threads -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourdomain.com/about/" />
+  <meta property="og:title" content="About Lazysoft — Tech meets Laziness" />
+  <meta property="og:description" content="A tech collective born from automation, humor, and one woman’s lazy genius." />
+  <meta property="og:image" content="https://yourdomain.com/static/og-about.jpg" />
+  <meta property="og:site_name" content="Lazysoft" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://yourdomain.com/about/" />
+  <meta name="twitter:title" content="About Lazysoft — Tech meets Laziness" />
+  <meta name="twitter:description" content="We automate, we innovate, we’re Lazysoft. Learn the story behind the name." />
+  <meta name="twitter:image" content="https://yourdomain.com/static/og-about.jpg" />
+  <meta name="twitter:creator" content="@LazysoftOfficial" />
+
+  <!-- Instagram / Threads -->
+  <meta name="instagram:card" content="summary_large_image" />
+  <meta property="instapp:owner_user_id" content="1234567890" />
+
+  <!-- LinkedIn -->
+  <meta name="linkedin:card" content="summary_large_image" />
+  <meta name="linkedin:title" content="About Lazysoft — Tech meets Laziness" />
+  <meta name="linkedin:description" content="A collective where laziness meets innovation. Discover the story of Lazysoft." />
+  <meta name="linkedin:image" content="https://yourdomain.com/static/og-about.jpg" />
+
+  {% load static %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}" />
+
+</head>
+<body>
+  <main class="container about">
+    <section class="about-content" data-lang="en" class="active">
+      <h2>Born to automate.<br>Fired for it.</h2>
+
+      <p>The project born out of necessity, driven by curiosity, and fueled by unapologetic laziness.</p>
+
+      <p>I’m the founder of Lazysoft, and once you finish reading this page, you’ll understand why I picked this name (and maybe feel a bit lazy yourself).</p>
+
+      <p>I pivoted into techat the age of 37. Before that, I had built a career in tourism, logistics, and marketing — mostly in roles that required constant human interaction (a nightmare for an introvert with tattoos and a love for automation).</p>
+
+      <p>Then came maternity leave. I returned to work when my baby was just 5 months old, only to discover that my job duties had vanished into thin air. I was given odd tasks, without real purpose. That is, until someone dumped an Everest of Google Sheets data on me — hundreds of thousands of rows to analyze and turn into reports. It was grueling. I worked in SMM, not data science!</p>
+
+      <p>Within weeks, formulas broke under the weight of the data. I was drowning in copy-paste. Out of desperation (and curiosity), I discovered Python. I wrote my first scripts in Notepad. Within a month, I had a fully automated system that generated reports in under 5 minutes.</p>
+
+      <p>Suddenly, I had nothing to do at work. My tasks were done faster than anyone could assign them. So, I built a mouse clicker bot to stay "active" in Teams. I was eventually for that.</p>
+
+      <p>But no regrets. I optimized myself out of a job. And that’s the beauty of laziness: it’s not about doing nothing. It’s about not doing pointless things.</p>
+
+      <p>That’s how <span class="highlight-green">Lazysoft</span> was born.</p>
+
+      <p>Today, Lazysoft is a growing IT collective. We automate, build, and create tools that do the work for you. From bots and data processing to creative solutions and full-stack projects. We mix culture with code, tradition with tech, and humor with hustle.</p>
+
+      <h2>This website is a living demo of our philosophy:</h2>
+      <ul class="about-list">
+        <li>⚡ <span class="highlight-green">Automated</span> social media posts</li>
+        <li>🧠 <span class="highlight-green">AI-curated</span> science and tech news</li>
+        <li>🧰 <span class="highlight-green">Job and collaboration</span> listings via LazyJob</li>
+        <li>🌍 <span class="highlight-green">Multilingual support</span> & <span class="highlight-green">SEO optimization</span></li>
+        <li>🎨 <span class="highlight-green">Modern, animated</span>, responsive design</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
+ </div>
+{% endblock %}

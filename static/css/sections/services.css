@@ -1,0 +1,371 @@
+/* ===============================================
+   🌈 SERVICES SECTION - Райдужні горизонтальні карти
+   =============================================== */
+
+/* 🎯 SERVICE CARD - ГОРИЗОНТАЛЬНА РАЙДУЖНА */
+.service-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xl);
+  width: 100%;
+  max-width: 1200px;
+  background: var(--glass-bg);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.4s ease;
+  backdrop-filter: var(--blur-medium);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  flex-wrap: nowrap;
+  
+  /* 🌈 RAINBOW BORDER SETUP - як у проєктах */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  
+  /* 🌟 BASE GLOW */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* 🌈 RAINBOW BORDER EFFECT */
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-xl);
+  padding: 2px;
+  background: var(--rainbow-gradient);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  opacity: 0.7;
+  z-index: -1;
+  animation: rainbow-rotate var(--anim-rainbow) linear infinite;
+}
+
+/* 🌊 SHIMMER EFFECT */
+.service-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 0, 255, 0.2),
+    rgba(0, 255, 255, 0.2),
+    rgba(255, 0, 128, 0.2),
+    transparent
+  );
+  transition: left 0.7s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 🔥 HOVER EFFECTS */
+.service-card:hover {
+  transform: scale(1.01);
+  box-shadow: var(--shadow-rainbow);
+}
+
+.service-card:hover::before {
+  opacity: 1;
+  animation-duration: 1.5s;
+  box-shadow: 
+    inset 0 0 30px rgba(255, 0, 255, 0.5),
+    inset 0 0 60px rgba(0, 255, 255, 0.4);
+}
+
+.service-card:hover::after {
+  left: 100%;
+}
+
+/* 🖼️ SERVICE IMAGE */
+.service-image {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.service-card:hover .service-image {
+  transform: scale(1.05);
+}
+
+/* 📝 SERVICE TEXT CONTENT */
+.service-text {
+  flex: 1;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.service-text h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-white);
+}
+
+.service-text p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.service-text .text-accent {
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+/* 🎨 SERVICES PREVIEW SECTION */
+.services-preview {
+  width: 100%;
+  padding: var(--spacing-lg) var(--spacing-lg);
+  margin-top: var(--spacing-sm);
+  background-color: rgba(255, 255, 255, 0.03);
+  display: grid;
+  gap: var(--spacing-lg);
+  place-items: center;
+  animation: fadeInUp 0.5s ease-in-out;
+}
+
+.services-preview .service-card {
+  margin: var(--spacing-xl) auto 0;
+}
+
+/* 📄 SERVICES PAGE LAYOUT */
+.services-page {
+  margin-top: 0;
+}
+
+.services-header {
+  text-align: center;
+  padding: var(--spacing-3xl) 0;
+}
+
+.services-header .container {
+  max-width: var(--container-lg);
+  margin: 0 auto;
+}
+
+.services-header h2 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: var(--spacing-lg);
+}
+
+.services-header p {
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* 🛠️ TECH STACK IN SERVICES */
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+  animation: fadeInUp 1s ease-out 0.9s both;
+}
+
+.tech-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: 25px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: clamp(10px, 2vw, 12px);
+  transition: var(--transition-normal);
+  backdrop-filter: var(--blur-light);
+  color: var(--text-primary);
+}
+
+.tech-item:hover {
+  transform: translateY(-5px);
+  background: var(--accent-green);
+  color: var(--primary-black);
+  box-shadow: 0 10px 30px rgba(158, 255, 0, 0.3);
+}
+
+/* 📋 SERVICES LIST LAYOUT */
+.services-grid {
+  display: grid;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-3xl) 0;
+  max-width: var(--container-xl);
+  margin: 0 auto;
+}
+
+/* 🔧 SERVICE DETAIL PAGE */
+.service-detail-page {
+  margin-top: 0;
+}
+
+.service-description {
+  padding: var(--spacing-3xl) 0;
+}
+
+.service-description .container {
+  max-width: var(--container-md);
+  margin: 0 auto;
+}
+
+.service-description .prose {
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+.service-description .prose h1,
+.service-description .prose h2,
+.service-description .prose h3 {
+  color: var(--text-white);
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.service-description .prose p {
+  margin-bottom: var(--spacing-md);
+}
+
+.service-description .prose ul,
+.service-description .prose ol {
+  margin: var(--spacing-md) 0;
+  padding-left: var(--spacing-lg);
+}
+
+.service-description .prose li {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* 📤 SOCIAL SHARING */
+.social-sharing {
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+}
+
+.social-sharing p {
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.social-sharing .flex {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.social-sharing a {
+  color: var(--accent-green);
+  text-decoration: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--green-border-weak);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.social-sharing a:hover {
+  background: var(--green-glow-weak);
+  border-color: var(--accent-green);
+  transform: translateY(-2px);
+}
+
+/* 🔙 BACK LINK */
+.text-center .underline {
+  display: inline-block;
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--accent-pink);
+  text-decoration: underline;
+  transition: var(--transition-normal);
+}
+
+.text-center .underline:hover {
+  color: var(--accent-green);
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+/* 📱 RESPONSIVE SERVICES */
+@media (max-width: 1024px) {
+  .service-card {
+    max-width: 100%;
+    gap: var(--spacing-lg);
+  }
+  
+  .services-grid {
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .service-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--spacing-lg);
+  }
+
+  .service-image {
+    max-width: 120px;
+  }
+
+  .service-text h3 {
+    font-size: 1.4rem;
+  }
+  
+  .tech-stack {
+    gap: var(--spacing-xs);
+  }
+  
+  .tech-item {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 10px;
+  }
+  
+  .social-sharing .flex {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-preview {
+    padding: var(--spacing-md);
+  }
+  
+  .service-card {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+  }
+  
+  .services-header {
+    padding: var(--spacing-xl) 0;
+  }
+}
+
+/* 🎪 ANIMATIONS */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,341 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ page_description }}{% endblock %}
+<<<<<<< HEAD
+{% block extra_meta %}
+<script type="application/ld+json">
+{{ structured_data|safe }}
+</script>
+{% endblock %}
+=======
+
+>>>>>>> 142845d815461c20abde0a26113510140e4bdce2
+{% block content %}
+<article class="news-detail-page">
+  <!-- Герой секція -->
+  <section class="news-hero">
+    <div class="container">
+      
+      <!-- Breadcrumbs -->
+      <nav class="news-breadcrumbs">
+        <a href="/{{ CURRENT_LANG }}/" class="breadcrumb-link">
+          <span data-lang="en">Home</span>
+          <span data-lang="uk">Головна</span>
+          <span data-lang="pl">Główna</span>
+        </a>
+        <span class="breadcrumb-divider">→</span>
+        <a href="/{{ CURRENT_LANG }}/news/" class="breadcrumb-link">
+          <span data-lang="en">Tech News</span>
+          <span data-lang="uk">Технологічні новини</span>
+          <span data-lang="pl">Wiadomości Tech</span>
+        </a>
+        <span class="breadcrumb-divider">→</span>
+        <span class="breadcrumb-current">{{ article.get_title }}</span>
+      </nav>
+
+      <!-- Категорія та мета інфо -->
+      <div class="article-meta">
+        <span class="category-badge">
+          {{ article.category.icon }} 
+          <span data-lang="en">{{ article.category.name_en }}</span>
+          <span data-lang="uk">{{ article.category.name_uk }}</span>
+          <span data-lang="pl">{{ article.category.name_pl }}</span>
+        </span>
+        
+        {% if article.is_top_article %}
+          <span class="top-article-badge">👑 TOP</span>
+        {% endif %}
+        
+        {% if article.priority >= 3 %}
+          <span class="priority-badge">🔥 HOT</span>
+        {% endif %}
+      </div>
+
+      <!-- Заголовок -->
+      <h1 class="article-title">
+        <span data-lang="en">{{ article.title_en|safe }}</span>
+        <span data-lang="uk">{{ article.title_uk|safe }}</span>
+        <span data-lang="pl">{{ article.title_pl|safe }}</span>
+      </h1>
+
+      <!-- Мета інформація -->
+      <div class="article-info">
+        <time datetime="{{ article.published_at|date:'c' }}" class="publish-date">
+          📅 {{ article.published_at|date:'j F Y' }}
+        </time>
+        <span class="reading-time">⏱️ {{ article.get_reading_time }} хв читання</span>
+        <span class="views-count">👁️ {{ article.get_total_views }} переглядів</span>
+<<<<<<< HEAD
+        {% if article.original_source_url and article.original_source_name %}
+  <span class="source-info">
+    🔗 <a href="{{ article.original_source_url }}" target="_blank" rel="nofollow noopener">{{ article.original_source_name }}</a>
+  </span>
+{% endif %}
+=======
+        <span class="source-info">
+          🔗 <a href="{{ article.original_source_url }}" target="_blank">{{ article.original_source_name }}</a>
+        </span>
+>>>>>>> 142845d815461c20abde0a26113510140e4bdce2
+      </div>
+    </div>
+  </section>
+
+  <!-- AI зображення -->
+  {% if article.ai_image_url %}
+    <section class="article-image">
+      <div class="container">
+        <div class="image-container glass">
+          <img src="{{ article.ai_image_url }}" alt="{{ article.get_title }}" loading="lazy">
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- Основний контент -->
+  <section class="article-content">
+    <div class="container">
+      <div class="content-layout">
+        
+        <!-- Основна колонка -->
+        <div class="main-content">
+          
+          <!-- Короткий опис -->
+          <div class="article-summary glass">
+            <div class="summary-icon">💡</div>
+            <div class="summary-content">
+              <div data-lang="en">{{ article.summary_en|safe }}</div>
+              <div data-lang="uk">{{ article.summary_uk|safe }}</div>
+              <div data-lang="pl">{{ article.summary_pl|safe }}</div>
+            </div>
+          </div>
+
+          <!-- Бізнес інсайт -->
+          <div class="business-insight glass">
+            <h2 class="content-heading">
+              <span class="heading-icon">🎯</span>
+              <span data-lang="en">Business Impact</span>
+              <span data-lang="uk">Вплив на бізнес</span>
+              <span data-lang="pl">Wpływ na biznes</span>
+            </h2>
+            <div class="insight-content">
+              <div data-lang="en">{{ article.business_insight_en|safe }}</div>
+              <div data-lang="uk">{{ article.business_insight_uk|safe }}</div>
+              <div data-lang="pl">{{ article.business_insight_pl|safe }}</div>
+            </div>
+          </div>
+
+          <!-- Цікавинки (якщо є) -->
+          {% if article.get_interesting_facts %}
+            <div class="interesting-facts glass">
+              <h2 class="content-heading">
+                <span class="heading-icon">✨</span>
+                <span data-lang="en">Interesting Facts</span>
+                <span data-lang="uk">Цікавинки</span>
+                <span data-lang="pl">Interesujące fakty</span>
+              </h2>
+              <ul class="facts-list">
+                {% for fact in article.get_interesting_facts %}
+                  <li class="fact-item">{{ fact }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <!-- Бізнес можливості (якщо є) -->
+          {% if article.get_business_opportunities %}
+            <div class="business-opportunities glass">
+              <h2 class="content-heading">
+                <span class="heading-icon">🚀</span>
+                <span data-lang="en">Business Opportunities</span>
+                <span data-lang="uk">Бізнес можливості</span>
+                <span data-lang="pl">Możliwości biznesowe</span>
+              </h2>
+              <div class="opportunities-content">
+                <div data-lang="en">{{ article.get_business_opportunities.en|safe }}</div>
+                <div data-lang="uk">{{ article.get_business_opportunities.uk|safe }}</div>
+                <div data-lang="pl">{{ article.get_business_opportunities.pl|safe }}</div>
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- LAZYSOFT рекомендації -->
+          {% if article.get_lazysoft_recommendations %}
+            <div class="lazysoft-recommendations glass">
+              <h2 class="content-heading">
+                <span class="heading-icon">🎯</span>
+                <span data-lang="en">LAZYSOFT Recommendations</span>
+                <span data-lang="uk">Рекомендації LAZYSOFT</span>
+                <span data-lang="pl">Rekomendacje LAZYSOFT</span>
+              </h2>
+              <div class="recommendations-content">
+                <div data-lang="en">{{ article.get_lazysoft_recommendations.en|safe }}</div>
+                <div data-lang="uk">{{ article.get_lazysoft_recommendations.uk|safe }}</div>
+                <div data-lang="pl">{{ article.get_lazysoft_recommendations.pl|safe }}</div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Сайдбар -->
+        <aside class="article-sidebar">
+          
+          <!-- Поділитися -->
+          <div class="sidebar-block glass">
+            <h3 class="sidebar-title">
+              <span data-lang="en">Share Article</span>
+              <span data-lang="uk">Поділитися</span>
+              <span data-lang="pl">Udostępnij</span>
+            </h3>
+            <div class="share-buttons">
+              <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-btn facebook">📘 Facebook</a>
+              <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="share-btn twitter">🐦 Twitter</a>
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="share-btn linkedin">💼 LinkedIn</a>
+            </div>
+          </div>
+
+          <!-- CTA блок -->
+          <div class="sidebar-block cta-block glass">
+            <h3 class="sidebar-title">
+              <span data-lang="en">Need Automation?</span>
+              <span data-lang="uk">Потрібна автоматизація?</span>
+              <span data-lang="pl">Potrzebujesz automatyzacji?</span>
+            </h3>
+            <p class="cta-description">
+              <span data-lang="en">Let's discuss how this technology can transform your business</span>
+              <span data-lang="uk">Обговоримо, як ця технологія може трансформувати ваш бізнес</span>
+              <span data-lang="pl">Omówmy, jak ta technologia może przekształcić Twój biznes</span>
+            </p>
+            <button class="cta-button" onclick="scrollToContact('{{ article.get_title }}');">
+              <span class="button-icon">💬</span>
+              <span data-lang="en">Let's Talk</span>
+              <span data-lang="uk">Поговоримо</span>
+              <span data-lang="pl">Porozmawiajmy</span>
+            </button>
+          </div>
+
+          <!-- Схожі статті -->
+          {% if related_articles %}
+            <div class="sidebar-block related-articles glass">
+              <h3 class="sidebar-title">
+                <span data-lang="en">Related News</span>
+                <span data-lang="uk">Схожі новини</span>
+                <span data-lang="pl">Podobne wiadomości</span>
+              </h3>
+              <div class="related-list">
+                {% for related in related_articles %}
+                  <a href="{{ related.get_absolute_url }}" class="related-item">
+                    <div class="related-title">{{ related.get_title|truncatewords:10 }}</div>
+                    <div class="related-meta">
+                      {{ related.category.icon }} {{ related.published_at|date:'j.m' }}
+                    </div>
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+<<<<<<< HEAD
+
+
+     {% if related_projects %}
+<section class="related-projects">
+  <h2>{% trans "Пов’язані проєкти" %}</h2>
+  <div class="cards-grid">
+    {% for p in related_projects %}
+      <a href="/{{ CURRENT_LANG }}/projects/{{ p.slug }}/" class="project-card glass">
+        {% if p.featured_image %}
+          <img src="{{ p.featured_image }}" alt="{{ p.title }}">
+        {% endif %}
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.short_description }}</p>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+
+{% if related_services %}
+<section class="related-services">
+  <h2>{% trans "Пов’язані послуги" %}</h2>
+  <div class="cards-grid">
+    {% for s in related_services %}
+      <a href="/{{ CURRENT_LANG }}/services/{{ s.slug }}/" class="service-card glass">
+        {% if s.featured_image %}
+          <img src="{{ s.featured_image }}" alt="{{ s.title }}">
+        {% endif %}
+        <h3>{{ s.title }}</h3>
+        <p>{{ s.short_description }}</p>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+
+=======
+>>>>>>> 142845d815461c20abde0a26113510140e4bdce2
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Навігація -->
+  <section class="article-navigation">
+    <div class="container">
+      <div class="nav-links">
+        <a href="/{{ CURRENT_LANG }}/news/" class="nav-link back">
+          <span class="nav-icon">←</span>
+          <span data-lang="en">All Tech News</span>
+          <span data-lang="uk">Всі новини</span>
+          <span data-lang="pl">Wszystkie wiadomości</span>
+        </a>
+        
+        <button class="nav-link contact" onclick="scrollToContact('{{ article.get_title }}');">
+          <span class="nav-icon">💬</span>
+          <span data-lang="en">Discuss This Tech</span>
+          <span data-lang="uk">Обговорити цю технологію</span>
+          <span data-lang="pl">Omów tę technologię</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+</article>
+
+<!-- Контакт форма -->
+<section id="contact" class="contact">
+  {% include "core/contact_form.html" %}
+</section>
+
+<script>
+// Smooth scroll to contact function
+function scrollToContact(articleTitle) {
+  const contactSection = document.getElementById('contact');
+  if (contactSection) {
+    contactSection.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+    
+    // Fill form with article info
+    setTimeout(() => {
+      const messageField = document.querySelector('#contact textarea, #contact input[name="message"]');
+      if (messageField && articleTitle) {
+        const currentLang = document.documentElement.lang || 'uk';
+        const messages = {
+          'uk': `Привіт! Прочитав статтю "${articleTitle}" і хочу дізнатися, як ви можете допомогти з автоматизацією подібних рішень для мого бізнесу.`,
+          'en': `Hi! I read the article "${articleTitle}" and want to know how you can help with automation of similar solutions for my business.`,
+          'pl': `Cześć! Przeczytałem artykuł "${articleTitle}" i chcę wiedzieć, jak możecie pomóc z automatyzacją podobnych rozwiązań dla mojego biznesu.`
+        };
+        messageField.value = messages[currentLang] || messages['uk'];
+        messageField.focus();
+      }
+    }, 1000);
+  }
+}
+</script>
+{% endblock %}

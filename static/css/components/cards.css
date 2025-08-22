@@ -1,0 +1,369 @@
+/* ===============================================
+   🃃 CARDS SYSTEM - Базові стилі для всіх карт
+   =============================================== */
+
+/* 🎯 BASE CARD */
+.card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-lg);
+  transition: var(--transition-bounce);
+  backdrop-filter: var(--blur-medium);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+/* 🪟 GLASS EFFECT VARIANTS */
+.card-glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: var(--blur-medium);
+}
+
+.card-glass-weak {
+  background: var(--glass-bg-weak);
+  border: 1px solid var(--glass-border-weak);
+  backdrop-filter: var(--blur-light);
+}
+
+/* 📏 CARD SIZES */
+.card-sm {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+}
+
+.card-md {
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-xl);
+}
+
+.card-lg {
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-2xl);
+}
+
+/* 🔲 CARD LAYOUTS */
+.card-horizontal {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xl);
+  width: 100%;
+  max-width: 1200px;
+  flex-wrap: nowrap;
+}
+
+.card-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* 🖼️ CARD IMAGE STYLES */
+.card-image {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.card-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-slow);
+}
+
+.card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+/* 📝 CARD CONTENT */
+.card-content {
+  flex: 1;
+  position: relative;
+  z-index: var(--z-content);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-white);
+  line-height: 1.3;
+}
+
+.card-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.5;
+}
+
+.card-description {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-md);
+}
+
+/* 🏷️ CARD TAGS & BADGES */
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.card-tag {
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  backdrop-filter: var(--blur-light);
+  transition: var(--transition-fast);
+}
+
+.card-tag:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* 📊 CARD META INFO */
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: var(--spacing-md);
+}
+
+.card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-meta-divider {
+  opacity: 0.5;
+}
+
+/* 🎬 CARD ACTIONS */
+.card-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-actions-column {
+  flex-direction: column;
+}
+
+.card-actions-center {
+  justify-content: center;
+}
+
+.card-actions-end {
+  justify-content: flex-end;
+}
+
+/* 💫 HOVER EFFECTS */
+.card-hover-glow:hover {
+  box-shadow: 
+    0 0 20px rgba(158, 255, 0, 0.3),
+    0 0 40px rgba(158, 255, 0, 0.2);
+  border-color: rgba(158, 255, 0, 0.6);
+}
+
+.card-hover-lift:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+.card-hover-tilt:hover {
+  transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
+}
+
+/* 🌊 SHIMMER EFFECT */
+.card-shimmer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left var(--transition-slow);
+}
+
+.card-shimmer:hover::before {
+  left: 100%;
+}
+
+/* 🎨 СПЕЦИАЛЬНІ ВАРІАНТИ */
+.card-clickable {
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.card-loading {
+  position: relative;
+}
+
+.card-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--glass-border);
+  border-top: 2px solid var(--accent-green);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+}
+
+/* 📱 RESPONSIVE CARDS */
+@media (max-width: 1024px) {
+  .card-horizontal {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-horizontal {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .card-image {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .card-actions {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .card-tags {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--spacing-md);
+    margin: 0 var(--spacing-sm);
+  }
+  
+  .card-lg {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* 🔍 CARD FOCUS STATES */
+.card:focus,
+.card-clickable:focus {
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+/* 🎪 CARD ANIMATIONS */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-animate {
+  animation: cardFadeIn 0.6s ease-out;
+}
+
+/* 📦 CARD GRID LAYOUTS */
+.cards-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+.cards-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+.cards-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+/* 🎠 CARDS CAROUSEL */
+.cards-carousel {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 var(--spacing-lg);
+}
+
+.cards-carousel::-webkit-scrollbar {
+  height: 8px;
+}
+
+.cards-carousel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+}
+
+.cards-carousel::-webkit-scrollbar-thumb {
+  background: var(--accent-green);
+  border-radius: var(--radius-sm);
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-lg);
+  width: max-content;
+  padding: var(--spacing-lg) 0;
+}
+
+.cards-container .card {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}

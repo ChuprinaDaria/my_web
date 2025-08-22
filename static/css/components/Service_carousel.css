@@ -1,0 +1,383 @@
+/* ===============================================
+   🎠 VERTICAL SERVICES CAROUSEL - Компактний центрований
+   =============================================== */
+
+/* 🎨 SERVICES PREVIEW SECTION - КОМПАКТНА */
+.services-preview {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-lg); /* Мінімальний padding */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0; /* БЕЗ ВІДСТУПІВ */
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-2xl);
+  position: relative;
+}
+
+/* 📋 SERVICES HEADER - ПО ЦЕНТРУ */
+.services-header {
+  text-align: center;
+  margin-bottom: 0; /* БЕЗ ВІДСТУПУ */
+  width: 100%;
+  max-width: 1200px;
+}
+
+.services-header h2 {
+  margin-bottom: 0; /* БЕЗ ВІДСТУПУ */
+  color: var(--text-white);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.services-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.5;
+  max-width: 600px;
+  margin: 0 auto; /* Центруємо */
+}
+
+/* 🎮 CONTROL SECTIONS - ВЕРТИКАЛЬНО ПО ЦЕНТРУ */
+.control-section {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0; /* БЕЗ ВІДСТУПІВ */
+}
+
+.control-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--accent-green);
+  border-radius: var(--radius-md);
+  background: rgba(158, 255, 0, 0.1);
+  backdrop-filter: blur(10px);
+  color: var(--accent-green);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(158, 255, 0, 0.2);
+}
+
+.control-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(158, 255, 0, 0.3), transparent);
+  transition: left 0.3s;
+}
+
+.control-btn:hover::before {
+  left: 100%;
+}
+
+.control-btn:hover {
+  background: rgba(158, 255, 0, 0.2);
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 15px rgba(158, 255, 0, 0.4),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.control-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 0 5px rgba(158, 255, 0, 0.1);
+}
+
+.control-btn i {
+  width: 16px;
+  height: 16px;
+  stroke-width: 3px;
+}
+
+/* 🎠 VERTICAL CAROUSEL - КОМПАКТНИЙ */
+.services-carousel-vertical {
+  position: relative;
+  height: 500px; /* Менша висота */
+  overflow: visible;
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0; /* Без відступів */
+}
+
+.services-track {
+  display: flex;
+  flex-direction: column;
+  gap: 0; /* БЕЗ ВІДСТУПІВ МІЖ КАРТКАМИ */
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+
+.service-item {
+  flex-shrink: 0;
+  width: 100%;
+  margin: 0; /* БЕЗ ВІДСТУПІВ */
+}
+
+/* 🎴 SERVICE CARD - КОМПАКТНИЙ */
+.service-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  width: 100%;
+  background: var(--glass-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md); /* Менший радіус */
+  padding: var(--spacing-sm); /* Менший padding */
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  backdrop-filter: var(--blur-medium);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  flex-wrap: nowrap;
+  
+  /* 🌟 BASE GLOW */
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* 🌈 RAINBOW BORDER EFFECT */
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-md);
+  padding: 2px;
+  background: var(--rainbow-gradient);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  opacity: 0.6;
+  z-index: -1;
+  animation: rainbow-rotate var(--anim-rainbow) linear infinite;
+}
+
+.service-card:hover {
+  transform: translateY(-3px) scale(1.005); /* Менший ефект */
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(255, 0, 255, 0.3);
+}
+
+.service-card:hover::before {
+  opacity: 0.8;
+  animation-duration: 2s;
+}
+
+/* 🖼️ SERVICE IMAGE - КОМПАКТНИЙ */
+.service-image {
+  width: 120px; /* СТАНДАРТНИЙ РОЗМІР ЯК ABOUT */
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.service-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+}
+
+.service-card:hover .service-img {
+  transform: scale(1.05);
+}
+
+.service-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+}
+
+/* 📝 SERVICE TEXT - КОМПАКТНИЙ */
+.service-text {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+}
+
+.service-text h3 {
+  font-size: 1.5rem; /* СТАНДАРТНИЙ РОЗМІР */
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-white);
+  line-height: 1.3;
+}
+
+.service-text p {
+  font-size: 1rem; /* СТАНДАРТНИЙ РОЗМІР */
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* 🏷️ SERVICE TAGS - КОМПАКТНІ */
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px; /* Мінімальний gap */
+  margin-bottom: var(--spacing-xs);
+}
+
+.service-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 6px; /* Менший padding */
+  background: rgba(158, 255, 0, 0.1);
+  border: 1px solid rgba(158, 255, 0, 0.3);
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem; /* Менший шрифт */
+  font-weight: 600;
+  color: var(--accent-green);
+}
+
+/* 📊 SERVICE METRICS - КОМПАКТНІ */
+.service-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px; /* Мінімальний gap */
+  margin-top: var(--spacing-xs);
+}
+
+.metric {
+  font-size: 0.75rem; /* Менший шрифт */
+  color: var(--text-secondary);
+  padding: 2px 4px; /* Менший padding */
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+}
+
+/* 🔗 SERVICES FOOTER - МІНІМАЛЬНІ ВІДСТУПИ */
+.services-footer {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-sm); /* Менший gap */
+  margin-top: 0; /* БЕЗ ВІДСТУПУ */
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* 📭 EMPTY STATE */
+.services-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px; /* Менша висота */
+}
+
+.empty-content {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  width: 36px; /* Менший розмір */
+  height: 36px;
+  margin: 0 auto var(--spacing-sm);
+  opacity: 0.5;
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 1024px) {
+  .services-carousel-vertical {
+    height: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .services-preview {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .service-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+  
+  .service-image {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .services-carousel-vertical {
+    height: 400px;
+  }
+  
+  .services-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .services-preview {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  .control-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .control-btn i {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .service-card {
+    padding: var(--spacing-xs);
+  }
+  
+  .services-carousel-vertical {
+    height: 350px;
+  }
+}
+
+/* 🎪 ANIMATIONS */
+@keyframes rainbow-rotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+/* 🔧 PERFORMANCE */
+.services-track {
+  contain: layout style paint;
+}
+
+.service-item {
+  contain: layout style paint;
+}

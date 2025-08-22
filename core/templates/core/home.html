@@ -1,0 +1,393 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% load project_carousel_tags %}
+{% load service_carousel_tags %}
+
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 🎯 SEO TITLE - багатомовний -->
+{% block title %}
+  {% if CURRENT_LANG == 'uk' %}Lazysoft — Провідна компанія з ШІ автоматизації та розробки софту
+  {% elif CURRENT_LANG == 'pl' %}Lazysoft — Wiodąca firma automatyzacji AI i rozwoju oprogramowania
+  {% else %}Lazysoft — Leading AI Automation & Custom Software Development Company{% endif %}
+{% endblock %}
+
+<!-- 📝 META DESCRIPTION - оптимізований для пошуку -->
+{% block meta_description %}
+  {% if CURRENT_LANG == 'uk' %}Провідна компанія з ШІ автоматизації, що спеціалізується на створенні чат-ботів, автоматизації бізнесу та розумних програмних рішень. Трансформуйте свій бізнес за допомогою передових ШІ технологій.
+  {% elif CURRENT_LANG == 'pl' %}Wiodąca firma automatyzacji AI specjalizująca się w niestandardowych chatbotach, automatyzacji biznesowej i inteligentnych rozwiązaniach programowych. Przekształć swój biznes dzięki najnowocześniejszej technologii AI.
+  {% else %}Leading AI automation company specializing in custom chatbots, business automation, and intelligent software solutions. Transform your business with cutting-edge AI technology and data-driven insights.{% endif %}
+{% endblock %}
+
+<!-- 🔍 KEYWORDS - цільові ключові слова -->
+{% block meta_keywords %}
+  {% if CURRENT_LANG == 'uk' %}ШІ автоматизація, розробка софту, чат-боти, бізнес автоматизація, ШІ рішення, lazysoft, штучний інтелект, веб розробка, дані аналіз
+  {% elif CURRENT_LANG == 'pl' %}automatyzacja AI, rozwój oprogramowania, chatboty, automatyzacja biznesowa, rozwiązania AI, lazysoft, sztuczna inteligencja, rozwój stron internetowych
+  {% else %}AI automation, custom software development, chatbots, business automation, AI solutions, lazysoft, artificial intelligence, web development, data analysis, machine learning{% endif %}
+{% endblock %}
+
+<!-- 🌐 OPEN GRAPH - для соцмереж -->
+{% block og_title %}
+  {% if CURRENT_LANG == 'uk' %}Lazysoft — ШІ автоматизація та розробка програмного забезпечення
+  {% elif CURRENT_LANG == 'pl' %}Lazysoft — Automatyzacja AI i rozwój oprogramowania
+  {% else %}Lazysoft — Leading AI Automation & Development Company{% endif %}
+{% endblock %}
+
+{% block og_description %}
+  {% if CURRENT_LANG == 'uk' %}Трансформуйте свій бізнес за допомогою передових ШІ рішень, розумних чат-ботів та кастомної веб-розробки. Спеціалізуємося на ШІ автоматизації, що стимулює зростання та ефективність.
+  {% elif CURRENT_LANG == 'pl' %}Przekształć swój biznes dzięki najnowocześniejszym rozwiązaniom AI, inteligentnym chatbotom i niestandardowemu rozwojowi stron internetowych. Specjalizujemy się w automatyzacji AI, która napędza wzrost i wydajność.
+  {% else %}Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services that drive growth, efficiency, and innovation for modern businesses.{% endif %}
+{% endblock %}
+
+{% block og_image %}{% static 'images/lazysoft-home-og.jpg' %}{% endblock %}
+{% block og_type %}website{% endblock %}
+
+<!-- 🐦 TWITTER CARD -->
+{% block twitter_title %}
+  {% if CURRENT_LANG == 'uk' %}Lazysoft — ШІ автоматизація та розробка
+  {% elif CURRENT_LANG == 'pl' %}Lazysoft — Automatyzacja AI i rozwój
+  {% else %}Lazysoft — AI Automation & Custom Development{% endif %}
+{% endblock %}
+
+{% block twitter_description %}
+  {% if CURRENT_LANG == 'uk' %}Провідна компанія з ШІ автоматизації. Кастомні чат-боти, автоматизація бізнесу, розумні програмні рішення для зростання вашого бізнесу.
+  {% elif CURRENT_LANG == 'pl' %}Wiodąca firma automatyzacji AI. Niestandardowe chatboty, automatyzacja biznesowa, inteligentne rozwiązania programowe.
+  {% else %}Leading AI automation company. Custom chatbots, business automation, and intelligent software solutions for business growth.{% endif %}
+{% endblock %}
+
+{% block twitter_image %}{% static 'images/lazysoft-twitter-card.jpg' %}{% endblock %}
+
+<!-- 🔗 CANONICAL & HREFLANG -->
+{% block extra_meta %}
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}" />
+  
+  <!-- Hreflang для багатомовності -->
+  <link rel="alternate" href="https://lazysoft.dev/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.dev/uk/" hreflang="uk">  
+  <link rel="alternate" href="https://lazysoft.dev/pl/" hreflang="pl">
+  <link rel="alternate" href="https://lazysoft.dev/" hreflang="x-default">
+  
+  <!-- 📱 Mobile app links (якщо є) -->
+  <meta name="apple-itunes-app" content="app-id=lazysoft-app">
+  <meta name="google-play-app" content="app-id=com.lazysoft.app">
+  
+  <!-- 🔍 Rich Snippets - Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Lazysoft",
+    "description": "{% if CURRENT_LANG == 'uk' %}Провідна компанія з ШІ автоматизації та розробки програмного забезпечення{% elif CURRENT_LANG == 'pl' %}Wiodąca firma automatyzacji AI i rozwoju oprogramowania{% else %}Leading AI automation and custom software development company{% endif %}",
+    "url": "https://lazysoft.dev",
+    "logo": "https://lazysoft.dev{% static 'images/lazysoft-logo.png' %}",
+    "image": "https://lazysoft.dev{% static 'images/lazysoft-home-og.jpg' %}",
+    "founder": {
+      "@type": "Person",
+      "name": "Daria Chuprina",
+      "jobTitle": "Founder & Full-Stack Developer"
+    },
+    "foundingDate": "2024",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "{% if CURRENT_LANG == 'uk' %}Польща{% elif CURRENT_LANG == 'pl' %}Polska{% else %}Poland{% endif %}",
+      "addressCountry": "PL"
+    },
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": ["English", "Ukrainian", "Polish"],
+        "url": "https://lazysoft.dev#contact"
+      }
+    ],
+    "sameAs": [
+      "https://t.me/Lazysoft_news",
+      "https://linkedin.com/company/lazysoft",
+      "https://github.com/lazysoft"
+    ],
+    "areaServed": ["Worldwide", "Europe", "North America"],
+    "serviceType": [
+      "AI Automation",
+      "Custom Software Development", 
+      "Chatbot Development",
+      "Business Process Automation",
+      "Web Development"
+    ]
+  }
+  </script>
+
+  <!-- 🎯 WebSite Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Lazysoft",
+    "url": "https://lazysoft.dev",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://lazysoft.dev/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "mainEntity": {
+      "@type": "Organization",
+      "@id": "https://lazysoft.dev#organization"
+    }
+  }
+  </script>
+
+  <!-- 📊 BreadcrumbList Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "{% if CURRENT_LANG == 'uk' %}Головна{% elif CURRENT_LANG == 'pl' %}Strona główna{% else %}Home{% endif %}",
+        "item": "https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
+      }
+    ]
+  }
+  </script>
+
+  <!-- 💼 Service Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "AI Automation Services",
+    "description": "{% if CURRENT_LANG == 'uk' %}Комплексні послуги ШІ автоматизації{% elif CURRENT_LANG == 'pl' %}Kompleksowe usługi automatyzacji AI{% else %}Comprehensive AI automation services{% endif %}",
+    "provider": {
+      "@type": "Organization",
+      "@id": "https://lazysoft.dev#organization"
+    },
+    "areaServed": "Worldwide",
+    "audience": {
+      "@type": "BusinessAudience",
+      "audienceType": "Small and Medium Businesses, Enterprises"
+    }
+  }
+  </script>
+
+  <!-- 🔍 SearchBox Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "https://lazysoft.dev/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://lazysoft.dev/search?q={search_term_string}"
+      },
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+{% endblock %}
+
+<!-- 🚀 CONTENT START -->
+{% block content %}
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Lazysoft</h1>
+      <h2 class="subtitle">{% trans "Leading AI Automation & Custom Software Development Company" %}</h2>
+      <p class="description">
+        {% trans "Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency." %}
+      </p>
+      
+      <!-- 🎯 CTA Buttons -->
+      <div class="hero-cta">
+        <a href="#contact" class="cta-primary">
+          {% trans "Get Your AI Solution" %}
+        </a>
+        <a href="{% url 'projects' %}" class="cta-secondary">
+          {% trans "View Success Stories" %}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES PREVIEW -->
+{% services_carousel limit=5 title=_("Our Services") section_id="homepage" %}
+
+
+
+
+
+<!-- PROJECTS - використовуємо новий carousel -->
+<section id="projects" class="projects">
+  <div class="container-reg">
+    {% projects_carousel filter_tags='top,ai' limit=6 title="Featured AI & Automation Projects" %}
+  </div>
+</section>
+
+<!-- ABOUT PREVIEW -->
+<section class="about-preview">
+  <div class="about-card clickable"
+       data-href="{% if CURRENT_LANG == 'uk' %}/uk/about/{% elif CURRENT_LANG == 'pl' %}/pl/about/{% else %}/about/{% endif %}">
+    <img src="{% static 'images/about-preview.jpg' %}" alt="{% trans 'About Lazysoft' %}" class="about-image" />
+    <div class="about-text">
+      <h3>{% trans "Born to automate. Fired for it." %}</h3>
+      <p>{% trans "The story of how laziness became a philosophy, a tech stack, and an efficient business model. Discover Lazysoft — where automation meets rebellion." %}</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact">
+  {% include "core/contact_form.html" %}
+</section>
+
+<!-- NEWS -->
+<section id="news" class="projects">
+  <div class="container-reg">
+    <h2 class="section-title">{% trans "🚀 Top Tech News" %}</h2>
+
+    {% if news_available %}
+      <div class="projects-carousel">
+        <div class="projects-container">
+          {% for article in top_news %}
+            <article class="news-card clickable" data-href="{{ article.get_absolute_url }}">
+              {% if article.ai_image_url %}
+                <img src="{{ article.ai_image_url }}" alt="{{ article.get_title }}" loading="lazy">
+              {% endif %}
+
+              <div class="news-card-meta" style="margin-bottom: 15px;">
+                <span class="chip">
+                  {{ article.category.icon }}
+                  {% if CURRENT_LANG == 'uk' and article.category.name_uk %}{{ article.category.name_uk }}
+                  {% elif CURRENT_LANG == 'pl' and article.category.name_pl %}{{ article.category.name_pl }}
+                  {% else %}{{ article.category.name_en }}{% endif %}
+                </span>
+                {% if article.priority >= 4 %}
+                  <span class="chip priority-high">🏆 TOP</span>
+                {% elif article.priority >= 3 %}
+                  <span class="chip priority-high">🔥 HOT</span>
+                {% endif %}
+              </div>
+
+              <h4>
+                {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|safe }}
+                {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|safe }}
+                {% else %}{{ article.title_en|safe }}{% endif %}
+              </h4>
+
+              <p>
+                {% if CURRENT_LANG == 'uk' and article.business_insight_uk %}{{ article.business_insight_uk|safe|truncatewords:25 }}
+                {% elif CURRENT_LANG == 'pl' and article.business_insight_pl %}{{ article.business_insight_pl|safe|truncatewords:25 }}
+                {% else %}{{ article.business_insight_en|safe|truncatewords:25 }}{% endif %}
+              </p>
+
+              <div class="news-card-meta">
+                <time datetime="{{ article.published_at|date:'c' }}">📅 {{ article.published_at|date:'j.m' }}</time>
+                <span>👁️ {{ article.get_total_views }}</span>
+                <span>⏱️ {{ article.get_reading_time }} {% trans "min" %}</span>
+                <span class="cta-arrow">→</span>
+              </div>
+            </article>
+          {% empty %}
+            <div class="news-card" style="text-align: center; opacity: 0.7;">
+              <div style="font-size: 4rem; margin-bottom: 20px;">📰</div>
+              <h4>{% trans "Tech News Coming Soon" %}</h4>
+              <p>{% trans "Fresh business insights are being prepared" %}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+
+      {% if daily_digest %}
+        <details class="news-digest">
+          <summary>
+            {% blocktrans %}📰 Other news of the day ({{ daily_digest|length }}){% endblocktrans %}
+            <span class="dot"></span>
+          </summary>
+
+          <ol class="digest-list">
+            {% for article in daily_digest %}
+              <li class="digest-item">
+                <a class="digest-link" href="{{ article.get_absolute_url }}">
+                  <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:'H:i' }}</time>
+                  <span class="digest-title">
+                    {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:8 }}
+                    {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:8 }}
+                    {% else %}{{ article.title_en|truncatewords:8 }}{% endif %}
+                  </span>
+                  <span class="digest-cta">{{ article.category.icon }}</span>
+                </a>
+              </li>
+            {% endfor %}
+          </ol>
+
+
+
+          <div style="text-align: center; margin: 20px; padding-top: 20px; border-top: 1px solid rgba(102, 255, 0, 0.2);">
+            <a href="{% url 'news:news_list' %}" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--accent-green); text-decoration: none; padding: 10px 20px; background: rgba(102, 255, 0, 0.1); border-radius: 25px; transition: all 0.3s ease;">
+              {% trans "View All Tech News" %}
+              <span style="margin-left: 5px;">→</span>
+            </a>
+          </div>
+        </details>
+      {% endif %}
+    {% else %}
+      <div class="project-card" style="text-align: center; opacity: 0.6;">
+        <div style="font-size: 4rem; margin-bottom: 20px;">🔧</div>
+        <h4>{% trans "News System Under Development" %}</h4>
+        <p>{% trans "Our AI-powered news system is coming soon" %}</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include 'includes/social_share.html' %}
+
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/projects_carousel.js' %}"></script>
+  <script src="{% static 'js/service-card.js' %}"></script>
+<script src="{% static 'js/vertical-services-carousel.js' %}"></script>
+  
+  <!-- 📊 Google Analytics / Tag Manager -->
+  <script>
+    // Google Analytics tracking
+    gtag('config', 'GA_TRACKING_ID', {
+      page_title: '{% if CURRENT_LANG == "uk" %}Головна{% elif CURRENT_LANG == "pl" %}Strona główna{% else %}Home{% endif %}',
+      page_location: window.location.href,
+      custom_map: {
+        'custom_parameter_1': 'home_page',
+        'language': '{{ CURRENT_LANG }}'
+      }
+    });
+  </script>
+
+  <!-- 🎯 Structured Data для FAQ (якщо є) -->
+  {% if faqs %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {% for faq in faqs %}
+      {
+        "@type": "Question",
+        "name": "{{ faq.question|escapejs }}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{{ faq.answer|striptags|escapejs }}"
+        }
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
+  {% endif %}
+{% endblock %}

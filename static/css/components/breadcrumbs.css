@@ -1,0 +1,211 @@
+/* ===============================================
+   🧭 BREADCRUMBS NAVIGATION
+   Навігаційні хлібні крихти для всіх сторінок
+   =============================================== */
+
+/* 📍 BREADCRUMBS SECTION */
+.breadcrumbs-section {
+  padding: var(--spacing-lg) 0 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+/* 🧭 BREADCRUMBS CONTAINER */
+.breadcrumbs {
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+}
+
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+/* 📍 BREADCRUMB ITEMS */
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.breadcrumb-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 255, 0, 0.1), transparent);
+  transition: left var(--transition-normal);
+}
+
+.breadcrumb-link:hover {
+  color: var(--accent-green);
+  background: rgba(102, 255, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.breadcrumb-link:hover::before {
+  left: 100%;
+}
+
+/* 🔗 BREADCRUMB SEPARATOR */
+.breadcrumb-separator {
+  color: var(--text-secondary);
+  opacity: 0.6;
+  margin: 0 4px;
+  font-weight: 300;
+  transition: color var(--transition-normal);
+}
+
+/* 📍 CURRENT PAGE */
+.breadcrumb-current {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-green);
+  font-weight: 600;
+  padding: 8px 12px;
+  background: rgba(102, 255, 0, 0.1);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(102, 255, 0, 0.2);
+}
+
+/* 🎨 BREADCRUMB ICONS */
+.breadcrumb-icon {
+  font-size: 16px;
+  transition: transform var(--transition-normal);
+}
+
+.breadcrumb-link:hover .breadcrumb-icon {
+  transform: scale(1.1);
+}
+
+/* 🌟 HOVER EFFECTS */
+.breadcrumb-link:focus {
+  outline: 2px solid rgba(102, 255, 0, 0.5);
+  outline-offset: 2px;
+}
+
+/* 🎭 ANIMATIONS */
+@keyframes breadcrumb-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.breadcrumb-item {
+  animation: breadcrumb-fade-in 0.3s ease-out;
+}
+
+.breadcrumb-item:nth-child(1) { animation-delay: 0.1s; }
+.breadcrumb-item:nth-child(2) { animation-delay: 0.2s; }
+.breadcrumb-item:nth-child(3) { animation-delay: 0.3s; }
+.breadcrumb-item:nth-child(4) { animation-delay: 0.4s; }
+.breadcrumb-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* 📱 RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+  .breadcrumbs-section {
+    padding: var(--spacing-md) 0 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .breadcrumb-list {
+    font-size: 12px;
+    gap: 4px;
+  }
+  
+  .breadcrumb-link,
+  .breadcrumb-current {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  
+  .breadcrumb-icon {
+    font-size: 14px;
+  }
+  
+  .breadcrumb-separator {
+    margin: 0 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumb-list {
+    font-size: 11px;
+  }
+  
+  .breadcrumb-link,
+  .breadcrumb-current {
+    padding: 4px 8px;
+  }
+  
+  .breadcrumb-icon {
+    font-size: 12px;
+  }
+  
+  /* На маленьких екранах ховаємо деякі іконки */
+  .breadcrumb-item:not(:last-child) .breadcrumb-icon {
+    display: none;
+  }
+}
+
+/* 🌈 THEME VARIATIONS */
+.breadcrumbs.theme-services .breadcrumb-current {
+  background: rgba(255, 0, 255, 0.1);
+  border-color: rgba(255, 0, 255, 0.2);
+  color: var(--accent-pink);
+}
+
+.breadcrumbs.theme-projects .breadcrumb-current {
+  background: rgba(0, 255, 255, 0.1);
+  border-color: rgba(0, 255, 255, 0.2);
+  color: var(--accent-cyan);
+}
+
+.breadcrumbs.theme-news .breadcrumb-current {
+  background: rgba(102, 255, 0, 0.1);
+  border-color: rgba(102, 255, 0, 0.2);
+  color: var(--accent-green);
+}
+
+/* 🔧 ACCESSIBILITY */
+@media (prefers-reduced-motion: reduce) {
+  .breadcrumb-item {
+    animation: none;
+  }
+  
+  .breadcrumb-link::before {
+    transition: none;
+  }
+  
+  .breadcrumb-link:hover .breadcrumb-icon {
+    transform: none;
+  }
+}

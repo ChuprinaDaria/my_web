@@ -1,0 +1,467 @@
+/* ===============================================
+   💚 NEWS SECTION - Зелені карти новин (другорядні)
+   =============================================== */
+
+/* 📰 NEWS CARD - ЗЕЛЕНИЙ ЕФЕКТ */
+.news-card {
+  min-width: 300px;
+  max-width: 350px;
+  background: var(--glass-bg);
+  border: 1px solid var(--green-border-weak); /* Тонший border */
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  cursor: pointer;
+  transition: var(--transition-bounce);
+  backdrop-filter: var(--blur-medium);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+}
+
+/* 💚 GREEN SHIMMER EFFECT */
+.news-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--green-glow-weak),
+    transparent
+  );
+  transition: left var(--transition-slow);
+}
+
+/* 🔥 HOVER EFFECTS - М'якіші ніж у проєктів */
+.news-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 
+    0 0 15px var(--green-glow-secondary), /* Менша підсвітка */
+    0 0 30px var(--green-glow-weak);
+  border-color: var(--green-border);
+}
+
+.news-card:hover::before {
+  left: 100%;
+}
+
+/* 🖼️ NEWS IMAGE */
+.news-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+  transition: transform var(--transition-normal);
+}
+
+.news-card:hover img {
+  transform: scale(1.03); /* Менший масштаб */
+}
+
+/* 📰 NEWS TITLES - як .result-label зі старого CSS */
+.news-card h4,
+.news-title {
+  display: block;
+  font-size: 11px;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  color: var(--text-white);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+}
+
+/* 📝 NEWS TEXT - як .result-text зі старого CSS */
+.news-card p,
+.news-description {
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  line-height: 1.4;
+  color: var(--text-primary);
+  margin: 0;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* 🏷️ NEWS META INFO */
+.news-card-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.news-card-meta .chip {
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+  font-size: 10px;
+}
+
+.news-card-meta .chip.priority-high {
+  background: var(--green-glow-weak);
+  border-color: var(--green-border-weak);
+  color: var(--accent-green);
+}
+
+.news-card-meta .cta-arrow {
+  margin-left: auto;
+  opacity: 0.8;
+  transition: transform var(--transition-fast);
+}
+
+.news-card:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* 📰 NEWS DIGEST - Випадний список новин */
+.news-digest {
+  margin-top: var(--spacing-2xl);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--green-border-weak);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.news-digest summary {
+  padding: var(--spacing-lg) var(--spacing-xl);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background: var(--green-glow-weak);
+  border-bottom: 1px solid var(--green-border-weak);
+  transition: var(--transition-normal);
+  list-style: none;
+}
+
+.news-digest summary::-webkit-details-marker {
+  display: none;
+}
+
+.news-digest summary::before {
+  content: "▶";
+  font-size: 0.8rem;
+  transition: transform var(--transition-normal);
+}
+
+.news-digest[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.news-digest summary:hover {
+  background: rgba(102, 255, 0, 0.15);
+}
+
+.news-digest .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-green);
+  border-radius: 50%;
+  animation: pulse var(--anim-pulse) infinite;
+  margin-left: auto;
+}
+
+/* 📋 DIGEST LIST */
+.digest-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.digest-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.digest-item:last-child {
+  border-bottom: none;
+}
+
+.digest-link {
+  display: flex !important;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  text-decoration: none;
+  color: white !important;
+  transition: var(--transition-normal);
+  min-height: 50px;
+}
+
+.digest-link:hover {
+  background: var(--green-glow-weak) !important;
+  color: var(--accent-green) !important;
+}
+
+.digest-link time {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  min-width: 45px;
+  font-weight: 500;
+}
+
+.digest-title {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  color: inherit;
+}
+
+.digest-cta {
+  font-size: 1.2rem;
+  opacity: 0.7;
+  transition: opacity var(--transition-normal);
+  min-width: 25px;
+  text-align: center;
+}
+
+.digest-link:hover .digest-cta {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* 📄 NEWS PAGE LAYOUT */
+.news-detail-page {
+  margin-top: 0;
+}
+
+/* 🧭 NEWS BREADCRUMBS */
+.news-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xl);
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.breadcrumb-link {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color var(--transition-normal);
+}
+
+.breadcrumb-link:hover {
+  color: var(--accent-green);
+}
+
+.breadcrumb-divider {
+  color: var(--text-secondary);
+}
+
+.breadcrumb-current {
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+/* 🦸‍♂️ NEWS HERO */
+.news-hero {
+  padding: var(--spacing-2xl) 0;
+  text-align: center;
+}
+
+/* 🏷️ ARTICLE META */
+.article-meta {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.category-badge {
+  padding: 6px 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  color: var(--accent-green);
+  font-weight: 600;
+  font-size: 14px;
+  backdrop-filter: var(--blur-light);
+}
+
+.top-article-badge,
+.priority-badge {
+  padding: 6px 12px;
+  border-radius: var(--radius-xl);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.top-article-badge {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #000;
+}
+
+.priority-badge {
+  background: linear-gradient(135deg, #ff4444, #ff6666);
+  color: #fff;
+}
+
+/* 📰 ARTICLE TITLE */
+.article-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin: var(--spacing-lg) 0;
+  line-height: 1.3;
+  /* Використовуємо стандартний градієнт із typography.css */
+}
+
+/* ℹ️ ARTICLE INFO */
+.article-info {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.article-info a {
+  color: var(--accent-green);
+  text-decoration: none;
+}
+
+.article-info a:hover {
+  text-decoration: underline;
+}
+
+/* 🖼️ ARTICLE IMAGE */
+.article-image {
+  padding: var(--spacing-2xl) 0;
+}
+
+.image-container {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  padding: 0;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  object-fit: cover;
+  display: block;
+}
+
+/* 📝 NEWS CONTENT BLOCKS */
+.article-summary {
+  background: linear-gradient(135deg, var(--green-glow-weak) 0%, rgba(0, 255, 255, 0.05) 100%);
+  border: 1px solid var(--green-border-weak);
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: flex-start;
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-xl);
+  margin: var(--spacing-xl) 0;
+}
+
+.summary-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.summary-content {
+  color: var(--text-primary);
+  line-height: 1.7;
+  font-size: 1.1rem;
+}
+
+/* 🎯 CONTENT HEADINGS */
+.content-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-green);
+  margin-bottom: var(--spacing-lg);
+}
+
+.heading-icon {
+  font-size: 1.8rem;
+}
+
+/* 📱 RESPONSIVE NEWS */
+@media (max-width: 1024px) {
+  .news-digest summary {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .digest-link {
+    padding: var(--spacing-sm) var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .news-card {
+    min-width: 280px;
+    max-width: 320px;
+  }
+  
+  .article-info {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .article-meta {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .article-summary {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .digest-link time {
+    min-width: 35px;
+    font-size: 0.8rem;
+  }
+  
+  .digest-title {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .news-digest summary {
+    padding: var(--spacing-md);
+    font-size: 1rem;
+  }
+  
+  .digest-link {
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+    gap: var(--spacing-sm);
+  }
+  
+  .news-breadcrumbs {
+    font-size: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+/* 🎪 NEWS ANIMATIONS */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

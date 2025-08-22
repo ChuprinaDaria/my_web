@@ -1,0 +1,458 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- SEO TITLE - використовуємо Django i18n -->
+{% block title %}
+  {{ seo_title|default:"{% trans 'Lazysoft Services — AI Automation, Custom Chatbots & Software Development' %}" }}
+{% endblock %}
+
+<!-- META DESCRIPTION - використовуємо Django i18n -->
+{% block meta_description %}
+  {{ seo_description|default:"{% trans 'Comprehensive AI automation services: custom chatbot development, business process automation, web development, and seamless integrations. Transform your business with Lazysoft.' %}" }}
+{% endblock %}
+
+<!-- KEYWORDS - використовуємо Django i18n -->
+{% block meta_keywords %}
+  {% trans "AI automation services, chatbot development, software development, business automation, web development, integrations, Telegram bots, WhatsApp bots, Lazysoft services" %}
+{% endblock %}
+
+<!-- OPEN GRAPH - використовуємо Django i18n -->
+{% block og_title %}
+  {% trans "Lazysoft Services — AI Automation & Development" %}
+{% endblock %}
+
+{% block og_description %}
+  {% trans "Professional AI automation services: chatbots, business automation, web development. Transform your business with Lazysoft's cutting-edge solutions." %}
+{% endblock %}
+
+{% block og_image %}{% static 'images/services-og.jpg' %}{% endblock %}
+{% block og_type %}website{% endblock %}
+
+<!-- TWITTER CARD - використовуємо Django i18n -->
+{% block twitter_title %}
+  {% trans "AI Automation Services — Lazysoft" %}
+{% endblock %}
+
+{% block twitter_description %}
+  {% trans "Chatbots, business automation, web development. Professional AI solutions for your business growth." %}
+{% endblock %}
+
+{% block twitter_image %}{% static 'images/services-twitter-card.jpg' %}{% endblock %}
+
+<!-- ДОДАТКОВІ СОЦМЕРЕЖІ - використовуємо Django i18n -->
+{% block instagram_title %}
+  {% trans "AI Automation Services — Lazysoft" %}
+{% endblock %}
+
+{% block instagram_description %}
+  {% trans "Professional AI solutions for business" %}
+{% endblock %}
+
+{% block linkedin_title %}
+  {% trans "Lazysoft Services — AI Automation" %}
+{% endblock %}
+
+{% block linkedin_description %}
+  {% trans "Professional AI automation and development services for transforming your business" %}
+{% endblock %}
+
+{% block telegram_title %}
+  {% trans "Lazysoft Services" %}
+{% endblock %}
+
+{% block telegram_description %}
+  {% trans "Professional AI solutions for business" %}
+{% endblock %}
+
+<!-- CANONICAL & ДОДАТКОВІ META -->
+{% block extra_meta %}
+  {{ block.super }}
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/" />
+  
+  <!-- Додаткові structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "{% trans 'Lazysoft Services' %}",
+    "description": "{% trans 'AI automation services catalog' %}",
+    "url": "https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/",
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": {{ categories|length }},
+      "itemListElement": [
+        {% for category in categories %}
+        {
+          "@type": "Service",
+          "position": {{ forloop.counter }},
+          "name": "{{ category.title|escapejs }}",
+          "description": "{{ category.description|striptags|escapejs|truncatechars:200 }}",
+          "provider": {
+            "@type": "Organization",
+            "name": "Lazysoft",
+            "@id": "https://lazysoft.dev#organization"
+          }
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "{% trans 'Home' %}",
+          "item": "https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "{% trans 'Services' %}",
+          "item": "https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/"
+        }
+      ]
+    }
+  }
+  </script>
+
+  <!-- FAQ Schema (якщо є FAQ) -->
+  {% if faqs %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {% for faq in faqs %}
+      {
+        "@type": "Question",
+        "name": "{% if CURRENT_LANG == 'uk' and faq.question_uk %}{{ faq.question_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and faq.question_pl %}{{ faq.question_pl|escapejs }}{% else %}{{ faq.question_en|escapejs }}{% endif %}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{% if CURRENT_LANG == 'uk' and faq.answer_uk %}{{ faq.answer_uk|striptags|escapejs }}{% elif CURRENT_LANG == 'pl' and faq.answer_pl %}{{ faq.answer_pl|striptags|escapejs }}{% else %}{{ faq.answer_en|striptags|escapejs }}{% endif %}"
+        }
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
+  {% endif %}
+{% endblock %}
+
+<!-- BREADCRUMBS -->
+{% block breadcrumbs %}
+<section class="breadcrumbs-section">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb navigation' %}">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+          <a href="{% url 'home' %}" class="breadcrumb-link">
+            <i data-lucide="home" class="breadcrumb-icon"></i>
+            {% trans "Home" %}
+          </a>
+        </li>
+        <li class="breadcrumb-separator">→</li>
+        <li class="breadcrumb-item current" aria-current="page">
+          <span class="breadcrumb-current">
+            <i data-lucide="settings" class="breadcrumb-icon"></i>
+            {% trans "Services" %}
+          </span>
+        </li>
+      </ol>
+    </nav>
+  </div>
+</section>
+{% endblock %}
+
+<!-- CONTENT START -->
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero services-hero">
+  <div class="container">
+    <div class="hero-content">
+      <h1>{% trans "Our Services" %}</h1>
+      <h2 class="subtitle">
+        {% if overview_title %}{{ overview_title|safe }}
+        {% else %}{% trans "Professional AI Automation & Development Services" %}{% endif %}
+      </h2>
+      <p class="description">
+        {% if overview_description %}{{ overview_description|safe }}
+        {% else %}{% trans "Transform your business with cutting-edge AI solutions: chatbots, process automation, web development, and seamless integrations." %}{% endif %}
+      </p>
+      
+      <!-- CTA Buttons -->
+      <div class="hero-cta">
+        <a href="#services-categories" class="cta-primary">
+          {% trans "Explore Services" %}
+        </a>
+        <a href="#contact" class="cta-secondary">
+          {% trans "Get Free Consultation" %}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK PREVIEW -->
+{% if features %}
+<section class="tech-stack-section">
+  <div class="container">
+    <h2 class="section-title">{% trans "Technologies We Master" %}</h2>
+    <div class="tech-stack">
+      {% for feature in features %}
+        <span class="tech-item">
+          <i data-lucide="{{ feature.icon }}" class="tech-icon"></i>
+          {{ feature.title }}
+        </span>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% else %}
+<!-- Fallback tech stack -->
+<section class="tech-stack-section">
+  <div class="container">
+    <h2 class="section-title">{% trans "Technologies We Master" %}</h2>
+    <div class="tech-stack">
+      <span class="tech-item"><i data-lucide="code" class="tech-icon"></i>Python</span>
+      <span class="tech-item"><i data-lucide="zap" class="tech-icon"></i>JavaScript</span>
+      <span class="tech-item"><i data-lucide="server" class="tech-icon"></i>Node.js</span>
+      <span class="tech-item"><i data-lucide="atom" class="tech-icon"></i>React</span>
+      <span class="tech-item"><i data-lucide="bot" class="tech-icon"></i>OpenAI GPT</span>
+      <span class="tech-item"><i data-lucide="brain" class="tech-icon"></i>TensorFlow</span>
+      <span class="tech-item"><i data-lucide="send" class="tech-icon"></i>Telegram API</span>
+      <span class="tech-item"><i data-lucide="message-circle" class="tech-icon"></i>WhatsApp API</span>
+      <span class="tech-item"><i data-lucide="play" class="tech-icon"></i>Playwright</span>
+      <span class="tech-item"><i data-lucide="search" class="tech-icon"></i>Selenium</span>
+      <span class="tech-item"><i data-lucide="database" class="tech-icon"></i>SQLite</span>
+      <span class="tech-item"><i data-lucide="leaf" class="tech-icon"></i>MongoDB</span>
+      <span class="tech-item"><i data-lucide="link" class="tech-icon"></i>Make (Integromat)</span>
+      <span class="tech-item"><i data-lucide="zap" class="tech-icon"></i>Zapier</span>
+      <span class="tech-item"><i data-lucide="credit-card" class="tech-icon"></i>WayForPay</span>
+      <span class="tech-item"><i data-lucide="dollar-sign" class="tech-icon"></i>Stripe</span>
+      <span class="tech-item"><i data-lucide="container" class="tech-icon"></i>Docker</span>
+      <span class="tech-item"><i data-lucide="cloud" class="tech-icon"></i>AWS</span>
+      <span class="tech-item"><i data-lucide="cloud-snow" class="tech-icon"></i>Google Cloud</span>
+      <span class="tech-item"><i data-lucide="shopping-cart" class="tech-icon"></i>Shopify</span>
+      <span class="tech-item"><i data-lucide="shopping-bag" class="tech-icon"></i>WooCommerce</span>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- SERVICES BY CATEGORIES -->
+<section id="services-categories" class="services-categories">
+  <div class="container">
+    <h2 class="section-title">{% trans "Our Service Categories" %}</h2>
+    
+    {% for category in categories %}
+      <div class="service-category">
+        <div class="category-header">
+          <h3 class="category-title">{{ category.title|safe }}</h3>
+          <p class="category-description">{{ category.description|safe }}</p>
+        </div>
+        
+        <!-- Services Grid -->
+        {% if category.services %}
+        <div class="services-grid">
+          {% for service in category.services %}
+            <article class="service-card clickable" data-href="/{{ CURRENT_LANG }}/services/{{ service.slug }}/">
+              {% if service.icon %}
+                <div class="service-icon">
+                  <img src="{{ service.icon }}" alt="{{ service.title }}" loading="lazy">
+                </div>
+              {% endif %}
+              
+              <div class="service-content">
+                <h4 class="service-title">{{ service.title|safe }}</h4>
+                <p class="service-description">{{ service.short_description|safe|truncatewords:20 }}</p>
+                
+                <div class="service-cta">
+                  <span class="cta-text">{% trans "Learn More" %}</span>
+                  <i data-lucide="arrow-right" class="cta-arrow"></i>
+                </div>
+              </div>
+              
+              <div class="service-glow-effect"></div>
+            </article>
+          {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Related Projects -->
+        {% if category.projects %}
+        <div class="category-projects">
+          <h4 class="projects-title">
+            {% blocktrans with category_name=category.title %}{{ category_name }} Projects{% endblocktrans %}
+          </h4>
+          
+          <div class="projects-carousel">
+            <div class="projects-container">
+              {% for project in category.projects %}
+                <div class="project-card clickable" data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/">
+                  {% if project.featured_image %}
+                    <div class="project-image">
+                      <img src="{{ project.featured_image }}" alt="{{ project.title }}" loading="lazy">
+                      <div class="image-overlay"></div>
+                    </div>
+                  {% endif %}
+                  
+                  <div class="project-content">
+                    <h5 class="project-title">{{ project.title|safe }}</h5>
+                    <p class="project-description">{{ project.short_description|safe|truncatewords:15 }}</p>
+                    
+                    <div class="project-cta">
+                      <span class="cta-text">{% trans "View Case" %}</span>
+                      <i data-lucide="arrow-right" class="cta-arrow"></i>
+                    </div>
+                  </div>
+                  
+                  <div class="project-glow-effect"></div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="no-services">
+        <div class="no-services-icon">
+          <i data-lucide="wrench"></i>
+        </div>
+        <h3>{% trans "Services Coming Soon" %}</h3>
+        <p>{% trans "We're preparing amazing automation solutions for you!" %}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- FAQ PREVIEW -->
+{% if faqs %}
+<section class="faq-preview">
+  <div class="container">
+    <h2 class="section-title">{% trans "Frequently Asked Questions" %}</h2>
+    
+    <div class="faq-grid">
+      {% for faq in faqs|slice:":6" %}
+        <details class="faq-item">
+          <summary class="faq-question">
+            {{ faq.question|safe }}
+            <i class="faq-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/><path d="M12 5v14"/>
+              </svg>
+            </i>
+          </summary>
+          <div class="faq-answer">
+            {{ faq.answer|safe }}
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+    
+    {% if faqs|length > 6 %}
+      <div class="faq-cta">
+        <a href="{% url 'faq_page' %}" class="cta-secondary">
+          {% trans "View All FAQ" %}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% else %}
+<!-- DEBUG: Показуємо якщо немає FAQ -->
+<section class="faq-preview">
+  <div class="container">
+    <h2 class="section-title">{% trans "Frequently Asked Questions" %}</h2>
+    <div style="text-align: center; padding: 2rem; color: #666;">
+      <p>{% trans "No FAQ available. Please add FAQ entries in Django admin." %}</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- CONTACT -->
+<section id="contact" class="contact">
+  {% include "core/contact_form.html" %}
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+  <!-- Google Analytics tracking -->
+  <script>
+    <!-- Google Analytics tracking -->
+    if (typeof gtag !== 'undefined') {
+      gtag('config', 'GA_TRACKING_ID', {
+        page_title: '{% trans "Services" %}',
+        page_location: window.location.href,
+        custom_map: {
+          'custom_parameter_1': 'services_page',
+          'language': '{{ CURRENT_LANG }}'
+        }
+      });
+    }
+  </script>
+
+  <!-- Enhanced clickable cards functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize Lucide icons first
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+      
+      // Enhanced clickable cards
+      document.querySelectorAll('.clickable').forEach(function (card) {
+        card.addEventListener('click', function (e) {
+          // Prevent navigation if clicking on nested interactive elements
+          if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.tagName === 'SUMMARY') {
+            return;
+          }
+          
+          const href = card.getAttribute('data-href');
+          if (href) {
+            window.location.href = href;
+          }
+        });
+        
+        // Add hover effect
+        card.addEventListener('mouseenter', function () {
+          this.style.transform = 'translateY(-4px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function () {
+          this.style.transform = 'translateY(0) scale(1)';
+        });
+      });
+      
+      // FAQ toggle animation with Lucide icons
+      document.querySelectorAll('.faq-item').forEach(function (item) {
+        const summary = item.querySelector('.faq-question');
+        const icon = summary.querySelector('.faq-icon');
+        
+        item.addEventListener('toggle', function () {
+          if (item.open) {
+            // Change to minus icon when open
+            icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>';
+            icon.style.transform = 'rotate(0deg)';
+          } else {
+            // Change to plus icon when closed
+            icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>';
+            icon.style.transform = 'rotate(0deg)';
+          }
+        });
+        
+        // Set initial plus icon
+        if (icon && !item.open) {
+          icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>';
+        }
+      });
+    });
+  </script>
+{% endblock %}

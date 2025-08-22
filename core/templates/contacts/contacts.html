@@ -1,0 +1,526 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+
+{% block title %}{{ contact_info.seo_title|default:_("Контакти - Lazysoft") }}{% endblock %}
+{% block meta_description %}{{ contact_info.seo_description|default:_("Зв'яжіться з нами для обговорення вашого проєкту. Працюємо по всьому світу.") }}{% endblock %}
+{% block og_title %}{{ contact_info.seo_title|default:_("Контакти - Lazysoft") }}{% endblock %}
+{% block og_description %}{{ contact_info.seo_description|default:_("Зв'яжіться з нами для обговорення вашого проєкту. Працюємо по всьому світу.") }}{% endblock %}
+{% block og_image %}{% if contact_info.office_photo %}https://lazysoft.dev{{ contact_info.office_photo.url }}{% else %}{% static 'images/contacts-og.jpg' %}{% endif %}{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.dev{% url 'contacts:contact_page' %}" />
+  
+  <!-- Schema.org для контактів -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Lazysoft",
+    "url": "https://lazysoft.dev",
+    "logo": "https://lazysoft.dev{% static 'images/logo.png' %}",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "{{ contact_info.phone }}",
+      "contactType": "customer service",
+      "email": "{{ contact_info.email }}",
+      "availableLanguage": ["en", "uk", "pl"]
+    },
+    {% if contact_info.address_line_1 %}
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "{{ contact_info.get_address_line_1 }}, {{ contact_info.address_line_2 }}",
+      "addressLocality": "{{ contact_info.city }}",
+      "postalCode": "{{ contact_info.postal_code }}",
+      "addressCountry": "{{ contact_info.get_country_code }}"
+    },
+    {% endif %}
+    "sameAs": [
+      "https://github.com/ChuprinaDaria",
+      "https://www.linkedin.com/in/dchuprina/",
+      "https://www.instagram.com/lazysoft_/"
+    ]
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+<main class="contacts-page">
+
+    <!-- Breadcrumbs - використовуємо існуючий компонент -->
+<section class="breadcrumbs-section">
+  <div class="container">
+    <nav class="breadcrumbs">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+          <a href="{% url 'home' %}" class="breadcrumb-link">
+            <i data-lucide="home" class="breadcrumb-icon"></i>
+            {% trans "Головна" %}
+          </a>
+        </li>
+        <li class="breadcrumb-separator">→</li>
+        <li class="breadcrumb-item">
+          <span class="breadcrumb-current">
+            <i data-lucide="phone" class="breadcrumb-icon"></i>
+            {{ contact_info.get_title|default:_("Контакти") }}
+          </span>
+        </li>
+      </ol>
+    </nav>
+  </div>
+</section>
+
+
+  <!-- Hero секція -->
+  <section class="contacts-hero">
+    <div class="container">
+      
+     
+
+      <!-- Заголовок та опис -->
+      <div class="hero-content">
+        <h1 class="hero-title">
+          {{ contact_info.get_title|default:_("Контакти") }}
+        </h1>
+        
+        {% if contact_info.get_description %}
+        <div class="hero-description">
+          {{ contact_info.get_description|safe }}
+        </div>
+        {% endif %}
+        
+        <!-- Швидкі контакти -->
+        <div class="quick-contacts">
+          <a href="mailto:{{ contact_info.email }}" class="quick-contact-item">
+            <i data-lucide="mail" class="contact-icon"></i>
+            <span>{{ contact_info.email }}</span>
+          </a>
+          <a href="tel:{{ contact_info.phone }}" class="quick-contact-item">
+            <i data-lucide="phone" class="contact-icon"></i>
+            <span>{{ contact_info.phone }}</span>
+          </a>
+          {% if contact_info.google_maps_url %}
+          <a href="{{ contact_info.google_maps_url }}" target="_blank" class="quick-contact-item">
+            <i data-lucide="map-pin" class="contact-icon"></i>
+            <span>{% trans "Подивитись на карті" %}</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+<!-- Додай це ПІСЛЯ </section> Hero секції в contacts.html -->
+
+<!-- 📸 Hero Photo Section - використовуємо існуючі CSS класи -->
+{% if contact_info.hero_photo %}
+<section class="contacts-hero-photo">
+  <div class="container">
+    <!-- Використовуємо card стилі для обгортки -->
+    <div class="card card-lg card-horizontal card-hover-lift card-shimmer">
+      <!-- Використовуємо card-image клас -->
+      <div class="card-image hero-photo-container">
+        <img src="{{ contact_info.hero_photo.url }}" 
+             alt="{% trans 'Lazysoft офіс' %}" 
+             class="hero-photo-img" 
+             loading="lazy">
+      </div>
+      
+      <!-- Використовуємо card-content для тексту -->
+      <div class="card-content hero-photo-content">
+        <h3 class="card-title">
+          {{ contact_info.get_hero_title }}
+        </h3>
+        
+        <p class="card-description">
+          {{ contact_info.get_hero_description }}
+        </p>
+        
+        <!-- Використовуємо card-actions для кнопок -->
+        <div class="card-actions">
+          {% if contact_info.google_maps_url %}
+          <a href="{{ contact_info.google_maps_url }}" target="_blank" class="btn-secondary">
+            <i data-lucide="map-pin"></i>
+            <span>{% trans "Знайти нас" %}</span>
+          </a>
+          {% endif %}
+          
+          <a href="#contact-form" class="btn-primary">
+            <i data-lucide="message-circle"></i>
+            <span>{% trans "Зв'язатися" %}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+
+
+  <!-- Основний контент -->
+  <section class="contacts-main">
+    <div class="container">
+      <div class="contacts-grid">
+        
+        <!-- Ліва частина - Форма -->
+        <div class="contact-form-section">
+          <div class="form-container">
+            <h3 class="form-title">
+              {% trans "Напишіть нам" %}
+            </h3>
+            
+            <form id="contactForm" class="contact-form" method="post">
+              {% csrf_token %}
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="name">
+                    {% trans "Ім'я" %} *
+                  </label>
+                  <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                  <label for="email">Email *</label>
+                  <input type="email" id="email" name="email" required>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="phone">
+                    {% trans "Телефон" %}
+                  </label>
+                  <input type="tel" id="phone" name="phone">
+                </div>
+                
+                <div class="form-group">
+                  <label for="company">
+                    {% trans "Компанія" %}
+                  </label>
+                  <input type="text" id="company" name="company">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="subject">
+                  {% trans "Тема" %} *
+                </label>
+                <input type="text" id="subject" name="subject" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="message">
+                  {% trans "Повідомлення" %} *
+                </label>
+                <textarea id="message" name="message" rows="6" required 
+                          placeholder="{% trans 'Розкажіть про ваш проєкт або запитання...' %}"></textarea>
+              </div>
+              
+              <input type="hidden" name="referred_from" value="contact_page">
+              
+              <button type="submit" class="submit-btn btn-primary">
+                <span class="btn-text">
+                  {% trans "Надіслати повідомлення" %}
+                </span>
+                <span class="btn-loading" style="display: none;">
+                  {% trans "Надсилаємо..." %}
+                </span>
+              </button>
+            </form>
+            
+            <!-- Повідомлення про статус -->
+            <div id="formMessage" class="form-message" style="display: none;"></div>
+          </div>
+        </div>
+        
+        <!-- Права частина - Інформація -->
+        <div class="contact-info-section">
+          
+          <!-- Контактна інформація -->
+          <div class="info-block">
+            <h4 class="info-title">
+              {% trans "Контактна інформація" %}
+            </h4>
+            
+            <div class="contact-details">
+              <div class="contact-item">
+                <span class="contact-icon">
+  <i data-lucide="phone"></i>
+</span>
+                <div class="contact-content">
+                  <strong>Email</strong>
+                  <a href="mailto:{{ contact_info.email }}">{{ contact_info.email }}</a>
+                </div>
+              </div>
+              
+              <div class="contact-item">
+                <span class="contact-icon">
+  <i data-lucide="phone"></i>
+</span>
+
+                <div class="contact-content">
+                  <strong>{% trans "Телефон" %}</strong>
+                  <a href="tel:{{ contact_info.phone }}">{{ contact_info.phone }}</a>
+                </div>
+              </div>
+              
+              <div class="contact-item">
+                <span class="contact-icon">
+  <i data-lucide="globe"></i>
+</span>
+                <div class="contact-content">
+                  <strong>{% trans "Доступність" %}</strong>
+                  <span>{% trans "Доступно по всьому світу" %}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Адреса офісу -->
+          {% if contact_info.get_address_line_1 %}
+          <div class="info-block">
+            <h4 class="info-title">
+              {% trans "Адреса офісу" %}
+            </h4>
+            
+            <div class="address-block">
+              {% if contact_info.office_photo %}
+              <div class="office-photo">
+                <img src="{{ contact_info.office_photo.url }}" 
+                     alt="{% trans 'Офіс' %}" loading="lazy">
+              </div>
+              {% endif %}
+              
+              <div class="address-details">
+                <p class="address-line">{{ contact_info.get_address_line_1 }}</p>
+                {% if contact_info.address_line_2 %}
+                <p class="address-line">{{ contact_info.address_line_2 }}</p>
+                {% endif %}
+                {% if contact_info.address_line_3 %}
+                <p class="address-line">{{ contact_info.address_line_3 }}</p>
+                {% endif %}
+                <p class="address-line">{{ contact_info.city }}{% if contact_info.postal_code %}, {{ contact_info.postal_code }}{% endif %}</p>
+                <p class="address-line">{{ contact_info.get_country }}</p>
+                
+                {% if contact_info.google_maps_url %}
+                <a href="{{ contact_info.google_maps_url }}" target="_blank" class="map-link">
+                  <i data-lucide="map-pin"></i>
+                  <span>{% trans "Подивитись на Google Maps" %}</span>
+                </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          
+          <!-- Соціальні мережі -->
+          <div class="info-block">
+            <h4 class="info-title">
+              {% trans "Слідкуйте за нами" %}
+            </h4>
+            
+            <div class="social-links">
+              <a href="https://github.com/ChuprinaDaria" target="_blank" 
+                 class="social-link" rel="noopener">
+                <i data-lucide="github" class="social-icon"></i>
+                <span>GitHub</span>
+              </a>
+              <a href="https://www.linkedin.com/in/dchuprina/" target="_blank" 
+                 class="social-link" rel="noopener">
+                <i data-lucide="linkedin" class="social-icon"></i>
+                <span>LinkedIn</span>
+              </a>
+              <a href="https://www.instagram.com/lazysoft_/" target="_blank" 
+                 class="social-link" rel="noopener">
+                <i data-lucide="instagram" class="social-icon"></i>
+                <span>Instagram</span>
+              </a>
+              <a href="https://t.me/Lazysoft_news" target="_blank" 
+                 class="social-link" rel="noopener">
+                <i data-lucide="send" class="social-icon"></i>
+                <span>Telegram</span>
+              </a>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Перелінковка з іншими сторінками -->
+  <section class="related-links">
+    <div class="container">
+      <h3 class="section-title">
+        {% trans "Ознайомтесь з нашою роботою" %}
+      </h3>
+      
+      <div class="related-grid">
+        <a href="{% url 'projects' %}" class="related-card">
+          <i data-lucide="rocket" class="card-icon"></i>
+          <h4>{% trans "Наші проєкти" %}</h4>
+          <p>{% trans "Подивіться що ми створили для клієнтів" %}</p>
+        </a>
+        
+        <a href="{% url 'services_list' %}" class="related-card">
+          <i data-lucide="zap" class="card-icon"></i>
+          <h4>{% trans "Наші послуги" %}</h4>
+          <p>{% trans "Дізнайтесь як ми можемо допомогти вашому бізнесу" %}</p>
+        </a>
+        
+        <a href="{% url 'about' %}" class="related-card">
+          <i data-lucide="lightbulb" class="card-icon"></i>
+          <h4>{% trans "Про нас" %}</h4>
+          <p>{% trans "Дізнайтесь нашу історію та підхід" %}</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "{{ contact_info.get_title|default:_('Контакти')|escapejs }}",
+  "description": "{{ contact_info.get_description|striptags|default:_('Контактна сторінка')|escapejs }}",
+  "url": "https://lazysoft.dev{% url 'contacts:contact_page' %}",
+  "inLanguage": "{{ LANGUAGE_CODE }}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "{% trans 'Головна'|escapejs %}",
+        "item": "https://lazysoft.dev{% url 'home' %}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "{% trans 'Контакти'|escapejs %}",
+        "item": "https://lazysoft.dev{% url 'contacts:contact_page' %}"
+      }
+    ]
+  }
+}
+</script>
+
+<script>
+// 🌐 Django i18n контекст для JS
+const DJANGO_CONTEXT = {
+  csrfToken: '{{ csrf_token }}',
+  submitUrl: '{% url "contacts:submit_form" %}',
+  currentLang: '{{ LANGUAGE_CODE }}',
+  
+  // 📝 Переклади для JS
+  messages: {
+    sending: '{% trans "Надсилаємо..." %}',
+    success: '{% trans "Дякуємо! Ваше повідомлення надіслано. Ми зв\'яжемося з вами найближчим часом." %}',
+    error: '{% trans "Виникла помилка при відправці" %}',
+    networkError: '{% trans "Виникла помилка мережі. Спробуйте ще раз." %}',
+    
+    // Автозаповнення для subject
+    subjects: {
+      service_ai: '{% trans "Питання щодо AI послуг" %}',
+      project_inquiry: '{% trans "Запит щодо співпраці" %}'
+    }
+  }
+};
+
+// 📝 Обробка форми контакту
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const form = this;
+  const submitBtn = form.querySelector('.submit-btn');
+  const btnText = submitBtn.querySelector('.btn-text');
+  const btnLoading = submitBtn.querySelector('.btn-loading');
+  const messageDiv = document.getElementById('formMessage');
+  
+  // Показуємо стан завантаження
+  submitBtn.disabled = true;
+  btnText.style.display = 'none';
+  btnLoading.style.display = 'inline';
+  messageDiv.style.display = 'none';
+  
+  // Збираємо дані форми
+  const formData = new FormData(form);
+  
+  try {
+    const response = await fetch(DJANGO_CONTEXT.submitUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': DJANGO_CONTEXT.csrfToken
+      }
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      messageDiv.className = 'form-message success';
+      messageDiv.textContent = result.message || DJANGO_CONTEXT.messages.success;
+      form.reset(); // Очищаємо форму
+    } else {
+      messageDiv.className = 'form-message error';
+      messageDiv.textContent = result.error || DJANGO_CONTEXT.messages.error;
+    }
+    
+  } catch (error) {
+    messageDiv.className = 'form-message error';
+    messageDiv.textContent = DJANGO_CONTEXT.messages.networkError;
+  }
+  
+  // Повертаємо кнопку в нормальний стан
+  submitBtn.disabled = false;
+  btnText.style.display = 'inline';
+  btnLoading.style.display = 'none';
+  messageDiv.style.display = 'block';
+  
+  // Автоматично приховуємо повідомлення через 5 секунд
+  setTimeout(() => {
+    messageDiv.style.display = 'none';
+  }, 5000);
+});
+
+// 🔄 Ініціалізуємо Lucide іконки після завантаження
+document.addEventListener('DOMContentLoaded', function() {
+  // Ініціалізуємо іконки
+  if (typeof initLucideIcons === 'function') {
+    initLucideIcons();
+  } else if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+    console.log('🎨 Lucide icons initialized directly');
+  }
+  
+  // 📋 Автозаповнення теми при переході з іншої сторінки
+  const urlParams = new URLSearchParams(window.location.search);
+  const referredFrom = urlParams.get('from');
+  const subjectField = document.getElementById('subject');
+  
+  if (referredFrom && subjectField && DJANGO_CONTEXT.messages.subjects[referredFrom]) {
+    subjectField.value = DJANGO_CONTEXT.messages.subjects[referredFrom];
+  }
+});
+
+// 🏃‍♀️ Smooth scroll для внутрішніх посилань
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+</script>
+{% endblock %}

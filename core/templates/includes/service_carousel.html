@@ -1,0 +1,106 @@
+{% load i18n %}
+
+<!-- 🎠 КОМПАКТНА ВЕРТИКАЛЬНА КАРУСЕЛЬ СЕРВІСІВ -->
+<section class="services-preview" 
+         role="region" 
+         aria-labelledby="services-title">
+  
+  <!-- 📋 HEADER ПО ЦЕНТРУ -->
+  <div class="services-header">
+    <h2 id="services-title">
+      {{ title|default:"Our Services" }}
+    </h2>
+    {% if subtitle %}
+      <p class="services-subtitle">{{ subtitle }}</p>
+    {% endif %}
+  </div>
+
+  <!-- 🎮 CONTROL UP - ПІД ЗАГОЛОВКОМ -->
+  <div class="control-section">
+    <button class="control-btn control-up" 
+            type="button"
+            aria-label="Previous service"
+            data-direction="up">
+      <i data-lucide="chevron-up"></i>
+    </button>
+  </div>
+
+  <!-- 🎠 CAROUSEL CONTAINER -->
+  <div class="services-carousel-vertical" 
+       id="services-vertical-{{ section_id|default:'main' }}"
+       role="group" 
+       aria-live="polite">
+    
+    <div class="services-track">
+      {% for service in services %}
+        <div class="service-item" 
+             role="group" 
+             aria-label="Service {{ forloop.counter }} of {{ services|length }}">
+          
+          <!-- 🎴 INCLUDE SERVICE CARD -->
+          {% include 'includes/service_card.html' with service=service %}
+          
+        </div>
+      {% empty %}
+        <div class="services-empty">
+          <div class="empty-content">
+            <i data-lucide="settings" class="empty-icon"></i>
+            <h3>No services available</h3>
+            <p>Check back later for new services.</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- 🎮 CONTROL DOWN - ПІСЛЯ КАРУСЕЛІ -->
+  <div class="control-section">
+    <button class="control-btn control-down" 
+            type="button"
+            aria-label="Next service"
+            data-direction="down">
+      <i data-lucide="chevron-down"></i>
+    </button>
+  </div>
+
+  <!-- 🔗 FOOTER WITH ACTIONS - МІНІМАЛЬНІ ВІДСТУПИ -->
+  <div class="services-footer">
+    <!-- Спочатку Get Started, потім View All -->
+    <a href="{% url 'contacts:contact_page' %}" 
+       class="btn-primary"
+       aria-label="Get started with our services">
+      <i data-lucide="rocket"></i>
+      <span>Get Started</span>
+    </a>
+    
+    {% if show_view_all %}
+    <a href="{% url 'services_list' %}"
+       class="btn-secondary"
+       aria-label="View all {{ services|length }} services">
+      <i data-lucide="grid-3x3"></i>
+      <span>View All Services</span>
+    </a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- 🎮 SIMPLE INITIALIZATION -->
+<script>
+// Simple init without Django template syntax issues
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize Lucide icons
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+  
+  // Initialize carousel if function exists
+  if (typeof window.initVerticalServicesCarousel === 'function') {
+    setTimeout(function() {
+      window.initVerticalServicesCarousel('main-carousel', {
+        visibleItems: 3,
+        autoPlay: false
+      });
+    }, 100);
+  }
+});
+</script>

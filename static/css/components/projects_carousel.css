@@ -1,0 +1,306 @@
+/* 🎠 КАРУСЕЛЬ ПРОЄКТІВ */
+.projects-carousel-container {
+  margin: 2rem 0;
+  position: relative;
+}
+
+.projects-carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.carousel-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary, #fff);
+  margin: 0;
+}
+
+/* 🔺 НАВІГАЦІЯ З ЯСКРАВИМИ СТРІЛОЧКАМИ */
+.carousel-navigation {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  z-index: 10;
+  position: relative;
+}
+
+.carousel-nav-btn {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #66ff00;
+  border-radius: 12px;
+  background: rgba(102, 255, 0, 0.1);
+  backdrop-filter: blur(10px);
+  color: #66ff00;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(102, 255, 0, 0.3);
+}
+
+.carousel-nav-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 255, 0, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.carousel-nav-btn:hover::before {
+  left: 100%;
+}
+
+.carousel-nav-btn:hover {
+  background: rgba(102, 255, 0, 0.2);
+  border-color: #66ff00;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 0 25px rgba(102, 255, 0, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.carousel-nav-btn:active {
+  transform: translateY(0) scale(1);
+}
+
+.carousel-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 0 5px rgba(102, 255, 0, 0.1);
+  background: rgba(102, 255, 0, 0.05);
+  border-color: rgba(102, 255, 0, 0.3);
+}
+
+.carousel-nav-btn:disabled::before {
+  display: none;
+}
+
+/* Lucide іконки - ЯСКРАВІ */
+.carousel-nav-btn i {
+  width: 20px;
+  height: 20px;
+  stroke-width: 3px;
+  color: #66ff00;
+  filter: drop-shadow(0 0 3px rgba(102, 255, 0, 0.7));
+}
+
+.carousel-nav-btn:disabled i {
+  color: rgba(102, 255, 0, 0.4);
+  filter: none;
+}
+
+/* 🎠 КАРУСЕЛЬ ОБГОРТКА */
+.projects-carousel-wrapper {
+  overflow: hidden;
+  position: relative;
+  border-radius: 16px;
+}
+
+.projects-carousel-track {
+  display: flex;
+  gap: 1.5rem;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  padding: 0.5rem 0;
+}
+
+.carousel-project-item {
+  flex: 0 0 auto;
+  width: 340px;
+  max-width: 340px;
+}
+
+.carousel-project-item .project-card {
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+/* 📱 STICKY НАВІГАЦІЯ ДЛЯ МОБІЛЬНОГО */
+@media (max-width: 768px) {
+  .projects-carousel-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    position: relative;
+  }
+  
+  .carousel-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+  
+  /* STICKY НАВІГАЦІЯ */
+  .carousel-navigation {
+    position: sticky;
+    top: 80px; /* Під хедером */
+    z-index: 100;
+    justify-content: center;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    margin: 0 auto;
+    width: fit-content;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .carousel-project-item {
+    width: 280px;
+    max-width: 280px;
+  }
+  
+  .carousel-nav-btn {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+    box-shadow: 0 0 20px rgba(102, 255, 0, 0.4);
+  }
+  
+  .carousel-nav-btn i {
+    width: 18px;
+    height: 18px;
+    stroke-width: 3.5px;
+  }
+  
+  .mobile-only {
+    display: flex;
+  }
+}
+
+/* ДЕСКТОПНА НАВІГАЦІЯ */
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  /* Абсолютне позиціонування для десктопу */
+  .carousel-navigation {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    z-index: 20;
+  }
+  
+  .projects-carousel-header {
+    position: relative;
+    padding-right: 120px; /* Місце для кнопок */
+  }
+}
+
+/* 📱 ІНДИКАТОРИ */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.indicator.active,
+.indicator:hover {
+  background: #66ff00;
+  transform: scale(1.3);
+  box-shadow: 0 0 10px rgba(102, 255, 0, 0.5);
+}
+
+/* 🚫 ПУСТА КАРУСЕЛЬ */
+.empty-carousel-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  text-align: center;
+  min-height: 350px;
+}
+
+.empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+.empty-carousel-state p {
+  color: #ccc;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.empty-carousel-state small {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+/* 🌟 ВЕЛИКІ ЕКРАНИ */
+@media (min-width: 1200px) {
+  .carousel-project-item {
+    width: 360px;
+    max-width: 360px;
+  }
+  
+  .carousel-nav-btn {
+    width: 52px;
+    height: 52px;
+  }
+  
+  .carousel-nav-btn i {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* 🎨 АНІМАЦІЇ */
+.projects-carousel-track {
+  opacity: 0;
+  animation: carouselFadeIn 0.8s ease-out forwards;
+}
+
+@keyframes carouselFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ПУЛЬСУЮЧИЙ ЕФЕКТ ДЛЯ КНОПОК */
+.carousel-nav-btn {
+  animation: buttonPulse 2s infinite;
+}
+
+@keyframes buttonPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(102, 255, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(102, 255, 0, 0.5);
+  }
+}
+
+.carousel-nav-btn:hover {
+  animation: none;
+}

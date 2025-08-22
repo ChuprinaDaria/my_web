@@ -1,0 +1,281 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}
+  {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags }} | Lazysoft
+  {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags }} | Lazysoft  
+  {% else %}{{ project.title_en|striptags }} | Lazysoft{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+  {% if CURRENT_LANG == 'uk' and project.client_request_uk %}{{ project.client_request_uk|striptags|truncatewords:25 }}
+  {% elif CURRENT_LANG == 'pl' and project.client_request_pl %}{{ project.client_request_pl|striptags|truncatewords:25 }}
+  {% else %}{{ project.client_request_en|striptags|truncatewords:25 }}{% endif %}
+{% endblock %}
+
+{% block og_title %}
+  {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags }}
+  {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags }}
+  {% else %}{{ project.title_en|striptags }}{% endif %}
+{% endblock %}
+
+{% block og_description %}
+  {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:30 }}
+  {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:30 }}
+  {% else %}{{ project.short_description_en|striptags|truncatewords:30 }}{% endif %}
+{% endblock %}
+
+{% block og_image %}
+  {% if project.featured_image %}https://lazysoft.dev{{ project.featured_image.url }}
+  {% else %}https://lazysoft.dev{% static 'images/projects-og.jpg' %}{% endif %}
+{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" />
+  
+  <link rel="alternate" href="https://lazysoft.dev/en/projects/{{ project.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.dev/uk/projects/{{ project.slug }}/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.dev/pl/projects/{{ project.slug }}/" hreflang="pl">
+{% endblock %}
+
+{% block content %}
+<article class="project-detail-container">
+  
+  <!-- 🎯 Hero Section -->
+  {% include 'includes/project_hero.html' with project=project %}
+
+  <!-- 🖼️ Featured Image -->
+  {% if project.featured_image %}
+    <section class="project-featured-image">
+      <div class="container">
+        <div class="featured-image-container">
+          <img src="{{ project.featured_image.url }}" 
+               alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}{% else %}{{ project.title_en }}{% endif %}" 
+               class="main-project-image" 
+               loading="lazy">
+          <div class="image-overlay-gradient"></div>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- 📋 Main Content Layout -->
+  <section class="project-main-content">
+    <div class="container">
+      <div class="content-grid">
+        
+        <!-- 📝 Main Content Column -->
+        <div class="main-content-column">
+          
+          <!-- Client Request -->
+          {% include 'includes/project_content_block.html' with icon="💡" title=_("Client Request") content_en=project.client_request_en content_uk=project.client_request_uk content_pl=project.client_request_pl extended_content_en=project.client_request_extended_en extended_content_uk=project.client_request_extended_uk extended_content_pl=project.client_request_extended_pl %}
+
+          <!-- Implementation -->
+          {% include 'includes/project_content_block.html' with icon="⚙️" title=_("Implementation") content_en=project.implementation_en content_uk=project.implementation_uk content_pl=project.implementation_pl extended_content_en=project.implementation_extended_en extended_content_uk=project.implementation_extended_uk extended_content_pl=project.implementation_extended_pl %}
+
+          <!-- Challenges & Solutions -->
+          {% if project.challenges_and_solutions_uk or project.challenges_and_solutions_en %}
+            {% include 'includes/project_content_block.html' with icon="🧩" title=_("Challenges & Solutions") content_en=project.challenges_and_solutions_en content_uk=project.challenges_and_solutions_uk content_pl=project.challenges_and_solutions_pl %}
+          {% endif %}
+
+          <!-- Results -->
+          {% include 'includes/project_content_block.html' with icon="📈" title=_("Results & Impact") content_en=project.results_en content_uk=project.results_uk content_pl=project.results_pl extended_content_en=project.results_extended_en extended_content_uk=project.results_extended_uk extended_content_pl=project.results_extended_pl %}
+
+          <!-- Lessons Learned -->
+          {% if project.lessons_learned_uk or project.lessons_learned_en %}
+            {% include 'includes/project_content_block.html' with icon="🎓" title=_("Lessons Learned") content_en=project.lessons_learned_en content_uk=project.lessons_learned_uk content_pl=project.lessons_learned_pl %}
+          {% endif %}
+
+        </div>
+
+        <!-- 📊 Sidebar -->
+        {% include 'includes/project_sidebar.html' with project=project %}
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- 🖼️ Project Gallery -->
+  {% if project.gallery_image_1 or project.gallery_image_2 or project.gallery_image_3 %}
+    <section class="project-gallery-section">
+      <div class="container">
+        <header class="gallery-header">
+          <h2>{% trans "Project Gallery" %}</h2>
+          <p class="gallery-subtitle">{% trans "Visual overview of the implementation process" %}</p>
+        </header>
+        
+        <div class="gallery-grid">
+          {% if project.gallery_image_1 %}
+            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_1.url }}')">
+              <img src="{{ project.gallery_image_1.url }}" alt="Gallery Image 1" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+          {% if project.gallery_image_2 %}
+            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_2.url }}')">
+              <img src="{{ project.gallery_image_2.url }}" alt="Gallery Image 2" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+          {% if project.gallery_image_3 %}
+            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_3.url }}')">
+              <img src="{{ project.gallery_image_3.url }}" alt="Gallery Image 3" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- 🎥 Video Section -->
+  {% if project.video_url or project.video_file %}
+    <section class="project-video-section">
+      <div class="container">
+        <header class="video-header">
+          <h2>{% trans "Video Walkthrough" %}</h2>
+        </header>
+        
+        <div class="video-container glass">
+          {% if project.video_url %}
+            <iframe src="{{ project.video_url }}" frameborder="0" allowfullscreen></iframe>
+          {% elif project.video_file %}
+            <video controls>
+              <source src="{{ project.video_file.url }}" type="video/mp4">
+            </video>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% include 'includes/social_share.html' %}
+
+  <!-- 📞 Contact CTA -->
+  <section class="project-contact-cta">
+    <div class="container">
+      <div class="contact-cta-card glass card">
+        <div class="cta-content">
+          <h2>{% trans "Ready to Start Your Project?" %}</h2>
+          <p class="cta-description">
+            {% trans "Let's discuss how we can bring your ideas to life with custom AI and automation solutions." %}
+          </p>
+          <div class="cta-actions">
+            <button class="btn-primary" 
+                    data-project-title="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}"
+                    onclick="scrollToContact(this.dataset.projectTitle);">
+              <i data-lucide="message-circle"></i>
+              {% trans "Start Free Consultation" %}
+            </button>
+            <a href="/{{ CURRENT_LANG }}/services/" class="btn-secondary">
+              <i data-lucide="grid-3x3"></i>
+              {% trans "View All Services" %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</article>
+
+<!-- 🔍 Lightbox Modal -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-content">
+    <img id="lightbox-image" src="" alt="">
+    <button class="lightbox-close" onclick="closeLightbox()">
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": "{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}",
+  "description": "{% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|escapejs }}{% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|escapejs }}{% else %}{{ project.short_description_en|striptags|escapejs }}{% endif %}",
+  "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/projects/{{ project.slug }}/",
+  "inLanguage": "{{ CURRENT_LANG }}",
+  "dateCreated": "{{ project.project_date|date:'c' }}",
+  {% if project.featured_image %}"image": "https://lazysoft.dev{{ project.featured_image.url }}",{% endif %}
+  {% if project.technologies_used %}"keywords": "{{ project.technologies_used }}",{% endif %}
+  {% if project.project_url %}"workExample": "{{ project.project_url }}",{% endif %}
+  "creator": {
+    "@type": "Organization",
+    "name": "Lazysoft",
+    "url": "https://lazysoft.dev"
+  }
+}
+</script>
+
+<script>
+// 🔍 Lightbox functionality
+function openLightbox(imageSrc) {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightbox-image');
+  lightboxImage.src = imageSrc;
+  lightbox.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// 📞 Scroll to contact
+function scrollToContact(projectTitle) {
+  // Scroll to contact form (assuming it's on the same page or redirect)
+  window.location.href = `/${document.body.getAttribute('data-current-lang') || 'en'}/#contact`;
+  
+  // Pre-fill message if contact form exists
+  setTimeout(() => {
+    const messageField = document.querySelector('textarea[name="message"], input[name="message"]');
+    if (messageField && projectTitle) {
+      const message = `{% trans "Hi! I'm interested in the project" %} "${projectTitle}". {% trans "I'd like to discuss creating something similar for my business." %}`;
+      messageField.value = message;
+    }
+  }, 1000);
+}
+
+// 🎨 Enhanced expandable content
+document.addEventListener('DOMContentLoaded', function() {
+  const expandTriggers = document.querySelectorAll('.expand-trigger');
+  expandTriggers.forEach(trigger => {
+    trigger.addEventListener('click', function() {
+      const chevron = this.querySelector('[data-lucide="chevron-down"]');
+      if (chevron) {
+        setTimeout(() => {
+          const isOpen = this.parentElement.hasAttribute('open');
+          chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        }, 10);
+      }
+    });
+  });
+  
+  // Initialize Lucide icons
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+});
+
+// ⌨️ Keyboard navigation for lightbox
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeLightbox();
+  }
+});
+</script>
+{% endblock %}

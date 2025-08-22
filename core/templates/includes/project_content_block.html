@@ -1,0 +1,31 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 📝 Reusable Content Block -->
+<div class="content-section glass card">
+  <header class="content-section-header">
+    <div class="section-icon">{{ icon|default:"📝" }}</div>
+    <h2 class="section-title">{{ title }}</h2>
+  </header>
+  
+  <div class="content-section-body">
+    {% if CURRENT_LANG == 'uk' and content_uk %}{{ content_uk|safe }}
+    {% elif CURRENT_LANG == 'pl' and content_pl %}{{ content_pl|safe }}
+    {% else %}{{ content_en|safe }}{% endif %}
+  </div>
+  
+  <!-- Extended content if available -->
+  {% if extended_content_uk or extended_content_en or extended_content_pl %}
+    <details class="content-expandable">
+      <summary class="expand-trigger">
+        {% trans "Read more details" %}
+        <i data-lucide="chevron-down"></i>
+      </summary>
+      <div class="expanded-content">
+        {% if CURRENT_LANG == 'uk' and extended_content_uk %}{{ extended_content_uk|safe }}
+        {% elif CURRENT_LANG == 'pl' and extended_content_pl %}{{ extended_content_pl|safe }}
+        {% else %}{{ extended_content_en|safe }}{% endif %}
+      </div>
+    </details>
+  {% endif %}
+</div>

@@ -1,0 +1,393 @@
+/* ===============================================
+   🎯 BUTTONS SYSTEM - Простий та елегантний стиль
+   =============================================== */
+
+/* 🚀 BASE BUTTON */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 30px; /* Більш закруглені */
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  white-space: nowrap;
+}
+
+/* 🌟 PRIMARY BUTTON - основний стиль */
+.btn-primary,
+.cta-primary,
+.cta-button {
+  background: linear-gradient(135deg, var(--accent-green), #80ff40);
+  color: #000;
+  border: none;
+  border-radius: 30px; /* Додав для cta-button */
+  box-shadow: 0 4px 20px rgba(158, 255, 0, 0.3);
+  padding: 16px 32px; /* Додав padding */
+  font-weight: 700;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-primary:hover,
+.cta-primary:hover,
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(158, 255, 0, 0.4);
+  background: linear-gradient(135deg, #80ff40, var(--accent-green));
+}
+
+.btn-primary:active,
+.cta-primary:active,
+.cta-button:active {
+  transform: translateY(0);
+}
+
+/* 🎨 SECONDARY BUTTON */
+.btn-secondary,
+.cta-secondary {
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  color: var(--text-primary);
+  backdrop-filter: blur(20px);
+  border-radius: 30px; /* Додав для консистентності */
+  padding: 16px 32px;
+  font-weight: 700;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-secondary:hover,
+.cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  transform: translateY(-2px);
+}
+
+/* 👻 GHOST BUTTON */
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  padding: 14px 28px;
+}
+
+.btn-ghost:hover {
+  background: rgba(102, 255, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+/* 🔗 LINK BUTTON */
+.btn-link {
+  background: transparent;
+  border: none;
+  color: var(--accent-green);
+  text-decoration: underline;
+  padding: 12px 20px;
+}
+
+.btn-link:hover {
+  color: var(--accent-pink);
+  text-decoration: none;
+}
+
+/* 📏 BUTTON SIZES */
+.btn-sm {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-md {
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.btn-lg {
+  padding: 18px 36px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* 🔄 SECONDARY ACTIONS (Details, Demo links) */
+.details-link,
+.demo-link {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.details-link:hover,
+.demo-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.demo-link {
+  background: rgba(102, 255, 0, 0.1);
+  border-color: rgba(102, 255, 0, 0.3);
+  color: var(--accent-green);
+}
+
+.demo-link:hover {
+  background: rgba(102, 255, 0, 0.2);
+  border-color: rgba(102, 255, 0, 0.5);
+  color: #80ff20;
+}
+
+/* 🔄 NAVIGATION КНОПКИ */
+.nav-btn {
+  padding: 12px 24px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 25px;
+  color: var(--text-primary);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(20px);
+  cursor: pointer;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  transform: translateY(-2px);
+}
+
+/* 📤 SHARE КНОПКИ */
+.share-btn,
+.share-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 25px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(20px);
+}
+
+.share-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.share-btn.facebook:hover {
+  border-color: #1877f2;
+  color: #1877f2;
+}
+
+.share-btn.twitter:hover {
+  border-color: #1da1f2;
+  color: #1da1f2;
+}
+
+.share-btn.linkedin:hover {
+  border-color: #0077b5;
+  color: #0077b5;
+}
+
+/* 🌈 ПРИОРИТЕТНІ КНОПКИ (менше сяяння) */
+.btn-priority,
+.project-card[data-priority="5"] .cta-button,
+.project-card[data-priority="4"] .cta-button {
+  background: linear-gradient(135deg, #ff00ff, #ff0080);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(255, 0, 255, 0.3);
+}
+
+.btn-priority:hover,
+.project-card[data-priority="5"] .cta-button:hover,
+.project-card[data-priority="4"] .cta-button:hover {
+  background: linear-gradient(135deg, #ff20ff, #ff2090);
+  box-shadow: 0 6px 25px rgba(255, 0, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 📱 SIDEBAR КНОПКИ */
+.sidebar-cta-button {
+  width: 100%;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, var(--accent-green), #80ff40);
+  color: #000;
+  border: none;
+  border-radius: 30px; /* Більш закруглені */
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(158, 255, 0, 0.3);
+}
+
+.sidebar-cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(158, 255, 0, 0.4);
+}
+
+/* 🔄 HERO CTA BUTTONS */
+.hero-cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.hero-cta .cta-primary,
+.hero-cta .cta-secondary {
+  padding: 16px 32px;
+  border-radius: 30px; /* Як на скріні */
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+/* ⚙️ BUTTON STATES */
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn.loading {
+  pointer-events: none;
+}
+
+.btn.loading::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 8px;
+}
+
+/* 🎭 КНОПКА ІКОНКИ */
+.btn-icon {
+  font-size: 16px;
+}
+
+.btn-arrow {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.btn:hover .btn-arrow {
+  transform: translateX(3px);
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 768px) {
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .cta-primary,
+  .cta-secondary {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+    padding: 14px 24px;
+    font-size: 15px;
+  }
+  
+  .hero-cta {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+  }
+  
+  .details-link,
+  .demo-link {
+    padding: 10px 16px;
+    text-align: center;
+  }
+  
+  .btn-lg {
+    padding: 16px 28px;
+    font-size: 16px;
+  }
+}
+
+/* 📱 Дуже маленькі екрани */
+@media (max-width: 480px) {
+  .btn,
+  .cta-primary,
+  .cta-secondary {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+}
+
+/* 🎪 ANIMATIONS */
+@keyframes spin {
+  to { 
+    transform: rotate(360deg); 
+  }
+}
+
+/* 🚫 Прибираємо всі надмірні ефекти */
+.btn::before,
+.cta-button::before,
+.btn-primary::before {
+  display: none !important;
+}
+
+/* 🎯 Чистий стиль без анімацій */
+.btn,
+.cta-primary,
+.cta-secondary,
+.cta-button {
+  animation: none !important;
+}

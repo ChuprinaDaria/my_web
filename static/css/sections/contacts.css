@@ -1,0 +1,694 @@
+/* ===============================================
+   📞 CONTACTS PAGE STYLES - без перекриття footer
+   Використовує існуючі стилі з cards.css, buttons.css та containers.css
+   =============================================== */
+
+/* 🏠 Основний контейнер */
+.contacts-page {
+  margin-top: 0;
+}
+
+/* 🦸‍♀️ Hero секція - використовуємо існуючий container + section */
+.contacts-hero {
+  padding: var(--spacing-3xl) 0;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(102, 255, 0, 0.02) 0%, rgba(255, 0, 255, 0.02) 100%);
+}
+
+.contacts-hero .hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.contacts-hero .hero-description {
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2xl);
+  line-height: 1.6;
+}
+
+/* 🚀 Швидкі контакти - використовуємо flex утиліти */
+.contacts-page .quick-contacts {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-2xl);
+}
+
+.contacts-page .quick-contact-item {
+  /* Використовуємо стилі з buttons.css та cards.css */
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 25px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: var(--transition-bounce);
+  backdrop-filter: var(--blur-medium);
+  font-weight: 600;
+}
+
+.contacts-page .quick-contact-item:hover {
+  background: rgba(102, 255, 0, 0.1);
+  border-color: var(--accent-green);
+  transform: translateY(-2px);
+  color: var(--accent-green);
+}
+
+.contacts-page .quick-contact-item .contact-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* 📋 Основний контент - використовуємо grid layout */
+.contacts-main {
+  padding: var(--spacing-3xl) 0;
+}
+
+.contacts-grid {
+  /* Використовуємо існуючий two-column layout */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3xl);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 📝 Форма - використовуємо card стилі */
+.contact-form-section .form-container {
+  /* Базуємося на card стилях */
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-2xl);
+  backdrop-filter: var(--blur-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-form-section .form-container::before {
+  /* Додаємо shimmer effect з cards.css */
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(102, 255, 0, 0.1),
+    transparent
+  );
+  transition: left var(--transition-slow);
+}
+
+.contact-form-section:hover .form-container::before {
+  left: 100%;
+}
+
+.form-container .form-title {
+  color: var(--accent-green);
+  margin-bottom: var(--spacing-xl);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* 📝 Форма стилі - використовуємо grid та існуючі input стилі */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.contacts-page .form-row {
+  /* Використовуємо grid-2 */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.contacts-page .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.contacts-page .form-group label {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.contacts-page .form-group input,
+.contacts-page .form-group textarea {
+  /* Базуємося на card стилях для input */
+  padding: var(--spacing-md);
+  background: var(--glass-bg-weak);
+  border: 1px solid var(--glass-border-weak);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 16px;
+  transition: var(--transition-normal);
+  backdrop-filter: var(--blur-light);
+}
+
+.contacts-page .form-group input::placeholder,
+.contacts-page .form-group textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+.contacts-page .form-group input:focus,
+.contacts-page .form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-green);
+  background: rgba(102, 255, 0, 0.05);
+  box-shadow: 0 0 0 3px rgba(102, 255, 0, 0.1);
+}
+
+.contacts-page .form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* 🚀 Submit кнопка - використовуємо btn-primary */
+.contacts-page .contact-form .submit-btn {
+  /* Наслідуємо від btn-primary */
+  width: 100%;
+  margin-top: var(--spacing-lg);
+}
+
+/* ✅ Повідомлення - використовуємо card стилі */
+.contacts-page .form-message {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-top: var(--spacing-lg);
+  font-weight: 600;
+  border: 1px solid;
+  backdrop-filter: var(--blur-light);
+}
+
+.contacts-page .form-message.success {
+  background: rgba(102, 255, 0, 0.1);
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+}
+
+.contacts-page .form-message.error {
+  background: rgba(255, 68, 68, 0.1);
+  border-color: #ff4444;
+  color: #ff4444;
+}
+
+/* ℹ️ Інформаційна секція - використовуємо card стилі */
+.contact-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2xl);
+}
+
+.contacts-page .info-block {
+  /* Використовуємо card стилі */
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-xl);
+  backdrop-filter: var(--blur-medium);
+  transition: var(--transition-bounce);
+}
+
+.contacts-page .info-block:hover {
+  transform: translateY(-3px);
+  border-color: rgba(102, 255, 0, 0.3);
+}
+
+.contacts-page .info-block .info-title {
+  color: var(--accent-green);
+  margin-bottom: var(--spacing-lg);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+/* 📞 Контактні деталі */
+.contacts-page .contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.contacts-page .contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-normal);
+}
+
+.contacts-page .contact-item:hover {
+  background: rgba(102, 255, 0, 0.05);
+}
+
+.contacts-page .contact-item .contact-icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.contacts-page .contact-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.contacts-page .contact-content strong {
+  color: var(--text-white);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.contacts-page .contact-content a {
+  color: var(--accent-green);
+  text-decoration: none;
+  font-size: 16px;
+  transition: color var(--transition-normal);
+}
+
+.contacts-page .contact-content a:hover {
+  color: #80ff40;
+  text-decoration: underline;
+}
+
+/* 🏢 Адреса офісу */
+.contacts-page .address-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.contacts-page .office-photo {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+
+.contacts-page .office-photo img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.contacts-page .office-photo:hover img {
+  transform: scale(1.05);
+}
+
+.contacts-page .address-details {
+  line-height: 1.6;
+}
+
+.contacts-page .address-line {
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.contacts-page .address-line:last-child {
+  margin-bottom: 0;
+}
+
+.contacts-page .map-link {
+  /* Використовуємо btn-ghost стиль */
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  color: var(--accent-green);
+  text-decoration: none;
+  margin-top: var(--spacing-md);
+  font-weight: 600;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid rgba(102, 255, 0, 0.3);
+  border-radius: var(--radius-md);
+  transition: var(--transition-normal);
+}
+
+.contacts-page .map-link:hover {
+  background: rgba(102, 255, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+/* 🌐 Соціальні мережі в contacts (НЕ footer) */
+.contact-info-section .social-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.contact-info-section .social-link {
+  /* Базуємося на social-link з footer але горизонтальні */
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  min-height: 60px;
+  background: var(--glass-bg-weak);
+  border: 1px solid var(--glass-border-weak);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: var(--transition-normal);
+  font-weight: 500;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.contact-info-section .social-link:hover {
+  background: rgba(102, 255, 0, 0.1);
+  border-color: var(--accent-green);
+  transform: translateX(3px);
+  color: var(--accent-green);
+}
+
+.contact-info-section .social-link .social-icon {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  flex-shrink: 0;
+  font-size: 20px; /* Для emoji */
+}
+
+/* 🔗 Related links - використовуємо cards grid */
+.contacts-page .related-links {
+  padding: var(--spacing-3xl) 0;
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.contacts-page .related-links .section-title {
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+  color: var(--accent-green);
+}
+
+.contacts-page .related-grid {
+  /* Використовуємо cards-grid-3 */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contacts-page .related-card {
+  /* Використовуємо card стилі */
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: var(--transition-bounce);
+  backdrop-filter: var(--blur-medium);
+  position: relative;
+  overflow: hidden;
+}
+
+.contacts-page .related-card::before {
+  /* Shimmer effect з cards */
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 255, 0, 0.1), transparent);
+  transition: left var(--transition-slow);
+}
+
+.contacts-page .related-card:hover::before {
+  left: 100%;
+}
+
+.contacts-page .related-card:hover {
+  border-color: var(--accent-green);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(102, 255, 0, 0.1);
+}
+
+.contacts-page .related-card .card-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto var(--spacing-lg) auto;
+  display: block;
+  color: var(--accent-green);
+}
+
+.contacts-page .related-card h4 {
+  margin-bottom: var(--spacing-md);
+  color: var(--accent-green);
+}
+
+.contacts-page .related-card p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* 📱 Responsive - використовуємо існуючі breakpoints */
+@media (max-width: 1024px) {
+  .contacts-grid {
+    /* Використовуємо two-column responsive */
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+  }
+  
+  .contact-info-section {
+    order: -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .contacts-page .form-row {
+    /* На mobile переходимо на grid-1 */
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .contacts-page .quick-contacts {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  
+  .contacts-page .quick-contact-item {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+  
+  .contacts-page .related-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .form-container {
+    padding: var(--spacing-xl);
+  }
+  
+  .contacts-page .info-block {
+    padding: var(--spacing-lg);
+  }
+  
+  .contacts-main {
+    padding: var(--spacing-2xl) 0;
+  }
+  
+  .contacts-page .related-links {
+    padding: var(--spacing-2xl) 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .contacts-hero {
+    padding: var(--spacing-2xl) 0;
+  }
+  
+  .form-container {
+    padding: var(--spacing-lg);
+  }
+  
+  .contacts-page .info-block {
+    padding: var(--spacing-md);
+  }
+  
+  .contacts-page .related-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .contact-info-section .social-link {
+    padding: var(--spacing-md) var(--spacing-lg);
+    min-height: 50px;
+    font-size: 15px;
+  }
+  
+  .contact-info-section .social-links {
+    gap: var(--spacing-sm);
+  }
+  
+  .contact-info-section .social-link .social-icon {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+  }
+}
+
+/* 📸 HERO PHOTO SECTION - доповнюємо до contacts.css */
+
+/* Основна секція - використовуємо існуючі змінні */
+.contacts-hero-photo {
+  padding: var(--spacing-3xl) 0;
+  background: rgba(255, 255, 255, 0.01);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Спеціальні стилі для hero photo контейнера */
+.contacts-hero-photo .card-horizontal {
+  /* Наслідуємо від card-horizontal з cards.css */
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 400px;
+  align-items: center;
+}
+
+/* Hero photo контейнер */
+.hero-photo-container {
+  /* Наслідуємо від card-image з cards.css */
+  width: 50%;
+  min-width: 400px;
+  height: 350px;
+  border-radius: var(--radius-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Transition наслідується від .card-image img */
+}
+
+/* Hero photo контент */
+.hero-photo-content {
+  /* Наслідуємо від card-content з cards.css */
+  flex: 1;
+  padding-left: var(--spacing-xl);
+}
+
+/* Спеціальні налаштування для hero card */
+.contacts-hero-photo .card-title {
+  /* Збільшуємо заголовок */
+  font-size: 2rem;
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: var(--spacing-lg);
+}
+
+.contacts-hero-photo .card-description {
+  /* Збільшуємо опис */
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: var(--spacing-xl);
+  color: var(--text-secondary);
+}
+
+/* Card actions для hero секції */
+.contacts-hero-photo .card-actions {
+  /* Наслідуємо від card-actions з cards.css */
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-xl);
+}
+
+/* Спеціальний hover ефект для hero card */
+.contacts-hero-photo .card:hover {
+  /* Менший підйом для hero card */
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(102, 255, 0, 0.1);
+}
+
+/* 📱 RESPONSIVE для hero photo */
+@media (max-width: 1024px) {
+  .hero-photo-container {
+    min-width: 350px;
+    height: 300px;
+  }
+  
+  .contacts-hero-photo .card-horizontal {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .contacts-hero-photo {
+    padding: var(--spacing-2xl) 0;
+  }
+  
+  /* На mobile перехід на вертикальний layout */
+  .contacts-hero-photo .card-horizontal {
+    /* card-horizontal вже має responsive з cards.css */
+    max-width: 100%;
+  }
+  
+  .hero-photo-container {
+    width: 100%;
+    min-width: 100%;
+    height: 250px;
+  }
+  
+  .hero-photo-content {
+    padding-left: 0;
+    margin-top: var(--spacing-lg);
+    text-align: center;
+  }
+  
+  .contacts-hero-photo .card-title {
+    font-size: 1.5rem;
+  }
+  
+  .contacts-hero-photo .card-description {
+    font-size: 1rem;
+  }
+  
+  .contacts-hero-photo .card-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-photo-container {
+    height: 200px;
+  }
+  
+  .contacts-hero-photo .card-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+  
+  .contacts-hero-photo .card-actions .btn-primary,
+  .contacts-hero-photo .card-actions .btn-secondary {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+  }
+}
