@@ -1,15 +1,15 @@
 /* ===============================================
-   🎠 VERTICAL SERVICES CAROUSEL - Компактний центрований
+   🎠 VERTICAL SERVICES CAROUSEL - Компактний але з відступами
    =============================================== */
 
-/* 🎨 SERVICES PREVIEW SECTION - КОМПАКТНА */
+/* 🎨 SERVICES PREVIEW SECTION - З відступами */
 .services-preview {
   width: 100%;
-  padding: var(--spacing-xs) var(--spacing-lg); /* Мінімальний padding */
+  padding: var(--spacing-lg) var(--spacing-lg); /* Збільшений padding */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0; /* БЕЗ ВІДСТУПІВ */
+  gap: var(--spacing-md); /* Додаємо gap між секціями */
   background: rgba(255, 255, 255, 0.02);
   border-radius: var(--radius-2xl);
   position: relative;
@@ -18,13 +18,13 @@
 /* 📋 SERVICES HEADER - ПО ЦЕНТРУ */
 .services-header {
   text-align: center;
-  margin-bottom: 0; /* БЕЗ ВІДСТУПУ */
+  margin-bottom: var(--spacing-md); /* Додаємо відступ */
   width: 100%;
   max-width: 1200px;
 }
 
 .services-header h2 {
-  margin-bottom: 0; /* БЕЗ ВІДСТУПУ */
+  margin-bottom: var(--spacing-sm); /* Додаємо відступ до підзаголовка */
   color: var(--text-white);
   font-size: clamp(2rem, 4vw, 2.8rem);
   font-weight: 700;
@@ -39,12 +39,12 @@
   margin: 0 auto; /* Центруємо */
 }
 
-/* 🎮 CONTROL SECTIONS - ВЕРТИКАЛЬНО ПО ЦЕНТРУ */
+/* 🎮 CONTROL SECTIONS - З відступами */
 .control-section {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin: 0; /* БЕЗ ВІДСТУПІВ */
+  margin: var(--spacing-md) 0; /* Додаємо відступи зверху і знизу */
 }
 
 .control-btn {
@@ -109,13 +109,13 @@
   border-radius: var(--radius-xl);
   width: 100%;
   max-width: 1200px;
-  margin: 0; /* Без відступів */
+  margin: var(--spacing-sm) 0; /* Додаємо невеликі відступи */
 }
 
 .services-track {
   display: flex;
   flex-direction: column;
-  gap: 0; /* БЕЗ ВІДСТУПІВ МІЖ КАРТКАМИ */
+  gap: var(--spacing-sm); /* Додаємо мінімальний gap між картками */
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
@@ -123,7 +123,7 @@
 .service-item {
   flex-shrink: 0;
   width: 100%;
-  margin: 0; /* БЕЗ ВІДСТУПІВ */
+  margin: 0;
 }
 
 /* 🎴 SERVICE CARD - КОМПАКТНИЙ */
@@ -134,8 +134,8 @@
   width: 100%;
   background: var(--glass-bg);
   border: 2px solid transparent;
-  border-radius: var(--radius-md); /* Менший радіус */
-  padding: var(--spacing-sm); /* Менший padding */
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md); /* Збільшений padding для комфорту */
   cursor: pointer;
   transition: all var(--transition-normal);
   backdrop-filter: var(--blur-medium);
@@ -171,7 +171,7 @@
 }
 
 .service-card:hover {
-  transform: translateY(-3px) scale(1.005); /* Менший ефект */
+  transform: translateY(-3px) scale(1.005);
   box-shadow: 
     0 8px 24px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(255, 0, 255, 0.3);
@@ -184,7 +184,7 @@
 
 /* 🖼️ SERVICE IMAGE - КОМПАКТНИЙ */
 .service-image {
-  width: 120px; /* СТАНДАРТНИЙ РОЗМІР ЯК ABOUT */
+  width: 120px;
   height: 120px;
   flex-shrink: 0;
   border-radius: var(--radius-md);
@@ -225,7 +225,7 @@
 }
 
 .service-text h3 {
-  font-size: 1.5rem; /* СТАНДАРТНИЙ РОЗМІР */
+  font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: var(--spacing-sm);
   color: var(--text-white);
@@ -233,7 +233,7 @@
 }
 
 .service-text p {
-  font-size: 1rem; /* СТАНДАРТНИЙ РОЗМІР */
+  font-size: 1rem;
   line-height: 1.6;
   color: var(--text-primary);
   margin-bottom: var(--spacing-sm);
@@ -243,19 +243,19 @@
 .service-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px; /* Мінімальний gap */
-  margin-bottom: var(--spacing-xs);
+  gap: var(--spacing-xs); /* Більший gap */
+  margin-bottom: var(--spacing-sm);
 }
 
 .service-tag {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 2px 6px; /* Менший padding */
+  gap: 4px; /* Більший gap */
+  padding: 4px 8px; /* Більший padding */
   background: rgba(158, 255, 0, 0.1);
   border: 1px solid rgba(158, 255, 0, 0.3);
   border-radius: var(--radius-sm);
-  font-size: 0.7rem; /* Менший шрифт */
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--accent-green);
 }
@@ -264,24 +264,63 @@
 .service-metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px; /* Мінімальний gap */
-  margin-top: var(--spacing-xs);
+  gap: var(--spacing-xs); /* Більший gap */
+  margin-top: var(--spacing-sm);
 }
 
 .metric {
-  font-size: 0.75rem; /* Менший шрифт */
+  font-size: 0.8rem;
   color: var(--text-secondary);
-  padding: 2px 4px; /* Менший padding */
+  padding: 4px 6px; /* Більший padding */
   background: rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-sm);
 }
 
-/* 🔗 SERVICES FOOTER - МІНІМАЛЬНІ ВІДСТУПИ */
+/* 🎯 CTA BUTTON - як у проєктах */
+.service-cta {
+  margin-top: var(--spacing-sm);
+}
+
+.service-card .cta-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: transparent;
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: fit-content;
+}
+
+.service-card .cta-button:hover {
+  background: var(--accent-green);
+  color: #000;
+  transform: translateX(4px);
+}
+
+.service-card .cta-arrow {
+  transition: transform var(--transition-fast);
+}
+
+.service-card .cta-button:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+.service-card .cta-icon {
+  font-size: 0.9rem;
+}
+
+/* 🔗 SERVICES FOOTER - З відступом */
 .services-footer {
   display: flex;
   justify-content: center;
-  gap: var(--spacing-sm); /* Менший gap */
-  margin-top: 0; /* БЕЗ ВІДСТУПУ */
+  gap: var(--spacing-md); /* Більший gap */
+  margin-top: var(--spacing-lg); /* Додаємо відступ зверху */
   flex-wrap: wrap;
   width: 100%;
   max-width: 1200px;
@@ -292,7 +331,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px; /* Менша висота */
+  min-height: 200px;
 }
 
 .empty-content {
@@ -301,7 +340,7 @@
 }
 
 .empty-icon {
-  width: 36px; /* Менший розмір */
+  width: 36px;
   height: 36px;
   margin: 0 auto var(--spacing-sm);
   opacity: 0.5;
@@ -312,11 +351,15 @@
   .services-carousel-vertical {
     height: 450px;
   }
+  
+  .service-card {
+    padding: var(--spacing-sm);
+  }
 }
 
 @media (max-width: 768px) {
   .services-preview {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md);
   }
   
   .service-card {
@@ -328,8 +371,8 @@
   }
   
   .service-image {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
   }
   
   .services-carousel-vertical {
@@ -339,18 +382,18 @@
   .services-footer {
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
   }
 }
 
 @media (max-width: 480px) {
   .services-preview {
-    padding: var(--spacing-xs) var(--spacing-sm);
+    padding: var(--spacing-sm);
   }
   
   .control-btn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
   
   .control-btn i {
@@ -359,11 +402,16 @@
   }
   
   .service-card {
-    padding: var(--spacing-xs);
+    padding: var(--spacing-sm);
   }
   
   .services-carousel-vertical {
     height: 350px;
+  }
+  
+  .service-image {
+    width: 60px;
+    height: 60px;
   }
 }
 

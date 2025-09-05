@@ -1,235 +1,174 @@
 /* ===============================================
-   🌈 PROJECTS SECTION - Райдужні карти проєктів
+   PROJECTS SECTION - Чисті картки проєктів
    =============================================== */
 
-/* 🎯 PROJECT CARD - НАЙЯСКРАВІШІ КАРТИ */
+/* PROJECT CARD - Основна картка */
 .project-card {
   min-width: 320px;
   max-width: 380px;
-  background: var(--glass-bg);
-  border-radius: var(--radius-2xl);
-  padding: var(--spacing-lg);
+  background: rgba(20, 20, 25, 0.95); 
+  border-radius: 20px;
+  padding: 20px;
   cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: var(--blur-heavy);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
   scroll-snap-align: start;
   box-sizing: border-box;
   
-  /* 🌈 RAINBOW BORDER SETUP */
-  border: 2px solid transparent;
-  background-clip: padding-box;
+  /* Звичайний зелений border */
+  border: 2px solid rgba(102, 255, 0, 0.2);
   
-  /* 🌟 BASE GLOW */
+  /* Базова тінь */
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
+    0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-/* 🌈 RAINBOW BORDER EFFECT */
+/* Градієнтний border тільки при hover */
 .project-card::before {
   content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, 
+    rgba(102, 255, 0, 0.6), 
+    rgba(0, 255, 255, 0.4), 
+    rgba(255, 0, 255, 0.3),
+    rgba(102, 255, 0, 0.6)
+  );
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover ефекти */
+.project-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: transparent;
+  /* Райдужний outer glow при hover */
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(255, 0, 128, 0.4),
+    0 0 50px rgba(255, 140, 0, 0.3),
+    0 0 70px rgba(64, 224, 208, 0.2),
+    0 0 90px rgba(138, 43, 226, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.project-card:hover::before {
+  opacity: 0.7; /* Яскравий градієнт при hover */
+}
+
+/* PROJECT IMAGE */
+.project-image {
+  position: relative;
+  margin: -20px -20px 16px -20px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.project-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.project-card:hover .project-image img {
+  transform: scale(1.05);
+}
+
+/* Overlay на зображення */
+.image-overlay {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: var(--radius-2xl);
-  padding: 2px;
-  background: var(--rainbow-gradient);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: xor;
-  -webkit-mask-composite: xor;
-  opacity: 0.7;
-  z-index: -1;
-  animation: rainbow-rotate var(--anim-rainbow) linear infinite;
-}
-
-/* 🌊 SHIMMER EFFECT */
-.project-card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 0, 255, 0.2),
-    rgba(0, 255, 255, 0.2),
-    rgba(255, 0, 128, 0.2),
+  background: linear-gradient(135deg,
+    rgba(102, 255, 0, 0.1),
+    rgba(0, 255, 255, 0.1),
     transparent
   );
-  transition: left 0.7s ease;
-  z-index: 1;
-  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-/* 🔥 HOVER EFFECTS */
-.project-card:hover {
-  transform: translateY(-8px) scale(1.03);
-  box-shadow: var(--shadow-rainbow);
-}
-
-.project-card:hover::before {
+.project-card:hover .image-overlay {
   opacity: 1;
-  animation-duration: 1.5s;
-  box-shadow: 
-    inset 0 0 30px rgba(255, 0, 255, 0.5),
-    inset 0 0 60px rgba(0, 255, 255, 0.4);
 }
 
-.project-card:hover::after {
-  left: 100%;
+/* PROJECT CONTENT */
+.project-content {
+  position: relative;
+  z-index: 2;
 }
 
-/* 🏷️ PROJECT TAGS */
+.project-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+/* PROJECT TAGS */
 .project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-  position: relative;
-  z-index: var(--z-content);
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
-/* 🎯 BASE TAG STYLE */
 .project-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 4px 10px;
+  padding: 4px 12px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   font-size: 11px;
   font-weight: 600;
-  color: var(--text-primary);
-  backdrop-filter: var(--blur-light);
-  transition: var(--transition-fast);
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
 }
 
 .project-tag:hover {
   background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(102, 255, 0, 0.4);
+  color: #66ff00;
 }
 
-/* 🎨 TAG VARIANTS - ТІЛЬКИ BORDER КОЛЬОРИ */
-.project-tag.primary {
-  border-color: rgba(255, 215, 0, 0.4); /* Золотий */
-}
+/* Кольорові варіанти тегів */
+.project-tag.primary { border-color: rgba(255, 215, 0, 0.4); }
+.project-tag.highlight { border-color: rgba(102, 255, 0, 0.4); }
+.project-tag.innovation { border-color: rgba(0, 191, 255, 0.4); }
+.project-tag.ai-powered { border-color: rgba(147, 51, 234, 0.4); }
+.project-tag.enterprise { border-color: rgba(156, 163, 175, 0.4); }
+.project-tag.complex { border-color: rgba(239, 68, 68, 0.4); }
 
-.project-tag.highlight,
-.project-tag.top-badge {
-  border-color: rgba(102, 255, 0, 0.4); /* Зелений */
-}
-
-.project-tag.innovation {
-  border-color: rgba(0, 191, 255, 0.4); /* Блакитний */
-}
-
-.project-tag.ai-powered {
-  border-color: rgba(147, 51, 234, 0.4); /* Фіолетовий */
-}
-
-.project-tag.enterprise {
-  border-color: rgba(156, 163, 175, 0.4); /* Сірий */
-}
-
-.project-tag.complex {
-  border-color: rgba(239, 68, 68, 0.4); /* Червоний */
-}
-
-/* 🎨 CUSTOM COLOR TAGS */
-.project-tag.custom[data-color="green"] { border-color: rgba(34, 197, 94, 0.4); }
-.project-tag.custom[data-color="blue"] { border-color: rgba(59, 130, 246, 0.4); }
-.project-tag.custom[data-color="purple"] { border-color: rgba(168, 85, 247, 0.4); }
-.project-tag.custom[data-color="orange"] { border-color: rgba(249, 115, 22, 0.4); }
-.project-tag.custom[data-color="red"] { border-color: rgba(239, 68, 68, 0.4); }
-.project-tag.custom[data-color="gold"] { border-color: rgba(255, 215, 0, 0.4); }
-
-/* 🔮 TAG ICONS */
-.project-tag .tag-icon {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-/* 🖼️ PROJECT IMAGE */
-.project-image {
-  position: relative;
-  margin: -8px -8px 16px -8px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.project-image img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  transition: transform var(--transition-slow);
-}
-
-.project-card:hover .project-image img {
-  transform: scale(1.05);
-}
-
-.image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 0, 255, 0.1),
-    rgba(0, 255, 255, 0.1),
-    transparent
-  );
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.project-card:hover .image-overlay {
-  opacity: 1;
-}
-
-/* 📝 PROJECT CONTENT */
-.project-content {
-  position: relative;
-  z-index: var(--z-content);
-  padding-bottom: var(--spacing-sm);
-}
-
-.project-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: var(--spacing-sm);
-  background: linear-gradient(135deg, var(--text-white));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.3;
-}
-
-/* 💡 CLIENT REQUEST BLOCK */
+/* CLIENT REQUEST BLOCK */
 .client-request {
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-sm);
+  margin-bottom: 16px;
+  padding: 12px;
   background: rgba(102, 255, 0, 0.05);
   border: 1px solid rgba(102, 255, 0, 0.2);
-  border-radius: var(--radius-md);
-  position: relative;
+  border-radius: 12px;
 }
 
 .request-label {
   display: block;
   font-size: 11px;
-  font-family: "Inter", sans-serif;
   font-weight: 700;
-  color: var(--text-white);
+  color: #ffffff;
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -237,28 +176,26 @@
 
 .request-text {
   font-size: 13px;
-  font-family: "Inter", sans-serif;
   line-height: 1.4;
-  color: var(--text-primary);
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
   font-style: italic;
 }
 
-/* 🚀 PROJECT RESULT BLOCK */
+/* PROJECT RESULT BLOCK */
 .project-result {
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-sm);
+  margin-bottom: 16px;
+  padding: 12px;
   background: rgba(0, 255, 255, 0.05);
   border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
 }
 
 .result-label {
   display: block;
   font-size: 11px;
-  font-family: "Inter", sans-serif;
   font-weight: 700;
-  color: var(--text-white);
+  color: #ffffff;
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -266,77 +203,54 @@
 
 .result-text {
   font-size: 13px;
-  font-family: "Inter", sans-serif;
   line-height: 1.4;
-  color: var(--text-primary);
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
 }
 
-/* 📊 PROJECT METRICS */
+/* PROJECT METRICS */
 .project-metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-sm);
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .metric-item {
-  padding: 4px 10px;
+  padding: 4px 12px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: var(--blur-light);
+  backdrop-filter: blur(10px);
   white-space: nowrap;
 }
 
-/* 🎯 PROJECT CTA SECTION */
+/* PROJECT CTA */
 .project-cta {
-  margin-top: var(--spacing-lg);
-  padding: var(--spacing-md) 0 0 0;
+  margin-top: 20px;
+  padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  gap: 12px;
   position: relative;
-  z-index: var(--z-overlay);
+  z-index: 3;
 }
 
-/* 🎬 SECONDARY ACTIONS */
 .secondary-actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 8px;
   justify-content: center;
 }
 
-/* 🌟 PROJECT GLOW EFFECT */
-.project-glow-effect {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background: linear-gradient(
-    to top,
-    rgba(255, 0, 255, 0.1),
-    transparent
-  );
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.project-card:hover .project-glow-effect {
-  opacity: 1;
-}
-
-/* 🎨 PROJECTS LAYOUT */
+/* PROJECTS LAYOUT */
 .projects {
-  padding: var(--spacing-3xl) 0;
+  padding: 60px 0; /* Зменшено з var(--spacing-3xl) */
 }
 
 .projects-carousel {
@@ -345,7 +259,7 @@
   width: 100%;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding: 0 var(--spacing-lg);
+  padding: 0 20px;
 }
 
 .projects-carousel::-webkit-scrollbar {
@@ -354,57 +268,56 @@
 
 .projects-carousel::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-sm);
+  border-radius: 4px;
 }
 
 .projects-carousel::-webkit-scrollbar-thumb {
-  background: var(--accent-green);
-  border-radius: var(--radius-sm);
+  background: #66ff00;
+  border-radius: 4px;
 }
 
 .projects-container {
   display: flex;
   flex-wrap: nowrap;
-  gap: var(--spacing-lg);
+  gap: 24px;
   width: max-content;
-  padding: var(--spacing-lg) 0;
+  padding: 20px 0;
 }
 
-/* 🏠 HOME PAGE PROJECTS */
+/* HOME PAGE PROJECTS */
 .projects .project-card {
   min-width: 300px;
   max-width: 350px;
 }
 
-/* 📄 PROJECTS PAGE LAYOUT */
+/* PROJECTS PAGE LAYOUT */
 .projects-page {
   margin-top: 0;
 }
 
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg) 0;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 40px 0; /* Зменшено */
 }
 
-/* 🎨 PROJECTS HERO */
+/* PROJECTS HERO */
 .projects-hero {
-  padding: var(--spacing-3xl) 0;
+  padding: 60px 0; /* Зменшено з var(--spacing-3xl) */
   text-align: center;
-  background: linear-gradient(
-    135deg, 
+  background: linear-gradient(135deg, 
     rgba(102, 255, 0, 0.02) 0%, 
     rgba(255, 0, 255, 0.02) 100%
   );
 }
 
-/* 📊 PROJECTS STATS */
+/* PROJECTS STATS */
 .projects-stats {
   display: flex;
   justify-content: center;
-  gap: var(--spacing-2xl);
-  margin: var(--spacing-2xl) 0;
+  gap: 48px;
+  margin: 48px 0;
   flex-wrap: wrap;
 }
 
@@ -416,29 +329,24 @@
   display: block;
   font-size: 2.5rem;
   font-weight: 800;
-  color: var(--accent-green);
+  color: #66ff00;
   line-height: 1;
 }
 
 .stat-label {
   display: block;
   font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-top: var(--spacing-sm);
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* 🎪 ANIMATIONS */
-@keyframes rainbow-rotate {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
-}
-
-/* 📱 RESPONSIVE */
+/* RESPONSIVE */
 @media (max-width: 1024px) {
   .projects-grid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
   }
 }
 
@@ -446,16 +354,16 @@
   .project-card {
     min-width: 280px;
     max-width: 320px;
-    padding: var(--spacing-lg);
+    padding: 16px;
   }
   
   .project-tag {
     font-size: 10px;
-    padding: 4px 10px;
+    padding: 3px 8px;
   }
   
   .projects-stats {
-    gap: var(--spacing-lg);
+    gap: 32px;
   }
   
   .stat-number {
@@ -464,336 +372,58 @@
   
   .secondary-actions {
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
+  }
+
+  .projects {
+    padding: 40px 0;
+  }
+
+  .projects-hero {
+    padding: 40px 0;
   }
 }
 
 @media (max-width: 480px) {
   .projects-carousel {
-    padding: 0 var(--spacing-sm);
+    padding: 0 12px;
   }
-}
- 
 
-/* 🔮 TAG ICONS */
-.project-tag .tag-icon {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-/* 🖼️ PROJECT IMAGE */
-.project-image {
-  position: relative;
-  margin: -8px -8px 16px -8px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.project-image img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  transition: transform var(--transition-slow);
-}
-
-.project-card:hover .project-image img {
-  transform: scale(1.05);
-}
-
-.image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 0, 255, 0.1),
-    rgba(0, 255, 255, 0.1),
-    transparent
-  );
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.project-card:hover .image-overlay {
-  opacity: 1;
-}
-
-/* 📝 PROJECT CONTENT */
-.project-content {
-  position: relative;
-  z-index: var(--z-content);
-  padding-bottom: var(--spacing-sm);
-}
-
-.project-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: var(--spacing-sm);
-  background: linear-gradient(135deg, var(--text-white));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.3;
-}
-
-/* 💡 CLIENT REQUEST BLOCK */
-.client-request {
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-sm);
-  background: rgba(102, 255, 0, 0.05);
-  border: 1px solid rgba(102, 255, 0, 0.2);
-  border-radius: var(--radius-md);
-  position: relative;
-}
-
-.request-label {
-  display: block;
-  font-size: 11px;
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  color: var(--text-white);
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.request-text {
-  font-size: 13px;
-  font-family: "Inter", sans-serif;
-  line-height: 1.4;
-  color: var(--text-primary);
-  margin: 0;
-  font-style: italic;
-}
-
-/* 🚀 PROJECT RESULT BLOCK */
-.project-result {
-  margin-bottom: var(--spacing-md);
-  padding: var(--spacing-sm);
-  background: rgba(0, 255, 255, 0.05);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: var(--radius-md);
-}
-
-.result-label {
-  display: block;
-  font-size: 11px;
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  color: var(--text-white);
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.result-text {
-  font-size: 13px;
-  font-family: "Inter", sans-serif;
-  line-height: 1.4;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-/* 📊 PROJECT METRICS */
-.project-metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-sm);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.metric-item {
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: var(--blur-light);
-  white-space: nowrap;
-}
-
-/* 🎯 PROJECT CTA SECTION */
-.project-cta {
-  margin-top: var(--spacing-lg);
-  padding: var(--spacing-md) 0 0 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  position: relative;
-  z-index: var(--z-overlay);
-}
-
-/* 🎬 SECONDARY ACTIONS */
-.secondary-actions {
-  display: flex;
-  gap: var(--spacing-sm);
-  justify-content: center;
-}
-
-/* 🌟 PROJECT GLOW EFFECT */
-.project-glow-effect {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 50px;
-  background: linear-gradient(
-    to top,
-    rgba(255, 0, 255, 0.1),
-    transparent
-  );
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity var(--transition-normal);
-}
-
-.project-card:hover .project-glow-effect {
-  opacity: 1;
-}
-
-/* 🎨 PROJECTS LAYOUT */
-.projects {
-  padding: var(--spacing-3xl) 0;
-}
-
-.projects-carousel {
-  overflow-x: auto;
-  overflow-y: hidden;
-  width: 100%;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  padding: 0 var(--spacing-lg);
-}
-
-.projects-carousel::-webkit-scrollbar {
-  height: 8px;
-}
-
-.projects-carousel::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-sm);
-}
-
-.projects-carousel::-webkit-scrollbar-thumb {
-  background: var(--accent-green);
-  border-radius: var(--radius-sm);
-}
-
-.projects-container {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: var(--spacing-lg);
-  width: max-content;
-  padding: var(--spacing-lg) 0;
-}
-
-/* 🏠 HOME PAGE PROJECTS */
-.projects .project-card {
-  min-width: 300px;
-  max-width: 350px;
-}
-
-/* 📄 PROJECTS PAGE LAYOUT */
-.projects-page {
-  margin-top: 0;
-}
-
-.projects-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg) 0;
-}
-
-/* 🎨 PROJECTS HERO */
-.projects-hero {
-  padding: var(--spacing-3xl) 0;
-  text-align: center;
-  background: linear-gradient(
-    135deg, 
-    rgba(102, 255, 0, 0.02) 0%, 
-    rgba(255, 0, 255, 0.02) 100%
-  );
-}
-
-/* 📊 PROJECTS STATS */
-.projects-stats {
-  display: flex;
-  justify-content: center;
-  gap: var(--spacing-2xl);
-  margin: var(--spacing-2xl) 0;
-  flex-wrap: wrap;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-number {
-  display: block;
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--accent-green);
-  line-height: 1;
-}
-
-.stat-label {
-  display: block;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-top: var(--spacing-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* 🎪 ANIMATIONS */
-@keyframes rainbow-rotate {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
-}
-
-/* 📱 RESPONSIVE */
-@media (max-width: 1024px) {
-  .projects-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
   .project-card {
-    min-width: 280px;
-    max-width: 320px;
-    padding: var(--spacing-lg);
+    padding: 12px;
   }
-  
-  .project-tag {
-    font-size: 10px;
-    padding: 4px 10px;
-  }
-  
-  .projects-stats {
-    gap: var(--spacing-lg);
-  }
-  
-  .stat-number {
-    font-size: 2rem;
-  }
-  
-  .secondary-actions {
-    flex-direction: column;
-    gap: 6px;
+
+  .projects-grid {
+    padding: 20px 0;
   }
 }
 
-@media (max-width: 480px) {
-  .projects-carousel {
-    padding: 0 var(--spacing-sm);
-  }
+/* СПЕЦИФІЧНІ OVERRIDES ДЛЯ РІЗНИХ КОНТЕКСТІВ */
+
+/* Для сторінки проєктів - делікатніші ефекти */
+.projects-page .project-card {
+  border: 1px solid rgba(102, 255, 0, 0.15);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(102, 255, 0, 0.08);
+}
+
+.projects-page .project-card::before {
+  opacity: 0;
+}
+
+.projects-page .project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.25),
+    0 0 24px rgba(102, 255, 0, 0.12);
+}
+
+.projects-page .project-card:hover::before {
+  opacity: 0.2; /* Менш інтенсивно на сторінці проєктів */
+}
+
+/* Для каруселі - трохи більше ефектів */
+.projects-carousel-container .project-card:hover::before {
+  opacity: 0.3;
 }

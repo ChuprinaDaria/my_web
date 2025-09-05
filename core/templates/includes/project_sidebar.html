@@ -57,6 +57,39 @@
     </div>
   </div>
 
+  <!-- Client Review -->
+  {% if project.review and project.review.is_active %}
+    <div class="sidebar-section glass card">
+      <h3 class="sidebar-title">
+        <i data-lucide="message-square"></i>
+        {% trans "Client Review" %}
+      </h3>
+      <div class="client-review">
+        {% if project.review.client_avatar %}
+          <div class="client-avatar" style="width:56px;height:56px;border-radius:50%;overflow:hidden;margin-bottom:12px;">
+            <img src="{{ project.review.client_avatar.url }}" alt="{{ project.review.client_name }}" style="width:100%;height:100%;object-fit:cover;"/>
+          </div>
+        {% endif %}
+        <div class="client-name" style="font-weight:700;">{{ project.review.client_name }}</div>
+        {% if project.review.client_position or project.review.client_company %}
+          <div class="client-position" style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom:8px;">
+            {{ project.review.client_position }}{% if project.review.client_company %} · {{ project.review.client_company }}{% endif %}
+          </div>
+        {% endif %}
+        <div class="client-rating" style="margin: 6px 0 10px 0;">
+          {% for _ in '12345' %}
+            {% if forloop.counter <= project.review.rating %}⭐{% else %}☆{% endif %}
+          {% endfor %}
+        </div>
+        <div class="client-text" style="line-height:1.6;">
+          {% if CURRENT_LANG == 'uk' and project.review.review_text_uk %}{{ project.review.review_text_uk|safe }}
+          {% elif CURRENT_LANG == 'pl' and project.review.review_text_pl %}{{ project.review.review_text_pl|safe }}
+          {% else %}{{ project.review.review_text_en|safe }}{% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
   <!-- CTA Sidebar -->
   <div class="sidebar-section glass card cta-sidebar">
     <h3 class="sidebar-title">

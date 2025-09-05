@@ -31,6 +31,7 @@ from django.db.models.functions import (
     TruncDate, TruncWeek, TruncMonth, 
     Extract, Coalesce
 )
+from django.db import connection
 from django.http import JsonResponse, HttpResponse
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -592,18 +593,28 @@ def system_health_check() -> Dict[str, Any]:
 logger.info("🚀 LAZYSOFT Dashboard System initializing...")
 logger.info(f"📊 Available modules: {DashboardConfig.get_available_modules()}")
 
-# Початкова перевірка
-initial_health = system_health_check()
-if initial_health['status'] == 'critical':
-    logger.error("❌ Critical issues detected in dashboard system")
-    for issue in initial_health['issues']:
-        logger.error(f"  {issue}")
-else:
-    logger.info("✅ Dashboard system initialized successfully")
+# Початкова перевірка (безпечна під час міграцій)
+def _tables_exist(table_names):
+    try:
+        existing = connection.introspection.table_names()
+        return all(t in existing for t in table_names)
+    except Exception:
+        return False
+
+try:
+    required_tables = []
+    if NEWS_AVAILABLE:
+        required_tables.append(ProcessedArticle._meta.db_table)
+    if _tables_exist(required_tables):
+        initial_health = system_health_check()
+    else:
+        initial_health = {"status": "pending", "issues": ["Database not ready or migrations not applied"]}
+except Exception:
+    initial_health = {"status": "unknown", "issues": []}
 
 # Фінальний коментар частини 1
 """
-✅ Частина 1/4 завершена!
+ Частина 1/4 завершена!
 
 Створено:
 🔧 DashboardMetrics - базові утиліти для розрахунків
@@ -664,7 +675,7 @@ try:
         RSSSource, TranslationCache
     )
     NEWS_AVAILABLE = True
-except ImportError:
+except Exception:
     NEWS_AVAILABLE = False
     logging.warning("⚠️ News models не доступні")
 
@@ -1208,18 +1219,27 @@ def system_health_check() -> Dict[str, Any]:
 logger.info("🚀 LAZYSOFT Dashboard System initializing...")
 logger.info(f"📊 Available modules: {DashboardConfig.get_available_modules()}")
 
-# Початкова перевірка
-initial_health = system_health_check()
+# Початкова перевірка (безпечна під час міграцій)
+try:
+    required_tables = []
+    if NEWS_AVAILABLE:
+        required_tables.append(ProcessedArticle._meta.db_table)
+    if _tables_exist(required_tables):
+        initial_health = system_health_check()
+    else:
+        initial_health = {"status": "pending", "issues": ["Database not ready or migrations not applied"]}
+except Exception:
+    initial_health = {"status": "unknown", "issues": []}
 if initial_health['status'] == 'critical':
     logger.error("❌ Critical issues detected in dashboard system")
     for issue in initial_health['issues']:
         logger.error(f"  {issue}")
 else:
-    logger.info("✅ Dashboard system initialized successfully")
+    logger.info(" Dashboard system initialized successfully")
 
 # Фінальний коментар частини 1
 """
-✅ Частина 1/4 завершена!
+ Частина 1/4 завершена!
 
 Створено:
 🔧 DashboardMetrics - базові утиліти для розрахунків
@@ -1604,7 +1624,7 @@ class PerformanceDashboard:
 
 # Фінальний коментар частини 3
 """
-✅ Частина 3/4 завершена! (компактна версія)
+ Частина 3/4 завершена! (компактна версія)
 
 Створено:
 🤖 AIPerformanceAnalyzer - аналіз ефективності AI
@@ -1625,7 +1645,17 @@ class LazySOFTDashboardAdmin:
     
     def __init__(self):
         self.config = DashboardConfig()
-        self.health_status = system_health_check()
+        # Безпечна ініціалізація без запитів, якщо БД ще не готова
+        try:
+            required_tables = []
+            if NEWS_AVAILABLE:
+                required_tables.append(ProcessedArticle._meta.db_table)
+            if _tables_exist(required_tables):
+                self.health_status = system_health_check()
+            else:
+                self.health_status = {"status": "pending", "issues": ["Database not ready or migrations not applied"]}
+        except Exception:
+            self.health_status = {"status": "unknown", "issues": []}
         logger.info(f"🎯 LazySOFT Dashboard Admin ініціалізовано")
     
     def get_executive_summary(self, period: str = 'month') -> Dict[str, Any]:
@@ -1928,7 +1958,16 @@ class DashboardAdminView:
     """🖥️ Django Admin інтеграція для Dashboard"""
     
     def __init__(self):
-        self.dashboard_admin = LazySOFTDashboardAdmin()
+        # Відкладене створення, щоб уникнути DB-запитів під час імпорту
+        self.dashboard_admin = None
+
+    def _get_admin(self) -> LazySOFTDashboardAdmin:
+        if self.dashboard_admin is None:
+            # Створюємо лише якщо таблиці готові
+            if NEWS_AVAILABLE and not _tables_exist([ProcessedArticle._meta.db_table]):
+                raise RuntimeError("Database not ready or migrations not applied")
+            self.dashboard_admin = LazySOFTDashboardAdmin()
+        return self.dashboard_admin
     
     @cache_page(1800)  # 30 хвилин кешу
     def executive_dashboard_view(self, request):
@@ -1940,7 +1979,7 @@ class DashboardAdminView:
         
         try:
             # Генеруємо дані
-            dashboard_data = self.dashboard_admin.get_executive_summary(period)
+            dashboard_data = self._get_admin().get_executive_summary(period)
             
             # Якщо потрібен експорт
             if export_format == 'json':
@@ -2003,7 +2042,7 @@ class DashboardAdminView:
         period = request.GET.get('period', 'week')
         component = request.GET.get('component', 'summary')
         
-        data = self.dashboard_admin.get_executive_summary(period)
+        data = self._get_admin().get_executive_summary(period)
         
         if component == 'kpis':
             return JsonResponse(data.get('key_kpis', {}))
@@ -2031,15 +2070,28 @@ class DashboardAdminView:
 
 # === DJANGO ADMIN ІНТЕГРАЦІЯ ===
 
-# Ініціалізуємо dashboard admin
-dashboard_admin = DashboardAdminView()
+# Ініціалізуємо dashboard admin (відкладено, щоб уникнути запитів при імпорті)
+_dashboard_admin_instance = None
 
-# Реєструємо в Django admin
-if hasattr(admin.site, 'register_view'):
-    admin.site.register_view('dashboard/', view=dashboard_admin.executive_dashboard_view, name='Executive Dashboard')
+def get_dashboard_admin() -> DashboardAdminView:
+    global _dashboard_admin_instance
+    if _dashboard_admin_instance is None:
+        _dashboard_admin_instance = DashboardAdminView()
+    return _dashboard_admin_instance
+
+# Реєструємо в Django admin (безпечна обгортка)
+try:
+    if hasattr(admin.site, 'register_view'):
+        admin.site.register_view('dashboard/', view=get_dashboard_admin().executive_dashboard_view, name='Executive Dashboard')
+except Exception:
+    # Пропускаємо помилки ініціалізації під час міграцій
+    pass
 
 # URLs для додавання в основний urlpatterns
-dashboard_urlpatterns = dashboard_admin.get_dashboard_urls()
+try:
+    dashboard_urlpatterns = get_dashboard_admin().get_dashboard_urls()
+except Exception:
+    dashboard_urlpatterns = []
 
 
 # === ФІНАЛЬНА ІНТЕГРАЦІЯ ===
@@ -2066,7 +2118,7 @@ class LazySOFTSystemIntegrator:
         # Тестовий запуск
         try:
             test_summary = dashboard.get_executive_summary('week')
-            logger.info("✅ Тестовий executive summary згенеровано")
+            logger.info(" Тестовий executive summary згенеровано")
         except Exception as e:
             logger.error(f"❌ Помилка тестового запуску: {e}")
             return False
@@ -2095,20 +2147,14 @@ class LazySOFTSystemIntegrator:
 
 # Ініціалізуємо систему при імпорті
 if __name__ != '__main__':
-    try:
-        system_ready = LazySOFTSystemIntegrator.initialize_complete_system()
-        if system_ready:
-            logger.info("🎯 LazySOFT Executive Dashboard готовий до роботи!")
-        else:
-            logger.warning("⚠️ Dashboard ініціалізований з обмеженнями")
-    except Exception as e:
-        logger.error(f"❌ Помилка ініціалізації: {e}")
+    # Вимикаємо автоматичну повну ініціалізацію при імпорті, щоб не блокувати міграції
+    pass
 
 # Фінальний коментар
 """
 🎉 LAZYSOFT Executive Dashboard System - ПОВНІСТЮ ГОТОВО!
 
-✅ Частина 4/4 завершена!
+ Частина 4/4 завершена!
 
 Створено:
 🎯 LazySOFTDashboardAdmin - головний клас

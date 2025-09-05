@@ -63,7 +63,7 @@ class AIContentProcessor(AINewsProcessor):
             self.logger.warning(f"⚠️ Помилка категоризації: {e}")
             return {'category': 'general', 'priority': 2, 'keywords': []}
         
-    def _clip_to_range(self, text: str, min_len: int = 900, max_len: int = 1200) -> str:
+    def _clip_to_range(self, text: str, min_len: int = 2000, max_len: int = 3000) -> str:
         """Обрізає текст до діапазону символів із м'яким зрізом по крапці."""
         if not text:
             return ""
@@ -78,10 +78,10 @@ class AIContentProcessor(AINewsProcessor):
         return t
 
     def _normalize_lengths(self, content_data: Dict) -> Dict:
-        """Забезпечує довжину 900–1200 символів для summary_*."""
+        """Забезпечує довжину 2000–3000 символів для summary_*."""
         for lang in ["en", "uk", "pl"]:
             key = f"summary_{lang}"
-            content_data[key] = self._clip_to_range(content_data.get(key, ""), 900, 1200)
+            content_data[key] = self._clip_to_range(content_data.get(key, ""), 2000, 3000)
         return content_data
     
     def _clean_json_response(self, response: str) -> str:
@@ -129,43 +129,56 @@ class AIContentProcessor(AINewsProcessor):
     def _create_multilingual_content(self, raw_article: RawArticle, category_info: Dict) -> dict:
         """Створює тримовний ОРИГІНАЛЬНИЙ бізнес-аналіз з RSS (~1000–1200 символів)."""
         original_title = raw_article.title or ""
-        rss_snippet = (raw_article.summary or raw_article.content or "")[:1200]
+        # Використовуємо збагачений контент (FiveFilters вже спрацював)
+        full_content = raw_article.content or raw_article.summary or ""
+        content_for_ai = full_content[:2000]  # Збільшуємо ліміт для кращого AI аналізу
         category = category_info["category"]
 
         main_prompt = f"""
-        You are LAZYSOFT's tech/business editor. Write ORIGINAL, NON-COPIED analysis
-        for SMB readers based on the topic below. Use general knowledge; avoid unverifiable claims.
-        Do NOT translate the RSS; produce a fresh piece from LAZYSOFT perspective.
+        You are LAZYSOFT's tech/business editor. Create COMPREHENSIVE business analysis 
+        based on the FULL ARTICLE CONTENT below for SMB readers in Europe.
 
-        TOPIC TITLE: {original_title}
-        RSS SNIPPET (context only): {rss_snippet}
+        ORIGINAL TITLE: {original_title}
+        FULL ARTICLE CONTENT: {content_for_ai}
         CATEGORY: {category}
+
+        IMPORTANT: You have FULL article content, not just RSS snippet. 
+        Use this rich information to create detailed, valuable business insights with SEO-optimized length.
 
         REQUIREMENTS:
         - Three languages: EN, UK, PL.
-        - Each "summary_*" must be 1000–1200 characters (roughly ~1100), readable, with 2–3 concrete use-cases and a mini-conclusion.
-        - Tone: practical, concise, business impact for SMB in Europe.
-        - NO bullet lists (continuous prose). NO quotes from source. No URLs inside text.
-        - Provide catchy business-focused titles per language (not clickbait).
-        - Keep facts generic/safe; if specifics are unknown, generalize (no hallucinations).
+        - Each "summary_*" must be 2000–3000 characters for better SEO performance.
+        - Extract specific facts, numbers, and actionable insights from the content.
+        - You CAN include relevant quotes from the original article (use quotation marks).
+        - Focus on business impact for European SMBs with concrete examples.
+        - Create comprehensive analysis with multiple paragraphs and detailed explanations.
+        - Use the full context to provide deeper insights than typical RSS summaries.
+        - Include specific data points, statistics, and concrete business implications.
+        - Structure content with clear introduction, main analysis, and actionable conclusions.
 
         OUTPUT JSON ONLY:
         {{
-            "title_en": "...",
-            "title_uk": "...",
-            "title_pl": "...",
-            "summary_en": "... (1000-1200 chars)",
-            "summary_uk": "... (1000-1200 chars)",
-            "summary_pl": "... (1000-1200 chars)",
-            "insight_en": "1-2 sentences with actionable angle",
-            "insight_uk": "1-2 речення з практичним кутом",
-            "insight_pl": "1-2 zdania z praktycznym kątem"
+            "title_en": "Business-focused title based on article insights",
+            "title_uk": "Бізнес-орієнтований заголовок",
+            "title_pl": "Tytuł skoncentrowany na biznesie",
+            "summary_en": "Comprehensive analysis using full article content (2000-3000 chars)",
+            "summary_uk": "Комплексний аналіз на основі повного контенту (2000-3000 символів)",
+            "summary_pl": "Kompleksowa analiza oparta na pełnej treści (2000-3000 znaków)",
+            "insight_en": "Specific actionable business insight from article",
+            "insight_uk": "Конкретний практичний бізнес-інсайт зі статті",
+            "insight_pl": "Konkretny praktyczny biznesowy wgląd z artykułu",
+            "business_opportunities_en": "Specific business opportunities for European SMBs (300-500 chars)",
+            "business_opportunities_uk": "Конкретні бізнес-можливості для європейських МСП (300-500 символів)",
+            "business_opportunities_pl": "Konkretne możliwości biznesowe dla europejskich MŚP (300-500 znaków)",
+            "lazysoft_recommendations_en": "LAZYSOFT automation recommendations based on article insights (300-500 chars)",
+            "lazysoft_recommendations_uk": "Рекомендації LAZYSOFT з автоматизації на основі інсайтів статті (300-500 символів)",
+            "lazysoft_recommendations_pl": "Rekomendacje LAZYSOFT dotyczące automatyzacji na podstawie wglądów z artykułu (300-500 znaków)"
         }}
         """
 
         try:
-            self.logger.info("[AI] Генеруємо оригінальний 3-мовний контент ~1100 символів...")
-            response = self._call_ai_model(main_prompt, max_tokens=1600)
+            self.logger.info("[AI] Генеруємо оригінальний 3-мовний контент ~2500 символів...")
+            response = self._call_ai_model(main_prompt, max_tokens=3000)
             cleaned = self._clean_json_response(response)
             content_data = json.loads(cleaned)
         except Exception as e:
@@ -180,35 +193,45 @@ class AIContentProcessor(AINewsProcessor):
         cta_buttons = self._generate_cta_buttons(category)
         cost = self._calculate_cost(main_prompt, json.dumps(content_data))
 
-        # Промпт для зображення (як і раніше — стиль залишаємо брендовий)
         title_en = content_data.get("title_en", original_title)
-        style = ("Minimalistic flat illustration, neon accents, glassmorphism, "
-                "modern tech magazine cover, trending on Dribbble")
 
         return {
             "title_en": title_en,
             "title_pl": content_data.get("title_pl", original_title),
             "title_uk": content_data.get("title_uk", original_title),
 
-            # тут тепер лежить наш ОРИГІНАЛЬНИЙ 1000–1200 симв. текст
-            "summary_en": content_data.get("summary_en", rss_snippet),
-            "summary_pl": content_data.get("summary_pl", rss_snippet),
-            "summary_uk": content_data.get("summary_uk", rss_snippet),
+            # тут тепер лежить наш ОРИГІНАЛЬНИЙ 2000–3000 симв. текст
+            "summary_en": content_data.get("summary_en", content_for_ai[:2500]),
+            "summary_pl": content_data.get("summary_pl", content_for_ai[:2500]),
+            "summary_uk": content_data.get("summary_uk", content_for_ai[:2500]),
 
             "business_insight_en": content_data.get("insight_en", ""),
             "business_insight_pl": content_data.get("insight_pl", ""),
             "business_insight_uk": content_data.get("insight_uk", ""),
 
+            "business_opportunities_en": content_data.get("business_opportunities_en", ""),
+            "business_opportunities_pl": content_data.get("business_opportunities_pl", ""),
+            "business_opportunities_uk": content_data.get("business_opportunities_uk", ""),
+
+            "lazysoft_recommendations_en": content_data.get("lazysoft_recommendations_en", ""),
+            "lazysoft_recommendations_pl": content_data.get("lazysoft_recommendations_pl", ""),
+            "lazysoft_recommendations_uk": content_data.get("lazysoft_recommendations_uk", ""),
+
             "category_slug": category,
             "priority": category_info.get("priority", 2),
 
-            "ai_image_prompt_en": f"Cover about: {title_en}. {style}",
             "ai_model_used": self.preferred_model,
             "processing_time": 0,
             "cost": cost,
             **seo,
             "cta_buttons": cta_buttons
         }
+        
+        # Логування для діагностики
+        self.logger.info(f"[DEBUG] Business opportunities EN: {bool(result.get('business_opportunities_en'))}")
+        self.logger.info(f"[DEBUG] LAZYSOFT recommendations EN: {bool(result.get('lazysoft_recommendations_en'))}")
+        
+        return result
 
 
     def _create_fallback_content_dict(self, raw_article: RawArticle, category_info: Dict) -> dict:

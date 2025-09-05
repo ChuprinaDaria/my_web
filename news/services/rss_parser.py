@@ -2,14 +2,14 @@ import hashlib
 import logging
 import requests
 import feedparser
-from datetime import datetime, timezone
+import time
+from datetime import datetime, timezone, time as datetime_time
 from typing import List, Dict, Optional, Tuple
 from urllib.parse import urljoin, urlparse
 from dataclasses import dataclass
 from django.conf import settings
 from django.utils import timezone as django_timezone
 from django.db import transaction
-
 from ..models import RSSSource, RawArticle
 
 logger = logging.getLogger(__name__)
@@ -184,37 +184,73 @@ class RSSParser:
         article_date = published_date.date()
         return article_date == self.target_date
     
-    def parse_single_source(self, source: RSSSource) -> Dict:
+    def parse_single_source(self, source: RSSSource, enhance_with_fulltext: bool = False) -> Dict:
         """
-        Парсить одне RSS джерело
+        Парсить одне RSS джерело з опціональним витягуванням повного тексту
         
         Args:
-            source: Об'єкт RSSSource
-            
-        Returns:
-            Dict з результатами парсингу
+            source: RSS джерело
+            enhance_with_fulltext: Чи витягувати повний текст через FiveFilters
         """
-        self.logger.info(f"🔄 Парсинг джерела: {source.name}")
+        self.logger.info(f"📡 Парсинг джерела: {source.name}")
+        start_time = time.time()
         
         try:
-            # Завантажуємо RSS фід
-            feed_data = self._fetch_rss_feed(source.url)
+            # 1. Завантажуємо та парсимо RSS
+            feed = self._fetch_rss_feed(source.url)
             
-            # Парсимо контент
-            parsed_articles = self._parse_feed_content(feed_data, source)
+            # 2. Парсимо статті з RSS
+            parsed_articles = self._parse_feed_content(feed, source)
             
-            # Зберігаємо в базу даних
+            if not parsed_articles:
+                self.logger.warning(f"⚠️ Не знайдено статей у {source.name}")
+                return self._empty_result()
+            
+            # 3. Фільтруємо по даті якщо потрібно
+            if self.date_filter_enabled and self.target_date:
+                filtered_articles = self._filter_articles_by_date(parsed_articles)
+                filtered_count = len(parsed_articles) - len(filtered_articles)
+                if filtered_count > 0:
+                    self.logger.info(f"⏭️ Відфільтровано {filtered_count} статей за датою")
+                parsed_articles = filtered_articles
+            
+            # 4. НОВИЙ КРОК: Збагачення повним текстом
+            if enhance_with_fulltext and parsed_articles:
+                self.logger.info("🔍 Збагачення повним текстом через FiveFilters...")
+                parsed_articles = self.enhance_articles_with_fulltext(parsed_articles, source)
+            
+            # 5. Конвертуємо в RawArticles і зберігаємо
             result = self._save_articles_to_db(parsed_articles, source)
+            new_articles = result.get('new_articles', 0)
+            duplicate_count = result.get('duplicates', 0)
             
-            # Оновлюємо час останнього оновлення
-            source.last_fetched = django_timezone.now()
-            source.save(update_fields=['last_fetched'])
+            # 6. Оновлюємо статистику джерела
+            self._update_source_stats(source)
+            
+            processing_time = time.time() - start_time
+            
+            result = {
+                'total_articles': len(parsed_articles),
+                'new_articles': new_articles,
+                'duplicate_articles': duplicate_count,
+                'errors': 0,
+                'processing_time': processing_time
+            }
+            
+            if self.date_filter_enabled:
+                result['filtered_articles'] = filtered_count
+            
+            self.logger.info(
+                f"✅ Парсинг завершено: {new_articles} нових, "
+                f"{duplicate_count} дублікатів за {processing_time:.1f}с"
+            )
             
             return result
             
         except Exception as e:
             self.logger.error(f"❌ Помилка парсингу {source.name}: {str(e)}")
-            raise RSSParserError(f"Не вдалося парсити {source.name}: {str(e)}")
+            return {'total_articles': 0, 'new_articles': 0, 'duplicate_articles': 0, 'errors': 1}
+
     
     def _fetch_rss_feed(self, url: str) -> feedparser.FeedParserDict:
         """
@@ -586,3 +622,76 @@ class RSSParser:
     def get_parsing_statistics(self) -> Dict:
         """Повертає статистику парсера"""
         return self.stats.copy()
+
+
+
+    def enhance_articles_with_fulltext(self, articles: List[ParsedArticle], source: RSSSource) -> List[ParsedArticle]:
+        """Збагачує статті повним текстом через FiveFilters"""
+        from .fulltext_extractor import FullTextExtractor
+        
+        if not articles:
+            return articles
+            
+        enhanced_articles = []
+        extractor = FullTextExtractor()
+        
+        self.logger.info(f"🔍 Витягування повного тексту для {len(articles)} статей...")
+        
+        for i, article in enumerate(articles, 1):
+            self.logger.debug(f"[{i}/{len(articles)}] {article.title[:50]}...")
+            
+            try:
+                # Витягуємо повний текст
+                full_content = extractor.extract_article(article.url)
+                
+                if full_content and len(full_content) > len(article.content or ""):
+                    # Якщо повний текст кращий - замінюємо
+                    original_length = len(article.content or "")
+                    article.content = full_content
+                    
+                    # Оновлюємо summary якщо він був коротший
+                    if len(full_content) > 500:
+                        article.summary = full_content[:500] + "..."
+                        
+                    improvement = len(full_content) - original_length
+                    self.logger.info(f"✅ [{i}] Full-text: +{improvement} символів ({len(full_content)} total)")
+                else:
+                    # Залишаємо оригінальний RSS контент
+                    self.logger.debug(f"⚠️ [{i}] RSS контент кращий або full-text порожній")
+                
+                enhanced_articles.append(article)
+                
+            except Exception as e:
+                self.logger.warning(f"❌ [{i}] Помилка full-text для {article.url}: {e}")
+                # Додаємо оригінальну статтю навіть при помилці
+                enhanced_articles.append(article)
+                continue
+        
+        success_rate = len([a for a in enhanced_articles if len(a.content or "") > 1000]) / len(articles) * 100
+        self.logger.info(f"📊 Full-text успішність: {success_rate:.1f}% ({len(enhanced_articles)}/{len(articles)} статей)")
+        
+        return enhanced_articles
+    
+    def _filter_articles_by_date(self, articles: List[ParsedArticle]) -> List[ParsedArticle]:
+        """Фільтрує статті по даті публікації"""
+        if not self.target_date:
+            return articles
+        
+        filtered_articles = []
+        target_date = self.target_date
+        
+        for article in articles:
+            # Порівнюємо тільки дату, без часу
+            article_date = article.published_at.date()
+            if article_date == target_date:
+                filtered_articles.append(article)
+        
+        return filtered_articles
+    
+    def _update_source_stats(self, source: RSSSource):
+        """Оновлює статистику джерела"""
+        try:
+            # Просто зберігаємо джерело (без неіснуючого поля last_parsed)
+            source.save()
+        except Exception as e:
+            self.logger.warning(f"Помилка оновлення статистики джерела {source.name}: {e}")

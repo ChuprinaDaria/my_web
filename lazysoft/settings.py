@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     "django.contrib.sites",
+    "django_ckeditor_5",
     
     # 📦 Third party apps
     'parler',
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     
     # 🧠 Your apps
     'core',
+    'about',
     'blog',
     'news',
     'projects',
@@ -97,8 +99,12 @@ WSGI_APPLICATION = 'lazysoft.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Lazysoft',       # назва БД, яку створила в pgAdmin
+        'USER': 'lazysoft_user',       # свій користувач PostgreSQL
+        'PASSWORD': 'Severussnape1987?',
+        'HOST': 'localhost',      # якщо локально
+        'PORT': '5432',           # стандартний порт PostgreSQL
     }
 }
 
@@ -180,6 +186,16 @@ CKEDITOR_CONFIGS = {
     },
 }
 
+
+# === 🔄 FIVEFILTERS FULL-TEXT RSS ===
+FIVEFILTERS_ENABLED = config('FIVEFILTERS_ENABLED', default=True, cast=bool)
+FIVEFILTERS_BASE_URL = config('FIVEFILTERS_BASE_URL', default='http://localhost:8082')  # ← Твій порт
+FIVEFILTERS_TIMEOUT = config('FIVEFILTERS_TIMEOUT', default=30, cast=int)
+FIVEFILTERS_MAX_RETRIES = config('FIVEFILTERS_MAX_RETRIES', default=2, cast=int)
+
+# === 🖼️ STOCK IMAGES API ===
+UNSPLASH_ACCESS_KEY = config('UNSPLASH_ACCESS_KEY', default=None)
+STOCK_IMAGE_CACHE_TIMEOUT = config('STOCK_IMAGE_CACHE_TIMEOUT', default=2592000, cast=int)  # 30 днів
 # === 🤖 AI НАЛАШТУВАННЯ ===
 # AI API ключі
 GEMINI_API_KEY = config('GEMINI_API_KEY', default=None)

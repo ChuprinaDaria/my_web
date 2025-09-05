@@ -6,7 +6,7 @@
 {% block meta_description %}{{ seo_description }}{% endblock %}
 {% block og_title %}{{ seo_title }}{% endblock %}
 {% block og_description %}{{ seo_description }}{% endblock %}
-{% block og_image %}{{ og_image|default:"https://lazysoft.dev/static/images/projects-og.jpg" }}{% endblock %}
+{% block og_image %}{% static 'images/projects-og.jpg' %}{% endblock %}
 
 {% block extra_meta %}
   <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/projects/" />
@@ -18,176 +18,89 @@
 {% block content %}
 <main class="projects-page">
 
-  <!-- Hero секція -->
-  <section class="projects-hero">
+  <!-- Hero Section - використовуємо існуючий hero стиль -->
+  <section class="hero projects-hero">
     <div class="container">
       
-      <!-- Breadcrumbs -->
-      <nav class="projects-breadcrumbs">
-        <a href="/{{ CURRENT_LANG }}/" class="breadcrumb-link">
-          <span data-lang="en">Home</span>
-          <span data-lang="uk">Головна</span>
-          <span data-lang="pl">Główna</span>
-        </a>
-        <span class="breadcrumb-divider">→</span>
-        <span class="breadcrumb-current">
-          <span data-lang="en">Projects</span>
-          <span data-lang="uk">Проєкти</span>
-          <span data-lang="pl">Projekty</span>
-        </span>
-      </nav>
+     
 
-      <!-- Заголовок та опис -->
+      <!-- Hero Content - використовуємо існуючі класи -->
       <div class="hero-content">
-        <div class="hero-title">{{ overview_title|safe }}</div>
-        <div class="hero-description">{{ overview_description|safe }}</div>
+        <h1>{{ overview_title|safe }}</h1>
+        <p class="description">{{ overview_description|safe }}</p>
         
-        <!-- Статистика - ВИПРАВЛЕНО -->
+        <!-- Stats - використовуємо існуючий стиль -->
         <div class="projects-stats">
           <div class="stat-item">
             <span class="stat-number">{{ total_categories|default:"5" }}+</span>
-            <span class="stat-label">
-              <span data-lang="en">Categories</span>
-              <span data-lang="uk">Категорій</span>
-              <span data-lang="pl">Kategorii</span>
-            </span>
+            <span class="stat-label">{% trans "Categories" %}</span>
           </div>
           <div class="stat-item">
             <span class="stat-number">{{ total_projects|default:"20" }}+</span>
-            <span class="stat-label">
-              <span data-lang="en">Projects</span>
-              <span data-lang="uk">Проєктів</span>
-              <span data-lang="pl">Projektów</span>
-            </span>
+            <span class="stat-label">{% trans "Projects" %}</span>
           </div>
           <div class="stat-item">
             <span class="stat-number">100%</span>
-            <span class="stat-label">
-              <span data-lang="en">Success Rate</span>
-              <span data-lang="uk">Успішних</span>
-              <span data-lang="pl">Sukces</span>
-            </span>
+            <span class="stat-label">{% trans "Success Rate" %}</span>
           </div>
         </div>
 
-        <!-- CTA кнопка -->
+        <!-- CTA - використовуємо існуючий cta-primary -->
         <div class="hero-cta">
-          <button class="main-cta-button" onclick="scrollToContact('');">
-            <span class="cta-icon">🚀</span>
-            <span class="cta-text">
-              <span data-lang="en">Start Your Project</span>
-              <span data-lang="uk">Почати свій проєкт</span>
-              <span data-lang="pl">Rozpocznij projekt</span>
-            </span>
-            <span class="cta-arrow">→</span>
-          </button>
+          <a href="#contact" class="cta-primary">
+            <i data-lucide="rocket"></i>
+            {% trans "Start Your Project" %}
+          </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Проєкти по категоріях -->
-  <section class="projects-categories">
+  <!-- Featured Projects Carousel -->
+  {% if featured_projects_qs %}
+    <section class="projects">
+      <div class="container-reg">
+        {% include 'includes/projects_carousel.html' with title=_('Featured Projects') projects=featured_projects_qs show_navigation=True carousel_id='featured-projects' %}
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- Projects by Categories -->
+  <section style="padding: var(--spacing-2xl) 0;">
     <div class="container">
       {% for category in categories %}
-        <div class="category-section">
+        <div style="margin-bottom: var(--spacing-2xl);">
           
-          <!-- Заголовок категорії -->
-          <div class="category-header">
-            <div class="category-info">
-              <div class="category-title">{{ category.title|safe }}</div>
-              <div class="category-description">{{ category.description|safe }}</div>
+          <!-- Category Header -->
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--spacing-2xl); padding-bottom: var(--spacing-lg); border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+            <div>
+              <!-- Використовуємо стандартний h2 -->
+              <h2>{{ category.title|safe }}</h2>
+              <p class="description" style="margin-top: var(--spacing-sm);">{{ category.description|safe }}</p>
             </div>
             
-            <!-- Кількість проєктів -->
-            <div class="category-count">
-              <span class="count-number">{{ category.projects|length }}</span>
-              <span class="count-label">
-                <span data-lang="en">projects</span>
-                <span data-lang="uk">проєктів</span>
-                <span data-lang="pl">projektów</span>
-              </span>
+            <div style="text-align: right; flex-shrink: 0;">
+              <span class="stat-number" style="display: block;">{{ category.projects|length }}</span>
+              <span class="stat-label">{% trans "projects" %}</span>
             </div>
           </div>
 
-          <!-- Сітка проєктів -->
-          <div class="category-projects-grid">
+          <!-- Projects Grid -->
+          <div class="projects-grid">
             {% for project in category.projects %}
-              <article class="category-project-card" onclick="location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
-                
-                <!-- Зображення проєкту -->
-                {% if project.featured_image %}
-                  <div class="project-card-image">
-                    <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" loading="lazy">
-                    <div class="image-overlay"></div>
-                  </div>
-                {% endif %}
-
-                <!-- Контент картки -->
-                <div class="project-card-content">
-                  
-                  <!-- Мініатюрні теги - ВИПРАВЛЕНО -->
-                  <div class="mini-project-tags">
-                    {% if project.project_type_uk %}
-                      <span class="mini-tag primary">
-                        <span data-lang="en">{{ project.project_type_en|truncatewords:2 }}</span>
-                        <span data-lang="uk">{{ project.project_type_uk|truncatewords:2 }}</span>
-                        <span data-lang="pl">{{ project.project_type_pl|truncatewords:2 }}</span>
-                      </span>
-                    {% endif %}
-                    
-                    {% if project.is_ai_powered %}
-                      <span class="mini-tag ai">🤖</span>
-                    {% endif %}
-                    
-                    {% if project.is_top_project %}
-                      <span class="mini-tag top">👑</span>
-                    {% endif %}
-                  </div>
-
-                  <!-- Назва проєкту -->
-                  <div class="project-card-title">{{ project.title|safe }}</div>
-                  
-                  <!-- Короткий опис -->
-                  <div class="project-card-description">{{ project.short_description|striptags|truncatewords:15|safe }}</div>
-                  
-                  <!-- Метрики -->
-                  <div class="project-card-meta">
-                    <span class="meta-item">
-                      <span class="meta-icon">📅</span>
-                      <span class="meta-text">2024</span>
-                    </span>
-                    <span class="meta-divider">•</span>
-                    <span class="meta-item">
-                      <span class="meta-icon">👁️</span>
-                      <span class="meta-text">
-                        <span data-lang="en">View</span>
-                        <span data-lang="uk">Переглянути</span>
-                        <span data-lang="pl">Zobacz</span>
-                      </span>
-                    </span>
-                    <span class="meta-arrow">→</span>
-                  </div>
-                </div>
-
-                <!-- Ховер ефект -->
-                <div class="card-glow-effect"></div>
-              </article>
+              {% include 'includes/project_card.html' with project=project %}
             {% endfor %}
           </div>
 
-          <!-- CTA для категорії -->
-          <div class="category-cta">
-            <div class="category-cta-content">
-              <div class="cta-message">
-                <span data-lang="en">Need a similar solution?</span>
-                <span data-lang="uk">Потрібне подібне рішення?</span>
-                <span data-lang="pl">Potrzebujesz podobnego rozwiązania?</span>
-              </div>
-              <button class="category-cta-button" onclick="scrollToContact('{{ category.title }}');">
-                <span data-lang="en">Let's Discuss</span>
-                <span data-lang="uk">Обговоримо</span>
-                <span data-lang="pl">Omówmy</span>
+          <!-- Category CTA -->
+          <div style="margin-top: var(--spacing-lg); display: flex; justify-content: center;">
+            <div class="glass card" style="padding: var(--spacing-xl); text-align: center; max-width: 400px;">
+              <p style="font-size: 1.1rem; margin-bottom: var(--spacing-lg);">
+                {% trans "Need a similar solution?" %}
+              </p>
+              <button class="btn-secondary" onclick="scrollToContact('{{ category.title }}');">
+                <i data-lucide="message-circle"></i>
+                {% trans "Let's Discuss" %}
               </button>
             </div>
           </div>
@@ -196,102 +109,54 @@
     </div>
   </section>
 
-  <!-- Фінальний CTA -->
-  <section class="projects-final-cta">
+  <!-- Final CTA -->
+  <section style="padding: var(--spacing-2xl) 0;">
     <div class="container">
-      <div class="final-cta-card glass">
-        <div class="cta-content">
-          <div class="cta-icon-large">🚀</div>
-          <div class="cta-title">
-            <span data-lang="en">Ready to Start Your Project?</span>
-            <span data-lang="uk">Готові розпочати свій проєкт?</span>
-            <span data-lang="pl">Gotowy, żeby rozpocząć projekt?</span>
+      <div class="glass card" style="max-width: 600px; margin: 0 auto; padding: var(--spacing-3xl); text-align: center;">
+        <div style="font-size: 4rem; margin-bottom: var(--spacing-lg); color: var(--accent-green);">
+          <i data-lucide="rocket"></i>
+        </div>
+        <!-- Використовуємо стандартний h2 -->
+        <h2>{% trans "Ready to Start Your Project?" %}</h2>
+        <p class="description">{% trans "From idea to automation - we make it happen" %}</p>
+        
+        <!-- Benefits -->
+        <div style="display: flex; justify-content: center; gap: var(--spacing-xl); margin: var(--spacing-2xl) 0; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: 600;">
+            <i data-lucide="zap" style="color: var(--accent-green);"></i>
+            <span>{% trans "Fast Development" %}</span>
           </div>
-          <div class="cta-subtitle">
-            <span data-lang="en">From idea to automation - we make it happen</span>
-            <span data-lang="uk">Від ідеї до автоматизації - ми втілюємо мрії</span>
-            <span data-lang="pl">Od pomysłu do automatyzacji - sprawiamy, że się dzieje</span>
+          <div style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: 600;">
+            <i data-lucide="target" style="color: var(--accent-green);"></i>
+            <span>{% trans "Custom Solutions" %}</span>
           </div>
+          <div style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: 600;">
+            <i data-lucide="headphones" style="color: var(--accent-green);"></i>
+            <span>{% trans "Ongoing Support" %}</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: var(--spacing-lg); justify-content: center; flex-wrap: wrap;">
+          <a href="#contact" class="btn-primary">
+            <i data-lucide="message-circle"></i>
+            {% trans "Start Discussion" %}
+          </a>
           
-          <!-- Переваги -->
-          <div class="cta-benefits">
-            <div class="benefit-item">
-              <span class="benefit-icon">⚡</span>
-              <span class="benefit-text">
-                <span data-lang="en">Fast Development</span>
-                <span data-lang="uk">Швидка розробка</span>
-                <span data-lang="pl">Szybka realizacja</span>
-              </span>
-            </div>
-            <div class="benefit-item">
-              <span class="benefit-icon">🎯</span>
-              <span class="benefit-text">
-                <span data-lang="en">Custom Solutions</span>
-                <span data-lang="uk">Індивідуальні рішення</span>
-                <span data-lang="pl">Rozwiązania na miarę</span>
-              </span>
-            </div>
-            <div class="benefit-item">
-              <span class="benefit-icon">🚀</span>
-              <span class="benefit-text">
-                <span data-lang="en">Ongoing Support</span>
-                <span data-lang="uk">Постійна підтримка</span>
-                <span data-lang="pl">Ciągłe wsparcie</span>
-              </span>
-            </div>
-          </div>
-
-          <!-- Кнопки дій -->
-          <div class="cta-actions">
-            <button class="btn-primary" onclick="scrollToContact('');">
-              <span class="button-icon">💬</span>
-              <span data-lang="en">Start Discussion</span>
-              <span data-lang="uk">Почати обговорення</span>
-              <span data-lang="pl">Rozpocznij dyskusję</span>
-            </button>
-            
-            <a href="/{{ CURRENT_LANG }}/services/" class="cta-secondary-button">
-              <span class="button-icon">📋</span>
-              <span data-lang="en">View Services</span>
-              <span data-lang="uk">Дивитись послуги</span>
-              <span data-lang="pl">Zobacz usługi</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Соціальний шерінг -->
-  <section class="social-sharing">
-    <div class="container">
-      <div class="sharing-content">
-        <div class="sharing-title">
-          <span data-lang="en">Share this page:</span>
-          <span data-lang="uk">Поділитися сторінкою:</span>
-          <span data-lang="pl">Udostępnij tę stronę:</span>
-        </div>
-        <div class="sharing-buttons">
-          <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-button facebook">
-            <span class="share-icon">📘</span>
-            <span>Facebook</span>
-          </a>
-          <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="share-button twitter">
-            <span class="share-icon">🐦</span>
-            <span>Twitter</span>
-          </a>
-          <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="share-button linkedin">
-            <span class="share-icon">💼</span>
-            <span>LinkedIn</span>
+          <a href="/{{ CURRENT_LANG }}/services/" class="btn-secondary">
+            <i data-lucide="grid-3x3"></i>
+            {% trans "View Services" %}
           </a>
         </div>
       </div>
     </div>
   </section>
+
+  {% include 'includes/social_share.html' %}
 
 </main>
 
-<!-- Контакт форма -->
+<!-- Contact Form -->
 <section id="contact" class="contact">
   {% include "core/contact_form.html" %}
 </section>
@@ -321,23 +186,6 @@
         {% endfor %}
       {% endfor %}
     ]
-  },
-  "breadcrumb": {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Projects",
-        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/projects/"
-      }
-    ]
   }
 }
 </script>
@@ -358,7 +206,7 @@ function scrollToContact(projectInfo) {
       if (messageField && projectInfo) {
         const currentLang = document.documentElement.lang || 'uk';
         const messages = {
-          'uk': `Привіт! Мене зацікавили проєкти з категорії "${projectInfo}". Хочу обговорити можливості співпраці.`,
+          'uk': `Привіт! Мене зацікавили проекти з категорії "${projectInfo}". Хочу обговорити можливості співпраці.`,
           'en': `Hi! I'm interested in projects from "${projectInfo}" category. I'd like to discuss collaboration opportunities.`,
           'pl': `Cześć! Interesują mnie projekty z kategorii "${projectInfo}". Chciałbym omówić możliwości współpracy.`
         };
@@ -368,5 +216,12 @@ function scrollToContact(projectInfo) {
     }, 1000);
   }
 }
+
+// Initialize Lucide icons
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+});
 </script>
 {% endblock %}

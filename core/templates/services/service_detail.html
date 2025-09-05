@@ -2,93 +2,303 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-{% block title %}{{ service.seo_title }}{% endblock %}
-{% block meta_description %}{{ service.seo_description }}{% endblock %}
-{% block og_title %}{{ service.seo_title }}{% endblock %}
-{% block og_description %}{{ service.seo_description }}{% endblock %}
-{% block og_image %}https://lazysoft.dev/static/images/services-og.jpg{% endblock %}
+<!-- SEO BLOCKS -->
+{% block title %}{{ service.seo_title|default:service.title }} | Lazysoft{% endblock %}
+{% block meta_description %}{{ service.seo_description|default:service.short_description|striptags|truncatewords:25 }}{% endblock %}
+{% block og_title %}{{ service.title|striptags }}{% endblock %}
+{% block og_description %}{{ service.short_description|striptags|truncatewords:30 }}{% endblock %}
+{% block og_image %}{% if service.icon %}https://lazysoft.dev{{ service.icon.url }}{% else %}https://lazysoft.dev{% static 'images/services-og.jpg' %}{% endif %}{% endblock %}
 
 {% block extra_meta %}
   <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/" />
-
+  
   <link rel="alternate" href="https://lazysoft.dev/en/services/{{ service.slug }}/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.dev/uk/services/{{ service.slug }}/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.dev/pl/services/{{ service.slug }}/" hreflang="pl">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "{{ service.title|escapejs }}",
+    "description": "{{ service.short_description|striptags|escapejs }}",
+    "provider": {
+      "@type": "Organization",
+      "name": "Lazysoft",
+      "url": "https://lazysoft.dev"
+    },
+    "areaServed": "Worldwide",
+    {% if service.icon %}"image": "https://lazysoft.dev{{ service.icon.url }}",{% endif %}
+    "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
+  }
+  </script>
 {% endblock %}
 
+
+<!-- CONTENT -->
 {% block content %}
-<main class="service-detail-page">
 
-  <!-- Hero -->
-  <section class="services-header text-center py-16">
-    <div class="container max-w-4xl mx-auto">
-      {% if service.icon %}
+<article class="service-detail-container">
+  
+  <!-- Hero Section -->
+  <section class="service-hero-section">
+    <div class="container">
+      <div class="service-hero-content">
         
-      {% endif %}
-      <h1 class="neon-text text-4xl md:text-5xl mb-4">{{ service.title|safe }}</h1>
-     
+        <!-- Service Icon + Tags -->
+        <div class="service-hero-header">
+          {% if service.icon %}
+            <div class="service-hero-icon">
+              <img src="{{ service.icon.url }}" alt="{{ service.title }}" />
+            </div>
+          {% endif %}
+          
+          <!-- Tags -->
+          {% if service_tags %}
+            <div class="service-tags-header">
+              {% for tag in service_tags|slice:":3" %}
+                <span class="service-tag-pill" data-tag-color="{{ tag.color }}">
+                  {% if tag.icon %}{{ tag.icon }} {% endif %}{{ tag.name }}
+                </span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Title + Subtitle -->
+        <h1>{{ service.title|safe }}</h1>
+        
+        <p class="description">{{ service.short_description|safe }}</p>
+
+        <!-- CTA Buttons -->
+        <div class="service-hero-cta">
+          <button class="hero-cta-button primary" onclick="scrollToContact('{{ service.title|escapejs }}');">
+            <i data-lucide="zap"></i>
+            {% trans "Get This Service" %}
+          </button>
+          <a href="{% url 'services_list' %}" class="hero-cta-button secondary">
+            <i data-lucide="grid-3x3"></i>
+            {% trans "All Services" %}
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Full Description -->
-  <section class="service-description py-12">
-    <div class="container max-w-3xl mx-auto prose prose-invert text-white">
-      {{ service.description|safe }}
+  <!-- Main Content -->
+  <section class="service-main-content">
+    <div class="container">
+      <div class="service-content-grid">
+        
+        <!-- Main Content Column -->
+        <div class="main-content-column">
+          
+          <!-- Service Description -->
+          <div class="content-section">
+            <header class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="file-text"></i>
+              </div>
+              <h2>{% trans "Service Details" %}</h2>
+            </header>
+            
+            <div class="content-section-body">
+              {{ service.description|safe }}
+            </div>
+          </div>
+
+          <!-- Related Projects -->
+          {% if related_projects %}
+          <div class="related-projects-section">
+            <div class="related-header">
+              <h2>
+                <i data-lucide="rocket"></i>
+                {% trans "Related Projects" %}
+              </h2>
+              <p class="description">{% trans "See how we've implemented similar solutions" %}</p>
+            </div>
+            
+            <div class="related-projects-grid">
+              {% for project in related_projects %}
+                {% include 'includes/project_card.html' with project=project %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+
+        <!-- Sidebar -->
+        <div class="service-sidebar">
+          
+          <!-- Quick Contact -->
+          <div class="sidebar-section">
+            <h3>
+              <i data-lucide="message-circle"></i>
+              {% trans "Quick Contact" %}
+            </h3>
+            {% include 'core/contact_form.html' with form_title="Quick Contact" form_subtitle="Interested in this service? Let's discuss your project!" service_name=service.title %}
+          </div>
+
+          <!-- Related News -->
+          {% if related_articles %}
+          <div class="sidebar-section">
+            <h3>
+              <i data-lucide="newspaper"></i>
+              {% trans "Related News" %}
+            </h3>
+            <div class="related-news-list">
+              {% for article in related_articles|slice:":3" %}
+                <div class="news-item">
+                  {% if article.ai_image_url %}
+                    <div class="news-image">
+                      <img src="{{ article.ai_image_url }}" alt="{{ article.title }}" loading="lazy">
+                    </div>
+                  {% endif %}
+                  <div class="news-content">
+                    <h4 class="news-title">
+                      <a href="{{ article.url }}">{{ article.title|safe }}</a>
+                    </h4>
+                    <p class="news-summary">{{ article.summary|truncatewords:10 }}</p>
+                    <div class="news-meta">
+                      {% if article.published_at %}
+                        <span class="news-date">{{ article.published_at|date:"M d, Y" }}</span>
+                      {% endif %}
+                      {% if article.original_source_url and article.original_source_name %}
+                        <a href="{{ article.original_source_url }}" target="_blank" rel="nofollow noopener" class="source-link">
+                          🔗 {{ article.original_source_name }}
+                        </a>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Service Stats -->
+          {% if service.priority or service.related_projects_count or service.related_articles_count %}
+          <div class="sidebar-section">
+            <h3>
+              <i data-lucide="bar-chart-3"></i>
+              {% trans "Service Stats" %}
+            </h3>
+            <div class="service-stats">
+              {% if service.priority and service.priority > 3 %}
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i data-lucide="flame"></i>
+                  </div>
+                  <div class="stat-text">{% trans "High Priority Service" %}</div>
+                </div>
+              {% endif %}
+              
+              {% if service.related_projects_count %}
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i data-lucide="rocket"></i>
+                  </div>
+                  <div class="stat-text">{{ service.related_projects_count }} {% trans "successful projects" %}</div>
+                </div>
+              {% endif %}
+              
+              {% if service.related_articles_count %}
+                <div class="stat-item">
+                  <div class="stat-icon">
+                    <i data-lucide="newspaper"></i>
+                  </div>
+                  <div class="stat-text">{{ service.related_articles_count }} {% trans "related articles" %}</div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Tech Stack (if available) -->
+          {% if service.technologies_list %}
+          <div class="sidebar-section">
+            <h3>
+              <i data-lucide="code"></i>
+              {% trans "Technologies" %}
+            </h3>
+            <div class="tech-stack">
+              {% for tech in service.technologies_list %}
+                <span class="tech-chip">{{ tech }}</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Social Sharing -->
-  <section class="social-sharing text-center py-10">
-    <p class="mb-2">{% trans "Share this service:" %}</p>
-    <div class="flex justify-center gap-4 text-accent-green">
-      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank">Facebook</a>
-      <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank">Twitter</a>
-      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank">LinkedIn</a>
-    </div>
-  </section>
+  <!-- Social Share -->
+  {% include 'includes/social_share.html' with share_title=service.title %}
 
-  <!-- Back -->
-  <div class="text-center mb-12">
-    <a href="/{{ CURRENT_LANG }}/services/" class="text-accent-pink underline hover:text-white">
-      ← {% trans "Back to all services" %}
-    </a>
-  </div>
+</article>
 
-</main>
 {% endblock %}
 
 {% block extra_scripts %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "{{ service.seo_title|escapejs }}",
-  "description": "{{ service.seo_description|escapejs }}",
-  "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/",
-  "inLanguage": "{{ CURRENT_LANG }}",
-  "breadcrumb": {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Home",
-        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Services",
-        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/services/"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": "{{ service.title|escapejs }}",
-        "item": "https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
+  <!-- Scroll to contact function -->
+  <script>
+    function scrollToContact(serviceName) {
+      const contactSection = document.querySelector('.sidebar-section h3 i[data-lucide="message-circle"]')?.closest('.sidebar-section');
+      if (contactSection) {
+        contactSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+        
+        // Fill form with service info
+        setTimeout(() => {
+          const messageField = document.querySelector('textarea[name="message"], input[name="message"]');
+          if (messageField && serviceName) {
+            const currentLang = document.documentElement.lang || 'uk';
+            const messages = {
+              'uk': `Привіт! Мене цікавить послуга "${serviceName}". Хочу обговорити можливості співпраці.`,
+              'en': `Hi! I'm interested in the "${serviceName}" service. I'd like to discuss collaboration opportunities.`,
+              'pl': `Cześć! Interesuje mnie usługa "${serviceName}". Chciałbym omówić możliwości współpracy.`
+            };
+            messageField.value = messages[currentLang] || messages['uk'];
+            messageField.focus();
+          }
+        }, 1000);
       }
-    ]
-  }
-}
-</script>
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      } else {
+        // Fallback - try again after a short delay
+        setTimeout(function() {
+          if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+          }
+        }, 100);
+      }
+
+      // Set tag colors
+      document.querySelectorAll('.service-tag-pill[data-tag-color]').forEach(function(tag) {
+        const color = tag.getAttribute('data-tag-color');
+        if (color) {
+          tag.style.borderColor = color;
+        }
+      });
+
+      // Clickable cards functionality
+      document.querySelectorAll('.clickable').forEach(function (card) {
+        card.addEventListener('click', function () {
+          const href = card.getAttribute('data-href');
+          if (href) window.location.href = href;
+        });
+      });
+    });
+  </script>
 {% endblock %}

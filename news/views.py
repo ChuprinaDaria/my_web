@@ -78,6 +78,23 @@ class NewsListView(ListView):
         # Пошуковий запит
         context['search_query'] = self.request.GET.get('search', '')
         
+        # Інші новини (не топ 10) для sidebar
+        top_articles = ProcessedArticle.objects.filter(
+            status='published',
+            is_top_article=True
+        ).order_by('-published_at')[:10]
+        
+        context['other_news'] = ProcessedArticle.objects.filter(
+            status='published'
+        ).exclude(
+            id__in=[article.id for article in top_articles]
+        ).order_by('-published_at')[:8]
+        
+        # Загальна кількість статей
+        context['total_articles'] = ProcessedArticle.objects.filter(
+            status='published'
+        ).count()
+        
         # SEO метадані
         if category_slug:
             category = context['current_category']
@@ -237,8 +254,8 @@ class ArticleDetailView(DetailView):
             "description": article.get_summary(language),
             "articleBody": article.get_business_insight(language),
             "url": self.request.build_absolute_uri(),
-            "datePublished": article.published_at.isoformat(),
-            "dateModified": article.updated_at.isoformat(),
+            "datePublished": article.published_at.isoformat() if article.published_at else article.created_at.isoformat(),
+            "dateModified": article.updated_at.isoformat() if article.updated_at else article.created_at.isoformat(),
             "author": {"@type": "Organization", "name": "LAZYSOFT"},
             "publisher": {
                 "@type": "Organization",

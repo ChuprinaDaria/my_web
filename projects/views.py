@@ -18,6 +18,9 @@ def projects_list(request):
         'projects'
     ).all()
 
+    # Проєкти без категорії
+    uncategorized_projects = Project.objects.filter(is_active=True, category__isnull=True).order_by('-priority', '-order', '-project_date')
+
     total_projects = 0
     localized_categories = []
 
@@ -40,12 +43,11 @@ def projects_list(request):
                 # 🏷️ Теги
                 "tags": [
                     {
-                        'key': tag.key,
-                        'name': tag.get_name(lang),
-                        'emoji': tag.emoji,
-                        'color': tag.color
+                        'id': tag.id,
+                        'name': tag.name,
+                        'emoji': getattr(tag, 'icon', '️'),
                     }
-                    for tag in project_tags[:3]
+                    for tag in project.tags.all()
                 ],
                 "tags_count": project_tags.count(),
 
@@ -83,15 +85,62 @@ def projects_list(request):
             "projects": localized_projects
         })
 
+    # Додаємо секцію "Без категорії" якщо є
+    if uncategorized_projects.exists():
+        localized_projects = []
+        for project in uncategorized_projects:
+            project_tags = project.tags.filter(is_active=True)
+            localized_projects.append({
+                "slug": project.slug,
+                "featured_image": project.featured_image,
+                "title": getattr(project, f"title_{lang}", project.title_en),
+                "short_description": getattr(project, f"short_description_{lang}", project.short_description_en),
+                "tags": [
+                    {
+                        'id': tag.id,
+                        'name': tag.name,
+                        'emoji': getattr(tag, 'icon', '️'),
+                    }
+                    for tag in project.tags.all()
+                ],
+                "tags_count": project_tags.count(),
+                "related_articles_count": len(project.get_related_articles()) if project.get_related_articles() else 0,
+                "related_services_count": len(project.get_related_services()) if project.get_related_services() else 0,
+                "priority": project.priority,
+                "complexity_level": project.complexity_level,
+                "project_status": project.project_status,
+                "budget_range": project.budget_range,
+                "project_type": getattr(project, f"project_type_{lang}", project.project_type_en),
+                "is_ai_powered": project.is_ai_powered,
+                "is_top_project": project.is_top_project,
+                "is_innovative": project.is_innovative,
+                "is_enterprise": project.is_enterprise,
+                "is_complex": project.is_complex,
+                "all_badges": project.get_all_badges(lang),
+                "technologies_list": project.get_technologies_list(),
+                "project_date": project.project_date,
+                "development_duration_weeks": project.development_duration_weeks,
+                "client_time_saved_hours": project.client_time_saved_hours,
+            })
+        localized_categories.append({
+            "title": {
+                'en': 'Uncategorized',
+                'uk': 'Без категорії',
+                'pl': 'Bez kategorii'
+            }.get(lang, 'Uncategorized'),
+            "description": "",
+            "projects": localized_projects
+        })
+
     # 🎯 Популярні теги
     try:
         from core.models import Tag
         popular_tags = Tag.get_popular_tags(limit=6)
         popular_tags_data = [
             {
-                'key': tag.key,
+                'key': tag.slug,
                 'name': tag.get_name(lang),
-                'emoji': tag.emoji,
+                'emoji': tag.icon,
                 'color': tag.color,
                 'usage_count': tag.usage_count
             }
@@ -100,8 +149,14 @@ def projects_list(request):
     except ImportError:
         popular_tags_data = []
 
+    # Підбірка "Featured" проєктів
+    featured_projects_qs = Project.objects.filter(is_active=True, is_featured=True).prefetch_related('tags').order_by('-priority', '-order', '-project_date')
+
     context = {
         "categories": localized_categories,
+        "categories_qs": categories,
+        "featured_projects_qs": featured_projects_qs,
+        "uncategorized_projects_qs": uncategorized_projects,
         "total_projects": total_projects,
         "total_categories": categories.count(),
 
@@ -348,11 +403,11 @@ def projects_api(request):
         # 🏷️ Додаємо теги до API
         project_tags = [
             {
-                'key': tag.key,
+                'key': tag.slug,
                 'name_en': tag.name_en,
                 'name_uk': tag.name_uk,
                 'name_pl': tag.name_pl,
-                'emoji': tag.emoji,
+                'emoji': tag.icon,
                 'color': tag.color
             }
             for tag in project.tags.filter(is_active=True)
@@ -413,7 +468,7 @@ def projects_by_tag(request, tag_key):
     """
     try:
         from core.models import Tag
-        tag = get_object_or_404(Tag, key=tag_key, is_active=True)
+        tag = get_object_or_404(Tag, slug=tag_key, is_active=True)
     except ImportError:
         return JsonResponse({'error': 'Tags system not available'}, status=404)
     
@@ -439,9 +494,9 @@ def projects_by_tag(request, tag_key):
     
     context = {
         'tag': {
-            'key': tag.key,
+            'key': tag.slug,
             'name': tag.get_name(lang),
-            'emoji': tag.emoji,
+            'emoji': tag.icon,
             'color': tag.color,
             'description': tag.description
         },

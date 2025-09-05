@@ -13,56 +13,74 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
     """Головний AI процесор для новин - основна обробка"""
 
     def process_article(self, raw_article: RawArticle) -> Optional[ProcessedArticle]:
-        """Обробляє одну сиру статтю через AI"""
+        """Обробляє одну сиру статтю через AI з FiveFilters збагаченням"""
         start_time = time.time()
         self.logger.info(f"[AI] Обробка статті: {raw_article.title[:50]}...")
 
         try:
-            # 1) Аналіз + категоризація
+            # 0) НОВИЙ КРОК: Збагачення FiveFilters ПЕРЕД AI обробкою
+            enhanced_content = self._enhance_with_fivefilters(raw_article)
+            
+            # 1) Аналіз + категоризація (тепер на збагаченому контенті)
             category_info = self._categorize_article(raw_article)
             self.logger.info(f"[AI] Категорія визначена: {category_info['category']}")
 
-            # 2) Тримовний контент
+            # 2) Тримовний контент (використовує збагачений контент)
             processed_content = self._create_multilingual_content(raw_article, category_info)
             self.logger.info("[AI] Тримовний контент створено ✅")
 
-            # 3) Генеруємо AI-зображення (фолбек по промптам/титулам)
-            prompt = (
-                processed_content.get("ai_image_prompt_en", "")
-                
+            # 3) Стокові зображення замість AI генерації (як ти хотіла)
+            from news.services.stock_image_service import stock_image_service
+
+            self.logger.info("[IMAGE] Пошук стокового зображення...")
+
+            # Витягуємо ключові слова з контенту
+            content_keywords = self._extract_keywords_from_content(
+                raw_article.content or raw_article.summary or ""
             )
-            self.logger.info(f"[IMAGE] Промпт для зображення: {prompt}")
 
             try:
-                processed_content["ai_image_url"] = self._generate_ai_image(prompt)
-                if processed_content.get("ai_image_url"):
-                    self.logger.info(f"[IMAGE] Зображення готове: {processed_content['ai_image_url']}")
+                image_url = stock_image_service.get_image_for_article(
+                    title=raw_article.title,
+                    category=category_info.get('category_slug', 'general'),
+                    keywords=content_keywords
+                )
+                
+                processed_content["ai_image_url"] = image_url
+                
+                if image_url:
+                    self.logger.info(f"[IMAGE] Стокове зображення знайдено: {image_url}")
                 else:
-                    self.logger.warning("[IMAGE] Зображення не згенеровано (порожній URL)")
+                    self.logger.warning("[IMAGE] Стокове зображення не знайдено")
+                    
             except Exception as img_err:
-                self.logger.error(f"[IMAGE] Помилка генерації: {img_err}")
+                self.logger.error(f"[IMAGE] Помилка пошуку стокового зображення: {img_err}")
                 processed_content["ai_image_url"] = None
 
-            # 4) Зберігаємо оброблену статтю
+            # 4) Зберігаємо оброблену статтю (решта коду залишається)
             processed_article = self._save_processed_article(raw_article, processed_content)
 
-            # 4.1) Якщо є AI-зображення — записуємо у модель (видно в адмінці та ТГ)
-            if processed_content.get("ai_image_url"):
-                processed_article.ai_image_url = processed_content["ai_image_url"]
+            # 4.1) Записуємо зображення
+            image_url_to_save = processed_content.get("ai_image_url")
+            self.logger.info(f"[IMAGE] Збереження зображення: {image_url_to_save}")
+            if image_url_to_save:
+                processed_article.ai_image_url = image_url_to_save
                 processed_article.save(update_fields=["ai_image_url"])
+                self.logger.info(f"[IMAGE] ✅ Зображення збережено: {processed_article.ai_image_url}")
+            else:
+                self.logger.warning("[IMAGE] ⚠️ Немає URL для збереження")
 
             self.logger.info("[AI] Статтю збережено в базу ✅")
 
-            # 5) Статистика / лог
+            # 5) Статистика
             processing_time = time.time() - start_time
             processed_content["processing_time"] = processing_time
             self._log_ai_processing(raw_article, "full_processing", processed_content)
 
-            # Позначаємо raw як оброблений
+            # Позначаємо як оброблений
             raw_article.is_processed = True
             raw_article.save(update_fields=["is_processed"])
 
-            # Агрегація статистики
             self.stats["processed"] += 1
             self.stats["successful"] += 1
             self.stats["total_time"] += processing_time
@@ -80,12 +98,10 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
             self.stats["failed"] += 1
             error_msg = str(e)
 
-            # Проставляємо помилку на raw
             raw_article.processing_attempts = (raw_article.processing_attempts or 0) + 1
             raw_article.error_message = error_msg
             raw_article.save(update_fields=["processing_attempts", "error_message"])
 
-            # Лог про фейл
             self._log_ai_processing(raw_article, "error", {"error": error_msg})
             self.logger.error(f"[ERROR] Помилка обробки статті: {error_msg}")
             return None
@@ -204,3 +220,68 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
             )
         except Exception as e:
             self.logger.error(f"[ERROR] Помилка логування: {e}")
+
+
+    def _enhance_with_fivefilters(self, raw_article: RawArticle) -> str:
+        """Збагачує статтю повним текстом через FiveFilters"""
+        
+        # Перевіряємо чи не збагачено вже
+        original_length = len(raw_article.content or "")
+        
+        # Якщо контент вже довгий - можливо вже збагачено
+        if original_length > 1500:
+            self.logger.info(f"[FIVEFILTERS] Контент вже довгий ({original_length} симв), пропускаємо")
+            return raw_article.content or ""
+        
+        try:
+            from news.services.fulltext_extractor import FullTextExtractor
+            
+            self.logger.info(f"[FIVEFILTERS] Збагачення: {raw_article.original_url}")
+            
+            extractor = FullTextExtractor()
+            full_content = extractor.extract_article(raw_article.original_url)
+            
+            if full_content and len(full_content) > original_length:
+                improvement = len(full_content) - original_length
+                
+                # ЗБЕРІГАЄМО збагачений контент в БД
+                raw_article.content = full_content
+                raw_article.save(update_fields=['content'])
+                
+                self.logger.info(f"[FIVEFILTERS] ✅ Збагачено: +{improvement} символів ({len(full_content)} total)")
+                return full_content
+            else:
+                self.logger.warning(f"[FIVEFILTERS] ⚠️ Не вдалося збагатити або контент коротший")
+                return raw_article.content or raw_article.summary or ""
+                
+        except Exception as e:
+            self.logger.warning(f"[FIVEFILTERS] ❌ Помилка: {e}")
+            return raw_article.content or raw_article.summary or ""
+
+
+    def _extract_keywords_from_content(self, content: str) -> list:
+        """Витягує ключові слова з контенту для пошуку зображень"""
+        import re
+        
+        if not content:
+            return []
+        
+        # Стоп-слова
+        stop_words = {
+            'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 
+            'of', 'with', 'by', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+            'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could'
+        }
+        
+        # Витягуємо слова
+        words = re.findall(r'\b[a-zA-Z]{4,}\b', content.lower())
+        
+        # Рахуємо частоту
+        word_freq = {}
+        for word in words:
+            if word not in stop_words:
+                word_freq[word] = word_freq.get(word, 0) + 1
+        
+        # Повертаємо топ-5 найчастіших
+        keywords = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)
+        return [word for word, freq in keywords[:5]]

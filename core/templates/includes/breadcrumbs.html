@@ -1,0 +1,98 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 🧭 Universal Breadcrumbs -->
+<section class="breadcrumbs-section">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb navigation' %}">
+      <ol class="breadcrumb-list">
+        <li class="breadcrumb-item">
+          <a href="{% url 'home' %}" class="breadcrumb-link">
+            <i data-lucide="home" class="breadcrumb-icon"></i>
+            {% trans "Home" %}
+          </a>
+        </li>
+        <li class="breadcrumb-separator">→</li>
+        
+        {% if breadcrumb_items %}
+          {% for item in breadcrumb_items %}
+            <li class="breadcrumb-item">
+              {% if item.url %}
+                <a href="{{ item.url }}" class="breadcrumb-link">
+                  {% if item.icon %}<i data-lucide="{{ item.icon }}" class="breadcrumb-icon"></i>{% endif %}
+                  {{ item.title }}
+                </a>
+              {% else %}
+                <span class="breadcrumb-current">
+                  {% if item.icon %}<i data-lucide="{{ item.icon }}" class="breadcrumb-icon"></i>{% endif %}
+                  {{ item.title }}
+                </span>
+              {% endif %}
+            </li>
+            {% if not forloop.last %}<li class="breadcrumb-separator">→</li>{% endif %}
+          {% endfor %}
+        {% else %}
+          <!-- Fallback breadcrumbs based on current page -->
+          {% if 'projects' in request.path %}
+            <li class="breadcrumb-item">
+              <a href="{% url 'projects' %}" class="breadcrumb-link">
+                <i data-lucide="folder" class="breadcrumb-icon"></i>
+                {% trans "Projects" %}
+              </a>
+            </li>
+            <li class="breadcrumb-separator">→</li>
+            <li class="breadcrumb-item current" aria-current="page">
+              <span class="breadcrumb-current">
+                <i data-lucide="folder-open" class="breadcrumb-icon"></i>
+                {% if project %}{{ project.title|safe }}{% else %}{% trans "Projects" %}{% endif %}
+              </span>
+            </li>
+          {% elif 'services' in request.path %}
+            <li class="breadcrumb-item">
+              <a href="{% url 'services_list' %}" class="breadcrumb-link">
+                <i data-lucide="settings" class="breadcrumb-icon"></i>
+                {% trans "Services" %}
+              </a>
+            </li>
+            <li class="breadcrumb-separator">→</li>
+            <li class="breadcrumb-item current" aria-current="page">
+              <span class="breadcrumb-current">
+                <i data-lucide="cog" class="breadcrumb-icon"></i>
+                {% if service %}{{ service.title|safe }}{% else %}{% trans "Services" %}{% endif %}
+              </span>
+            </li>
+          {% elif 'news' in request.path %}
+            <li class="breadcrumb-item">
+              <a href="{% url 'news:news_list' %}" class="breadcrumb-link">
+                <i data-lucide="newspaper" class="breadcrumb-icon"></i>
+                {% trans "News" %}
+              </a>
+            </li>
+            <li class="breadcrumb-separator">→</li>
+            <li class="breadcrumb-item current" aria-current="page">
+              <span class="breadcrumb-current">
+                <i data-lucide="file-text" class="breadcrumb-icon"></i>
+                {% if article %}{{ article.title|safe }}{% else %}{% trans "News" %}{% endif %}
+              </span>
+            </li>
+          {% elif 'contacts' in request.path %}
+            <li class="breadcrumb-item current" aria-current="page">
+              <span class="breadcrumb-current">
+                <i data-lucide="mail" class="breadcrumb-icon"></i>
+                {% trans "Contacts" %}
+              </span>
+            </li>
+          {% elif 'about' in request.path %}
+            <li class="breadcrumb-item current" aria-current="page">
+              <span class="breadcrumb-current">
+                <i data-lucide="info" class="breadcrumb-icon"></i>
+                {% trans "About" %}
+              </span>
+            </li>
+          {% endif %}
+        {% endif %}
+      </ol>
+    </nav>
+  </div>
+</section>
+

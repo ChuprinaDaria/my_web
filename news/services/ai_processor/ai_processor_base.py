@@ -134,7 +134,7 @@ class AINewsProcessor:
             try:
                 genai.configure(api_key=self.gemini_api_key)
                 self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
-                self.logger.info("✅ Gemini клієнт ініціалізований")
+                self.logger.info(" Gemini клієнт ініціалізований")
             except Exception as e:
                 self.logger.error(f"❌ Помилка ініціалізації Gemini: {e}")
 

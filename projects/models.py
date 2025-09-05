@@ -403,7 +403,7 @@ class Project(models.Model):
         try:
             from core.models import Tag
             for tag_key in tags_to_assign:
-                tag = Tag.objects.filter(key=tag_key, is_active=True).first()
+                tag = Tag.objects.filter(slug=tag_key, is_active=True).first()
                 if tag:
                     self.tags.add(tag)
         except ImportError:
@@ -484,9 +484,9 @@ class Project(models.Model):
             badges.append({
                 'type': 'tag',
                 'text': tag.get_name(lang),
-                'icon': tag.emoji,
+                'icon': getattr(tag, 'icon', '️'),
                 'color': tag.color,
-                'key': tag.key
+                'key': getattr(tag, 'slug', None)
             })
         
         # СТАРІ ВІЗУАЛЬНІ БЕЙДЖІ (fallback для сумісності)

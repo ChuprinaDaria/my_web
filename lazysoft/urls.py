@@ -14,7 +14,7 @@ except ImportError:
     SITEMAPS_AVAILABLE = False
     print("⚠️ News sitemaps not available - run migrations first")
 
-print("🧠 i18n_patterns ACTUALLY LOADED")
+
 
 urlpatterns = []
 
@@ -44,6 +44,7 @@ urlpatterns += [
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
+    path('about/', include('about.urls')),
     path('services/', include('services.urls')),
     path('projects/', include('projects.urls')),
     path('', include('lazysoft.dashboard_urls')),

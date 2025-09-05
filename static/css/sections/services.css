@@ -2,6 +2,389 @@
    🌈 SERVICES SECTION - Райдужні горизонтальні карти
    =============================================== */
 
+/* 📄 SERVICES PAGE CONTAINER - схожий на project_details */
+.services-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* 🎯 HERO SECTION - контейнер для тексту */
+.services-hero {
+  padding: var(--spacing-4xl) 0;
+  background: linear-gradient(
+    135deg, 
+    rgba(102, 255, 0, 0.05) 0%, 
+    rgba(255, 0, 255, 0.05) 100%
+  );
+}
+
+.services-hero .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.services-hero .hero-content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.services-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: var(--spacing-lg);
+  background: linear-gradient(135deg, var(--text-white), var(--accent-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.services-hero .subtitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.6;
+}
+
+.services-hero .description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2xl);
+  line-height: 1.7;
+}
+
+.services-hero .hero-cta {
+  display: flex;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 🛠️ TECH STACK SECTION - контейнер для технологій */
+.tech-stack-section {
+  padding: var(--spacing-4xl) 0;
+  background: var(--bg-secondary);
+}
+
+.tech-stack-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.tech-stack-section .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-3xl);
+  color: var(--text-white);
+}
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  align-items: center;
+}
+
+.tech-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--blur-medium);
+  color: var(--text-white);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tech-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 255, 0, 0.2);
+  border-color: var(--accent-green);
+}
+
+.tech-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-green);
+}
+
+/* 📋 SERVICES CATEGORIES - контейнер для категорій */
+.services-categories {
+  padding: var(--spacing-4xl) 0;
+}
+
+.services-categories .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.services-categories .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-3xl);
+  color: var(--text-white);
+}
+
+.service-category {
+  margin-bottom: var(--spacing-4xl);
+}
+
+.category-header {
+  margin-bottom: var(--spacing-3xl);
+}
+
+
+/* 📝 CATEGORY CONTENT CONTAINER - контейнер для тексту категорії */
+.category-content {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-2xl);
+  backdrop-filter: var(--blur-medium);
+  text-align: center;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.category-content:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(102, 255, 0, 0.2);
+}
+
+.category-content .category-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-white);
+  margin-bottom: var(--spacing-lg);
+  background: linear-gradient(135deg, var(--text-white), var(--accent-green));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.category-content .category-description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.category-content .category-description h1,
+.category-content .category-description h2,
+.category-content .category-description h3,
+.category-content .category-description h4,
+.category-content .category-description h5,
+.category-content .category-description h6 {
+  color: var(--text-white);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.category-content .category-description p {
+  margin-bottom: var(--spacing-lg);
+  text-align: left;
+}
+
+.category-content .category-description p:last-child {
+  margin-bottom: 0;
+}
+
+.category-content .category-description strong {
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.category-content .category-description em {
+  color: var(--text-white);
+  font-style: italic;
+}
+
+/* 📊 FAQ PREVIEW - контейнер для FAQ */
+.faq-preview {
+  padding: var(--spacing-4xl) 0;
+  background: var(--bg-secondary);
+}
+
+.faq-preview .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.faq-preview .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-3xl);
+  color: var(--text-white);
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--spacing-xl);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.faq-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: var(--blur-medium);
+  overflow: hidden;
+}
+
+.faq-question {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  background: transparent;
+  border: none;
+  color: var(--text-white);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+  background: rgba(102, 255, 0, 0.1);
+}
+
+.faq-answer {
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.faq-icon {
+  transition: transform 0.3s ease;
+}
+
+.faq-item[open] .faq-icon {
+  transform: rotate(45deg);
+}
+
+/* 📞 CONTACT SECTION - контейнер для контактів */
+.contact {
+  padding: var(--spacing-4xl) 0;
+}
+
+.contact .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+/* 📱 RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+  .services-hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .services-hero .subtitle {
+    font-size: 1.3rem;
+  }
+  
+  .services-hero .description {
+    font-size: 1rem;
+  }
+  
+  .services-hero .hero-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tech-stack-section .section-title,
+  .services-categories .section-title,
+  .faq-preview .section-title {
+    font-size: 2rem;
+  }
+  
+  .category-title {
+    font-size: 1.5rem;
+  }
+  
+  .category-content {
+    padding: var(--spacing-xl);
+  }
+  
+  .category-description {
+    font-size: 1rem;
+  }
+  
+  .faq-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .tech-stack {
+    gap: var(--spacing-md);
+  }
+  
+  .tech-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-hero {
+    padding: var(--spacing-3xl) 0;
+  }
+  
+  .services-hero h1 {
+    font-size: 2rem;
+  }
+  
+  .services-hero .subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .tech-stack-section,
+  .services-categories,
+  .faq-preview,
+  .contact {
+    padding: var(--spacing-3xl) 0;
+  }
+  
+  .tech-stack-section .section-title,
+  .services-categories .section-title,
+  .faq-preview .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .category-content {
+    padding: var(--spacing-lg);
+  }
+  
+  .category-title {
+    font-size: 1.3rem;
+  }
+  
+  .category-description {
+    font-size: 0.9rem;
+  }
+}
+
 /* 🎯 SERVICE CARD - ГОРИЗОНТАЛЬНА РАЙДУЖНА */
 .service-card {
   display: flex;

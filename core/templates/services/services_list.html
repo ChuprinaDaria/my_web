@@ -144,31 +144,12 @@
 
 <!-- BREADCRUMBS -->
 {% block breadcrumbs %}
-<section class="breadcrumbs-section">
-  <div class="container">
-    <nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb navigation' %}">
-      <ol class="breadcrumb-list">
-        <li class="breadcrumb-item">
-          <a href="{% url 'home' %}" class="breadcrumb-link">
-            <i data-lucide="home" class="breadcrumb-icon"></i>
-            {% trans "Home" %}
-          </a>
-        </li>
-        <li class="breadcrumb-separator">→</li>
-        <li class="breadcrumb-item current" aria-current="page">
-          <span class="breadcrumb-current">
-            <i data-lucide="settings" class="breadcrumb-icon"></i>
-            {% trans "Services" %}
-          </span>
-        </li>
-      </ol>
-    </nav>
-  </div>
-</section>
+  {% include 'includes/breadcrumbs.html' %}
 {% endblock %}
 
 <!-- CONTENT START -->
 {% block content %}
+<main class="services-page">
 
 <!-- HERO SECTION -->
 <section class="hero services-hero">
@@ -252,8 +233,12 @@
     {% for category in categories %}
       <div class="service-category">
         <div class="category-header">
-          <h3 class="category-title">{{ category.title|safe }}</h3>
-          <p class="category-description">{{ category.description|safe }}</p>
+          <div class="category-content">
+            <h3 class="category-title">{{ category.title|safe }}</h3>
+            <div class="category-description">
+              {{ category.description|safe }}
+            </div>
+          </div>
         </div>
         
         <!-- Services Grid -->
@@ -376,11 +361,15 @@
 </section>
 {% endif %}
 
+<!-- RELATED WORK SECTION -->
+{% include 'includes/related_work_section.html' %}
+
 <!-- CONTACT -->
 <section id="contact" class="contact">
   {% include "core/contact_form.html" %}
 </section>
 
+</main>
 {% endblock %}
 
 {% block extra_scripts %}

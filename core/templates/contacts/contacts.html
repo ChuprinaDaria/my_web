@@ -46,29 +46,7 @@
 {% block content %}
 <main class="contacts-page">
 
-    <!-- Breadcrumbs - використовуємо існуючий компонент -->
-<section class="breadcrumbs-section">
-  <div class="container">
-    <nav class="breadcrumbs">
-      <ol class="breadcrumb-list">
-        <li class="breadcrumb-item">
-          <a href="{% url 'home' %}" class="breadcrumb-link">
-            <i data-lucide="home" class="breadcrumb-icon"></i>
-            {% trans "Головна" %}
-          </a>
-        </li>
-        <li class="breadcrumb-separator">→</li>
-        <li class="breadcrumb-item">
-          <span class="breadcrumb-current">
-            <i data-lucide="phone" class="breadcrumb-icon"></i>
-            {{ contact_info.get_title|default:_("Контакти") }}
-          </span>
-        </li>
-      </ol>
-    </nav>
-  </div>
-</section>
-
+   
 
   <!-- Hero секція -->
   <section class="contacts-hero">
@@ -351,33 +329,7 @@
   </section>
 
   <!-- Перелінковка з іншими сторінками -->
-  <section class="related-links">
-    <div class="container">
-      <h3 class="section-title">
-        {% trans "Ознайомтесь з нашою роботою" %}
-      </h3>
-      
-      <div class="related-grid">
-        <a href="{% url 'projects' %}" class="related-card">
-          <i data-lucide="rocket" class="card-icon"></i>
-          <h4>{% trans "Наші проєкти" %}</h4>
-          <p>{% trans "Подивіться що ми створили для клієнтів" %}</p>
-        </a>
-        
-        <a href="{% url 'services_list' %}" class="related-card">
-          <i data-lucide="zap" class="card-icon"></i>
-          <h4>{% trans "Наші послуги" %}</h4>
-          <p>{% trans "Дізнайтесь як ми можемо допомогти вашому бізнесу" %}</p>
-        </a>
-        
-        <a href="{% url 'about' %}" class="related-card">
-          <i data-lucide="lightbulb" class="card-icon"></i>
-          <h4>{% trans "Про нас" %}</h4>
-          <p>{% trans "Дізнайтесь нашу історію та підхід" %}</p>
-        </a>
-      </div>
-    </div>
-  </section>
+  {% include 'includes/related_work_section.html' %}
 
 </main>
 {% endblock %}

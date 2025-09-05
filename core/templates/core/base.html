@@ -179,7 +179,7 @@
       {% endfor %}
     </div>
 
-    <!-- 🧭 Navigation -->
+    
     <nav class="navbar">
       <div class="burger" onclick="toggleMenu()">
         <span></span>
@@ -189,7 +189,8 @@
       <ul class="nav-links" id="mobileMenu">
         <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
         <li><a href="{% url 'projects' %}">{% trans "Projects" %}</a></li>
-        <li><a href="{% url 'about' %}">{% trans "About" %}</a></li>
+        <li><a href="{% url 'services_list' %}">{% trans "Services" %}</a></li>
+        <li><a href="{% url 'about:about' %}">{% trans "About" %}</a></li>
         <li><a href="{% url 'news:news_list' %}">{% trans "News" %}</a></li>
         <li><a href="{% url 'contacts:contact_page' %}">{% trans "Contact" %}</a></li>
         
@@ -209,15 +210,17 @@
       </ul>
     </nav>
 
-    <!-- 📄 Main Content -->
+    
     <main>
-      <!-- 🧭 Breadcrumbs Section (optional - можна перевизначити в дочірніх шаблонах) -->
-      {% block breadcrumbs %}{% endblock %}
+      
+      {% block breadcrumbs %}
+        {% include 'includes/breadcrumbs.html' %}
+      {% endblock %}
       
       {% block content %}{% endblock %}
     </main>
 
-    <!-- 🦶 Footer -->
+    
     {% block footer %}
       {% include "core/footer.html" %}
     {% endblock %}

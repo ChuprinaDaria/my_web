@@ -1,0 +1,107 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 📰 News Sidebar -->
+<aside class="news-sidebar">
+  
+  <!-- Categories Navigation -->
+  <div class="sidebar-section glass card">
+    <h3>
+      <i data-lucide="folder"></i>
+      <span data-lang="en">Categories</span>
+      <span data-lang="uk">Категорії</span>
+      <span data-lang="pl">Kategorie</span>
+    </h3>
+    <div class="categories-list">
+      <a href="{% url 'news:news_list' %}" 
+         class="category-item {% if not current_category %}active{% endif %}">
+        <i data-lucide="newspaper"></i>
+        <span data-lang="en">All News</span>
+        <span data-lang="uk">Всі новини</span>
+        <span data-lang="pl">Wszystkie wiadomości</span>
+        <small>({{ total_articles }})</small>
+      </a>
+      
+      {% for category in categories %}
+      <a href="{% url 'news:news_category' category.slug %}" 
+         class="category-item {% if current_category.slug == category.slug %}active{% endif %}">
+        <i data-lucide="tag"></i>
+        <span data-lang="en">{{ category.name_en }}</span>
+        <span data-lang="uk">{{ category.name_uk }}</span>
+        <span data-lang="pl">{{ category.name_pl }}</span>
+        <small>({{ category.articles_count }})</small>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Search Form -->
+  <div class="sidebar-section glass card">
+    <h3>
+      <i data-lucide="search"></i>
+      <span data-lang="en">Search</span>
+      <span data-lang="uk">Пошук</span>
+      <span data-lang="pl">Szukaj</span>
+    </h3>
+    <form method="GET" class="search-form">
+      <div class="search-input-group">
+        <input type="search" 
+               name="search" 
+               value="{{ search_query }}" 
+               placeholder="{% trans 'Search tech news...' %}"
+               class="search-input">
+        <button type="submit" class="search-button">
+          <i data-lucide="search"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Other News (Non-Top 10) -->
+  {% if other_news %}
+    <div class="sidebar-section glass card">
+      <h3>
+        <i data-lucide="clock"></i>
+        <span data-lang="en">Other News</span>
+        <span data-lang="uk">Інші новини</span>
+        <span data-lang="pl">Inne wiadomości</span>
+      </h3>
+      <div class="other-news-list">
+        {% for article in other_news %}
+          <a href="{{ article.get_absolute_url }}" class="other-news-item">
+            <div class="news-title">
+              {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:8 }}
+              {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:8 }}
+              {% else %}{{ article.title_en|truncatewords:8 }}{% endif %}
+            </div>
+            <div class="news-meta">
+              <span class="news-category">{{ article.category.icon }}</span>
+              <time class="news-date">{{ article.published_at|date:'j.m' }}</time>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Tech Tags -->
+  <div class="sidebar-section glass card">
+    <h3>
+      <i data-lucide="hash"></i>
+      <span data-lang="en">Tech Tags</span>
+      <span data-lang="uk">Технологічні теги</span>
+      <span data-lang="pl">Tagi technologiczne</span>
+    </h3>
+    <div class="tech-tags">
+      <span class="tech-tag">AI & ML</span>
+      <span class="tech-tag">Blockchain</span>
+      <span class="tech-tag">Cloud</span>
+      <span class="tech-tag">Cybersecurity</span>
+      <span class="tech-tag">Fintech</span>
+      <span class="tech-tag">IoT</span>
+      <span class="tech-tag">Startups</span>
+      <span class="tech-tag">Automation</span>
+    </div>
+  </div>
+
+</aside>

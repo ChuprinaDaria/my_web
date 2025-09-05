@@ -156,7 +156,7 @@ class ServiceAdmin(admin.ModelAdmin):
                 '<span style="background: {}; color: white; padding: 2px 6px; '
                 'border-radius: 8px; font-size: 11px; margin-right: 4px;">'
                 '{} {}</span>',
-                tag.color, tag.emoji, tag.get_name('uk')
+                tag.color, tag.icon, tag.get_name('uk')
             ))
         
         if tags.count() > 3:

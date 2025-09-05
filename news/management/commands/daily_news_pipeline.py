@@ -199,7 +199,7 @@ class Command(BaseCommand):
         self.stdout.write('-' * 40)
         self.stdout.write(f'📅 За {date}:')
         self.stdout.write(f'   📰 Сирих статей: {raw_today.count()}')
-        self.stdout.write(f'   ✅ Оброблених: {processed_today.count()}')
+        self.stdout.write(f'    Оброблених: {processed_today.count()}')
         self.stdout.write(f'\n📈 Загальна база:')
         self.stdout.write(f'   📚 Всього сирих: {total_raw:,}')
         self.stdout.write(f'   🎨 Всього оброблених: {total_processed:,}')

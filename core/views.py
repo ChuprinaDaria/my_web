@@ -44,21 +44,21 @@ def home(request):
         top_news = ProcessedArticle.objects.filter(
             status='published',
             priority__gte=3
-        ).select_related('category').order_by('-priority', '-published_at')[:6]
+        ).select_related('category').order_by('-priority', '-published_at')[:10]
 
         # Якщо мало — добираємо додаткові
-        if top_news.count() < 4:
+        if top_news.count() < 8:
             extra_news = ProcessedArticle.objects.filter(
                 status='published',
                 priority__lt=3
-            ).select_related('category').order_by('-published_at')[:6 - top_news.count()]
+            ).select_related('category').order_by('-published_at')[:10 - top_news.count()]
             top_news = list(top_news) + list(extra_news)
 
         # ID топ-новин, щоб виключити з дайджесту
         top_ids = [a.id for a in top_news]
         daily_digest = ProcessedArticle.objects.filter(
             status='published'
-        ).exclude(id__in=top_ids).select_related('category').order_by('-published_at')[:10]
+        ).exclude(id__in=top_ids).select_related('category').order_by('-published_at')[:20]
 
         today_articles = ProcessedArticle.objects.filter(
             status='published',
@@ -82,15 +82,3 @@ def home(request):
     return render(request, 'core/home.html', context)
 
 
-def about_view(request):
-    """Рендеримо about з локаллю, з фолбеком на core/about.html."""
-    lang = (get_language() or 'en')[:2]  # en/uk/pl
-    candidates = [f"core/about_{lang}.html", "core/about.html"]
-    for tpl in candidates:
-        try:
-            get_template(tpl)
-            return render(request, tpl)
-        except TemplateDoesNotExist:
-            continue
-    # Якщо зовсім нема шаблонів — простий текст як запасний варіант
-    return render(request, "core/blank.html", {"message": "About page coming soon"})

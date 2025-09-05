@@ -109,9 +109,9 @@ class Command(BaseCommand):
             return False
         
         if processor.openai_client:
-            self.stdout.write('✅ OpenAI доступний')
+            self.stdout.write(' OpenAI доступний')
         if processor.gemini_model:
-            self.stdout.write('✅ Gemini доступний')
+            self.stdout.write(' Gemini доступний')
             
         return True
 

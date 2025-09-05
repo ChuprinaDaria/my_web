@@ -6,9 +6,9 @@
      data-priority="{{ project.priority }}" 
      onclick="location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
   
-  <!-- 🏷️ Теги проєкту -->
+  <!-- Project Tags -->
   <div class="project-tags">
-    <!-- Головний тип проєкту -->
+    <!-- Main project type -->
     {% if project.project_type_uk or project.project_type_en or project.project_type_pl %}
       <span class="project-tag primary" data-complexity="{{ project.complexity_level }}">
         <span class="tag-icon">🏢</span>
@@ -18,7 +18,7 @@
       </span>
     {% endif %}
 
-    <!-- Спеціальні бейджі -->
+    <!-- Special badges -->
     {% if project.is_top_project %}
       <span class="project-tag highlight top-badge">
         <span class="tag-icon">👑</span>{% trans "TOP" %}
@@ -49,7 +49,7 @@
       </span>
     {% endif %}
 
-    <!-- Кастомний бейдж -->
+    <!-- Custom badge -->
     {% if project.custom_badge_uk or project.custom_badge_en or project.custom_badge_pl %}
       <span class="project-tag custom" data-color="{{ project.custom_badge_color|default:'green' }}">
         <span class="tag-icon">✨</span>
@@ -60,7 +60,7 @@
     {% endif %}
   </div>
 
-  <!-- 🖼️ Зображення проєкту -->
+  <!-- Project Image -->
   {% if project.featured_image %}
     <div class="project-image">
       <img src="{{ project.featured_image.url }}" 
@@ -70,7 +70,7 @@
     </div>
   {% endif %}
 
-  <!-- 📝 Основний контент -->
+  <!-- Main Content -->
   <div class="project-content">
     <h3 class="project-title">
       {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|safe }}
@@ -78,7 +78,7 @@
       {% else %}{{ project.title_en|safe }}{% endif %}
     </h3>
     
-    <!-- 💡 Запит клієнта -->
+    <!-- Client Request -->
     <div class="client-request">
       <span class="request-label">{% trans "Client request:" %}</span>
       <div class="request-text">
@@ -88,7 +88,7 @@
       </div>
     </div>
     
-    <!-- 🚀 Результат -->
+    <!-- Project Result -->
     <div class="project-result">
       <span class="result-label">{% trans "What we did:" %}</span>
       <div class="result-text">
@@ -98,7 +98,7 @@
       </div>
     </div>
     
-    <!-- 📊 Метрики -->
+    <!-- Metrics -->
     <div class="project-metrics">
       {% if project.client_time_saved_hours %}
         <span class="metric-item">
@@ -121,7 +121,7 @@
       {% endif %}
     </div>
     
-    <!-- 🎯 CTA секція -->
+    <!-- CTA Section -->
     <div class="project-cta">
       <button class="cta-button" 
               data-project-title="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}"
@@ -135,7 +135,7 @@
         <span class="cta-arrow">→</span>
       </button>
       
-      <!-- Альтернативні кнопки -->
+      <!-- Alternative buttons -->
       <div class="secondary-actions">
         <a href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" class="details-link" onclick="event.stopPropagation();">
           {% if CURRENT_LANG == 'uk' %}Детальний кейс
@@ -154,6 +154,6 @@
     </div>
   </div>
   
-  <!-- ✨ Спецефекти при ховері -->
+  <!-- Hover effects -->
   <div class="card-glow-effect"></div>
 </div>

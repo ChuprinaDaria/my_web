@@ -32,6 +32,14 @@ class AIProcessorDatabase:
         business_insight_pl = self._safe_get_value(content, "business_insight_pl", "")
         business_insight_uk = self._safe_get_value(content, "business_insight_uk", "")
 
+        business_opportunities_en = self._safe_get_value(content, "business_opportunities_en", "")
+        business_opportunities_pl = self._safe_get_value(content, "business_opportunities_pl", "")
+        business_opportunities_uk = self._safe_get_value(content, "business_opportunities_uk", "")
+
+        lazysoft_recommendations_en = self._safe_get_value(content, "lazysoft_recommendations_en", "")
+        lazysoft_recommendations_pl = self._safe_get_value(content, "lazysoft_recommendations_pl", "")
+        lazysoft_recommendations_uk = self._safe_get_value(content, "lazysoft_recommendations_uk", "")
+
         local_context_en = self._safe_get_value(content, "local_context_en", "")
         local_context_pl = self._safe_get_value(content, "local_context_pl", "")
         local_context_uk = self._safe_get_value(content, "local_context_uk", "")
@@ -67,6 +75,10 @@ class AIProcessorDatabase:
         
         ai_image_url = self._safe_get_value(content, "ai_image_url", "")
 
+        # Встановлюємо дату публікації
+        from django.utils import timezone
+        published_at = timezone.now()
+
         processed_article = ProcessedArticle.objects.create(
             raw_article=raw_article,
             category=category,
@@ -82,6 +94,14 @@ class AIProcessorDatabase:
             business_insight_en=business_insight_en,
             business_insight_pl=business_insight_pl,
             business_insight_uk=business_insight_uk,
+
+            business_opportunities_en=business_opportunities_en,
+            business_opportunities_pl=business_opportunities_pl,
+            business_opportunities_uk=business_opportunities_uk,
+
+            lazysoft_recommendations_en=lazysoft_recommendations_en,
+            lazysoft_recommendations_pl=lazysoft_recommendations_pl,
+            lazysoft_recommendations_uk=lazysoft_recommendations_uk,
 
             local_context_en=local_context_en,
             local_context_pl=local_context_pl,
@@ -112,7 +132,7 @@ class AIProcessorDatabase:
             ai_image_url=ai_image_url,
             ai_image_prompt_en=ai_image_prompt_en,
             
-
+            published_at=published_at,
             priority=self._safe_get_value(content, "priority", 2),
             status="draft",
             ai_model_used=self._safe_get_value(content, "ai_model_used", ""),

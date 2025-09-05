@@ -119,7 +119,7 @@ class RawArticle(models.Model):
     content = models.TextField(_('Контент'), blank=True)
     summary = models.TextField(_('Короткий опис'), blank=True)
     original_url = models.URLField(_('Оригінальне посилання'))
-    author = models.CharField(_('Автор'), max_length=200, blank=True)
+    author = models.CharField(_('Автор'), max_length=500, blank=True)
     published_at = models.DateTimeField(_('Дата публікації'))
     
     # Метадані парсингу
@@ -178,6 +178,16 @@ class ProcessedArticle(models.Model):
     business_insight_pl = models.TextField(_('Бізнес-інсайт (PL)'))
     business_insight_uk = models.TextField(_('Бізнес-інсайт (UK)'))
     
+    # Бізнес можливості
+    business_opportunities_en = models.TextField(_('Бізнес можливості (EN)'), blank=True)
+    business_opportunities_pl = models.TextField(_('Бізнес можливості (PL)'), blank=True)
+    business_opportunities_uk = models.TextField(_('Бізнес можливості (UK)'), blank=True)
+    
+    # LAZYSOFT рекомендації
+    lazysoft_recommendations_en = models.TextField(_('Рекомендації LAZYSOFT (EN)'), blank=True)
+    lazysoft_recommendations_pl = models.TextField(_('Рекомендації LAZYSOFT (PL)'), blank=True)
+    lazysoft_recommendations_uk = models.TextField(_('Рекомендації LAZYSOFT (UK)'), blank=True)
+    
     local_context_en = models.TextField(_('Локальний контекст (EN)'), blank=True)
     local_context_pl = models.TextField(_('Локальний контекст (PL)'), blank=True)
     local_context_uk = models.TextField(_('Локальний контекст (UK)'), blank=True)
@@ -197,7 +207,7 @@ class ProcessedArticle(models.Model):
     meta_description_uk = models.CharField(_('SEO опис (UK)'), max_length=160, blank=True)
     
     # AI згенеровані зображення
-    ai_image_url = models.URLField(_('AI зображення'), blank=True)
+    ai_image_url = models.URLField(_('AI зображення'), blank=True, max_length=500)
     ai_image_prompt_en = models.TextField(_('Промпт зображення (EN)'), blank=True)
     ai_image_prompt_uk = models.TextField(_('Промпт зображення (UK)'), blank=True)
     ai_image_prompt_pl = models.TextField(_('Промпт зображення (PL)'), blank=True)
@@ -208,16 +218,6 @@ class ProcessedArticle(models.Model):
     interesting_facts_en = models.JSONField(_('Цікавинки (EN)'), default=list)
     interesting_facts_pl = models.JSONField(_('Цікавинки (PL)'), default=list)
     interesting_facts_uk = models.JSONField(_('Цікавинки (UK)'), default=list)
-    
-    # Бізнес можливості
-    business_opportunities_en = models.TextField(_('Бізнес можливості (EN)'), blank=True)
-    business_opportunities_pl = models.TextField(_('Бізнес можливості (PL)'), blank=True)
-    business_opportunities_uk = models.TextField(_('Бізнес можливості (UK)'), blank=True)
-    
-    # LAZYSOFT рекомендації
-    lazysoft_recommendations_en = models.TextField(_('Рекомендації LAZYSOFT (EN)'), blank=True)
-    lazysoft_recommendations_pl = models.TextField(_('Рекомендації LAZYSOFT (PL)'), blank=True)
-    lazysoft_recommendations_uk = models.TextField(_('Рекомендації LAZYSOFT (UK)'), blank=True)
     
     # Додаткові поля для Full Article Parser
     original_word_count = models.IntegerField(_('Кількість слів оригіналу'), default=0)
@@ -578,9 +578,9 @@ class ProcessedArticle(models.Model):
             if base:
                 self.slug = slugify(f"{base}-{str(self.uuid)[:8]}")
   # захист правила генерації зображення:
-  # зображення дозволене тільки якщо топова + є full_content_parsed == True
-        if self.ai_image_url and not (self.is_top_article and self.full_content_parsed):
-            self.ai_image_url = ''
+  # зображення дозволене для всіх статей (видалено обмеження на топові статті)
+  # if self.ai_image_url and not (self.is_top_article and self.full_content_parsed):
+  #     self.ai_image_url = ''
         super().save(*args, **kwargs)
 
 
@@ -815,36 +815,38 @@ class ProcessedArticle(models.Model):
             models.Index(fields=['is_top_article', 'article_rank']),    # топ-5 швидко
             models.Index(fields=['top_selection_date']),                # вибірка топів за датою
         ]
+
+
 class Comment(models.Model):
-     """Коментарі з реплаями, банами та авто-модерацією"""
-     PROVIDERS = [
-         ('email', 'Email/Password'),
-         ('google', 'Google'),
-         ('facebook', 'Facebook'),
-         ('linkedin', 'LinkedIn'),
-         ('instagram', 'Instagram'),
-     ]
-     article = models.ForeignKey(ProcessedArticle, on_delete=models.CASCADE, related_name='comments')
-     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
-     provider = models.CharField(max_length=20, choices=PROVIDERS, default='email')
-     display_name = models.CharField(max_length=80, blank=True)  # якщо соц-логін не повернув name
-     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
-     body = models.TextField()
-     is_deleted = models.BooleanField(default=False)
-     is_blocked = models.BooleanField(default=False)
-     created_at = models.DateTimeField(auto_now_add=True)
-     updated_at = models.DateTimeField(auto_now=True)
+    """Коментарі з реплаями, банами та авто-модерацією"""
+    PROVIDERS = [
+        ('email', 'Email/Password'),
+        ('google', 'Google'),
+        ('facebook', 'Facebook'),
+        ('linkedin', 'LinkedIn'),
+        ('instagram', 'Instagram'),
+    ]
+    article = models.ForeignKey(ProcessedArticle, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    provider = models.CharField(max_length=20, choices=PROVIDERS, default='email')
+    display_name = models.CharField(max_length=80, blank=True)  # якщо соц-логін не повернув name
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    body = models.TextField()
+    is_deleted = models.BooleanField(default=False)
+    is_blocked = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-     class Meta:
-         ordering = ['created_at']
+    class Meta:
+        ordering = ['created_at']
 
-     def soft_delete(self):
-         self.is_deleted = True
-         self.save(update_fields=['is_deleted', 'updated_at'])
+    def soft_delete(self):
+        self.is_deleted = True
+        self.save(update_fields=['is_deleted', 'updated_at'])
 
-     def block(self):
-         self.is_blocked = True
-         self.save(update_fields=['is_blocked', 'updated_at'])
+    def block(self):
+        self.is_blocked = True
+        self.save(update_fields=['is_blocked', 'updated_at'])
 
 
 class DailyDigest(models.Model):

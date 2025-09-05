@@ -227,7 +227,7 @@ class Service(models.Model):
         try:
             from core.models import Tag
             for tag_key in set(tags_to_assign):  # Видаляємо дублікати
-                tag = Tag.objects.filter(key=tag_key, is_active=True).first()
+                tag = Tag.objects.filter(slug=tag_key, is_active=True).first()
                 if tag:
                     self.tags.add(tag)
         except ImportError:

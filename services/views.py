@@ -191,7 +191,7 @@ def services_list(request):
 def service_detail(request, slug):
     """
     📋 Детальна сторінка сервісу з крос-промоцією
-    Показує пов'язані новини та проєкти через нову систему тегів
+    ВИПРАВЛЕНА ВЕРСІЯ з правильним related content
     """
     lang = get_language()
     
@@ -202,7 +202,7 @@ def service_detail(request, slug):
         is_active=True
     )
 
-    # Існуючі дані сервісу (розширені) - ФІКС для помилок методів
+    # Базові дані сервісу (як раніше)
     try:
         priority_emoji = service.get_priority_emoji()
     except (AttributeError, Exception):
@@ -222,7 +222,6 @@ def service_detail(request, slug):
         "seo_title": getattr(service, f"seo_title_{lang}", getattr(service, 'seo_title_en', '')),
         "seo_description": getattr(service, f"seo_description_{lang}", getattr(service, 'seo_description_en', '')),
         
-        # 🆕 НОВІ поля
         "priority": getattr(service, 'priority', 2),
         "priority_emoji": priority_emoji,
         "priority_display": priority_display,
@@ -230,87 +229,115 @@ def service_detail(request, slug):
         "order": getattr(service, 'order', 0),
     }
 
-    # 🔗 НОВА крос-промоція через теги - ФІКС для помилок методів
-    cross_promotion_content = []
-    related_articles = []
+    # 🏷️ Теги сервісу 
+    service_tags = service.tags.filter(is_active=True) if hasattr(service, 'tags') else service.tags.none()
+    tags_data = []
+    
+    for tag in service_tags:
+        tags_data.append({
+            'key': getattr(tag, 'key', getattr(tag, 'slug', f'tag_{tag.id}')),
+            'name': getattr(tag, f'name_{lang}', getattr(tag, 'name_en', getattr(tag, 'name', str(tag)))),
+            'emoji': getattr(tag, 'icon', getattr(tag, 'emoji', '🏷️')),  # icon або emoji
+            'color': getattr(tag, 'color', '#007bff'),
+        })
+
+    # 🚀 RELATED PROJECTS - спрощена логіка
     related_projects = []
     
-    try:
-        cross_promotion_content = service.get_cross_promotion_content(limit=6)
-    except (AttributeError, Exception):
-        cross_promotion_content = []
-
-    try:
-        related_articles = service.get_related_articles(limit=3)
-    except (AttributeError, Exception):
-        related_articles = []
-
-    try:
-        related_projects = service.get_related_projects(limit=3)
-    except (AttributeError, Exception):
-        related_projects = []
-    
-    # 🏷️ Теги сервісу
-    service_tags = service.tags.filter(is_active=True)
-    tags_data = []
-    for tag in service_tags:
+    if service_tags.exists():
+        # Шукаємо проєкти з такими ж тегами
         try:
-            tags_data.append({
-                'key': getattr(tag, 'key', f'tag_{tag.id}'),
-                'name': tag.get_name(lang) if hasattr(tag, 'get_name') else getattr(tag, f'name_{lang}', str(tag)),
-                'emoji': getattr(tag, 'emoji', '🏷️'),
-                'color': getattr(tag, 'color', '#007bff'),
-                'description': getattr(tag, 'description', '')
-            })
-        except (AttributeError, Exception):
-            # Fallback для простих тегів
-            tags_data.append({
-                'key': f'tag_{tag.id}',
-                'name': str(tag),
-                'emoji': '🏷️',
-                'color': '#007bff',
-                'description': ''
-            })
+            from projects.models import Project
+            projects_qs = Project.objects.filter(
+                tags__in=service_tags,
+                is_active=True
+            ).distinct().order_by('-priority', '-project_date')[:6]
+            
+            for project in projects_qs:
+                related_projects.append(project)
+        except ImportError:
+            pass
+    
+    # Fallback - якщо немає тегів, показуємо featured проєкти
+    if not related_projects:
+        try:
+            from projects.models import Project
+            projects_qs = Project.objects.filter(
+                is_active=True,
+                is_featured=True
+            ).order_by('-priority', '-project_date')[:3]
+            
+            for project in projects_qs:
+                related_projects.append(project)
+        except ImportError:
+            pass
 
-    # 🎯 Рекомендації (сервіси з такими ж тегами) - ФІКС для помилок
-    similar_services = []
-    try:
-        if service.tags.exists():
-            first_tag = service.tags.first()
-            similar_services = first_tag.services.filter(is_active=True).exclude(id=service.id)[:3]
-        else:
-            similar_services = []
-    except (AttributeError, Exception):
-        similar_services = []
+    # 📰 RELATED ARTICLES - спрощена логіка
+    related_articles = []
+    
+    if service_tags.exists():
+        # Шукаємо новини з такими ж тегами
+        try:
+            from news.models import ProcessedArticle
+            articles_qs = ProcessedArticle.objects.filter(
+                tags__in=service_tags,
+                status='published'
+            ).distinct().order_by('-published_at')[:6]
+            
+            for article in articles_qs:
+                related_articles.append({
+                    'uuid': str(article.uuid),
+                    'title': article.get_title(lang) if hasattr(article, 'get_title') else getattr(article, f'title_{lang}', 'Untitled'),
+                    'summary': article.get_summary(lang) if hasattr(article, 'get_summary') else getattr(article, f'summary_{lang}', ''),
+                    'url': article.get_absolute_url(lang) if hasattr(article, 'get_absolute_url') else f'/{lang}/news/article/{article.uuid}/',
+                    'ai_image_url': getattr(article, 'ai_image_url', None),
+                    'published_at': getattr(article, 'published_at', None),
+                })
+        except ImportError:
+            pass
+    
+    # Fallback - якщо немає тегів, показуємо останні новини
+    if not related_articles:
+        try:
+            from news.models import ProcessedArticle
+            articles_qs = ProcessedArticle.objects.filter(
+                status='published'
+            ).order_by('-published_at')[:3]
+            
+            for article in articles_qs:
+                related_articles.append({
+                    'uuid': str(article.uuid),
+                    'title': article.get_title(lang) if hasattr(article, 'get_title') else getattr(article, f'title_{lang}', 'Untitled'),
+                    'summary': article.get_summary(lang) if hasattr(article, 'get_summary') else getattr(article, f'summary_{lang}', ''),
+                    'url': article.get_absolute_url(lang) if hasattr(article, 'get_absolute_url') else f'/{lang}/news/article/{article.uuid}/',
+                    'ai_image_url': getattr(article, 'ai_image_url', None),
+                    'published_at': getattr(article, 'published_at', None),
+                })
+        except ImportError:
+            pass
+
+    # Додаємо статистику для metrics
+    service_data.update({
+        'related_articles_count': len(related_articles),
+        'related_projects_count': len(related_projects),
+    })
 
     context = {
-        # Існуючі поля
+        # Основні дані
         "service": service_data,
         "lang": lang,
         "request": request,
         
-        # 🏷️ НОВІ поля з тегами та крос-промоцією
+        # 🏷️ Теги і related content  
         "service_tags": tags_data,
-        "cross_promotion_content": cross_promotion_content,
         "related_articles": related_articles,
         "related_projects": related_projects,
         
-        # 📊 Статистика для UI
-        "show_cross_promotion": len(cross_promotion_content) > 0,
-        "cross_stats": {
-            'articles_count': len(related_articles) if hasattr(related_articles, '__len__') else (related_articles.count() if hasattr(related_articles, 'count') else 0),
-            'projects_count': len(related_projects) if hasattr(related_projects, '__len__') else (related_projects.count() if hasattr(related_projects, 'count') else 0),
-            'tags_count': len(tags_data)
-        },
-        
-        # 🎯 Рекомендації
-        "similar_services": similar_services,
-
-        # 🆕 ДОДАЮ debug інформацію
-        "debug": True,  # Для показу debug інформації
+        # 📊 Статистика для debug
+        "debug": True,
     }
     
-    # 📊 Статистика для дебагу
+    # Debug інформація
     print(f"📋 Сервіс '{service_data['title']}': {len(tags_data)} тегів, "
           f"{len(related_articles)} новин, {len(related_projects)} проєктів")
 

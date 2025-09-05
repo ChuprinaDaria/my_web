@@ -4,38 +4,17 @@
 
 {% block title %}{{ page_title }}{% endblock %}
 {% block meta_description %}{{ page_description }}{% endblock %}
-<<<<<<< HEAD
 {% block extra_meta %}
 <script type="application/ld+json">
 {{ structured_data|safe }}
 </script>
 {% endblock %}
-=======
-
->>>>>>> 142845d815461c20abde0a26113510140e4bdce2
 {% block content %}
 <article class="news-detail-page">
   <!-- Герой секція -->
   <section class="news-hero">
     <div class="container">
       
-      <!-- Breadcrumbs -->
-      <nav class="news-breadcrumbs">
-        <a href="/{{ CURRENT_LANG }}/" class="breadcrumb-link">
-          <span data-lang="en">Home</span>
-          <span data-lang="uk">Головна</span>
-          <span data-lang="pl">Główna</span>
-        </a>
-        <span class="breadcrumb-divider">→</span>
-        <a href="/{{ CURRENT_LANG }}/news/" class="breadcrumb-link">
-          <span data-lang="en">Tech News</span>
-          <span data-lang="uk">Технологічні новини</span>
-          <span data-lang="pl">Wiadomości Tech</span>
-        </a>
-        <span class="breadcrumb-divider">→</span>
-        <span class="breadcrumb-current">{{ article.get_title }}</span>
-      </nav>
-
       <!-- Категорія та мета інфо -->
       <div class="article-meta">
         <span class="category-badge">
@@ -55,11 +34,11 @@
       </div>
 
       <!-- Заголовок -->
-      <h1 class="article-title">
+      <h2>
         <span data-lang="en">{{ article.title_en|safe }}</span>
         <span data-lang="uk">{{ article.title_uk|safe }}</span>
         <span data-lang="pl">{{ article.title_pl|safe }}</span>
-      </h1>
+      </h2>
 
       <!-- Мета інформація -->
       <div class="article-info">
@@ -68,17 +47,11 @@
         </time>
         <span class="reading-time">⏱️ {{ article.get_reading_time }} хв читання</span>
         <span class="views-count">👁️ {{ article.get_total_views }} переглядів</span>
-<<<<<<< HEAD
         {% if article.original_source_url and article.original_source_name %}
-  <span class="source-info">
-    🔗 <a href="{{ article.original_source_url }}" target="_blank" rel="nofollow noopener">{{ article.original_source_name }}</a>
-  </span>
-{% endif %}
-=======
-        <span class="source-info">
-          🔗 <a href="{{ article.original_source_url }}" target="_blank">{{ article.original_source_name }}</a>
-        </span>
->>>>>>> 142845d815461c20abde0a26113510140e4bdce2
+          <span class="source-info">
+            🔗 <a href="{{ article.original_source_url }}" target="_blank" rel="nofollow noopener">{{ article.original_source_name }}</a>
+          </span>
+        {% endif %}
       </div>
     </div>
   </section>
@@ -88,7 +61,10 @@
     <section class="article-image">
       <div class="container">
         <div class="image-container glass">
-          <img src="{{ article.ai_image_url }}" alt="{{ article.get_title }}" loading="lazy">
+          <img src="{{ article.ai_image_url }}" 
+               alt="{% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|safe }}{% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|safe }}{% else %}{{ article.title_en|safe }}{% endif %}" 
+               loading="lazy"
+               style="width: 100%; height: auto; object-fit: contain; border-radius: var(--radius-xl);">
         </div>
       </div>
     </section>
@@ -113,14 +89,16 @@
           </div>
 
           <!-- Бізнес інсайт -->
-          <div class="business-insight glass">
-            <h2 class="content-heading">
-              <span class="heading-icon">🎯</span>
-              <span data-lang="en">Business Impact</span>
-              <span data-lang="uk">Вплив на бізнес</span>
-              <span data-lang="pl">Wpływ na biznes</span>
-            </h2>
-            <div class="insight-content">
+          <div class="business-insight card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
+            <div class="card-header">
+              <div class="card-icon">🎯</div>
+              <h2>
+                <span data-lang="en">Business Impact</span>
+                <span data-lang="uk">Вплив на бізнес</span>
+                <span data-lang="pl">Wpływ na biznes</span>
+              </h2>
+            </div>
+            <div class="card-content">
               <div data-lang="en">{{ article.business_insight_en|safe }}</div>
               <div data-lang="uk">{{ article.business_insight_uk|safe }}</div>
               <div data-lang="pl">{{ article.business_insight_pl|safe }}</div>
@@ -130,7 +108,7 @@
           <!-- Цікавинки (якщо є) -->
           {% if article.get_interesting_facts %}
             <div class="interesting-facts glass">
-              <h2 class="content-heading">
+              <h2>
                 <span class="heading-icon">✨</span>
                 <span data-lang="en">Interesting Facts</span>
                 <span data-lang="uk">Цікавинки</span>
@@ -145,35 +123,43 @@
           {% endif %}
 
           <!-- Бізнес можливості (якщо є) -->
-          {% if article.get_business_opportunities %}
-            <div class="business-opportunities glass">
-              <h2 class="content-heading">
-                <span class="heading-icon">🚀</span>
-                <span data-lang="en">Business Opportunities</span>
-                <span data-lang="uk">Бізнес можливості</span>
-                <span data-lang="pl">Możliwości biznesowe</span>
-              </h2>
-              <div class="opportunities-content">
-                <div data-lang="en">{{ article.get_business_opportunities.en|safe }}</div>
-                <div data-lang="uk">{{ article.get_business_opportunities.uk|safe }}</div>
-                <div data-lang="pl">{{ article.get_business_opportunities.pl|safe }}</div>
+          {% if article.business_opportunities_en or article.business_opportunities_uk or article.business_opportunities_pl %}
+            <div class="business-opportunities card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
+              <div class="card-header">
+                <div class="card-icon">🚀</div>
+                <h2 class="card-title">
+                  <span data-lang="en">Business Opportunities</span>
+                  <span data-lang="uk">Бізнес можливості</span>
+                  <span data-lang="pl">Możliwości biznesowe</span>
+                </h2>
+              </div>
+              <div class="card-content">
+                <div class="opportunities-content">
+                  <div data-lang="en">{{ article.business_opportunities_en|safe }}</div>
+                  <div data-lang="uk">{{ article.business_opportunities_uk|safe }}</div>
+                  <div data-lang="pl">{{ article.business_opportunities_pl|safe }}</div>
+                </div>
               </div>
             </div>
           {% endif %}
 
           <!-- LAZYSOFT рекомендації -->
-          {% if article.get_lazysoft_recommendations %}
-            <div class="lazysoft-recommendations glass">
-              <h2 class="content-heading">
-                <span class="heading-icon">🎯</span>
-                <span data-lang="en">LAZYSOFT Recommendations</span>
-                <span data-lang="uk">Рекомендації LAZYSOFT</span>
-                <span data-lang="pl">Rekomendacje LAZYSOFT</span>
-              </h2>
-              <div class="recommendations-content">
-                <div data-lang="en">{{ article.get_lazysoft_recommendations.en|safe }}</div>
-                <div data-lang="uk">{{ article.get_lazysoft_recommendations.uk|safe }}</div>
-                <div data-lang="pl">{{ article.get_lazysoft_recommendations.pl|safe }}</div>
+          {% if article.lazysoft_recommendations_en or article.lazysoft_recommendations_uk or article.lazysoft_recommendations_pl %}
+            <div class="lazysoft-recommendations card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
+              <div class="card-header">
+                <div class="card-icon">🎯</div>
+                <h2 class="card-title">
+                  <span data-lang="en">LAZYSOFT Recommendations</span>
+                  <span data-lang="uk">Рекомендації LAZYSOFT</span>
+                  <span data-lang="pl">Rekomendacje LAZYSOFT</span>
+                </h2>
+              </div>
+              <div class="card-content">
+                <div class="recommendations-content">
+                  <div data-lang="en">{{ article.lazysoft_recommendations_en|safe }}</div>
+                  <div data-lang="uk">{{ article.lazysoft_recommendations_uk|safe }}</div>
+                  <div data-lang="pl">{{ article.lazysoft_recommendations_pl|safe }}</div>
+                </div>
               </div>
             </div>
           {% endif %}
@@ -182,28 +168,15 @@
         <!-- Сайдбар -->
         <aside class="article-sidebar">
           
-          <!-- Поділитися -->
-          <div class="sidebar-block glass">
-            <h3 class="sidebar-title">
-              <span data-lang="en">Share Article</span>
-              <span data-lang="uk">Поділитися</span>
-              <span data-lang="pl">Udostępnij</span>
-            </h3>
-            <div class="share-buttons">
-              <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-btn facebook">📘 Facebook</a>
-              <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="share-btn twitter">🐦 Twitter</a>
-              <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="share-btn linkedin">💼 LinkedIn</a>
-            </div>
-          </div>
 
           <!-- CTA блок -->
           <div class="sidebar-block cta-block glass">
-            <h3 class="sidebar-title">
+            <h3>
               <span data-lang="en">Need Automation?</span>
               <span data-lang="uk">Потрібна автоматизація?</span>
               <span data-lang="pl">Potrzebujesz automatyzacji?</span>
             </h3>
-            <p class="cta-description">
+            <p>
               <span data-lang="en">Let's discuss how this technology can transform your business</span>
               <span data-lang="uk">Обговоримо, як ця технологія може трансформувати ваш бізнес</span>
               <span data-lang="pl">Omówmy, jak ta technologia może przekształcić Twój biznes</span>
@@ -219,7 +192,7 @@
           <!-- Схожі статті -->
           {% if related_articles %}
             <div class="sidebar-block related-articles glass">
-              <h3 class="sidebar-title">
+              <h3>
                 <span data-lang="en">Related News</span>
                 <span data-lang="uk">Схожі новини</span>
                 <span data-lang="pl">Podobne wiadomości</span>
@@ -227,57 +200,49 @@
               <div class="related-list">
                 {% for related in related_articles %}
                   <a href="{{ related.get_absolute_url }}" class="related-item">
-                    <div class="related-title">{{ related.get_title|truncatewords:10 }}</div>
-                    <div class="related-meta">
+                    <p>{{ related.get_title|truncatewords:10 }}</p
+                    <p>
                       {{ related.category.icon }} {{ related.published_at|date:'j.m' }}
-                    </div>
+                    </p>
                   </a>
                 {% endfor %}
               </div>
             </div>
           {% endif %}
 
-<<<<<<< HEAD
+          {% if related_projects %}
+            <section class="related-projects">
+              <h3>{% trans "Пов'язані проєкти" %}</h3>
+              <div class="cards-grid">
+                {% for p in related_projects %}
+                  <a href="/{{ CURRENT_LANG }}/projects/{{ p.slug }}/" class="project-card glass">
+                    {% if p.featured_image %}
+                      <img src="{{ p.featured_image }}" alt="{{ p.title }}">
+                    {% endif %}
+                    <h3>{{ p.title }}</h3>
+                    <p>{{ p.short_description }}</p>
+                  </a>
+                {% endfor %}
+              </div>
+            </section>
+          {% endif %}
 
-
-     {% if related_projects %}
-<section class="related-projects">
-  <h2>{% trans "Пов’язані проєкти" %}</h2>
-  <div class="cards-grid">
-    {% for p in related_projects %}
-      <a href="/{{ CURRENT_LANG }}/projects/{{ p.slug }}/" class="project-card glass">
-        {% if p.featured_image %}
-          <img src="{{ p.featured_image }}" alt="{{ p.title }}">
-        {% endif %}
-        <h3>{{ p.title }}</h3>
-        <p>{{ p.short_description }}</p>
-      </a>
-    {% endfor %}
-  </div>
-</section>
-{% endif %}
-
-
-{% if related_services %}
-<section class="related-services">
-  <h2>{% trans "Пов’язані послуги" %}</h2>
-  <div class="cards-grid">
-    {% for s in related_services %}
-      <a href="/{{ CURRENT_LANG }}/services/{{ s.slug }}/" class="service-card glass">
-        {% if s.featured_image %}
-          <img src="{{ s.featured_image }}" alt="{{ s.title }}">
-        {% endif %}
-        <h3>{{ s.title }}</h3>
-        <p>{{ s.short_description }}</p>
-      </a>
-    {% endfor %}
-  </div>
-</section>
-{% endif %}
-
-
-=======
->>>>>>> 142845d815461c20abde0a26113510140e4bdce2
+          {% if related_services %}
+            <section class="related-services">
+              <h3>{% trans "Пов'язані послуги" %}</h3>
+              <div class="cards-grid">
+                {% for s in related_services %}
+                  <a href="/{{ CURRENT_LANG }}/services/{{ s.slug }}/" class="service-card glass">
+                    {% if s.featured_image %}
+                      <img src="{{ s.featured_image }}" alt="{{ s.title }}">
+                    {% endif %}
+                    <h3>{{ s.title }}</h3>
+                    <p>{{ s.short_description }}</p>
+                  </a>
+                {% endfor %}
+              </div>
+            </section>
+          {% endif %}
         </aside>
       </div>
     </div>
@@ -294,15 +259,10 @@
           <span data-lang="pl">Wszystkie wiadomości</span>
         </a>
         
-        <button class="nav-link contact" onclick="scrollToContact('{{ article.get_title }}');">
-          <span class="nav-icon">💬</span>
-          <span data-lang="en">Discuss This Tech</span>
-          <span data-lang="uk">Обговорити цю технологію</span>
-          <span data-lang="pl">Omów tę technologię</span>
-        </button>
-      </div>
-    </div>
   </section>
+
+  <!-- Соціальні мережі -->
+  {% include 'includes/social_share.html' %}
 
 </article>
 

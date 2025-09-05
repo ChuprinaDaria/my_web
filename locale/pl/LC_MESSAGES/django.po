@@ -1,0 +1,65 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2025-01-05 08:35+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Get to know our work"
+msgstr "Poznaj naszą pracę"
+
+msgid "Our Projects"
+msgstr "Nasze projekty"
+
+msgid "See what we've created for our clients"
+msgstr "Zobacz co stworzyliśmy dla naszych klientów"
+
+msgid "Services"
+msgstr "Usługi"
+
+msgid "Our Services"
+msgstr "Nasze usługi"
+
+msgid "Learn how we can help your business"
+msgstr "Dowiedz się jak możemy pomóc Twojemu biznesowi"
+
+msgid "About Us"
+msgstr "O nas"
+
+msgid "About Lazysoft — Tech meets Laziness"
+msgstr "O Lazysoft — Technologia spotyka się z lenistwem"
+
+msgid "Discover how Lazysoft was born — a project driven by automation, creativity, and strategic laziness. Read the story of how our founder transitioned into tech at 37 and built a future out of Python and purpose."
+msgstr "Odkryj, jak narodził się Lazysoft — projekt napędzany automatyzacją, kreatywnością i strategicznym lenistwem. Przeczytaj historię o tym, jak nasza założycielka przeszła do technologii w wieku 37 lat i zbudowała przyszłość z Pythona i celu."
+
+msgid "A tech collective born from automation, humor, and one woman's lazy genius."
+msgstr "Kolektyw technologiczny zrodzony z automatyzacji, humoru i leniwego geniuszu jednej kobiety."
+
+msgid "We automate, we innovate, we're Lazysoft. Learn the story behind the name."
+msgstr "Automatyzujemy, innowujemy, jesteśmy Lazysoft. Poznaj historię za nazwą."
+
+msgid "Our Story in Pictures"
+msgstr "Nasza historia w obrazach"
+
+msgid "Our Story in Motion"
+msgstr "Nasza historia w ruchu"
+
+msgid "Featured Story"
+msgstr "Polecana historia"
+
+msgid "Your browser does not support the video tag."
+msgstr "Twoja przeglądarka nie obsługuje tagu wideo."
+
+msgid "Learn our story and approach"
+msgstr "Poznaj naszą historię i podejście"

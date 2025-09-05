@@ -56,13 +56,60 @@ class SimpleROIAdmin(admin.ModelAdmin):
 # === СТАТТІ (НАЙПРОСТІШІ) ===
 @admin.register(ProcessedArticle)
 class SimpleArticleAdmin(admin.ModelAdmin):
-    list_display = ['get_title', 'category', 'status', 'created_at']
-    list_filter = ['status', 'category']
-    search_fields = ['title_uk', 'title_en']
+    list_display = ['get_title', 'category', 'status', 'priority', 'created_at']
+    list_filter = ['status', 'category', 'priority']
+    search_fields = ['title_uk', 'title_en', 'title_pl']
+    readonly_fields = ['created_at', 'updated_at', 'ai_image_url', 'get_original_content', 'get_original_summary', 'get_original_url']
+    
+    fieldsets = (
+        ('Основна інформація', {
+            'fields': ('status', 'priority', 'category')
+        }),
+        ('Заголовки', {
+            'fields': ('title_en', 'title_uk', 'title_pl')
+        }),
+        ('Повний контент', {
+            'fields': ('summary_en', 'summary_uk', 'summary_pl'),
+            'classes': ('wide',)
+        }),
+        ('Оригінальний контент', {
+            'fields': ('get_original_content', 'get_original_summary', 'get_original_url'),
+            'classes': ('wide', 'collapse')
+        }),
+        ('Бізнес інсайти', {
+            'fields': ('business_insight_en', 'business_insight_uk', 'business_insight_pl'),
+            'classes': ('wide',)
+        }),
+        ('Метадані', {
+            'fields': ('ai_image_url', 'published_at', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
     
     def get_title(self, obj):
         return obj.title_uk or obj.title_en or "Без назви"
     get_title.short_description = "Назва"
+    
+    def get_original_content(self, obj):
+        """Повертає оригінальний контент статті"""
+        if obj.raw_article and obj.raw_article.content:
+            return obj.raw_article.content[:500] + "..." if len(obj.raw_article.content) > 500 else obj.raw_article.content
+        return "Немає контенту"
+    get_original_content.short_description = 'Оригінальний контент'
+    
+    def get_original_summary(self, obj):
+        """Повертає оригінальний короткий опис"""
+        if obj.raw_article and obj.raw_article.summary:
+            return obj.raw_article.summary
+        return "Немає опису"
+    get_original_summary.short_description = 'Оригінальний опис'
+    
+    def get_original_url(self, obj):
+        """Повертає посилання на оригінальну статтю"""
+        if obj.raw_article and obj.raw_article.original_url:
+            return obj.raw_article.original_url
+        return "Немає посилання"
+    get_original_url.short_description = 'Оригінальне посилання'
 
 
 # === RSS ДЖЕРЕЛА ===

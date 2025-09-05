@@ -69,6 +69,9 @@
   <link rel="alternate" href="https://lazysoft.dev/" hreflang="x-default">
   
   <!-- 📱 Mobile app links (якщо є) -->
+  
+  <!-- 📰 Home News Carousel Fix -->
+  <link rel="stylesheet" href="{% static 'css/components/home_news_carousel_fix.css' %}">
   <meta name="apple-itunes-app" content="app-id=lazysoft-app">
   <meta name="google-play-app" content="app-id=com.lazysoft.app">
   
@@ -222,10 +225,26 @@
 
 
 
-<!-- PROJECTS - використовуємо новий carousel -->
+<!-- PROJECTS - заміна projects_carousel -->
 <section id="projects" class="projects">
   <div class="container-reg">
-    {% projects_carousel filter_tags='top,ai' limit=6 title="Featured AI & Automation Projects" %}
+    <h2 class="section-title">{% trans "Featured AI & Automation Projects" %}</h2>
+    
+    {% if featured_projects %}
+      <div class="projects-carousel">
+        <div class="projects-container">
+          {% for project in featured_projects %}
+            {% include 'includes/project_card.html' with project=project %}
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="project-card" style="text-align: center; opacity: 0.6;">
+        <div style="font-size: 4rem; margin-bottom: 20px;">🔧</div>
+        <h4>{% trans "Featured Projects Coming Soon" %}</h4>
+        <p>{% trans "We're preparing our best automation projects to showcase" %}</p>
+      </div>
+    {% endif %}
   </div>
 </section>
 
@@ -290,6 +309,11 @@
                 <time datetime="{{ article.published_at|date:'c' }}">📅 {{ article.published_at|date:'j.m' }}</time>
                 <span>👁️ {{ article.get_total_views }}</span>
                 <span>⏱️ {{ article.get_reading_time }} {% trans "min" %}</span>
+                {% if article.original_source_url and article.original_source_name %}
+                  <a href="{{ article.original_source_url }}" target="_blank" rel="nofollow noopener" class="source-link">
+                    🔗 {{ article.original_source_name }}
+                  </a>
+                {% endif %}
                 <span class="cta-arrow">→</span>
               </div>
             </article>

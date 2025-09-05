@@ -5,9 +5,7 @@
 <section class="project-hero-section">
   <div class="container">
     <div class="hero-content">
-      <!-- Breadcrumbs -->
-      {% include 'includes/project_breadcrumbs.html' with project=project %}
-
+     
       <!-- Project Title -->
       <h1>
         {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|safe }}

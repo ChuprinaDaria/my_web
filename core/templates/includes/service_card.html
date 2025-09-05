@@ -6,38 +6,35 @@
      data-href="/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
      onclick="location.href='/{{ CURRENT_LANG }}/services/{{ service.slug }}/'">
 
- <!-- 🖼️ IMAGE SECTION -->
-<div class="service-image">
- {% if service.icon %}
-   <img src="{{ service.icon.url|default:service.icon }}" 
-        alt="{{ service.title|default:service.title_en }}" 
-        class="service-img"
-        loading="lazy">
- {% else %}
-   <div class="service-placeholder">
-     <i class="fas fa-cogs"></i>
-   </div>
- {% endif %}
-</div>
+  <!-- 🖼️ IMAGE SECTION - ВИПРАВЛЕНО! -->
+  <div class="service-image">
+    {% if service.icon %}
+      <img src="{{ service.icon.url }}" 
+           alt="{{ service.title|default:service.title_en }}" 
+           class="service-img"
+           loading="lazy">
+    {% elif service.icon_url %}
+      <img src="{{ service.icon_url }}" 
+           alt="{{ service.title|default:service.title_en }}" 
+           class="service-img"
+           loading="lazy">
+    {% else %}
+      <div class="service-placeholder">
+        <i data-lucide="cogs"></i>
+      </div>
+    {% endif %}
+  </div>
 
   <!-- 📝 TEXT CONTENT -->
   <div class="service-text">
     
     <!-- 🏷️ TAGS -->
-    {% if service.tags.all or service.tags_list %}
+    {% if service.tags_list %}
       <div class="service-tags">
-        {% for tag in service.tags.all|slice:":2" %}
+        {% for tag in service.tags_list %}
           <span class="service-tag">
-            {% if tag.emoji %}{{ tag.emoji }} {% endif %}{{ tag.name }}
+            {% if tag.icon %}{{ tag.icon }} {% endif %}{{ tag.name }}
           </span>
-        {% empty %}
-          {% if service.tags_list %}
-            {% for tag in service.tags_list|slice:":2" %}
-              <span class="service-tag">
-                {% if tag.emoji %}{{ tag.emoji }} {% endif %}{{ tag.name }}
-              </span>
-            {% endfor %}
-          {% endif %}
         {% endfor %}
       </div>
     {% endif %}
@@ -53,16 +50,19 @@
     <!-- 💭 DESCRIPTION -->
     <p>
       {% with sd=service.short_description %}
-        {% if sd %}{{ sd|safe|truncatewords:25 }}
-        {% elif CURRENT_LANG == 'uk' and service.short_description_uk %}{{ service.short_description_uk|safe|truncatewords:25 }}
-        {% elif CURRENT_LANG == 'pl' and service.short_description_pl %}{{ service.short_description_pl|safe|truncatewords:25 }}
-        {% else %}{{ service.short_description_en|safe|truncatewords:25 }}{% endif %}
+        {% if sd %}{{ sd|safe|truncatewords:20 }}
+        {% elif CURRENT_LANG == 'uk' and service.short_description_uk %}{{ service.short_description_uk|safe|truncatewords:20 }}
+        {% elif CURRENT_LANG == 'pl' and service.short_description_pl %}{{ service.short_description_pl|safe|truncatewords:20 }}
+        {% else %}{{ service.short_description_en|safe|truncatewords:20 }}{% endif %}
       {% endwith %}
     </p>
 
     <!-- 📊 METRICS -->
-    {% if service.related_articles_count or service.related_projects_count %}
+    {% if service.related_articles_count or service.related_projects_count or service.priority %}
       <div class="service-metrics">
+        {% if service.priority and service.priority > 3 %}
+          <span class="metric">🔥 HIGH PRIORITY</span>
+        {% endif %}
         {% if service.related_projects_count %}
           <span class="metric">🚀 {{ service.related_projects_count }} projects</span>
         {% endif %}
@@ -71,6 +71,21 @@
         {% endif %}
       </div>
     {% endif %}
+
+    <!-- 🎯 CTA BUTTON - як у проєктах -->
+    <div class="service-cta">
+      <button class="cta-button" 
+              data-service-title="{% if service.title %}{{ service.title|escapejs }}{% elif CURRENT_LANG == 'uk' and service.title_uk %}{{ service.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and service.title_pl %}{{ service.title_pl|escapejs }}{% else %}{{ service.title_en|escapejs }}{% endif %}"
+              onclick="event.stopPropagation(); scrollToContact(this.dataset.serviceTitle);">
+        <span class="cta-icon">💬</span>
+        <span class="cta-text">
+          {% if CURRENT_LANG == 'uk' %}Замовити послугу
+          {% elif CURRENT_LANG == 'pl' %}Zamów usługę
+          {% else %}Get This Service{% endif %}
+        </span>
+        <span class="cta-arrow">→</span>
+      </button>
+    </div>
 
   </div>
 </div>
