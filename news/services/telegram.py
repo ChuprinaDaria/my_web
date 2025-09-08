@@ -136,3 +136,33 @@ def tg_send_photo(photo_path_or_url: str, caption: str, language: str = "uk", re
         except Exception as e:
             logger.warning("Не вдалося зняти пін (photo): %s", e)
     return str(mid) if mid else ""
+
+
+def send_security_alert(ip_address, attack_type, details):
+    """Відправляємо Telegram алерт про атаку для Linus Security System - тільки в адмінський чат"""
+    try:
+        message = f"""
+🚨 LINUS SECURITY ALERT 🚨
+
+🖕 Attack Blocked: {attack_type}
+📍 IP: {ip_address}
+📝 Details: {details}
+⏰ Time: {os.popen('date /t & time /t').read().strip()}
+
+Linus Security System™ is operational! 🤘
+        """
+        
+        # Відправляємо тільки в адмінський чат (не в загальний канал)
+        admin_chat_id = getattr(settings, "TELEGRAM_ADMIN_CHAT_ID", None)
+        if admin_chat_id:
+            _tg_request("sendMessage", {
+                "chat_id": admin_chat_id,
+                "text": message,
+                "parse_mode": "HTML"
+            })
+            logger.info(f"Security alert sent to admin chat: {attack_type} from {ip_address}")
+        else:
+            logger.warning("TELEGRAM_ADMIN_CHAT_ID not configured - security alert not sent")
+        
+    except Exception as e:
+        logger.error(f"Failed to send security alert: {e}")

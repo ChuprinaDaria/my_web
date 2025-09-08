@@ -160,6 +160,8 @@
     <!-- 🎨 Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/consultant_bubble.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/consultant_chat.css' %}" />
     
     <!-- 🔗 Favicon & App Icons -->
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
@@ -228,6 +230,39 @@
     <!-- 📜 Scripts -->
     <script src="{% static 'js/script.js' %}"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- 🫧 Consultant Modal -->
+    <div id="consultantModal" class="consultant-modal" style="display: none;">
+      <div class="modal-overlay" onclick="closeConsultantModal()"></div>
+      <div class="modal-content">
+        
+        <!-- Простий Header -->
+        <div class="modal-header">
+          <div class="modal-title">
+            <span class="modal-avatar">🤖</span>
+            <span>RAG Консультант</span>
+          </div>
+          <button class="modal-close" onclick="closeConsultantModal()">×</button>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages">
+          <div id="messages" class="messages"></div>
+        </div>
+
+        <!-- Input -->
+        <div class="chat-input">
+          <form id="chatForm" class="chat-form">
+            <input type="text" id="messageInput" placeholder="Напишіть повідомлення..." />
+            <button type="submit" id="sendButton">→</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🫧 Consultant Scripts -->
+    <script src="{% static 'js/consultant_bubble.js' %}"></script>
+    <script src="{% static 'js/consultant_chat.js' %}"></script>
     <script>
       // 🎨 Глобальна функція ініціалізації Lucide іконок
       function initLucideIcons() {
@@ -239,9 +274,12 @@
   }
 }
 
+
       // 🔄 Ініціалізуємо іконки при завантаженні сторінки
       window.addEventListener("load", initLucideIcons);
       document.addEventListener('DOMContentLoaded', initLucideIcons);
+      
+      
       
       // 🖱️ Clickable cards functionality
       document.addEventListener('DOMContentLoaded', function () {

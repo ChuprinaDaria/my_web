@@ -223,6 +223,33 @@
         <!-- Sidebar Column -->
         <aside class="news-sidebar">
           {% include 'includes/news_sidebar.html' %}
+          
+          <!-- Other News - Інші новини що не в топі -->
+          {% if other_news %}
+          <div class="sidebar-section glass card">
+            <h3>
+              <i data-lucide="clock"></i>
+              <span data-lang="en">Other News</span>
+              <span data-lang="uk" class="active">Інші новини</span>
+              <span data-lang="pl">Inne wiadomości</span>
+            </h3>
+            <div class="other-news-list">
+              {% for article in other_news %}
+                <a href="{{ article.get_absolute_url }}" class="other-news-item">
+                  <div class="news-title">
+                    {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:8 }}
+                    {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:8 }}
+                    {% else %}{{ article.title_en|truncatewords:8 }}{% endif %}
+                  </div>
+                  <div class="news-meta">
+                    <span class="news-category">{{ article.category.icon }}</span>
+                    <time class="news-date">{{ article.published_at|date:'j.m' }}</time>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
         </aside>
 
       </div>

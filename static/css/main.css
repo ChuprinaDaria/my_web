@@ -51,6 +51,9 @@
 @import url('./components/service_card.css');
 @import url('./components/service_carousel.css');
 @import url('./sections/service_detail.css');
+@import url('./sections/news_list.css'); 
+/* 🫧 CONSULTANT BUBBLE */
+@import url('./components/consultant_bubble.css');
 /* ===============================================
    🌟 GLOBAL STYLES
    =============================================== */

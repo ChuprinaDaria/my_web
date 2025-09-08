@@ -19,6 +19,49 @@ msgstr ""
 msgid "Get to know our work"
 msgstr "Get to know our work"
 
+# Consultant translations
+msgid "RAG Консультант"
+msgstr "RAG Consultant"
+
+msgid "Ваш персональний AI-помічник"
+msgstr "Your personal AI assistant"
+
+msgid "Час сесії:"
+msgstr "Session time:"
+
+msgid "Початок:"
+msgstr "Start:"
+
+msgid "Швидкі питання:"
+msgstr "Quick questions:"
+
+msgid "Як почати роботу з вашим продуктом?"
+msgstr "How to start working with your product?"
+
+msgid "Які послуги ви надаєте?"
+msgstr "What services do you provide?"
+
+msgid "Скільки коштує розробка?"
+msgstr "How much does development cost?"
+
+msgid "Як зв'язатися з командою?"
+msgstr "How to contact the team?"
+
+msgid "Напишіть ваше повідомлення..."
+msgstr "Write your message..."
+
+msgid "Відправити"
+msgstr "Send"
+
+msgid "Очистити"
+msgstr "Clear"
+
+msgid "Експорт"
+msgstr "Export"
+
+msgid "Почати чат"
+msgstr "Start chat"
+
 msgid "Our Projects"
 msgstr "Our Projects"
 

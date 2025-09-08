@@ -1,6 +1,7 @@
 from django.db import models
 from ckeditor.fields import RichTextField
 from django.utils.translation import get_language
+from django.contrib.auth.models import User
 
 class Contact(models.Model):
     """Контактна інформація компанії"""
@@ -174,9 +175,81 @@ class ContactSubmission(models.Model):
     is_processed = models.BooleanField(default=False)
     admin_notes = models.TextField(blank=True, null=True)
     
+    # ⚡ CRM ПОЛЯ - ДОДАЄМО НОВІ:
+    
+    # CRM статуси
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('new', 'Новий лід'),
+            ('contacted', 'Зв\'язались'),
+            ('qualified', 'Кваліфікований'),
+            ('proposal_sent', 'Відправлено пропозицію'),
+            ('negotiation', 'Переговори'),
+            ('closed_won', 'Закрито успішно'),
+            ('closed_lost', 'Закрито неуспішно'),
+        ],
+        default='new',
+        verbose_name='Статус'
+    )
+    
+    # Призначення менеджера
+    assigned_to = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, blank=True,
+        verbose_name="Призначено менеджеру",
+        related_name='assigned_leads'
+    )
+    
+    # Оцінка та бюджет
+    lead_score = models.IntegerField(
+        default=0, 
+        help_text="Оцінка ліда 0-100",
+        verbose_name='Оцінка ліда'
+    )
+    
+    estimated_budget = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        null=True, blank=True,
+        verbose_name='Очікуваний бюджет'
+    )
+    
+    expected_close_date = models.DateField(
+        null=True, blank=True,
+        verbose_name='Очікувана дата закриття'
+    )
+    
+    # Відстеження активності
+    last_contact_date = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name='Остання взаємодія'
+    )
+    
+    next_follow_up = models.DateTimeField(
+        null=True, blank=True,
+        verbose_name='Наступний follow-up'
+    )
+    
+    # Джерело ліда (розширюємо referred_from)
+    lead_source = models.CharField(
+        max_length=50,
+        choices=[
+            ('website', 'Сайт'),
+            ('social_media', 'Соціальні мережі'),
+            ('referral', 'Рекомендація'),
+            ('advertising', 'Реклама'),
+            ('cold_outreach', 'Холодні дзвінки'),
+            ('other', 'Інше'),
+        ],
+        default='website',
+        verbose_name='Джерело ліда'
+    )
+    
     class Meta:
-        verbose_name = "Contact Submission"
-        verbose_name_plural = "Contact Submissions"
+        verbose_name = "Лід/Заявка"
+        verbose_name_plural = "Ліди/Заявки"
         ordering = ['-created_at']
     
     def __str__(self):

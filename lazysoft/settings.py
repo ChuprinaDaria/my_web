@@ -48,6 +48,20 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     
+    # 🎯 CRM apps - видалено
+    # 'crm',
+    'django_filters',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'django_select2',
+    'django_extensions',
+    
+    # 🔐 2FA Security - відключено
+    # 'django_otp',
+    # 'django_otp.plugins.otp_totp',  # Google Authenticator
+    # 'two_factor',
+    # опційно: 'otp_yubikey',
+    
     # 🧠 Your apps
     'core',
     'about',
@@ -57,10 +71,11 @@ INSTALLED_APPS = [
     'services',
     'contacts',
     'accounts',
+    'consultant',
 ]
 
 
-SITE_ID = 1
+SITE_ID = 2  
 
 # SINGLE MIDDLEWARE DEFINITION
 MIDDLEWARE = [
@@ -70,11 +85,16 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django_otp.middleware.OTPMiddleware',  # 🔐 2FA Middleware - відключено
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    # 🖕 LINUS SECURITY SYSTEM™ - Захищаємо від хакерів!
+    'core.middleware.security.LinusSecurityMiddleware',
 ]
 
 ROOT_URLCONF = 'lazysoft.urls'
+
 
 # SINGLE TEMPLATES DEFINITION
 TEMPLATES = [
@@ -362,3 +382,172 @@ if not DEBUG:
 # Створюємо папки якщо їх немає
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
 os.makedirs(BASE_DIR / 'media', exist_ok=True)
+
+# === 🖕 LINUS SECURITY SYSTEM™ ===
+LINUS_SECURITY_ENABLED = True
+LINUS_TELEGRAM_ALERTS = True
+LINUS_LOG_ALL_ATTACKS = True
+
+# Telegram адмінський чат для security алертів
+TELEGRAM_ADMIN_CHAT_ID = config('TELEGRAM_ADMIN_CHAT_ID', default=None)
+
+# Cloudflare settings (для production)
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Cloudflare IP ranges (для trusted proxies) - повний список
+CLOUDFLARE_IPS = [
+    '173.245.48.0/20',
+    '103.21.244.0/22',
+    '103.22.200.0/22',
+    '103.31.4.0/22',
+    '141.101.64.0/18',
+    '108.162.192.0/18',
+    '190.93.240.0/20',
+    '188.114.96.0/20',
+    '197.234.240.0/22',
+    '198.41.128.0/17',
+    '162.158.0.0/15',
+    '104.16.0.0/13',
+    '104.24.0.0/14',
+    '172.64.0.0/13',
+    '131.0.72.0/22',
+    '104.28.0.0/16',
+    '104.29.0.0/16',
+    '104.30.0.0/16',
+    '104.31.0.0/16',
+    '108.162.224.0/19',
+    '108.162.240.0/20',
+    '108.162.248.0/21',
+    '108.162.252.0/22',
+    '108.162.254.0/23',
+    '108.162.255.0/24',
+    '141.101.64.0/18',
+    '141.101.80.0/20',
+    '141.101.96.0/19',
+    '141.101.112.0/20',
+    '141.101.128.0/17',
+    '141.101.192.0/18',
+    '141.101.224.0/19',
+    '141.101.240.0/20',
+    '141.101.248.0/21',
+    '141.101.252.0/22',
+    '141.101.254.0/23',
+    '141.101.255.0/24',
+    '162.158.0.0/15',
+    '162.159.0.0/16',
+    '162.160.0.0/15',
+    '162.162.0.0/16',
+    '162.163.0.0/16',
+    '162.164.0.0/16',
+    '162.165.0.0/16',
+    '162.166.0.0/16',
+    '162.167.0.0/16',
+    '162.168.0.0/16',
+    '162.169.0.0/16',
+    '162.170.0.0/16',
+    '162.171.0.0/16',
+    '162.172.0.0/16',
+    '162.173.0.0/16',
+    '162.174.0.0/16',
+    '162.175.0.0/16',
+    '162.176.0.0/16',
+    '162.177.0.0/16',
+    '162.178.0.0/16',
+    '162.179.0.0/16',
+    '162.180.0.0/16',
+    '162.181.0.0/16',
+    '162.182.0.0/16',
+    '162.183.0.0/16',
+    '162.184.0.0/16',
+    '162.185.0.0/16',
+    '162.186.0.0/16',
+    '162.187.0.0/16',
+    '162.188.0.0/16',
+    '162.189.0.0/16',
+    '162.190.0.0/16',
+    '162.191.0.0/16',
+    '162.192.0.0/16',
+    '162.193.0.0/16',
+    '162.194.0.0/16',
+    '162.195.0.0/16',
+    '162.196.0.0/16',
+    '162.197.0.0/16',
+    '162.198.0.0/16',
+    '162.199.0.0/16',
+    '162.200.0.0/16',
+    '162.201.0.0/16',
+    '162.202.0.0/16',
+    '162.203.0.0/16',
+    '162.204.0.0/16',
+    '162.205.0.0/16',
+    '162.206.0.0/16',
+    '162.207.0.0/16',
+    '162.208.0.0/16',
+    '162.209.0.0/16',
+    '162.210.0.0/16',
+    '162.211.0.0/16',
+    '162.212.0.0/16',
+    '162.213.0.0/16',
+    '162.214.0.0/16',
+    '162.215.0.0/16',
+    '162.216.0.0/16',
+    '162.217.0.0/16',
+    '162.218.0.0/16',
+    '162.219.0.0/16',
+    '162.220.0.0/16',
+    '162.221.0.0/16',
+    '162.222.0.0/16',
+    '162.223.0.0/16',
+    '162.224.0.0/16',
+    '162.225.0.0/16',
+    '162.226.0.0/16',
+    '162.227.0.0/16',
+    '162.228.0.0/16',
+    '162.229.0.0/16',
+    '162.230.0.0/16',
+    '162.231.0.0/16',
+    '162.232.0.0/16',
+    '162.233.0.0/16',
+    '162.234.0.0/16',
+    '162.235.0.0/16',
+    '162.236.0.0/16',
+    '162.237.0.0/16',
+    '162.238.0.0/16',
+    '162.239.0.0/16',
+    '162.240.0.0/16',
+    '162.241.0.0/16',
+    '162.242.0.0/16',
+    '162.243.0.0/16',
+    '162.244.0.0/16',
+    '162.245.0.0/16',
+    '162.246.0.0/16',
+    '162.247.0.0/16',
+    '162.248.0.0/16',
+    '162.249.0.0/16',
+    '162.250.0.0/16',
+    '162.251.0.0/16',
+    '162.252.0.0/16',
+    '162.253.0.0/16',
+    '162.254.0.0/16',
+    '162.255.0.0/16',
+]
+
+# Cloudflare API налаштування
+CLOUDFLARE_API_TOKEN = config('CLOUDFLARE_API_TOKEN', default=None)
+CLOUDFLARE_ZONE_ID = config('CLOUDFLARE_ZONE_ID', default=None)
+CLOUDFLARE_EMAIL = config('CLOUDFLARE_EMAIL', default=None)
+
+# Security logging
+LOGGING['loggers']['security'] = {
+    'handlers': ['file'],
+    'level': 'WARNING',
+    'propagate': True,
+}
+
+# === 🎯 CRM SETTINGS ===
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# Select2 settings
+SELECT2_CACHE_BACKEND = "default"

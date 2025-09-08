@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <meta name="googlebot" content="noindex, nofollow">
+    <title>🖕 Access Denied - Lazysoft Security</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/security/linus.css' %}">
+</head>
+<body>
+    <div class="matrix-bg"></div>
+    
+    <div class="container">
+        <div class="skull">💀</div>
+        
+        <h1 class="glitch">ACCESS DENIED</h1>
+        
+        <div class="linus-quote">
+            "Talk is cheap. Show me the code... that you DON'T have!"
+        </div>
+        
+        <div class="linus-image"></div>
+        
+        <div class="details">
+            <div class="error-code">HTTP 403.GTFO</div>
+            <p>Our firewall runs on spite, caffeine, and deep personal hatred of script kiddies.</p>
+            <p>You're not even on the guest list, junior.</p>
+            
+            {% if attack_type %}
+            <div style="margin-top: 20px; padding: 10px; background: rgba(255,0,102,0.1); border: 1px solid #ff0066; border-radius: 5px;">
+                <strong>Attack Type:</strong> {{ attack_type|upper }}<br>
+                <strong>Your IP:</strong> {{ ip_address }}<br>
+                <strong>Time:</strong> {{ timestamp|date:"Y-m-d H:i:s" }}
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="binary">
+            01000110 01110101 01100011 01101011 00100000 01101111 01100110 01100110
+        </div>
+        
+        <div class="warning">
+            ⚠️ WARNING: This incident has been logged and reported to our security team ⚠️
+        </div>
+        
+        <div class="footer">
+            Powered by Lazysoft Offensive Firewall™<br>
+            <small>We don't block. We humiliate.</small>
+        </div>
+    </div>
+
+    <script>
+        // Matrix rain effect
+        function createMatrixRain() {
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const matrixBg = document.querySelector('.matrix-bg');
+            
+            for (let i = 0; i < 50; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars[Math.floor(Math.random() * chars.length)];
+                char.style.left = Math.random() * 100 + '%';
+                char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                char.style.animationDelay = Math.random() * 2 + 's';
+                matrixBg.appendChild(char);
+                
+                // Remove element after animation
+                setTimeout(() => {
+                    if (char.parentNode) {
+                        char.parentNode.removeChild(char);
+                    }
+                }, 5000);
+            }
+        }
+        
+        // Start matrix rain
+        createMatrixRain();
+        setInterval(createMatrixRain, 2000);
+        
+        // Console Easter Egg
+        console.log(`
+🖕 Linus sez: Nice try opening DevTools, amateur!
+        
+        ⢀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⣠⣤⣶⣶
+        ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠀⠀⣀⣿⣿⣿
+        ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⣿⣿⣿⣿
+        ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠀⠀⣿⣿⣿⣿
+        
+        Our security system powered by:
+        - Professional spite ✓
+        - Endless caffeine ✓  
+        - Hatred of amateur hackers ✓
+        
+        You're looking at the source? Cool story bro.
+        Try actually learning to code first. 🤓
+        `);
+        
+        // Keyboard konami code easter egg
+        let konamiCode = [];
+        const correctCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
+        
+        document.addEventListener('keydown', function(e) {
+            konamiCode.push(e.keyCode);
+            if (konamiCode.length > correctCode.length) {
+                konamiCode.shift();
+            }
+            
+            if (JSON.stringify(konamiCode) === JSON.stringify(correctCode)) {
+                document.querySelector('.linus-quote').innerHTML = 
+                    '"Congratulations! You found the secret. Now go learn actual hacking." 🤓';
+                document.querySelector('.container').style.borderColor = '#ffff00';
+            }
+        });
+    </script>
+</body>
+</html>

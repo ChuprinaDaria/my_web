@@ -1,0 +1,67 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "RAG Консультант" %}{% endblock %}
+{% block meta_description %}{% trans "Ваш персональний AI-помічник" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/components/consultant_chat.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="consultant-page">
+  <div class="consultant-header">
+    <div class="consultant-avatar">🤖</div>
+    <h1 class="consultant-title">{% trans "RAG Консультант" %}</h1>
+    <p class="consultant-subtitle">{% trans "Ваш персональний AI-помічник" %}</p>
+    
+    <div class="session-info">
+      <div class="session-info-item">
+        <span>{% trans "Час сесії:" %}</span>
+        <span class="session-info-value" id="sessionTime">00:00</span>
+      </div>
+      <div class="session-info-item">
+        <span>{% trans "Початок:" %}</span>
+        <span class="session-info-value" id="welcomeTime">--:--</span>
+      </div>
+    </div>
+    
+    <button class="consultant-chat-button" onclick="openConsultantModal()">
+      💬 {% trans "Почати чат" %}
+    </button>
+  </div>
+</div>
+
+<!-- Modal Chat - ПРОСТИЙ ДИЗАЙН -->
+<div id="consultantModal" class="consultant-modal" style="display: none;">
+  <div class="modal-overlay" onclick="closeConsultantModal()"></div>
+  <div class="modal-content">
+    
+    <!-- Простий Header -->
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="modal-avatar">🤖</span>
+        <span>RAG Консультант</span>
+      </div>
+      <button class="modal-close" onclick="closeConsultantModal()">×</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages">
+      <div id="messages" class="messages"></div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input">
+      <form id="chatForm" class="chat-form">
+        <input type="text" id="messageInput" placeholder="Напишіть повідомлення..." />
+        <button type="submit" id="sendButton">→</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/consultant_chat.js' %}"></script>
+{% endblock %}
