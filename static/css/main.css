@@ -1,39 +1,29 @@
-/* ===============================================
-   🚀 LAZYSOFT - MAIN CSS FILE
-   Modern Modular Architecture
-   =============================================== */
-
-/* 🔧 BASE FOUNDATION */
 @import url('./base/variables.css');
 @import url('./base/reset.css');
 @import url('./base/typography.css');
 @import url('./base/animations.css');
 
-/* 🏗️ LAYOUT STRUCTURE */
 @import url('./layout/navigation.css');
 @import url('./layout/hero.css');
 @import url('./layout/containers.css');
 
-/* 🧩 REUSABLE COMPONENTS */
 @import url('./components/buttons.css');
 @import url('./components/cards.css');
 @import url('./components/forms.css');
 @import url('./components/related_work_section.css');
 @import url('./components/badges.css');
 
-/* 📄 PAGE SECTIONS */
-@import url('./sections/projects.css');    /* 🌈 Райдужні карти проєктів */
-@import url('./sections/services.css');    /* 🌈 Райдужні карти сервісів */
-@import url('./sections/news.css');        /* 💚 Зелені карти новин */
+@import url('./sections/projects.css');
+@import url('./sections/services.css');
+@import url('./sections/news.css');
 
-
-/* 🛠️ UTILITIES & HELPERS */
 @import url('./utilities/responsive.css');
 @import url('./utilities/helpers.css');
 
-/* 🧩 REUSABLE COMPONENTS */
 @import url('./components/breadcrumbs.css');
 @import url('./components/footer.css');
+@import url('./mobile/service_card_mobile.css');
+@import url('./mobile/service_carousel_mobile.css');
 
 @import url('./components/faq.css');
 
@@ -45,27 +35,21 @@
 
 @import url('./components/social_share.css'); 
 
-
 @import url('./components/projects_carousel.css');
+@import url('./components/project_card_home.css');  
 
 @import url('./components/service_card.css');
 @import url('./components/service_carousel.css');
 @import url('./sections/service_detail.css');
 @import url('./sections/news_list.css'); 
-/* 🫧 CONSULTANT BUBBLE */
 @import url('./components/consultant_bubble.css');
-/* ===============================================
-   🌟 GLOBAL STYLES
-   =============================================== */
 
-/* 📦 UNIVERSAL BOX MODEL */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* 🌐 HTML & BODY SETUP */
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -79,14 +63,12 @@ body {
   position: relative;
 }
 
-/* 🎨 MAIN CONTENT WRAPPER */
 main {
-  padding-top: 120px; /* Space for fixed navbar */
+  padding-top: 120px;
   position: relative;
   z-index: var(--z-content);
 }
 
-/* 🌟 ANIMATED BACKGROUND */
 .bg-animation {
   position: fixed;
   top: 0;
@@ -99,7 +81,6 @@ main {
   background: linear-gradient(135deg, var(--secondary-black));
 }
 
-/* 🔮 FLOATING SHAPES */
 .bg-shape {
   position: absolute;
   width: 60px;
@@ -111,7 +92,6 @@ main {
   filter: var(--blur-light);
 }
 
-/* 🎭 SHAPE VARIATIONS */
 .bg-shape:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
 .bg-shape:nth-child(2) { top: 10%; left: 20%; animation-delay: 2s; transform: scale(0.8); }
 .bg-shape:nth-child(3) { 
@@ -155,11 +135,6 @@ main {
   background: radial-gradient(circle, rgba(147, 51, 234, 0.25), transparent);
 }
 
-/* ===============================================
-   🎯 PERFORMANCE OPTIMIZATIONS
-   =============================================== */
-
-/* 🚀 GPU ACCELERATION */
 .project-card,
 .service-card,
 .news-card,
@@ -168,13 +143,11 @@ main {
   will-change: transform;
 }
 
-/* 🖱️ SMOOTH INTERACTIONS */
 *:focus {
   outline: 2px solid var(--accent-green);
   outline-offset: 2px;
 }
 
-/* 📱 MOBILE OPTIMIZATIONS */
 @media (max-width: 768px) {
   main {
     padding-top: 100px;
@@ -185,10 +158,6 @@ main {
     height: 40px;
   }
 }
-
-/* ===============================================
-   📖 ABOUT PREVIEW SECTION
-   =============================================== */
 
 .about-preview {
   padding: var(--spacing-2xl) 0;
@@ -276,7 +245,6 @@ main {
   margin: 0;
 }
 
-/* 📱 RESPONSIVE ABOUT */
 @media (max-width: 768px) {
   .about-card {
     flex-direction: column;
@@ -312,22 +280,3 @@ main {
     font-size: 1.3rem;
   }
 }
-
-/* ===============================================
-   🔍 DEBUG HELPERS (Remove in production)
-   =============================================== */
-
-/* Uncomment for development debugging */
-/*
-.debug * {
-  border: 1px solid red;
-}
-
-.debug .container {
-  border: 2px solid yellow;
-}
-
-.debug .project-card {
-  border: 2px solid lime;
-}
-*/

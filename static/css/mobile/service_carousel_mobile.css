@@ -1,0 +1,130 @@
+@media (max-width: 768px) {
+  .services-preview {
+    padding: var(--spacing-md) var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .services-header {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .services-header h2 {
+    font-size: clamp(1.8rem, 5vw, 2.2rem);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .services-subtitle {
+    font-size: 1rem;
+  }
+  
+  .control-section {
+    margin: var(--spacing-sm) 0;
+  }
+  
+  .control-btn {
+    width: 36px;
+    height: 36px;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  .control-btn i {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.5px;
+  }
+  
+  .services-carousel-vertical {
+    height: 400px;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  
+  .services-track {
+    gap: 0;
+    overscroll-behavior-y: contain;
+  }
+  
+  .service-item {
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .services-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+  }
+  
+  .services-footer .btn-primary,
+  .services-footer .btn-secondary {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+    min-height: 44px;
+  }
+  
+  .services-empty {
+    min-height: 150px;
+  }
+  
+  .empty-icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-preview {
+    padding: var(--spacing-sm) var(--spacing-xs);
+  }
+  
+  .services-header h2 {
+    font-size: clamp(1.5rem, 6vw, 1.9rem);
+  }
+  
+  .control-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .control-btn i {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .services-carousel-vertical {
+    height: 350px;
+  }
+  
+  .services-footer .btn-primary,
+  .services-footer .btn-secondary {
+    max-width: 260px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .service-card,
+  .service-card * {
+    transition: none !important;
+  }
+
+  .service-card:hover,
+  .service-card:focus {
+    transform: none !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1) !important;
+  }
+
+  .service-card.glow-border::after { 
+    display: none !important;
+  }
+}
+

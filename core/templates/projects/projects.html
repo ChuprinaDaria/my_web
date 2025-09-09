@@ -8,6 +8,12 @@
 {% block og_description %}{{ seo_description }}{% endblock %}
 {% block og_image %}{% static 'images/projects-og.jpg' %}{% endblock %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/sections/projects.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/projects_carousel.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/project_card_home.css' %}">
+{% endblock %}
+
 {% block extra_meta %}
   <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/projects/" />
   <link rel="alternate" href="https://lazysoft.dev/en/projects/" hreflang="en">
@@ -18,18 +24,14 @@
 {% block content %}
 <main class="projects-page">
 
-  <!-- Hero Section - використовуємо існуючий hero стиль -->
+  <!-- Hero Section -->
   <section class="hero projects-hero">
     <div class="container">
-      
-     
-
-      <!-- Hero Content - використовуємо існуючі класи -->
       <div class="hero-content">
         <h1>{{ overview_title|safe }}</h1>
         <p class="description">{{ overview_description|safe }}</p>
         
-        <!-- Stats - використовуємо існуючий стиль -->
+        <!-- Stats -->
         <div class="projects-stats">
           <div class="stat-item">
             <span class="stat-number">{{ total_categories|default:"5" }}+</span>
@@ -45,7 +47,7 @@
           </div>
         </div>
 
-        <!-- CTA - використовуємо існуючий cta-primary -->
+        <!-- CTA -->
         <div class="hero-cta">
           <a href="#contact" class="cta-primary">
             <i data-lucide="rocket"></i>
@@ -58,7 +60,7 @@
 
   <!-- Featured Projects Carousel -->
   {% if featured_projects_qs %}
-    <section class="projects">
+    <section class="featured-projects-section">
       <div class="container-reg">
         {% include 'includes/projects_carousel.html' with title=_('Featured Projects') projects=featured_projects_qs show_navigation=True carousel_id='featured-projects' %}
       </div>
@@ -66,21 +68,20 @@
   {% endif %}
 
   <!-- Projects by Categories -->
-  <section style="padding: var(--spacing-2xl) 0;">
+  <section class="projects-categories-section">
     <div class="container">
       {% for category in categories %}
-        <div style="margin-bottom: var(--spacing-2xl);">
+        <div class="category-item">
           
           <!-- Category Header -->
-          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: var(--spacing-2xl); padding-bottom: var(--spacing-lg); border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          <div class="category-header">
             <div>
-              <!-- Використовуємо стандартний h2 -->
-              <h2>{{ category.title|safe }}</h2>
-              <p class="description" style="margin-top: var(--spacing-sm);">{{ category.description|safe }}</p>
+              <h2 class="section-title category-title">{{ category.title|safe }}</h2>
+              <p class="description category-description">{{ category.description|safe }}</p>
             </div>
             
-            <div style="text-align: right; flex-shrink: 0;">
-              <span class="stat-number" style="display: block;">{{ category.projects|length }}</span>
+            <div class="category-stats">
+              <span class="stat-number">{{ category.projects|length }}</span>
               <span class="stat-label">{% trans "projects" %}</span>
             </div>
           </div>
@@ -93,51 +94,40 @@
           </div>
 
           <!-- Category CTA -->
-          <div style="margin-top: var(--spacing-lg); display: flex; justify-content: center;">
-            <div class="glass card" style="padding: var(--spacing-xl); text-align: center; max-width: 400px;">
-              <p style="font-size: 1.1rem; margin-bottom: var(--spacing-lg);">
-                {% trans "Need a similar solution?" %}
-              </p>
-              <button class="btn-secondary" onclick="scrollToContact('{{ category.title }}');">
-                <i data-lucide="message-circle"></i>
-                {% trans "Let's Discuss" %}
-              </button>
-            </div>
-          </div>
+          {% include 'includes/category_cta.html' with category=category %}
         </div>
       {% endfor %}
     </div>
   </section>
 
   <!-- Final CTA -->
-  <section style="padding: var(--spacing-2xl) 0;">
+  <section class="final-cta-section">
     <div class="container">
-      <div class="glass card" style="max-width: 600px; margin: 0 auto; padding: var(--spacing-3xl); text-align: center;">
-        <div style="font-size: 4rem; margin-bottom: var(--spacing-lg); color: var(--accent-green);">
+      <div class="glass card final-cta-card">
+        <div class="final-cta-icon">
           <i data-lucide="rocket"></i>
         </div>
-        <!-- Використовуємо стандартний h2 -->
-        <h2>{% trans "Ready to Start Your Project?" %}</h2>
-        <p class="description">{% trans "From idea to automation - we make it happen" %}</p>
+        <h2 class="final-cta-title">{% trans "Ready to Start Your Project?" %}</h2>
+        <p class="description final-cta-description">{% trans "From idea to automation - we make it happen" %}</p>
         
         <!-- Benefits -->
-        <div style="display: flex; justify-content: center; gap: var(--spacing-xl); margin: var(--spacing-2xl) 0; flex-wrap: wrap;">
-          <div style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: 600;">
-            <i data-lucide="zap" style="color: var(--accent-green);"></i>
+        <div class="final-cta-benefits">
+          <div class="benefit-item">
+            <i data-lucide="zap" class="benefit-icon"></i>
             <span>{% trans "Fast Development" %}</span>
           </div>
-          <div style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: 600;">
-            <i data-lucide="target" style="color: var(--accent-green);"></i>
+          <div class="benefit-item">
+            <i data-lucide="target" class="benefit-icon"></i>
             <span>{% trans "Custom Solutions" %}</span>
           </div>
-          <div style="display: flex; align-items: center; gap: var(--spacing-sm); font-weight: 600;">
-            <i data-lucide="headphones" style="color: var(--accent-green);"></i>
+          <div class="benefit-item">
+            <i data-lucide="headphones" class="benefit-icon"></i>
             <span>{% trans "Ongoing Support" %}</span>
           </div>
         </div>
 
         <!-- Action Buttons -->
-        <div style="display: flex; gap: var(--spacing-lg); justify-content: center; flex-wrap: wrap;">
+        <div class="final-cta-actions">
           <a href="#contact" class="btn-primary">
             <i data-lucide="message-circle"></i>
             {% trans "Start Discussion" %}
@@ -164,6 +154,7 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="{% static 'js/projects_carousel.js' %}"></script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

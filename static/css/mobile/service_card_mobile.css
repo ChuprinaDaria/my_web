@@ -1,0 +1,109 @@
+@media (max-width: 768px) {
+  .service-card {
+    flex-direction: row;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    transition: none;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .service-card:hover {
+    transform: none;
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .service-card:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+    transition: all 0.1s ease;
+  }
+  
+  .service-image {
+    width: 80px;
+    height: 80px;
+    order: 1;
+    border-radius: var(--radius-sm);
+    flex: 0 0 auto;
+  }
+  
+  .service-text {
+    order: 2;
+    flex: 1;
+  }
+  
+  .service-text h3 {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.4;
+  }
+  
+  .service-text p {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .service-tags {
+    gap: 4px;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .service-tag {
+    padding: 2px 6px;
+    font-size: 0.65rem;
+  }
+  
+  .service-metrics {
+    gap: 4px;
+    margin-top: var(--spacing-xs);
+  }
+  
+  .metric {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+  }
+  
+  .service-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .service-card .cta-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.85rem;
+    width: auto;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-card {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .service-image {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .service-text h3 {
+    font-size: 1.1rem;
+  }
+  
+  .service-text p {
+    font-size: 0.85rem;
+  }
+  
+  .service-card .cta-button {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.8rem;
+    min-width: 100px;
+  }
+}

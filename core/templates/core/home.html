@@ -42,6 +42,11 @@
 {% block og_image %}{% static 'images/lazysoft-home-og.jpg' %}{% endblock %}
 {% block og_type %}website{% endblock %}
 
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'css/components/projects_carousel.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/project_card_home.css' %}">
+{% endblock %}
+
 <!-- 🐦 TWITTER CARD -->
 {% block twitter_title %}
   {% if CURRENT_LANG == 'uk' %}Lazysoft — ШІ автоматизація та розробка
@@ -228,23 +233,13 @@
 <!-- PROJECTS - заміна projects_carousel -->
 <section id="projects" class="projects">
   <div class="container-reg">
-    <h2 class="section-title">{% trans "Featured AI & Automation Projects" %}</h2>
-    
-    {% if featured_projects %}
-      <div class="projects-carousel">
-        <div class="projects-container">
-          {% for project in featured_projects %}
-            {% include 'includes/project_card.html' with project=project %}
-          {% endfor %}
-        </div>
-      </div>
-    {% else %}
-      <div class="project-card" style="text-align: center; opacity: 0.6;">
-        <div style="font-size: 4rem; margin-bottom: 20px;">🔧</div>
-        <h4>{% trans "Featured Projects Coming Soon" %}</h4>
-        <p>{% trans "We're preparing our best automation projects to showcase" %}</p>
-      </div>
-    {% endif %}
+    <h2 class="section-title">
+      {% if CURRENT_LANG == 'uk' %}Обрані ШІ та Автоматизаційні Проєкти
+      {% elif CURRENT_LANG == 'pl' %}Wybrane Projekty AI i Automatyzacji
+      {% else %}Featured AI & Automation Projects{% endif %}
+    </h2>
+
+    {% include "includes/projects_carousel.html" with projects=featured_projects carousel_id="home-projects" show_navigation=True %}
   </div>
 </section>
 

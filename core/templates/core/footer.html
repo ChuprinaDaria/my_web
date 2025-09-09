@@ -25,7 +25,6 @@
     <!-- FOOTER CONTENT -->
     <div class="footer-content">
       
-      <!-- COMPANY INFO -->
       <div class="footer-section">
         <h3>Lazysoft</h3>
         <p class="contact-info">
@@ -45,8 +44,7 @@
           <a href="mailto:hello@lazysoft.dev">hello@lazysoft.dev</a>
         </p>
         
-        <!-- SOCIAL MEDIA -->
-        <div class="social-links">
+        <div class="social-links desktop-only">
           <a href="{% if CURRENT_LANG == 'uk' %}https://t.me/Lazysoft_news_ua{% elif CURRENT_LANG == 'pl' %}https://t.me/Lazysoft_news_pl{% else %}https://t.me/Lazysoft_news{% endif %}" 
              class="social-link telegram" target="_blank" rel="noopener" aria-label="Telegram">
             <i data-lucide="send"></i>
@@ -125,8 +123,7 @@
           </a>
         </div>
         
-        <!-- TRUST BADGES -->
-        <div class="trust-badges">
+        <div class="trust-badges desktop-only">
           <div class="trust-item">
             <i data-lucide="check-circle"></i>
             {% if CURRENT_LANG == 'uk' %}Сертифіковані розробники
@@ -150,8 +147,37 @@
 
     </div>
 
-    <!-- FOOTER BOTTOM -->
     <div class="footer-bottom">
+      <div class="social-links">
+        <a href="{% if CURRENT_LANG == 'uk' %}https://t.me/Lazysoft_news_ua{% elif CURRENT_LANG == 'pl' %}https://t.me/Lazysoft_news_pl{% else %}https://t.me/Lazysoft_news{% endif %}" 
+           class="social-link telegram" target="_blank" rel="noopener" aria-label="Telegram">
+          <i data-lucide="send"></i>
+        </a>
+        <a href="{% if CURRENT_LANG == 'uk' %}https://linkedin.com/company/lazysoft-ua{% elif CURRENT_LANG == 'pl' %}https://linkedin.com/company/lazysoft-pl{% else %}https://linkedin.com/company/lazysoft{% endif %}" 
+           class="social-link linkedin" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <i data-lucide="linkedin"></i>
+        </a>
+        <a href="{% if CURRENT_LANG == 'uk' %}https://twitter.com/lazysoft_ua{% elif CURRENT_LANG == 'pl' %}https://twitter.com/lazysoft_pl{% else %}https://twitter.com/lazysoft_dev{% endif %}" 
+           class="social-link twitter" target="_blank" rel="noopener" aria-label="Twitter">
+          <i data-lucide="twitter"></i>
+        </a>
+        <a href="{% if CURRENT_LANG == 'uk' %}https://threads.net/@lazysoft_ua{% elif CURRENT_LANG == 'pl' %}https://threads.net/@lazysoft_pl{% else %}https://threads.net/@lazysoft_dev{% endif %}" 
+           class="social-link threads" target="_blank" rel="noopener" aria-label="Threads">
+          <i data-lucide="at-sign"></i>
+        </a>
+        <a href="{% if CURRENT_LANG == 'uk' %}https://facebook.com/lazysoft.ua{% elif CURRENT_LANG == 'pl' %}https://facebook.com/lazysoft.pl{% else %}https://facebook.com/lazysoft.dev{% endif %}" 
+           class="social-link facebook" target="_blank" rel="noopener" aria-label="Facebook">
+          <i data-lucide="facebook"></i>
+        </a>
+        <a href="{% if CURRENT_LANG == 'uk' %}https://instagram.com/lazysoft_ua{% elif CURRENT_LANG == 'pl' %}https://instagram.com/lazysoft_pl{% else %}https://instagram.com/lazysoft_dev{% endif %}" 
+           class="social-link instagram" target="_blank" rel="noopener" aria-label="Instagram">
+          <i data-lucide="instagram"></i>
+        </a>
+        <a href="https://github.com/lazysoft" class="social-link github" target="_blank" rel="noopener" aria-label="GitHub">
+          <i data-lucide="github"></i>
+        </a>
+      </div>
+
       <div class="footer-copyright">
         <p>&copy; {{ "now"|date:"Y" }} Lazysoft. 
           {% if CURRENT_LANG == 'uk' %}Всі права захищені.

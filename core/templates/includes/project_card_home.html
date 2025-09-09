@@ -1,0 +1,112 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<div class="project-card-home" data-complexity="{{ project.complexity_level }}" data-priority="{{ project.priority }}">
+  <a class="card-click-area" href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" aria-label="{% trans 'OPEN PROJECT' %}"></a>
+
+  <div class="card-tags">
+    {% if project.project_type_uk or project.project_type_en or project.project_type_pl %}
+      <span class="chip primary">
+        <span class="tag-icon">🏷️</span>
+        {% if CURRENT_LANG == 'uk' and project.project_type_uk %}{{ project.project_type_uk }}
+        {% elif CURRENT_LANG == 'pl' and project.project_type_pl %}{{ project.project_type_pl }}
+        {% else %}{{ project.project_type_en }}{% endif %}
+      </span>
+    {% endif %}
+    {% if project.is_innovative %}
+      <span class="chip innovation">⚡ {% trans 'INNOVATIVE' %}</span>
+    {% endif %}
+    {% if project.is_ai_powered %}
+      <span class="chip ai">🤖 {% trans 'AI TECHNOLOGIES' %}</span>
+    {% endif %}
+    {% if project.is_top_project %}
+      <span class="chip top">👑 TOP</span>
+    {% endif %}
+    {% if project.is_enterprise %}
+      <span class="chip enterprise">🏭 {% trans 'ENTERPRISE' %}</span>
+    {% endif %}
+    {% if project.is_complex %}
+      <span class="chip complex">🧩 {% trans 'COMPLEX' %}</span>
+    {% endif %}
+    {% if project.custom_badge_uk %}
+      <span class="chip custom" style="--chip-color: {{ project.custom_badge_color|default:'#66ff00' }};">
+        ✨ {% if CURRENT_LANG == 'uk' %}{{ project.custom_badge_uk }}{% elif CURRENT_LANG == 'pl' %}{{ project.custom_badge_pl }}{% else %}{{ project.custom_badge_en }}{% endif %}
+      </span>
+    {% endif %}
+  </div>
+
+  {% if project.featured_image %}
+  <div class="project-image">
+    <img src="{{ project.featured_image.url }}" alt="{{ project.get_title }}" loading="lazy">
+    <div class="image-overlay"></div>
+  </div>
+  {% endif %}
+
+  <h3 class="project-title">
+    {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|safe }}
+    {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|safe }}
+    {% else %}{{ project.title_en|safe }}{% endif %}
+  </h3>
+
+  {% if project.client_request_uk or project.client_request_en or project.client_request_pl %}
+  <div class="section-box">
+    <div class="section-label">{% trans "CLIENT WANTED:" %}</div>
+    <div class="section-text">
+      {% if CURRENT_LANG == 'uk' and project.client_request_uk %}
+        {{ project.client_request_uk|safe|truncatewords:30 }}
+      {% elif CURRENT_LANG == 'pl' and project.client_request_pl %}
+        {{ project.client_request_pl|safe|truncatewords:30 }}
+      {% else %}
+        {{ project.client_request_en|safe|truncatewords:30 }}
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="section-box">
+    <div class="section-label">{% trans "WE DID:" %}</div>
+    <div class="section-text">
+      {% if CURRENT_LANG == 'uk' and project.short_description_uk %}
+        {{ project.short_description_uk|safe|truncatewords:28 }}
+      {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}
+        {{ project.short_description_pl|safe|truncatewords:28 }}
+      {% else %}
+        {{ project.short_description_en|safe|truncatewords:28 }}
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="metrics">
+    {% if project.budget_range %}
+      <span class="metric chip">{{ project.get_budget_range_display }}</span>
+    {% endif %}
+    {% if project.development_duration_weeks %}
+      <span class="metric chip">
+        {% if CURRENT_LANG == 'uk' %}{{ project.development_duration_weeks }} тижнів
+        {% elif CURRENT_LANG == 'pl' %}{{ project.development_duration_weeks }} tygodni
+        {% else %}{{ project.development_duration_weeks }} weeks{% endif %}
+      </span>
+    {% endif %}
+  </div>
+
+  <div class="cta-row">
+    <button class="cta-primary"
+            onclick="event.stopPropagation(); document.querySelector('#contact')?.scrollIntoView({behavior:'smooth'});">
+      <span class="cta-icon">💬</span>
+      <span class="cta-text">{% trans "ORDER YOUR OWN" %}</span>
+      <span class="cta-arrow">→</span>
+    </button>
+    <div class="secondary-actions">
+      <a href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" class="details-link" onclick="event.stopPropagation();">
+        {% trans "FULL CASE" %}
+      </a>
+      {% if project.project_url %}
+        <a href="{{ project.project_url }}" target="_blank" rel="noopener" class="demo-link" onclick="event.stopPropagation();">
+          {% trans "DEMO" %}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="project-glow-effect" aria-hidden="true"></div>
+</div>

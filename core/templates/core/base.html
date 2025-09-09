@@ -163,6 +163,12 @@
     <link rel="stylesheet" href="{% static 'css/components/consultant_bubble.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/consultant_chat.css' %}" />
     
+    <!-- 📱 Mobile-specific CSS -->
+    <link rel="stylesheet" href="{% static 'css/mobile/home_mobile_fixes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile/footer_mobile_compact.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile/service_card_mobile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile/service_carousel_mobile.css' %}">
+    
     <!-- 🔗 Favicon & App Icons -->
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
@@ -295,6 +301,7 @@
       });
     </script>
 
+    <script src="{% static 'js/services-carousel.js' %}"></script>
     {% block extra_scripts %}{% endblock %}
   </body>
 </html>

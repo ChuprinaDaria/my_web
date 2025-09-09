@@ -8,7 +8,6 @@
   
   <!-- Project Tags -->
   <div class="project-tags">
-    <!-- Main project type -->
     {% if project.project_type_uk or project.project_type_en or project.project_type_pl %}
       <span class="project-tag primary" data-complexity="{{ project.complexity_level }}">
         <span class="tag-icon">🏢</span>
@@ -18,44 +17,15 @@
       </span>
     {% endif %}
 
-    <!-- Special badges -->
     {% if project.is_top_project %}
       <span class="project-tag highlight top-badge">
         <span class="tag-icon">👑</span>{% trans "TOP" %}
       </span>
     {% endif %}
     
-    {% if project.is_innovative %}
-      <span class="project-tag innovation">
-        <span class="tag-icon">⚡</span>{% trans "INNOVATIVE" %}
-      </span>
-    {% endif %}
-    
     {% if project.is_ai_powered %}
       <span class="project-tag ai-powered">
         <span class="tag-icon">🤖</span>{% trans "AI POWERED" %}
-      </span>
-    {% endif %}
-    
-    {% if project.is_enterprise %}
-      <span class="project-tag enterprise">
-        <span class="tag-icon">🏭</span>{% trans "ENTERPRISE" %}
-      </span>
-    {% endif %}
-    
-    {% if project.is_complex %}
-      <span class="project-tag complex">
-        <span class="tag-icon">🧩</span>{% trans "COMPLEX" %}
-      </span>
-    {% endif %}
-
-    <!-- Custom badge -->
-    {% if project.custom_badge_uk or project.custom_badge_en or project.custom_badge_pl %}
-      <span class="project-tag custom" data-color="{{ project.custom_badge_color|default:'green' }}">
-        <span class="tag-icon">✨</span>
-        {% if CURRENT_LANG == 'uk' and project.custom_badge_uk %}{{ project.custom_badge_uk }}
-        {% elif CURRENT_LANG == 'pl' and project.custom_badge_pl %}{{ project.custom_badge_pl }}
-        {% else %}{{ project.custom_badge_en }}{% endif %}
       </span>
     {% endif %}
   </div>
@@ -102,21 +72,13 @@
     <div class="project-metrics">
       {% if project.client_time_saved_hours %}
         <span class="metric-item">
-          {% if CURRENT_LANG == 'uk' %}⏱️ {% trans "Saves" %} {{ project.client_time_saved_hours }} {% trans "hours/week" %}
-          {% elif CURRENT_LANG == 'pl' %}⏱️ Oszczędza {{ project.client_time_saved_hours }} h/tydzień
-          {% else %}⏱️ Saves {{ project.client_time_saved_hours }}h/week{% endif %}
+          ⏱️ {% trans "Saves" %} {{ project.client_time_saved_hours }} {% trans "hours/week" %}
         </span>
-      {% endif %}
-      
-      {% if project.budget_range %}
-        <span class="metric-item">{{ project.get_budget_range_display }}</span>
       {% endif %}
       
       {% if project.development_duration_weeks %}
         <span class="metric-item">
-          {% if CURRENT_LANG == 'uk' %}{{ project.development_duration_weeks }} {% trans "weeks" %}
-          {% elif CURRENT_LANG == 'pl' %}{{ project.development_duration_weeks }} tygodni
-          {% else %}{{ project.development_duration_weeks }} weeks{% endif %}
+          {{ project.development_duration_weeks }} {% trans "weeks" %}
         </span>
       {% endif %}
     </div>
@@ -135,7 +97,6 @@
         <span class="cta-arrow">→</span>
       </button>
       
-      <!-- Alternative buttons -->
       <div class="secondary-actions">
         <a href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" class="details-link" onclick="event.stopPropagation();">
           {% if CURRENT_LANG == 'uk' %}Детальний кейс
@@ -154,6 +115,5 @@
     </div>
   </div>
   
-  <!-- Hover effects -->
   <div class="card-glow-effect"></div>
 </div>

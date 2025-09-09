@@ -73,8 +73,8 @@ class LinusSecurityMiddleware:
                 'details': f'API spam from {ip}'
             }
         
-        # 4. Підозрілі POST дані
-        if self.has_malicious_payload(request):
+        # 4. Підозрілі POST дані (пропускаємо для admin)
+        if not path.startswith('/admin/') and self.has_malicious_payload(request):
             return {
                 'type': 'malicious_payload',
                 'details': 'Malicious payload detected'
@@ -133,7 +133,13 @@ class LinusSecurityMiddleware:
             'javascript:', '../../etc/passwd'
         ]
         
-        post_data = str(request.POST) + str(request.body)
+        try:
+            post_data = str(request.POST)
+            if hasattr(request, 'body') and request.body:
+                post_data += str(request.body)
+        except Exception:
+            post_data = str(request.POST)
+        
         return any(pattern in post_data.lower() for pattern in dangerous_patterns)
     
     def is_fake_bot(self, request, ua):

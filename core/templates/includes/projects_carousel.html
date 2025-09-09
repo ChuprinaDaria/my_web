@@ -1,45 +1,60 @@
 {% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
 
-<div class="projects-carousel-container">
+<div class="projects-carousel-container" id="carousel-{{ carousel_id|default:'home' }}" aria-roledescription="carousel">
   <div class="projects-carousel-header">
-    <h2 class="section-title">{{ title }}</h2>
-    
+    {% if title %}
+      <h2 class="section-title">{{ title }}</h2>
+    {% endif %}
+
     {% if show_navigation and projects|length > 1 %}
-      <div class="carousel-navigation">
-        <button class="carousel-nav-btn prev" data-carousel="{{ carousel_id }}" data-direction="prev">
+      <div class="carousel-navigation desktop-only">
+        <button class="carousel-nav-btn prev" data-carousel="{{ carousel_id }}" data-direction="prev" aria-label="{% trans 'Попередні' %}">
           <i data-lucide="chevron-left"></i>
         </button>
-        <button class="carousel-nav-btn next" data-carousel="{{ carousel_id }}" data-direction="next">
+        <button class="carousel-nav-btn next" data-carousel="{{ carousel_id }}" data-direction="next" aria-label="{% trans 'Наступні' %}">
           <i data-lucide="chevron-right"></i>
         </button>
       </div>
     {% endif %}
   </div>
 
-  <div class="projects-carousel-wrapper" id="{{ carousel_id }}">
-    <div class="projects-carousel-track">
+  <div class="projects-carousel-wrapper" id="{{ carousel_id }}" role="group">
+    <div class="projects-carousel-track" role="list">
       {% for project in projects %}
-        <div class="carousel-project-item">
-          {% include 'includes/project_card.html' with project=project %}
+        <div class="carousel-project-item" role="listitem">
+          {% include 'includes/project_card_home.html' with project=project %}
         </div>
       {% empty %}
         <div class="carousel-project-item">
           <div class="empty-carousel-state">
             <div class="empty-icon">📋</div>
-            <p>{% trans "Проєктів поки немає" %}</p>
-            <small>{% trans "Скоро з'являться нові цікаві проєкти!" %}</small>
+            <p>
+              {% if CURRENT_LANG == 'uk' %}Проєктів поки немає
+              {% elif CURRENT_LANG == 'pl' %}Brak projektów
+              {% else %}No projects yet{% endif %}
+            </p>
+            <small>
+              {% if CURRENT_LANG == 'uk' %}Скоро з'являться нові цікаві проєкти!
+              {% elif CURRENT_LANG == 'pl' %}Wkrótce pojawią się new ciekawe projekty!
+              {% else %}New interesting projects coming soon!{% endif %}
+            </small>
           </div>
         </div>
       {% endfor %}
     </div>
   </div>
-  
-  <!-- Індикатори для мобільного -->
+
   {% if projects|length > 1 %}
-    <div class="carousel-indicators mobile-only">
+    <div class="carousel-indicators mobile-only" data-carousel="{{ carousel_id }}">
       {% for project in projects %}
-        <button class="indicator" data-carousel="{{ carousel_id }}" data-slide="{{ forloop.counter0 }}"
-                {% if forloop.first %}class="indicator active"{% endif %}></button>
+        <button class="indicator{% if forloop.first %} active{% endif %}" 
+                data-carousel="{{ carousel_id }}" 
+                data-slide="{{ forloop.counter0 }}"
+                aria-label="{% if CURRENT_LANG == 'uk' %}Перейти до слайду {{ forloop.counter }}
+                {% elif CURRENT_LANG == 'pl' %}Przejdź do slajdu {{ forloop.counter }}
+                {% else %}Go to slide {{ forloop.counter }}{% endif %}">
+        </button>
       {% endfor %}
     </div>
   {% endif %}

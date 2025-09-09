@@ -3,6 +3,7 @@ from django.utils.translation import get_language
 from django.utils import timezone
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
+from django.db.models import Count
 
 from projects.models import Project
 from services.models import Service
@@ -23,11 +24,12 @@ def home(request):
         is_featured=True
     ).order_by('-order', '-project_date')[:6]
 
-    # 🎠 Featured сервіси (для каруселі)
-    featured_services = Service.objects.filter(
-        is_active=True,
-        is_featured=True
-    ).order_by('-priority', '-date_created')[:5]
+    # 🎠 Топ-3 сервіси за кількістю проєктів через категорії
+    featured_services = (Service.objects
+        .filter(is_active=True)
+        .annotate(related_projects_count=Count('category__projects', distinct=True))
+        .order_by('-related_projects_count', 'title_en')
+    )[:3]
 
     # 🧰 Базовий контекст
     context = {

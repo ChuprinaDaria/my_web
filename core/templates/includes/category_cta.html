@@ -1,0 +1,13 @@
+{% load i18n %}
+<!-- Category CTA Block -->
+<div class="category-cta-section">
+  <div class="glass card category-cta-card">
+    <p class="category-cta-text">
+      {% trans "Need a similar solution?" %}
+    </p>
+    <button class="btn-secondary" onclick="scrollToContact('{{ category.title }}');">
+      <i data-lucide="message-circle"></i>
+      {% trans "Let's Discuss" %}
+    </button>
+  </div>
+</div>

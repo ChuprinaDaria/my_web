@@ -60,18 +60,32 @@
 @media (max-width: 768px) {
   .services-carousel {
     padding: 15px var(--spacing-md);
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
   }
   
   .services-container {
     padding: 8px 0;
+    touch-action: pan-x;
   }
   
   .service-card-horizontal {
     margin: 8px 3px;
+    transition: none;
   }
   
   .service-card-horizontal:hover {
-    transform: translateY(-5px) scale(1.02); /* ← Ще менше на мобілці */
+    transform: none;
+    border-color: var(--glass-border);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .service-card-horizontal:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+    transition: all 0.1s ease;
   }
 }
 
@@ -130,6 +144,29 @@
 
 .service-card-horizontal:hover .service-image-section img {
   transform: scale(1.1);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .service-card-horizontal {
+    transition: none;
+  }
+  
+  .service-card-horizontal:hover {
+    transform: none;
+    border-color: var(--glass-border);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .service-card-horizontal::before {
+    animation: none;
+  }
+}
+
+.service-card-horizontal {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
 }
 
 .image-overlay {

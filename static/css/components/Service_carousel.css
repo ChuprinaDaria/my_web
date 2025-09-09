@@ -115,7 +115,7 @@
 .services-track {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm); /* Додаємо мінімальний gap між картками */
+  gap: 0;
   transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
@@ -135,9 +135,11 @@
   background: var(--glass-bg);
   border: 2px solid transparent;
   border-radius: var(--radius-md);
-  padding: var(--spacing-md); /* Збільшений padding для комфорту */
+  padding: var(--spacing-md);
   cursor: pointer;
   transition: all var(--transition-normal);
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
   backdrop-filter: var(--blur-medium);
   position: relative;
   overflow: hidden;
@@ -346,74 +348,6 @@
   opacity: 0.5;
 }
 
-/* 📱 RESPONSIVE */
-@media (max-width: 1024px) {
-  .services-carousel-vertical {
-    height: 450px;
-  }
-  
-  .service-card {
-    padding: var(--spacing-sm);
-  }
-}
-
-@media (max-width: 768px) {
-  .services-preview {
-    padding: var(--spacing-md);
-  }
-  
-  .service-card {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
-  }
-  
-  .service-image {
-    width: 80px;
-    height: 80px;
-  }
-  
-  .services-carousel-vertical {
-    height: 400px;
-  }
-  
-  .services-footer {
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-sm);
-  }
-}
-
-@media (max-width: 480px) {
-  .services-preview {
-    padding: var(--spacing-sm);
-  }
-  
-  .control-btn {
-    width: 36px;
-    height: 36px;
-  }
-  
-  .control-btn i {
-    width: 14px;
-    height: 14px;
-  }
-  
-  .service-card {
-    padding: var(--spacing-sm);
-  }
-  
-  .services-carousel-vertical {
-    height: 350px;
-  }
-  
-  .service-image {
-    width: 60px;
-    height: 60px;
-  }
-}
 
 /* 🎪 ANIMATIONS */
 @keyframes rainbow-rotate {
