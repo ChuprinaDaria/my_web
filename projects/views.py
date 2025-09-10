@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.db import models
 from .models import Project
 from services.models import ServiceCategory
 from django.utils.translation import get_language
@@ -7,188 +8,162 @@ from django.http import HttpResponse
 
 
 def projects_list(request):
-    """
-    📋 Список проєктів з підтримкою нової системи тегів
-    Готово до крос-промоції з новинами та сервісами
-    """
     lang = get_language()
 
-    categories = ServiceCategory.objects.prefetch_related(
-        'projects__tags',
-        'projects'
-    ).all()
-
-    # Проєкти без категорії
-    uncategorized_projects = Project.objects.filter(is_active=True, category__isnull=True).order_by('-priority', '-order', '-project_date')
+    categories_with_projects = ServiceCategory.objects.prefetch_related(
+        'projects__tags'
+    ).annotate(
+        projects_count=models.Count('projects', filter=models.Q(projects__is_active=True))
+    ).filter(
+        projects_count__gt=0
+    ).order_by('title_en')
 
     total_projects = 0
     localized_categories = []
 
-    for category in categories:
-        projects = category.projects.filter(is_active=True).order_by(
-            '-priority', '-order', '-project_date'
-        )
-        total_projects += projects.count()
+    for category in categories_with_projects:
+        projects = category.projects.filter(is_active=True).order_by('-priority', '-order', '-project_date')
+        project_count = projects.count()
+        total_projects += project_count
 
         localized_projects = []
         for project in projects:
-            project_tags = project.tags.filter(is_active=True)
-
             localized_projects.append({
                 "slug": project.slug,
                 "featured_image": project.featured_image,
                 "title": getattr(project, f"title_{lang}", project.title_en),
                 "short_description": getattr(project, f"short_description_{lang}", project.short_description_en),
-
-                # 🏷️ Теги
                 "tags": [
                     {
                         'id': tag.id,
-                        'name': tag.name,
-                        'emoji': getattr(tag, 'icon', '️'),
+                        'name': tag.get_name(lang),
+                        'emoji': getattr(tag, 'icon', '🏷️'),
+                        'color': tag.color,
                     }
-                    for tag in project.tags.all()
+                    for tag in project.tags.filter(is_active=True)
                 ],
-                "tags_count": project_tags.count(),
-
-                # 🔗 Крос-промо
-                "related_articles_count": len(project.get_related_articles()) if project.get_related_articles() else 0,
-                "related_services_count": len(project.get_related_services()) if project.get_related_services() else 0,
-
-                # 📊 Метрики
                 "priority": project.priority,
                 "complexity_level": project.complexity_level,
                 "project_status": project.project_status,
-                "budget_range": project.budget_range,
-
-                # 🎨 Візуальні поля (fallback)
-                "project_type": getattr(project, f"project_type_{lang}", project.project_type_en),
-                "is_ai_powered": project.is_ai_powered,
-                "is_top_project": project.is_top_project,
-                "is_innovative": project.is_innovative,
-                "is_enterprise": project.is_enterprise,
-                "is_complex": project.is_complex,
-
-                # 🎯 Бейджі
                 "all_badges": project.get_all_badges(lang),
-
-                # 🔧 Технічні деталі
                 "technologies_list": project.get_technologies_list(),
                 "project_date": project.project_date,
                 "development_duration_weeks": project.development_duration_weeks,
-                "client_time_saved_hours": project.client_time_saved_hours,
             })
 
         localized_categories.append({
+            "id": category.id,
+            "slug": category.slug,
             "title": getattr(category, f"title_{lang}", category.title_en),
             "description": getattr(category, f"description_{lang}", category.description_en),
-            "projects": localized_projects
+            "short_description": getattr(category, f"description_{lang}", category.description_en)[:200] + "..." if getattr(category, f"description_{lang}", category.description_en) else "",
+            "icon": None,  # ServiceCategory не має icon поля
+            "projects": localized_projects,
+            "projects_count": project_count,
+            "featured_image": None,  # ServiceCategory не має featured_image поля
+            "service_url": f"/{lang}/services/#{category.slug}",
         })
 
-    # Додаємо секцію "Без категорії" якщо є
-    if uncategorized_projects.exists():
-        localized_projects = []
-        for project in uncategorized_projects:
-            project_tags = project.tags.filter(is_active=True)
-            localized_projects.append({
-                "slug": project.slug,
-                "featured_image": project.featured_image,
-                "title": getattr(project, f"title_{lang}", project.title_en),
-                "short_description": getattr(project, f"short_description_{lang}", project.short_description_en),
-                "tags": [
-                    {
-                        'id': tag.id,
-                        'name': tag.name,
-                        'emoji': getattr(tag, 'icon', '️'),
-                    }
-                    for tag in project.tags.all()
-                ],
-                "tags_count": project_tags.count(),
-                "related_articles_count": len(project.get_related_articles()) if project.get_related_articles() else 0,
-                "related_services_count": len(project.get_related_services()) if project.get_related_services() else 0,
-                "priority": project.priority,
-                "complexity_level": project.complexity_level,
-                "project_status": project.project_status,
-                "budget_range": project.budget_range,
-                "project_type": getattr(project, f"project_type_{lang}", project.project_type_en),
-                "is_ai_powered": project.is_ai_powered,
-                "is_top_project": project.is_top_project,
-                "is_innovative": project.is_innovative,
-                "is_enterprise": project.is_enterprise,
-                "is_complex": project.is_complex,
-                "all_badges": project.get_all_badges(lang),
-                "technologies_list": project.get_technologies_list(),
-                "project_date": project.project_date,
-                "development_duration_weeks": project.development_duration_weeks,
-                "client_time_saved_hours": project.client_time_saved_hours,
-            })
-        localized_categories.append({
-            "title": {
-                'en': 'Uncategorized',
-                'uk': 'Без категорії',
-                'pl': 'Bez kategorii'
-            }.get(lang, 'Uncategorized'),
-            "description": "",
-            "projects": localized_projects
-        })
+    featured_projects_qs = Project.objects.filter(
+        is_active=True, 
+        is_featured=True
+    ).select_related('category').prefetch_related('tags').order_by('-priority', '-order', '-project_date')
 
-    # 🎯 Популярні теги
+    related_news = []
+    try:
+        from news.models import ProcessedArticle
+        
+        all_project_tags = set()
+        for category in categories_with_projects:
+            for project in category.projects.filter(is_active=True):
+                all_project_tags.update(project.tags.values_list('slug', flat=True))
+        
+        if all_project_tags:
+            related_news = ProcessedArticle.objects.filter(
+                status='published',
+                tags__slug__in=list(all_project_tags)
+            ).distinct().order_by('-published_at')[:10]
+            
+    except ImportError:
+        pass
+
     try:
         from core.models import Tag
-        popular_tags = Tag.get_popular_tags(limit=6)
+        popular_project_tags = Tag.objects.filter(
+            projects__is_active=True,
+            is_active=True
+        ).annotate(
+            projects_usage_count=models.Count('projects', filter=models.Q(projects__is_active=True))
+        ).filter(projects_usage_count__gt=0).order_by('-projects_usage_count')[:8]
+        
         popular_tags_data = [
             {
                 'key': tag.slug,
                 'name': tag.get_name(lang),
                 'emoji': tag.icon,
                 'color': tag.color,
-                'usage_count': tag.usage_count
+                'usage_count': tag.projects_usage_count,
+                'projects_count': tag.projects.filter(is_active=True).count()
             }
-            for tag in popular_tags
+            for tag in popular_project_tags
         ]
     except ImportError:
         popular_tags_data = []
 
-    # Підбірка "Featured" проєктів
-    featured_projects_qs = Project.objects.filter(is_active=True, is_featured=True).prefetch_related('tags').order_by('-priority', '-order', '-project_date')
-
+    categories_count = categories_with_projects.count()
+    
     context = {
         "categories": localized_categories,
-        "categories_qs": categories,
         "featured_projects_qs": featured_projects_qs,
-        "uncategorized_projects_qs": uncategorized_projects,
         "total_projects": total_projects,
-        "total_categories": categories.count(),
+        "total_categories": categories_count,
+
+        "related_news": [
+            {
+                'uuid': str(article.uuid),
+                'title': article.get_title(lang),
+                'summary': article.get_summary(lang)[:150] + '...',
+                'url': article.get_absolute_url(),
+                'image': article.ai_image_url,
+                'published_at': article.published_at,
+                'category': article.category.get_name(lang) if article.category else '',
+            }
+            for article in related_news
+        ],
 
         "popular_tags": popular_tags_data,
         "show_tag_filter": bool(popular_tags_data),
 
         "overview_title": {
-            "en": "Projects we're proud of",
-            "uk": "Проєкти, якими ми пишаємося",
-            "pl": "Projekty, z których jesteśmy dumni"
+            "en": f"{total_projects}+ Projects Across {categories_count} Solutions",
+            "uk": f"{total_projects}+ проєктів у {categories_count} рішеннях", 
+            "pl": f"{total_projects}+ projektów w {categories_count} rozwiązaniach"
         }.get(lang, ""),
+        
         "overview_description": {
-            "en": "We bring real value to clients by automating what matters most. Explore our cross-connected projects, services, and insights.",
-            "uk": "Ми приносимо реальну цінність автоматизуючи те, що важливо. Досліджуйте наші взаємопов'язані проєкти, послуги та інсайти.",
-            "pl": "Przynosimy realną wartość, automatyzując to, co najważniejsze. Poznaj nasze wzajemnie połączone projekty, usługi i spostrzeżenia."
+            "en": f"Explore our portfolio of {total_projects} completed automation and AI projects. Each solution is cross-connected with relevant insights and services.",
+            "uk": f"Досліджуйте наше портфоліо з {total_projects} завершених проєктів автоматизації та ШІ. Кожне рішення пов'язане з відповідними інсайтами та сервісами.",
+            "pl": f"Poznaj nasze portfolio {total_projects} ukończonych projektów automatyzacji i AI. Każde rozwiązanie jest połączone z odpowiednimi spostrzeżeniami i usługami."
         }.get(lang, ""),
 
         "seo_title": {
-            "en": "Our Projects | Lazysoft - AI & Automation Solutions",
-            "uk": "Наші проєкти | Lazysoft - ШІ та Автоматизація",
-            "pl": "Nasze projekty | Lazysoft - Rozwiązania AI i Automatyzacji"
-        }.get(lang, "Our Projects | Lazysoft"),
-        "seo_description": {
-            "en": "Explore our automation and AI projects with cross-connected insights, services, and solutions.",
-            "uk": "Ознайомтеся з нашими проєктами автоматизації та ШІ з взаємопов'язаними інсайтами та рішеннями.",
-            "pl": "Zobacz nasze projekty automatyzacji i AI z wzajemnie połączonymi spostrzeżeniami i rozwiązaniami."
+            "en": f"{total_projects} AI & Automation Projects | Lazysoft Portfolio",
+            "uk": f"{total_projects} проєктів ШІ та автоматизації | Портфоліо Lazysoft",
+            "pl": f"{total_projects} projektów AI i automatyzacji | Portfolio Lazysoft"
         }.get(lang, ""),
+        
+        "seo_description": {
+            "en": f"Browse {total_projects} completed AI automation projects across {categories_count} service categories. Real client results, technical insights, and cross-connected solutions.",
+            "uk": f"Переглядайте {total_projects} завершених проєктів автоматизації ШІ у {categories_count} категоріях сервісів. Реальні результати клієнтів та взаємопов'язані рішення.",
+            "pl": f"Przeglądaj {total_projects} ukończonych projektów automatyzacji AI w {categories_count} kategoriach usług. Rzeczywiste wyniki klientów i połączone rozwiązania."
+        }.get(lang, ""),
+        
         "lang": lang,
     }
 
-    print(f"📊 Статистика проєктів: {total_projects} проєктів у {categories.count()} категоріях")
-    print(f"🏷️ Популярні теги: {len(popular_tags_data)}")
+    print(f"🎯 Оптимізація: {total_projects} проєктів у {categories_count} категоріях (пусті відфільтровані)")
+    print(f"📰 Sidebar: {len(related_news)} новин за тегами")
+    print(f"🏷️ Теги: {len(popular_tags_data)} популярних")
 
     return render(request, "projects/projects.html", context)
 
@@ -489,8 +464,25 @@ def projects_by_tag(request, tag_key):
         })
     
     # Пов'язаний контент
-    related_articles = tag.get_related_articles(limit=3)
-    related_services = tag.get_related_services(limit=3)
+    related_articles = []
+    related_services = []
+    
+    try:
+        from news.models import ProcessedArticle
+        related_articles = ProcessedArticle.objects.filter(
+            status='published',
+            tags__slug=tag_key
+        ).distinct().order_by('-published_at')[:3]
+    except ImportError:
+        pass
+    
+    try:
+        from services.models import ServiceCategory
+        related_services = ServiceCategory.objects.filter(
+            tags__slug=tag_key
+        ).distinct().order_by('-priority')[:3]
+    except ImportError:
+        pass
     
     context = {
         'tag': {
@@ -511,7 +503,7 @@ def projects_by_tag(request, tag_key):
         ],
         'related_services': [
             {
-                'title': getattr(service, f'title_{lang}', service.title_en),
+                'title': service.get_title(lang),
                 'url': f'/services/{service.slug}/',
             }
             for service in related_services

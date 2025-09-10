@@ -8,13 +8,15 @@
     {% endif %}
 
     {% if show_navigation and projects|length > 1 %}
-      <div class="carousel-navigation desktop-only">
-        <button class="carousel-nav-btn prev" data-carousel="{{ carousel_id }}" data-direction="prev" aria-label="{% trans 'Попередні' %}">
-          <i data-lucide="chevron-left"></i>
-        </button>
-        <button class="carousel-nav-btn next" data-carousel="{{ carousel_id }}" data-direction="next" aria-label="{% trans 'Наступні' %}">
-          <i data-lucide="chevron-right"></i>
-        </button>
+      <div class="desktop-only">
+        <div class="carousel-navigation">
+          <button class="carousel-nav-btn prev" data-carousel="{{ carousel_id }}" data-direction="prev" aria-label="{% trans 'Попередні проєкти' %}">
+            <i data-lucide="chevron-left"></i>
+          </button>
+          <button class="carousel-nav-btn next" data-carousel="{{ carousel_id }}" data-direction="next" aria-label="{% trans 'Наступні проєкти' %}">
+            <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
       </div>
     {% endif %}
   </div>
@@ -45,17 +47,21 @@
     </div>
   </div>
 
-  {% if projects|length > 1 %}
-    <div class="carousel-indicators mobile-only" data-carousel="{{ carousel_id }}">
-      {% for project in projects %}
-        <button class="indicator{% if forloop.first %} active{% endif %}" 
-                data-carousel="{{ carousel_id }}" 
-                data-slide="{{ forloop.counter0 }}"
-                aria-label="{% if CURRENT_LANG == 'uk' %}Перейти до слайду {{ forloop.counter }}
-                {% elif CURRENT_LANG == 'pl' %}Przejdź do slajdu {{ forloop.counter }}
-                {% else %}Go to slide {{ forloop.counter }}{% endif %}">
+  {% if show_navigation and projects|length > 1 %}
+    <div class="mobile-only">
+      <div class="carousel-navigation">
+        <button class="carousel-nav-btn prev" data-carousel="{{ carousel_id }}" data-direction="prev" aria-label="{% trans 'Попередні проєкти' %}">
+          <i data-lucide="chevron-left"></i>
         </button>
-      {% endfor %}
+        <button class="carousel-nav-btn next" data-carousel="{{ carousel_id }}" data-direction="next" aria-label="{% trans 'Наступні проєкти' %}">
+          <i data-lucide="chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if projects|length > 3 %}
+    <div class="carousel-indicators mobile-only" data-carousel="{{ carousel_id }}">
     </div>
   {% endif %}
 </div>

@@ -1,10 +1,10 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<div class="project-card" 
+<div class="project-card clickable" 
      data-complexity="{{ project.complexity_level }}" 
      data-priority="{{ project.priority }}" 
-     onclick="location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
+     data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/">
   
   <!-- Project Tags -->
   <div class="project-tags">
@@ -98,18 +98,18 @@
       </button>
       
       <div class="secondary-actions">
-        <a href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" class="details-link" onclick="event.stopPropagation();">
+        <button class="details-link" onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
           {% if CURRENT_LANG == 'uk' %}Детальний кейс
           {% elif CURRENT_LANG == 'pl' %}Czytaj więcej
           {% else %}Full Case{% endif %}
-        </a>
+        </button>
         
         {% if project.project_url %}
-          <a href="{{ project.project_url }}" target="_blank" class="demo-link" onclick="event.stopPropagation();">
+          <button class="demo-link" onclick="event.stopPropagation(); window.open('{{ project.project_url }}', '_blank');">
             {% if CURRENT_LANG == 'uk' %}Демо
             {% elif CURRENT_LANG == 'pl' %}Demo
             {% else %}Live Demo{% endif %}
-          </a>
+          </button>
         {% endif %}
       </div>
     </div>

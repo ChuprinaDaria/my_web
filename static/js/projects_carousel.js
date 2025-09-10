@@ -21,24 +21,65 @@
 
     function update() {
       const x = -(index * slideW());
+      
+      track.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
       track.style.transform = `translate3d(${x}px,0,0)`;
+      
       updateButtons();
       updateDots();
+      
+      const currentSlide = index + 1;
+      const totalSlides = items.length;
+      
+      if (track.getAttribute('aria-live')) {
+        track.setAttribute('aria-label', `Showing slide ${currentSlide} of ${totalSlides}`);
+      }
     }
 
     function updateButtons() {
-      if (prev) prev.disabled = index <= 0;
-      if (next) next.disabled = index >= items.length - visibleCount();
+      const canScrollLeft = index > 0;
+      const maxIndex = Math.max(0, items.length - visibleCount());
+      const canScrollRight = index < maxIndex;
+      
+      const prevBtns = root.querySelectorAll('.carousel-nav-btn.prev');
+      prevBtns.forEach(btn => {
+        btn.disabled = !canScrollLeft;
+        if (window.innerWidth > 768) {
+          btn.style.opacity = canScrollLeft ? '1' : '0';
+        } else {
+          btn.style.opacity = canScrollLeft ? '1' : '0.3';
+        }
+      });
+      
+      const nextBtns = root.querySelectorAll('.carousel-nav-btn.next');
+      nextBtns.forEach(btn => {
+        btn.disabled = !canScrollRight;
+        if (window.innerWidth > 768) {
+          btn.style.opacity = canScrollRight ? '1' : '0';
+        } else {
+          btn.style.opacity = canScrollRight ? '1' : '0.3';
+        }
+      });
     }
 
     function buildDots() {
       if (!dotsWrap) return;
       dotsWrap.innerHTML = '';
+      
       const pages = Math.max(1, items.length - visibleCount() + 1);
+      
+      if (pages <= 1) {
+        dotsWrap.style.display = 'none';
+        return;
+      }
+      
+      dotsWrap.style.display = 'flex';
+      
       for (let i = 0; i < pages; i++) {
         const b = document.createElement('button');
         b.className = 'indicator' + (i === 0 ? ' active' : '');
         b.type = 'button';
+        b.setAttribute('aria-label', `Go to slide ${i + 1} of ${pages}`);
         b.addEventListener('click', () => { index = i; update(); });
         dotsWrap.appendChild(b);
       }
@@ -51,9 +92,19 @@
       );
     }
 
-    // controls
-    prev && prev.addEventListener('click', () => { index = clamp(index - 1); update(); });
-    next && next.addEventListener('click', () => { index = clamp(index + 1); update(); });
+    root.querySelectorAll('.carousel-nav-btn.prev').forEach(btn => {
+      btn.addEventListener('click', () => { 
+        index = clamp(index - 1); 
+        update(); 
+      });
+    });
+
+    root.querySelectorAll('.carousel-nav-btn.next').forEach(btn => {
+      btn.addEventListener('click', () => { 
+        index = clamp(index + 1); 
+        update(); 
+      });
+    });
 
     // touch/drag
     let startX = 0, dragging = false, pid = null;
@@ -85,6 +136,7 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    // Ініціалізація каруселей
     document.querySelectorAll('.projects-carousel-container').forEach(initCarousel);
   });
 })();

@@ -4,9 +4,9 @@
 
 <!-- SEO BLOCKS -->
 {% block title %}{{ service.seo_title|default:service.title }} | Lazysoft{% endblock %}
-{% block meta_description %}{{ service.seo_description|default:service.short_description|striptags|truncatewords:25 }}{% endblock %}
+{% block meta_description %}{{ service.seo_description|default:service.short|striptags|truncatewords:25 }}{% endblock %}
 {% block og_title %}{{ service.title|striptags }}{% endblock %}
-{% block og_description %}{{ service.short_description|striptags|truncatewords:30 }}{% endblock %}
+{% block og_description %}{{ service.short|striptags|truncatewords:30 }}{% endblock %}
 {% block og_image %}{% if service.icon %}https://lazysoft.dev{{ service.icon.url }}{% else %}https://lazysoft.dev{% static 'images/services-og.jpg' %}{% endif %}{% endblock %}
 
 {% block extra_meta %}
@@ -22,7 +22,7 @@
     "@context": "https://schema.org",
     "@type": "Service",
     "name": "{{ service.title|escapejs }}",
-    "description": "{{ service.short_description|striptags|escapejs }}",
+    "description": "{{ service.short|striptags|escapejs }}",
     "provider": {
       "@type": "Organization",
       "name": "Lazysoft",
@@ -35,44 +35,74 @@
   </script>
 {% endblock %}
 
-
 <!-- CONTENT -->
 {% block content %}
-
 <article class="service-detail-container">
   
-  <!-- Hero Section -->
+  <!-- 🎯 Hero Section - використовуємо структуру з project_detail -->
   <section class="service-hero-section">
     <div class="container">
-      <div class="service-hero-content">
+      <div class="hero-content">
         
-        <!-- Service Icon + Tags -->
+        <!-- 🏷️ Service Tags Header - НОВА система тегів -->
+        {% if service.tags.all %}
+          <div class="service-tags-header">
+            {% for tag in service.tags.all|slice:":4" %}
+              <a href="/{{ CURRENT_LANG }}/services/tag/{{ tag.slug }}/" 
+                 class="service-tag-pill"
+                 {% if tag.color %}style="border-color: {{ tag.color }}; color: {{ tag.color }};"{% endif %}>
+                {% if tag.icon %}{{ tag.icon }}{% else %}🏷️{% endif %}
+                {% if CURRENT_LANG == 'uk' and tag.name_uk %}{{ tag.name_uk }}
+                {% elif CURRENT_LANG == 'pl' and tag.name_pl %}{{ tag.name_pl }}
+                {% else %}{{ tag.name_en }}{% endif %}
+              </a>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Service Icon + Title -->
         <div class="service-hero-header">
           {% if service.icon %}
             <div class="service-hero-icon">
               <img src="{{ service.icon.url }}" alt="{{ service.title }}" />
             </div>
           {% endif %}
-          
-          <!-- Tags -->
-          {% if service_tags %}
-            <div class="service-tags-header">
-              {% for tag in service_tags|slice:":3" %}
-                <span class="service-tag-pill" data-tag-color="{{ tag.color }}">
-                  {% if tag.icon %}{{ tag.icon }} {% endif %}{{ tag.name }}
-                </span>
-              {% endfor %}
+        </div>
+
+        <h1 class="project-main-title">{{ service.title|safe }}</h1>
+        
+        <p class="project-subtitle">
+          {% if service.short %}
+            {{ service.short|safe|striptags|truncatewords:35 }}
+          {% else %}
+            {{ service.long_description|safe|striptags|truncatewords:25 }}
+          {% endif %}
+        </p>
+
+        <!-- 📊 Service Meta - як в project_detail -->
+        <div class="project-meta">
+          {% if service.is_featured %}
+            <div class="meta-item">
+              <i class="meta-icon" data-lucide="star"></i>
+              <span>{% trans "Featured Service" %}</span>
+            </div>
+          {% endif %}
+          {% if service.priority and service.priority >= 3 %}
+            <div class="meta-item">
+              <i class="meta-icon" data-lucide="trending-up"></i>
+              <span>{% trans "High Priority" %}</span>
+            </div>
+          {% endif %}
+          {% if service.related_projects_count %}
+            <div class="meta-item">
+              <i class="meta-icon" data-lucide="rocket"></i>
+              <span>{{ service.related_projects_count }} {% trans "projects" %}</span>
             </div>
           {% endif %}
         </div>
 
-        <!-- Title + Subtitle -->
-        <h1>{{ service.title|safe }}</h1>
-        
-        <p class="description">{{ service.short_description|safe }}</p>
-
-        <!-- CTA Buttons -->
-        <div class="service-hero-cta">
+        <!-- 🚀 Hero Actions -->
+        <div class="project-hero-actions">
           <button class="hero-cta-button primary" onclick="scrollToContact('{{ service.title|escapejs }}');">
             <i data-lucide="zap"></i>
             {% trans "Get This Service" %}
@@ -86,219 +116,463 @@
     </div>
   </section>
 
-  <!-- Main Content -->
-  <section class="service-main-content">
+  <!-- 🖼️ Service Gallery - якщо є зображення -->
+  {% if service.gallery_image_1 or service.gallery_image_2 or service.gallery_image_3 or service.gallery_image_4 %}
+    <section class="project-featured-image">
+      <div class="container">
+        <div class="service-gallery-grid">
+          {% if service.gallery_image_1 %}
+            <div class="gallery-item" onclick="openLightbox('{{ service.gallery_image_1.url }}')">
+              <img src="{{ service.gallery_image_1.url }}" alt="Service Gallery 1" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+          {% if service.gallery_image_2 %}
+            <div class="gallery-item" onclick="openLightbox('{{ service.gallery_image_2.url }}')">
+              <img src="{{ service.gallery_image_2.url }}" alt="Service Gallery 2" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+          {% if service.gallery_image_3 %}
+            <div class="gallery-item" onclick="openLightbox('{{ service.gallery_image_3.url }}')">
+              <img src="{{ service.gallery_image_3.url }}" alt="Service Gallery 3" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+          {% if service.gallery_image_4 %}
+            <div class="gallery-item" onclick="openLightbox('{{ service.gallery_image_4.url }}')">
+              <img src="{{ service.gallery_image_4.url }}" alt="Service Gallery 4" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- 📋 Main Content Layout -->
+  <section class="project-main-content">
     <div class="container">
-      <div class="service-content-grid">
+      <div class="content-grid">
         
-        <!-- Main Content Column -->
+        <!-- 📄 Main Content Column -->
         <div class="main-content-column">
           
           <!-- Service Description -->
           <div class="content-section">
-            <header class="content-section-header">
+            <div class="content-section-header">
               <div class="section-icon">
                 <i data-lucide="file-text"></i>
               </div>
-              <h2>{% trans "Service Details" %}</h2>
-            </header>
-            
+              <h2>{% trans "Service Overview" %}</h2>
+            </div>
             <div class="content-section-body">
-              {{ service.description|safe }}
+              {{ service.long_description|safe }}
             </div>
           </div>
 
-          <!-- Related Projects -->
-          {% if related_projects %}
-          <div class="related-projects-section">
-            <div class="related-header">
-              <h2>
-                <i data-lucide="rocket"></i>
-                {% trans "Related Projects" %}
-              </h2>
-              <p class="description">{% trans "See how we've implemented similar solutions" %}</p>
+          <!-- Target Audience -->
+          {% if service.audience %}
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="users"></i>
+              </div>
+              <h2>{% trans "Target Audience" %}</h2>
             </div>
-            
-            <div class="related-projects-grid">
-              {% for project in related_projects %}
-                {% include 'includes/project_card.html' with project=project %}
-              {% endfor %}
+            <div class="content-section-body">
+              {{ service.audience|safe }}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Value Proposition -->
+          {% if service.value %}
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="trending-up"></i>
+              </div>
+              <h2>{% trans "Business Value" %}</h2>
+            </div>
+            <div class="content-section-body">
+              {{ service.value|safe }}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- Pricing Information -->
+          {% if service.pricing %}
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="dollar-sign"></i>
+              </div>
+              <h2>{% trans "Pricing" %}</h2>
+            </div>
+            <div class="content-section-body">
+              {{ service.pricing|safe }}
             </div>
           </div>
           {% endif %}
 
         </div>
 
-        <!-- Sidebar -->
-        <div class="service-sidebar">
+        <!-- 📊 Sidebar -->
+        <div class="project-sidebar">
           
-          <!-- Quick Contact -->
-          <div class="sidebar-section">
-            <h3>
+          <!-- 🎯 Quick Contact CTA -->
+          <div class="sidebar-section cta-sidebar">
+            <h3 class="sidebar-title">
               <i data-lucide="message-circle"></i>
               {% trans "Quick Contact" %}
             </h3>
-            {% include 'core/contact_form.html' with form_title="Quick Contact" form_subtitle="Interested in this service? Let's discuss your project!" service_name=service.title %}
+            <p class="cta-description">
+              {% trans "Ready to implement this service? Let's discuss your specific needs and create a custom solution." %}
+            </p>
+            <button class="sidebar-cta-button" onclick="scrollToContact('{{ service.title|escapejs }}');">
+              <i data-lucide="send"></i>
+              {% trans "Start Discussion" %}
+            </button>
           </div>
 
-          <!-- Related News -->
+          <!-- 📊 Service Info -->
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">
+              <i data-lucide="info"></i>
+              {% trans "Service Details" %}
+            </h3>
+            <div class="project-info-list">
+              {% if service.priority %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Priority" %}</span>
+                  <span class="info-value">
+                    {{ service.priority_emoji }}
+                    {% if service.priority == 5 %}{% trans "Top Service" %}
+                    {% elif service.priority == 4 %}{% trans "Critical" %}
+                    {% elif service.priority == 3 %}{% trans "High" %}
+                    {% elif service.priority == 2 %}{% trans "Normal" %}
+                    {% else %}{% trans "Low" %}{% endif %}
+                  </span>
+                </div>
+              {% endif %}
+              
+              {% if service.is_featured %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Status" %}</span>
+                  <span class="info-value">⭐ {% trans "Featured" %}</span>
+                </div>
+              {% endif %}
+              
+              {% if service.date_created %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Available Since" %}</span>
+                  <span class="info-value">{{ service.date_created|date:"M Y" }}</span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- 🏷️ Service Tags -->
+          {% if service.tags.all %}
+          <div class="sidebar-section">
+            <h3 class="sidebar-title">
+              <i data-lucide="tag"></i>
+              {% trans "Service Tags" %}
+            </h3>
+            <div class="project-tags">
+              {% for tag in service.tags.all %}
+                <a href="/{{ CURRENT_LANG }}/services/tag/{{ tag.slug }}/" 
+                   class="tag-chip"
+                   {% if tag.color %}style="--tag-color: {{ tag.color }};"{% endif %}>
+                  {% if tag.icon %}<span class="tag-icon">{{ tag.icon }}</span>{% endif %}
+                  <span class="tag-name">
+                    {% if CURRENT_LANG == 'uk' and tag.name_uk %}{{ tag.name_uk }}
+                    {% elif CURRENT_LANG == 'pl' and tag.name_pl %}{{ tag.name_pl }}
+                    {% else %}{{ tag.name_en }}{% endif %}
+                  </span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          <!-- 🔗 Related Articles - НОВА крос-промоція -->
           {% if related_articles %}
           <div class="sidebar-section">
-            <h3>
+            <h3 class="sidebar-title">
               <i data-lucide="newspaper"></i>
               {% trans "Related News" %}
             </h3>
-            <div class="related-news-list">
+            <div class="related-content-list">
               {% for article in related_articles|slice:":3" %}
-                <div class="news-item">
+                <a href="{{ article.url }}" class="related-item">
                   {% if article.ai_image_url %}
-                    <div class="news-image">
+                    <div class="related-image">
                       <img src="{{ article.ai_image_url }}" alt="{{ article.title }}" loading="lazy">
                     </div>
                   {% endif %}
-                  <div class="news-content">
-                    <h4 class="news-title">
-                      <a href="{{ article.url }}">{{ article.title|safe }}</a>
-                    </h4>
-                    <p class="news-summary">{{ article.summary|truncatewords:10 }}</p>
-                    <div class="news-meta">
+                  <div class="related-content">
+                    <h4 class="related-title">{{ article.title|safe|truncatewords:8 }}</h4>
+                    <div class="related-meta">
                       {% if article.published_at %}
-                        <span class="news-date">{{ article.published_at|date:"M d, Y" }}</span>
+                        <span>{{ article.published_at|date:"M d" }}</span>
                       {% endif %}
-                      {% if article.original_source_url and article.original_source_name %}
-                        <a href="{{ article.original_source_url }}" target="_blank" rel="nofollow noopener" class="source-link">
-                          🔗 {{ article.original_source_name }}
-                        </a>
+                      {% if article.source_domain %}
+                        <span class="related-category">{{ article.source_domain }}</span>
                       {% endif %}
                     </div>
                   </div>
-                </div>
+                </a>
               {% endfor %}
             </div>
           </div>
           {% endif %}
 
-          <!-- Service Stats -->
-          {% if service.priority or service.related_projects_count or service.related_articles_count %}
-          <div class="sidebar-section">
-            <h3>
-              <i data-lucide="bar-chart-3"></i>
-              {% trans "Service Stats" %}
-            </h3>
-            <div class="service-stats">
-              {% if service.priority and service.priority > 3 %}
-                <div class="stat-item">
-                  <div class="stat-icon">
-                    <i data-lucide="flame"></i>
-                  </div>
-                  <div class="stat-text">{% trans "High Priority Service" %}</div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- 🚀 Related Projects - НОВА крос-промоція -->
+  {% if related_projects %}
+  <section class="related-projects-section">
+    <div class="container">
+      <header class="related-header">
+        <h2 class="related-title">
+          <i data-lucide="rocket"></i>
+          {% trans "Related Projects" %}
+        </h2>
+        <p class="related-subtitle">{% trans "See how we've successfully implemented this service for other clients" %}</p>
+      </header>
+      
+      <div class="related-projects-grid">
+        {% for project in related_projects %}
+          <div class="related-project-card clickable" data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/">
+            {% if project.featured_image %}
+              <div class="project-image">
+                <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" loading="lazy">
+                <div class="image-overlay-gradient"></div>
+              </div>
+            {% endif %}
+            <div class="project-content">
+              <h3 class="project-title">{{ project.title|safe }}</h3>
+              <p class="project-description">{{ project.short_description|safe|striptags|truncatewords:15 }}</p>
+              
+              <!-- Project Badges -->
+              {% if project.all_badges %}
+                <div class="project-badges">
+                  {% for badge in project.all_badges|slice:":2" %}
+                    <span class="project-badge" 
+                          {% if badge.color %}style="background-color: {{ badge.color }}20; border-color: {{ badge.color }}50;"{% endif %}>
+                      {% if badge.icon %}{{ badge.icon }}{% endif %}
+                      {{ badge.text }}
+                    </span>
+                  {% endfor %}
                 </div>
               {% endif %}
               
-              {% if service.related_projects_count %}
-                <div class="stat-item">
-                  <div class="stat-icon">
-                    <i data-lucide="rocket"></i>
-                  </div>
-                  <div class="stat-text">{{ service.related_projects_count }} {% trans "successful projects" %}</div>
-                </div>
-              {% endif %}
-              
-              {% if service.related_articles_count %}
-                <div class="stat-item">
-                  <div class="stat-icon">
-                    <i data-lucide="newspaper"></i>
-                  </div>
-                  <div class="stat-text">{{ service.related_articles_count }} {% trans "related articles" %}</div>
-                </div>
-              {% endif %}
+              <div class="project-cta">
+                <span>{% trans "View Project" %}</span>
+                <i data-lucide="arrow-right"></i>
+              </div>
             </div>
           </div>
-          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
 
-          <!-- Tech Stack (if available) -->
-          {% if service.technologies_list %}
-          <div class="sidebar-section">
-            <h3>
-              <i data-lucide="code"></i>
-              {% trans "Technologies" %}
-            </h3>
-            <div class="tech-stack">
-              {% for tech in service.technologies_list %}
-                <span class="tech-chip">{{ tech }}</span>
-              {% endfor %}
-            </div>
+  <!-- 🎥 Video Section -->
+  {% if service.video_url or service.video_file %}
+    <section class="project-video-section">
+      <div class="container">
+        <header class="video-header">
+          <h2>{% trans "Service Demonstration" %}</h2>
+        </header>
+        
+        <div class="video-container glass">
+          {% if service.video_url %}
+            <iframe src="{{ service.video_url }}" frameborder="0" allowfullscreen></iframe>
+          {% elif service.video_file %}
+            <video controls>
+              <source src="{{ service.video_file.url }}" type="video/mp4">
+            </video>
+          {% endif %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <!-- 🔗 Cross-Promotion Content - НОВА функціональність -->
+  {% if cross_promotion_content %}
+  <section class="related-services-section">
+    <div class="container">
+      <header class="related-header">
+        <h2 class="related-title">{% trans "You Might Also Like" %}</h2>
+        <p class="related-subtitle">{% trans "Discover related services, projects, and insights" %}</p>
+      </header>
+      
+      <div class="cross-promotion-grid">
+        {% for item in cross_promotion_content %}
+          <div class="cross-promotion-item {{ item.type }}-item">
+            <a href="{{ item.url }}" class="cross-promotion-link">
+              {% if item.image %}
+                <div class="cross-promotion-image">
+                  <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy">
+                </div>
+              {% endif %}
+              <div class="cross-promotion-content">
+                <div class="cross-promotion-type">
+                  {% if item.type == 'article' %}📰 {% trans "Article" %}
+                  {% elif item.type == 'project' %}🚀 {% trans "Project" %}
+                  {% elif item.type == 'service' %}🛠️ {% trans "Service" %}
+                  {% endif %}
+                </div>
+                <h3 class="cross-promotion-title">{{ item.title|safe }}</h3>
+                <p class="cross-promotion-summary">{{ item.summary|safe }}</p>
+              </div>
+            </a>
           </div>
-          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
 
+  <!-- 📤 Social Share -->
+  {% include 'includes/social_share.html' with share_title=service.title %}
+
+  <!-- 📞 Contact CTA -->
+  <section class="project-contact-cta">
+    <div class="container">
+      <div class="contact-cta-card glass card">
+        <div class="cta-content">
+          <h2>{% trans "Ready to Get Started?" %}</h2>
+          <p class="cta-description">
+            {% trans "Let's discuss how this service can transform your business. Get a free consultation and custom solution proposal." %}
+          </p>
+          <div class="cta-actions">
+            <button class="btn-primary hero-cta-button primary" 
+                    data-service-title="{{ service.title|escapejs }}"
+                    onclick="scrollToContact(this.dataset.serviceTitle);">
+              <i data-lucide="message-circle"></i>
+              {% trans "Start Free Consultation" %}
+            </button>
+            <a href="{% url 'services_list' %}" class="btn-secondary hero-cta-button secondary">
+              <i data-lucide="grid-3x3"></i>
+              {% trans "Browse All Services" %}
+            </a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Social Share -->
-  {% include 'includes/social_share.html' with share_title=service.title %}
-
 </article>
+
+<!-- 🔍 Lightbox Modal -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-content">
+    <img id="lightbox-image" src="" alt="">
+    <button class="lightbox-close" onclick="closeLightbox()">
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+</div>
 
 {% endblock %}
 
 {% block extra_scripts %}
-  <!-- Scroll to contact function -->
-  <script>
-    function scrollToContact(serviceName) {
-      const contactSection = document.querySelector('.sidebar-section h3 i[data-lucide="message-circle"]')?.closest('.sidebar-section');
-      if (contactSection) {
-        contactSection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-        
-        // Fill form with service info
-        setTimeout(() => {
-          const messageField = document.querySelector('textarea[name="message"], input[name="message"]');
-          if (messageField && serviceName) {
-            const currentLang = document.documentElement.lang || 'uk';
-            const messages = {
-              'uk': `Привіт! Мене цікавить послуга "${serviceName}". Хочу обговорити можливості співпраці.`,
-              'en': `Hi! I'm interested in the "${serviceName}" service. I'd like to discuss collaboration opportunities.`,
-              'pl': `Cześć! Interesuje mnie usługa "${serviceName}". Chciałbym omówić możliwości współpracy.`
-            };
-            messageField.value = messages[currentLang] || messages['uk'];
-            messageField.focus();
-          }
-        }, 1000);
-      }
+<script>
+// 🔍 Lightbox functionality
+function openLightbox(imageSrc) {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightbox-image');
+  lightboxImage.src = imageSrc;
+  lightbox.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// 📞 Scroll to contact
+function scrollToContact(serviceTitle) {
+  // Scroll to contact form (assuming it's on the same page or redirect)
+  window.location.href = `/${document.body.getAttribute('data-current-lang') || 'uk'}/#contact`;
+  
+  // Pre-fill message if contact form exists
+  setTimeout(() => {
+    const messageField = document.querySelector('textarea[name="message"], input[name="message"]');
+    if (messageField && serviceTitle) {
+      const currentLang = document.documentElement.lang || 'uk';
+      const messages = {
+        'uk': `Привіт! Мене цікавить послуга "${serviceTitle}". Хочу обговорити можливості співпраці.`,
+        'en': `Hi! I'm interested in the "${serviceTitle}" service. I'd like to discuss collaboration opportunities.`,
+        'pl': `Cześć! Interesuje mnie usługa "${serviceTitle}". Chciałbym omówić możliwości współpracy.`
+      };
+      messageField.value = messages[currentLang] || messages['uk'];
+      messageField.focus();
     }
+  }, 1000);
+}
 
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initialize Lucide icons
-      if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-      } else {
-        // Fallback - try again after a short delay
-        setTimeout(function() {
-          if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-          }
-        }, 100);
-      }
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize Lucide icons
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 
-      // Set tag colors
-      document.querySelectorAll('.service-tag-pill[data-tag-color]').forEach(function(tag) {
-        const color = tag.getAttribute('data-tag-color');
-        if (color) {
-          tag.style.borderColor = color;
-        }
-      });
+  // Set tag colors dynamically
+  document.querySelectorAll('.service-tag-pill[style*="border-color"], .tag-chip[style*="--tag-color"]').forEach(function(tag) {
+    // Colors are already set in the template via style attributes
+  });
 
-      // Clickable cards functionality
-      document.querySelectorAll('.clickable').forEach(function (card) {
-        card.addEventListener('click', function () {
-          const href = card.getAttribute('data-href');
-          if (href) window.location.href = href;
-        });
-      });
+  // Clickable cards functionality
+  document.querySelectorAll('.clickable').forEach(function (card) {
+    card.addEventListener('click', function (e) {
+      // Don't trigger if clicking on a link or button
+      if (e.target.closest('a, button')) return;
+      
+      const href = card.getAttribute('data-href');
+      if (href) window.location.href = href;
     });
-  </script>
+  });
+  
+  // Enhanced expandable content (if needed later)
+  const expandTriggers = document.querySelectorAll('.expand-trigger');
+  expandTriggers.forEach(trigger => {
+    trigger.addEventListener('click', function() {
+      const chevron = this.querySelector('[data-lucide="chevron-down"]');
+      if (chevron) {
+        setTimeout(() => {
+          const isOpen = this.parentElement.hasAttribute('open');
+          chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+        }, 10);
+      }
+    });
+  });
+});
+
+// ⌨️ Keyboard navigation for lightbox
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeLightbox();
+  }
+});
+</script>
 {% endblock %}

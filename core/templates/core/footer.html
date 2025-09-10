@@ -94,7 +94,7 @@
           <li><a href="{% url 'about:about' %}">{% trans "About Us" %}</a></li>
           <li><a href="{% url 'projects' %}">{% trans "Portfolio" %}</a></li>
           <li><a href="{% url 'news:news_list' %}">{% trans "Tech News" %}</a></li>
-          <li><a href="{% url 'faq_page' %}">{% trans "FAQ" %}</a></li>
+          <li><a href="/{{ CURRENT_LANG }}/services/#faq">{% trans "FAQ" %}</a></li>
           <li><a href="{% url 'contacts:contact_page' %}">{% trans "Contact" %}</a></li>
         </ul>
       </div>

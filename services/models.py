@@ -5,7 +5,6 @@ from django.utils.text import slugify
 
 class ServiceCategory(models.Model):
     slug = models.SlugField(unique=True)
-
     title_en = models.CharField(max_length=255)
     title_uk = models.CharField(max_length=255)
     title_pl = models.CharField(max_length=255)
@@ -14,13 +13,93 @@ class ServiceCategory(models.Model):
     description_uk = RichTextField(blank=True, null=True)
     description_pl = RichTextField(blank=True, null=True)
 
+    short_description_en = models.TextField(blank=True, null=True)
+    short_description_uk = models.TextField(blank=True, null=True)
+    short_description_pl = models.TextField(blank=True, null=True)
+
+    seo_title_en = models.CharField(max_length=255, blank=True, null=True)
+    seo_title_uk = models.CharField(max_length=255, blank=True, null=True)
+    seo_title_pl = models.CharField(max_length=255, blank=True, null=True)
+    seo_description_en = models.TextField(blank=True, null=True)
+    seo_description_uk = models.TextField(blank=True, null=True)
+    seo_description_pl = models.TextField(blank=True, null=True)
+
+    video_url = models.URLField(blank=True, null=True)
+    video_file = models.FileField(upload_to="services/videos/", blank=True, null=True)
+
+    gallery_image_1 = models.ImageField(upload_to="services/gallery/", blank=True, null=True)
+    gallery_image_2 = models.ImageField(upload_to="services/gallery/", blank=True, null=True)
+    gallery_image_3 = models.ImageField(upload_to="services/gallery/", blank=True, null=True)
+    gallery_image_4 = models.ImageField(upload_to="services/gallery/", blank=True, null=True)
+
+    target_audience_en = RichTextField(blank=True, null=True)
+    target_audience_uk = RichTextField(blank=True, null=True)
+    target_audience_pl = RichTextField(blank=True, null=True)
+
+    pricing_en = RichTextField(blank=True, null=True)
+    pricing_uk = RichTextField(blank=True, null=True)
+    pricing_pl = RichTextField(blank=True, null=True)
+
+    value_proposition_en = RichTextField(blank=True, null=True)
+    value_proposition_uk = RichTextField(blank=True, null=True)
+    value_proposition_pl = RichTextField(blank=True, null=True)
+
+    icon = models.ImageField(upload_to="services/icons/", blank=True, null=True)
+    is_featured = models.BooleanField(default=False)
+    PRIORITY_CHOICES = [
+        (1, 'Низький'),
+        (2, 'Звичайний'),
+        (3, 'Високий'),
+        (4, 'Критичний'),
+        (5, 'Топ сервіс')
+    ]
+    priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=2)
+    order = models.PositiveIntegerField(default=0)
+    tags = models.ManyToManyField('core.Tag', blank=True, related_name='service_categories')
+    date_created = models.DateTimeField(auto_now_add=True)
+
     class Meta:
-        verbose_name = "Service Category"
-        verbose_name_plural = "Service Categories"
-        ordering = ['title_en']
+        verbose_name = "Service"
+        verbose_name_plural = "Services"
+        ordering = ['-priority','-order','-date_created']
+        indexes = [
+            models.Index(fields=['is_featured', 'priority']),
+            models.Index(fields=['slug']),
+            models.Index(fields=['date_created']),
+        ]
 
     def __str__(self):
         return self.title_en
+
+    def get_title(self, lang='uk'):
+        return getattr(self, f'title_{lang}', self.title_en)
+
+    def get_desc(self, lang='uk'):
+        return getattr(self, f'description_{lang}', None)
+
+    def get_short(self, lang='uk'):
+        return getattr(self, f'short_description_{lang}', None)
+
+    def get_seo_title(self, lang='uk'):
+        v = getattr(self, f'seo_title_{lang}', None)
+        return v or self.get_title(lang)
+
+    def get_seo_desc(self, lang='uk'):
+        v = getattr(self, f'seo_description_{lang}', None)
+        return v or (self.get_short(lang) or '')
+
+    def get_audience(self, lang='uk'):
+        return getattr(self, f'target_audience_{lang}', None)
+
+    def get_pricing(self, lang='uk'):
+        return getattr(self, f'pricing_{lang}', None)
+
+    def get_value(self, lang='uk'):
+        return getattr(self, f'value_proposition_{lang}', None)
+
+    def get_priority_emoji(self):
+        m = {1:'⚪',2:'🔵',3:'🟡',4:'🟠',5:'🔴'}
+        return m.get(self.priority,'🔵')
 
 
 class Service(models.Model):
@@ -30,8 +109,8 @@ class Service(models.Model):
         ServiceCategory,
         on_delete=models.CASCADE,
         related_name='services',
-        null=True,
-        blank=True
+        null=False,
+        blank=False
     )
 
     title_en = models.CharField(max_length=255)
@@ -259,27 +338,6 @@ class Service(models.Model):
 
     # 🛠️ HELPER методи для багатомовності (додано для зручності)
 
-    def get_title(self, language='uk'):
-        """Заголовок для конкретної мови"""
-        return getattr(self, f'title_{language}', self.title_uk)
-
-    def get_description(self, language='uk'):
-        """Опис для конкретної мови"""
-        return getattr(self, f'description_{language}', self.description_uk)
-
-    def get_short_description(self, language='uk'):
-        """Короткий опис для конкретної мови"""
-        return getattr(self, f'short_description_{language}', self.short_description_uk)
-
-    def get_seo_title(self, language='uk'):
-        """SEO заголовок для конкретної мови"""
-        seo_title = getattr(self, f'seo_title_{language}', '')
-        return seo_title or self.get_title(language)
-
-    def get_seo_description(self, language='uk'):
-        """SEO опис для конкретної мови"""
-        seo_desc = getattr(self, f'seo_description_{language}', '')
-        return seo_desc or self.get_short_description(language)
 
 
 class FAQ(models.Model):

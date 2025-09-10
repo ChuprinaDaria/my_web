@@ -103,13 +103,13 @@ class ProjectAdmin(admin.ModelAdmin):
     
     # 🔍 ОНОВЛЕНІ фільтри з НОВИМИ ТЕГАМИ
     list_filter = (
-        "tags",  # 🆕 ФІЛЬТР ПО НОВИМ ТЕГАМ
-        "category", 
+        "category",  # 🎯 КАТЕГОРІЯ - головний фільтр
         "priority",
         "complexity_level",
         "project_status",
         "is_featured", 
         "is_active", 
+        "tags",  # 🏷️ ТЕГИ - нижчий пріоритет
         "is_top_project",
         "is_innovative",
         "is_ai_powered",
@@ -137,10 +137,13 @@ class ProjectAdmin(admin.ModelAdmin):
             "fields": ("title_en", "title_uk", "title_pl", "slug", "category")
         }),
         
-        ("🏷️ НОВА СИСТЕМА ТЕГІВ - Крос-промоція", {
+        ("📊 Пріоритет та відображення", {
+            "fields": (("priority", "is_featured"), "order")
+        }),
+        
+        ("🏷️ Теги (опційно)", {
             "fields": ("tags",),
-            "classes": ("wide",),
-            "description": "🎯 Оберіть внутрішні теги для автоматичної крос-видачі з новинами та сервісами. Це основна система для зв'язування контенту!"
+            "description": "🎯 Оберіть теги для підсилення крос-промоції"
         }),
         
         ("🎨 Візуальні бейджі (legacy)", {
@@ -167,7 +170,7 @@ class ProjectAdmin(admin.ModelAdmin):
         
         ("📊 Project Metrics & Status", {
             "fields": (
-                ("priority", "complexity_level", "project_status"),
+                ("complexity_level", "project_status"),
                 ("budget_range", "development_duration_weeks"),
                 "client_time_saved_hours",
             ),
@@ -224,7 +227,7 @@ class ProjectAdmin(admin.ModelAdmin):
         }),
         
         ("⚙️ Status & Display", {
-            "fields": ("is_active", "is_featured", "order"),
+            "fields": ("is_active",),
             "classes": ("wide",)
         }),
     )

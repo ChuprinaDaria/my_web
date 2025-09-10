@@ -1,21 +1,13 @@
 {% load i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 🎯 ГОРИЗОНТАЛЬНА КАРТКА СЕРВІСУ (як about-card) -->
 <div class="service-card clickable" 
-     data-href="/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
-     onclick="location.href='/{{ CURRENT_LANG }}/services/{{ service.slug }}/'">
+     data-href="{% url 'service_detail' service.slug %}">
 
-  <!-- 🖼️ IMAGE SECTION - ВИПРАВЛЕНО! -->
   <div class="service-image">
     {% if service.icon %}
-      <img src="{{ service.icon.url }}" 
-           alt="{{ service.title|default:service.title_en }}" 
-           class="service-img"
-           loading="lazy">
-    {% elif service.icon_url %}
-      <img src="{{ service.icon_url }}" 
-           alt="{{ service.title|default:service.title_en }}" 
+      <img src="{{ service.icon.url }}"
+           alt="{{ service.title }}" 
            class="service-img"
            loading="lazy">
     {% else %}
@@ -25,57 +17,41 @@
     {% endif %}
   </div>
 
-  <!-- 📝 TEXT CONTENT -->
   <div class="service-text">
     
-    <!-- 🏷️ TAGS -->
-    {% if service.tags_list %}
+    <!-- Service Tags -->
+    {% if service.tags %}
       <div class="service-tags">
-        {% for tag in service.tags_list %}
-          <span class="service-tag">
-            {% if tag.icon %}{{ tag.icon }} {% endif %}{{ tag.name }}
-          </span>
+        {% for tag in service.tags %}
+          {% if forloop.counter <= 3 %}
+            <span class="service-tag">
+              {% if tag.name %}{{ tag.name }}{% else %}{{ tag }}{% endif %}
+            </span>
+          {% endif %}
         {% endfor %}
       </div>
     {% endif %}
 
-    <!-- 📄 TITLE -->
-    <h3>
-      {% if service.title %}{{ service.title|safe }}
-      {% elif CURRENT_LANG == 'uk' and service.title_uk %}{{ service.title_uk|safe }}
-      {% elif CURRENT_LANG == 'pl' and service.title_pl %}{{ service.title_pl|safe }}
-      {% else %}{{ service.title_en|safe }}{% endif %}
-    </h3>
+    <h3>{{ service.title|safe }}</h3>
 
-    <!-- 💭 DESCRIPTION -->
-    <p>
-      {% with sd=service.short_description %}
-        {% if sd %}{{ sd|safe|truncatewords:20 }}
-        {% elif CURRENT_LANG == 'uk' and service.short_description_uk %}{{ service.short_description_uk|safe|truncatewords:20 }}
-        {% elif CURRENT_LANG == 'pl' and service.short_description_pl %}{{ service.short_description_pl|safe|truncatewords:20 }}
-        {% else %}{{ service.short_description_en|safe|truncatewords:20 }}{% endif %}
-      {% endwith %}
-    </p>
+    <p>{{ service.short|safe|truncatewords:20 }}</p>
 
-    <!-- 📊 METRICS -->
-    {% if service.related_articles_count or service.related_projects_count or service.priority %}
-      <div class="service-metrics">
-        {% if service.priority and service.priority > 3 %}
-          <span class="metric">🔥 HIGH PRIORITY</span>
-        {% endif %}
-        {% if service.related_projects_count %}
-          <span class="metric">🚀 {{ service.related_projects_count }} projects</span>
-        {% endif %}
-        {% if service.related_articles_count %}
-          <span class="metric">📰 {{ service.related_articles_count }} articles</span>
-        {% endif %}
-      </div>
-    {% endif %}
+    <!-- Service Metrics -->
+    <div class="service-metrics">
+      {% if service.is_featured %}
+        <span class="metric featured">⭐ {% trans "Featured" %}</span>
+      {% endif %}
+      {% if service.priority_emoji %}
+        <span class="metric priority">{{ service.priority_emoji }} {% trans "Priority" %}</span>
+      {% endif %}
+      {% if service.projects_count %}
+        <span class="metric projects">🚀 {{ service.projects_count }} {% trans "projects" %}</span>
+      {% endif %}
+    </div>
 
-    <!-- 🎯 CTA BUTTON - як у проєктах -->
     <div class="service-cta">
       <button class="cta-button" 
-              data-service-title="{% if service.title %}{{ service.title|escapejs }}{% elif CURRENT_LANG == 'uk' and service.title_uk %}{{ service.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and service.title_pl %}{{ service.title_pl|escapejs }}{% else %}{{ service.title_en|escapejs }}{% endif %}"
+              data-service-title="{{ service.title|escapejs }}"
               onclick="event.stopPropagation(); scrollToContact(this.dataset.serviceTitle);">
         <span class="cta-icon">💬</span>
         <span class="cta-text">

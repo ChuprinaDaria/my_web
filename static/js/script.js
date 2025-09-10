@@ -75,6 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // 🖱️ Инициализация кликабельных карточек
   initClickableCards();
+  
+  // Додаткова ініціалізація через 1 секунду (на випадок динамічного контенту)
+  setTimeout(() => {
+    initClickableCards();
+  }, 1000);
 });
 
 // 🌐 Функция переключения языка
@@ -185,55 +190,77 @@ function initMobileMenu() {
 // 🖱️ Инициализация кликабельных карточек
 function initClickableCards() {
   // Кликабельные карточки с data-href
-  document.querySelectorAll('.clickable[data-href]').forEach(card => {
+  const clickableCards = document.querySelectorAll('.clickable[data-href]');
+  console.log('Found clickable cards:', clickableCards.length);
+  
+  clickableCards.forEach((card, index) => {
     card.style.cursor = 'pointer';
-    card.addEventListener('click', () => {
-      const href = card.getAttribute('data-href');
+    
+    card.addEventListener('click', function(e) {
+      // Не переходимо, якщо клікнули на кнопку
+      const button = e.target.closest('button') || e.target.closest('.cta-button') || e.target.closest('.cta-primary') || e.target.closest('.cta-secondary');
+      if (button) {
+        return;
+      }
+      
+      const href = this.getAttribute('data-href');
       if (href) {
         window.location.href = href;
       }
     });
   });
-
+  
   // About карточки
   document.querySelectorAll('.about-card[data-href]').forEach(card => {
     card.style.cursor = 'pointer';
-    card.addEventListener('click', () => {
-      const link = card.getAttribute('data-href');
+    card.addEventListener('click', function(e) {
+      // Не переходимо, якщо клікнули на кнопку
+      if (e.target.closest('button') || e.target.closest('.cta-button')) {
+        return;
+      }
+      
+      const link = this.getAttribute('data-href');
       if (link) {
         window.location.href = link;
       }
     });
   });
+  
 }
 
 // 📞 Функция прокрутки к контакт форме
-function scrollToContact(projectTitle) {
+function scrollToContact(serviceTitle) {
   if (event) {
     event.stopPropagation();
   }
   
-  const contactSection = document.getElementById('contact');
+  const contactSection = document.querySelector('#contact') || 
+                        document.querySelector('.contact-form') ||
+                        document.querySelector('[id*="contact"]');
+  
   if (contactSection) {
     contactSection.scrollIntoView({ 
       behavior: 'smooth',
       block: 'start'
     });
     
-    // Заполняем форму если есть название проекта
+    // Заповнюємо форму
     setTimeout(() => {
-      const messageField = document.querySelector('#contact textarea, #contact input[name="message"]');
-      if (messageField && projectTitle) {
+      const messageField = document.querySelector('textarea[name="message"]');
+      if (messageField && serviceTitle) {
         const currentLang = document.documentElement.lang || 'uk';
         const messages = {
-          'uk': `Привіт! Мене зацікавив проєкт "${projectTitle}". Хочу замовити щось подібне для свого бізнесу. Розкажіть більше про можливості та вартість.`,
-          'en': `Hi! I'm interested in the "${projectTitle}" project. I'd like to order something similar for my business. Please tell me more about possibilities and pricing.`,
-          'pl': `Cześć! Interesuje mnie projekt "${projectTitle}". Chciałbym zamówić coś podobnego dla mojego biznesu. Proszę opowiedzieć więcej o możliwościach i cenach.`
+          'uk': `Привіт! Мене цікавить послуга "${serviceTitle}". Хочу обговорити можливості співпраці.`,
+          'en': `Hi! I'm interested in the "${serviceTitle}" service. I'd like to discuss collaboration opportunities.`,
+          'pl': `Cześć! Interesuje mnie usługa "${serviceTitle}". Chciałbym omówić możliwości współpracy.`
         };
         messageField.value = messages[currentLang] || messages['uk'];
         messageField.focus();
       }
     }, 1000);
+  } else {
+    // Fallback - перехід на сторінку контактів
+    window.location.href = `/${document.documentElement.lang || 'uk'}/#contact`;
   }
 }
 

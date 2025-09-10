@@ -1,8 +1,7 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<div class="project-card-home" data-complexity="{{ project.complexity_level }}" data-priority="{{ project.priority }}">
-  <a class="card-click-area" href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" aria-label="{% trans 'OPEN PROJECT' %}"></a>
+<div class="project-card-home clickable" data-complexity="{{ project.complexity_level }}" data-priority="{{ project.priority }}" data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" aria-label="{% trans 'OPEN PROJECT' %}">
 
   <div class="card-tags">
     {% if project.project_type_uk or project.project_type_en or project.project_type_pl %}
@@ -97,13 +96,13 @@
       <span class="cta-arrow">→</span>
     </button>
     <div class="secondary-actions">
-      <a href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" class="details-link" onclick="event.stopPropagation();">
+      <button class="details-link" onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
         {% trans "FULL CASE" %}
-      </a>
+      </button>
       {% if project.project_url %}
-        <a href="{{ project.project_url }}" target="_blank" rel="noopener" class="demo-link" onclick="event.stopPropagation();">
+        <button class="demo-link" onclick="event.stopPropagation(); window.open('{{ project.project_url }}', '_blank');">
           {% trans "DEMO" %}
-        </a>
+        </button>
       {% endif %}
     </div>
   </div>

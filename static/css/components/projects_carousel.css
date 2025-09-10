@@ -26,7 +26,20 @@
   gap: 0.75rem;
   align-items: center;
   z-index: 10;
-  position: relative;
+}
+
+.desktop-only .carousel-navigation {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 20;
+}
+
+.mobile-only .carousel-navigation {
+  position: static;
+  justify-content: center;
+  margin-top: var(--spacing-lg);
 }
 
 .carousel-nav-btn {
@@ -89,12 +102,21 @@
 }
 
 /* Lucide іконки - ЯСКРАВІ */
-.carousel-nav-btn i {
-  width: 20px;
-  height: 20px;
-  stroke-width: 3px;
+.carousel-nav-btn i,
+.carousel-nav-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+  stroke-width: 3px !important;
+  display: block;
+  margin: 0 auto;
   color: #66ff00;
   filter: drop-shadow(0 0 3px rgba(102, 255, 0, 0.7));
+}
+
+.carousel-nav-btn [data-lucide] {
+  width: 20px !important;
+  height: 20px !important;
+  stroke: currentColor;
 }
 
 .carousel-nav-btn:disabled i {
@@ -186,18 +208,28 @@
     display: none;
   }
   
-  /* Абсолютне позиціонування для десктопу */
-  .carousel-navigation {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    z-index: 20;
+  /* ДЕСКТОПНА НАВІГАЦІЯ - ЗВЕРХУ */
+  .desktop-only {
+    display: block;
+  }
+  
+  .desktop-only .carousel-navigation {
+    position: static; /* Замість absolute */
+    justify-content: center; /* По центру */
+    margin-bottom: 1rem; /* Відступ знизу */
+    transform: none; /* Прибрати transform */
   }
   
   .projects-carousel-header {
-    position: relative;
-    padding-right: 120px; /* Місце для кнопок */
+    flex-direction: column; /* Вертикально */
+    align-items: center; /* По центру */
+    padding-right: 0; /* Прибрати відступ */
+  }
+  
+  .carousel-nav-btn:disabled {
+    opacity: 0.3; /* Не ховати, а робити напівпрозорими */
+    pointer-events: auto; /* Дозволити кліки */
+    transform: none; /* Не зменшувати */
   }
 }
 
@@ -303,4 +335,86 @@
 
 .carousel-nav-btn:hover {
   animation: none;
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .desktop-only {
+    display: block;
+  }
+  
+  .desktop-only .carousel-navigation {
+    position: static; /* Замість absolute */
+    justify-content: center; /* По центру */
+    margin-bottom: 1rem; /* Відступ знизу */
+    transform: none; /* Прибрати transform */
+  }
+  
+  .projects-carousel-header {
+    flex-direction: column; /* Вертикально */
+    align-items: center; /* По центру */
+    padding-right: 0; /* Прибрати відступ */
+  }
+  
+  .carousel-nav-btn:disabled {
+    opacity: 0.3; /* Не ховати, а робити напівпрозорими */
+    pointer-events: auto; /* Дозволити кліки */
+    transform: none; /* Не зменшувати */
+    transition: all 0.3s ease;
+  }
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block;
+  }
+  
+  .projects-carousel-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding-right: 0;
+  }
+  
+  .carousel-title,
+  .section-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+  
+  .mobile-only .carousel-navigation {
+    justify-content: center;
+    margin-top: 1.5rem;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .carousel-project-item {
+    width: 280px;
+    max-width: 280px;
+  }
+  
+  .carousel-nav-btn {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .carousel-nav-btn i,
+  .carousel-nav-btn svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
 }

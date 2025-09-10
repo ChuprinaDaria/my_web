@@ -224,7 +224,7 @@
 </section>
 
 <!-- SERVICES PREVIEW -->
-{% services_carousel limit=5 title=_("Our Services") section_id="homepage" %}
+{% services_carousel limit=6 title=_("Our Services") section_id="homepage" show_view_all=True %}
 
 
 
@@ -373,7 +373,6 @@
 {% block extra_scripts %}
   <script src="{% static 'js/projects_carousel.js' %}"></script>
   <script src="{% static 'js/service-card.js' %}"></script>
-<script src="{% static 'js/vertical-services-carousel.js' %}"></script>
   
   <!-- 📊 Google Analytics / Tag Manager -->
   <script>

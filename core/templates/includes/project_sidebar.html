@@ -4,6 +4,24 @@
 <!-- 📊 Project Sidebar -->
 <aside class="project-sidebar">
   
+  <!-- Project Tags -->
+  {% if project_tags %}
+    <div class="sidebar-section glass card">
+      <h3 class="sidebar-title">
+        <i data-lucide="tags"></i>
+        {% trans "Project Tags" %}
+      </h3>
+      <div class="project-tags">
+        {% for tag in project_tags %}
+          <a href="{% url 'projects_by_tag' tag.slug %}" class="tag-chip" data-color="{{ tag.color }}">
+            {% if tag.icon %}<span class="tag-icon">{{ tag.icon }}</span>{% endif %}
+            <span class="tag-name">{{ tag.name }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
   <!-- Technologies -->
   {% if project.technologies_used %}
     <div class="sidebar-section glass card">
@@ -90,6 +108,57 @@
     </div>
   {% endif %}
 
+  <!-- Related Articles -->
+  {% if related_articles %}
+    <div class="sidebar-section glass card">
+      <h3 class="sidebar-title">
+        <i data-lucide="newspaper"></i>
+        {% trans "Related News" %}
+      </h3>
+      <div class="related-content-list">
+        {% for article in related_articles %}
+          <a href="{{ article.url }}" class="related-item" target="_blank">
+            <div class="related-content">
+              <h4 class="related-title">{{ article.title|truncatewords:8 }}</h4>
+              <div class="related-meta">
+                {% if article.category %}<span class="related-category">{{ article.category }}</span>{% endif %}
+                <time class="related-date">{{ article.published_at|date:"j.m" }}</time>
+              </div>
+            </div>
+            {% if article.image %}
+              <div class="related-image">
+                <img src="{{ article.image }}" alt="{{ article.title }}" loading="lazy">
+              </div>
+            {% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Related Services -->
+  {% if related_services %}
+    <div class="sidebar-section glass card">
+      <h3 class="sidebar-title">
+        <i data-lucide="grid-3x3"></i>
+        {% trans "Related Services" %}
+      </h3>
+      <div class="related-services-list">
+        {% for service in related_services %}
+          <a href="{{ service.url }}" class="service-item">
+            <div class="service-icon">
+              {% if service.icon %}<img src="{{ service.icon.url }}" alt="{{ service.title }}">{% else %}<span>🔧</span>{% endif %}
+            </div>
+            <div class="service-info">
+              <span class="service-name">{{ service.title }}</span>
+              <small class="service-description">{{ service.short|truncatewords:8 }}</small>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
   <!-- CTA Sidebar -->
   <div class="sidebar-section glass card cta-sidebar">
     <h3 class="sidebar-title">
@@ -108,3 +177,19 @@
   </div>
 
 </aside>
+
+<script>
+// Apply dynamic colors to tag chips
+document.addEventListener('DOMContentLoaded', function() {
+  const tagChips = document.querySelectorAll('.tag-chip[data-color]');
+  tagChips.forEach(chip => {
+    const color = chip.getAttribute('data-color');
+    if (color) {
+      chip.style.setProperty('--tag-color', color);
+      chip.style.backgroundColor = color + '20';
+      chip.style.color = color;
+      chip.style.borderColor = color + '40';
+    }
+  });
+});
+</script>

@@ -174,3 +174,61 @@ msgstr "All News"
 msgid "Tech News"
 msgstr "Tech News"
 
+# Projects page translations
+msgid "Solutions"
+msgstr "Solutions"
+
+msgid "Projects"
+msgstr "Projects"
+
+msgid "Success Rate"
+msgstr "Success Rate"
+
+msgid "Filter by Technology"
+msgstr "Filter by Technology"
+
+msgid "All Projects"
+msgstr "All Projects"
+
+msgid "Start Your Project"
+msgstr "Start Your Project"
+
+msgid "projects"
+msgstr "projects"
+
+msgid "Learn More About Service"
+msgstr "Learn More About Service"
+
+msgid "Need Similar Solution?"
+msgstr "Need Similar Solution?"
+
+msgid "Get Quote"
+msgstr "Get Quote"
+
+msgid "Service Details"
+msgstr "Service Details"
+
+msgid "Related Tech News"
+msgstr "Related Tech News"
+
+msgid "View All Tech News"
+msgstr "View All Tech News"
+
+msgid "Popular Technologies"
+msgstr "Popular Technologies"
+
+msgid "Ready to automate your business? Let's discuss your needs and create a custom solution."
+msgstr "Ready to automate your business? Let's discuss your needs and create a custom solution."
+
+msgid "Get Free Consultation"
+msgstr "Get Free Consultation"
+
+msgid "All Our Services"
+msgstr "All Our Services"
+
+msgid "View All Services"
+msgstr "View All Services"
+
+msgid "Open Service"
+msgstr "Open Service"
+

@@ -13,8 +13,8 @@ class Project(models.Model):
         ServiceCategory,
         on_delete=models.CASCADE,
         related_name='projects',
-        null=True,
-        blank=True,
+        null=False,
+        blank=False,
         help_text="Категорія сервісу, до якої належить проєкт"
     )
     
@@ -303,30 +303,43 @@ class Project(models.Model):
     # 🛠️ НОВІ МЕТОДИ для крос-промоції з новою системою тегів
     
     def get_related_articles(self, limit=3):
-        """Повертає новини з такими ж тегами"""
-        if self.tags.exists():
-            try:
-                from news.models import ProcessedArticle
-                return ProcessedArticle.objects.filter(
-                    tags__in=self.tags.all(),
-                    status='published'
-                ).distinct().order_by('-published_at')[:limit]
-            except ImportError:
-                return []
-        return []
+        """Повертає новини: спочатку по категорії, потім по тегах"""
+        try:
+            from news.models import ProcessedArticle
+            from django.db.models import Q
+            
+            qs = ProcessedArticle.objects.filter(status='published')
+            
+            # Спочатку новини з тієї ж категорії (якщо є мапа)
+            by_cat = qs.none()  # Поки що немає мапи категорій новин ↔ сервіс-категорій
+            
+            # Потім новини з такими ж тегами
+            by_tags = qs.filter(tags__in=self.tags.all()) if self.tags.exists() else qs.none()
+            
+            # Об'єднуємо результати
+            return by_cat.union(by_tags).distinct().order_by('-published_at')[:limit]
+        except ImportError:
+            return []
     
     def get_related_services(self, limit=3):
-        """Повертає сервіси з такими ж тегами"""
-        if self.tags.exists():
-            try:
-                from services.models import Service
-                return Service.objects.filter(
-                    tags__in=self.tags.all(),
-                    is_active=True
-                ).distinct().order_by('-date_created')[:limit]
-            except ImportError:
-                return []
-        return []
+        """Повертає сервіси: спочатку по категорії, потім по тегах"""
+        try:
+            from services.models import ServiceCategory
+            from django.db.models import Q
+            
+            base_qs = ServiceCategory.objects.all()
+            
+            # Спочатку сервіси з тієї ж категорії (сам проєкт вже в цій категорії)
+            by_cat = base_qs.filter(id=self.category.id)
+            
+            # Потім сервіси з такими ж тегами
+            by_tags = base_qs.filter(tags__in=self.tags.all()) if self.tags.exists() else base_qs.none()
+            
+            # Об'єднуємо результати
+            combined = by_cat.union(by_tags)
+            return combined.order_by('-priority', '-date_created')[:limit]
+        except ImportError:
+            return []
     
     def get_cross_promotion_content(self, limit=6):
         """
@@ -354,8 +367,8 @@ class Project(models.Model):
         for service in related_services:
             content.append({
                 'type': 'service',
-                'title': service.title_uk,
-                'summary': getattr(service, 'short_description_uk', '') or 'Детальний опис сервісу...',
+                'title': service.get_title('uk'),
+                'summary': service.get_description('uk')[:150] + '...' if service.get_description('uk') else 'Детальний опис сервісу...',
                 'url': f'/services/{service.slug}/',
                 'image': service.icon.url if service.icon else None,
                 'object': service
