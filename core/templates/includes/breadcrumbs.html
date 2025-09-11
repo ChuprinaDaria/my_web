@@ -49,7 +49,7 @@
             </li>
           {% elif 'services' in request.path %}
             <li class="breadcrumb-item">
-              <a href="{% url 'services_list' %}" class="breadcrumb-link">
+              <a href="{% url 'services:services_list' %}" class="breadcrumb-link">
                 <i data-lucide="settings" class="breadcrumb-icon"></i>
                 {% trans "Services" %}
               </a>

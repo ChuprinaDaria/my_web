@@ -4,31 +4,13 @@
 <div class="project-card clickable" 
      data-complexity="{{ project.complexity_level }}" 
      data-priority="{{ project.priority }}" 
-     data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/">
+     data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/"
+     onclick="window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';"
+     style="cursor: pointer;">
   
-  <!-- Project Tags -->
-  <div class="project-tags">
-    {% if project.project_type_uk or project.project_type_en or project.project_type_pl %}
-      <span class="project-tag primary" data-complexity="{{ project.complexity_level }}">
-        <span class="tag-icon">🏢</span>
-        {% if CURRENT_LANG == 'uk' and project.project_type_uk %}{{ project.project_type_uk }}
-        {% elif CURRENT_LANG == 'pl' and project.project_type_pl %}{{ project.project_type_pl }}
-        {% else %}{{ project.project_type_en }}{% endif %}
-      </span>
-    {% endif %}
 
-    {% if project.is_top_project %}
-      <span class="project-tag highlight top-badge">
-        <span class="tag-icon">👑</span>{% trans "TOP" %}
-      </span>
-    {% endif %}
+
     
-    {% if project.is_ai_powered %}
-      <span class="project-tag ai-powered">
-        <span class="tag-icon">🤖</span>{% trans "AI POWERED" %}
-      </span>
-    {% endif %}
-  </div>
 
   <!-- Project Image -->
   {% if project.featured_image %}
@@ -98,7 +80,7 @@
       </button>
       
       <div class="secondary-actions">
-        <button class="details-link" onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
+        <button class="details-link">
           {% if CURRENT_LANG == 'uk' %}Детальний кейс
           {% elif CURRENT_LANG == 'pl' %}Czytaj więcej
           {% else %}Full Case{% endif %}

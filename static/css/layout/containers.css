@@ -42,7 +42,7 @@
 .container-reg {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 80px 0 0 0;
   width: 100%;
 }
 
@@ -266,7 +266,7 @@
 @media (max-width: 1200px) {
   .container,
   .container-reg {
-    padding: 0 25px;
+    padding: 80px 25px 0 25px;
   }
   
   .container-wide {
@@ -288,7 +288,7 @@
   .container-lg,
   .container-xl,
   .container-reg {
-    padding: 0 20px;
+    padding: 70px 20px 0 20px;
   }
   
   .grid-3,
@@ -318,7 +318,7 @@
   .container-xl,
   .container-reg,
   .container-wide {
-    padding: 0 15px;
+    padding: 60px 15px 0 15px;
   }
   
   .section {
@@ -374,7 +374,7 @@
   .container-xl,
   .container-reg,
   .container-wide {
-    padding: 0 10px;
+    padding: 50px 10px 0 10px;
   }
   
   .section {

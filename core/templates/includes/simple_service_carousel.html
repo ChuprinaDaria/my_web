@@ -1,0 +1,68 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 🔥 ПРОСТИЙ КОНТЕЙНЕР СЕРВІСІВ - БЕЗ КАРУСЕЛІ -->
+<section class="services-container-section">
+  
+  <!-- ЗАГОЛОВОК -->
+  <div class="services-header">
+    <h2>{{ title|default:"Наші Сервіси" }}</h2>
+    {% if subtitle %}
+      <p class="services-subtitle">{{ subtitle }}</p>
+    {% endif %}
+  </div>
+
+  <!-- КОНТЕЙНЕР СЕРВІСІВ - ВЕРТИКАЛЬНИЙ СПИСОК -->
+  <div class="services-list-container">
+    {% for service in services %}
+      <article class="service-horizontal-item" 
+               data-service-id="{{ service.slug }}"
+               data-service-url="{% url 'services:service_detail' slug=service.slug %}"
+               role="article">
+        
+        <!-- ІКОНКА СПРАВА -->
+        <div class="service-icon-section">
+          {% if service.icon %}
+            <img src="{{ service.icon.url }}" alt="{{ service.title }}">
+          {% else %}
+            <i data-lucide="settings" class="service-placeholder-icon"></i>
+          {% endif %}
+        </div>
+
+        <!-- КОНТЕНТ ЗЛІВА -->
+        <div class="service-main-content">
+          <div class="service-title-row">
+            <h3 class="service-title">{{ service.title|safe }}</h3>
+            <i data-lucide="chevron-down" class="accordion-arrow"></i>
+          </div>
+          
+          <!-- ОПИС - СПОЧАТКУ СХОВАНИЙ -->
+          <div class="service-description-accordion" style="display: none;">
+            <p class="service-description">{{ service.short|safe|default:"Опис сервісу відсутній." }}</p>
+          </div>
+        </div>
+
+        <!-- GLOW ЕФЕКТ -->
+        <div class="service-glow-border"></div>
+      </article>
+    {% empty %}
+      <div class="services-empty">
+        <i data-lucide="settings"></i>
+        <p>{% trans "Сервісів поки немає" %}</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- ФУТЕР З КНОПКАМИ -->
+  <div class="services-footer">
+    <a href="{% url 'contacts:contact_page' %}" class="btn-get-started">
+      {% trans "Розпочати" %}
+    </a>
+    
+    {% if show_view_all %}
+    <a href="{% url 'services:services_list' %}" class="btn-view-all">
+      {% trans "Всі сервіси" %}
+    </a>
+    {% endif %}
+  </div>
+</section>

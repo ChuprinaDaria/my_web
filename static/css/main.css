@@ -22,8 +22,6 @@
 
 @import url('./components/breadcrumbs.css');
 @import url('./components/footer.css');
-@import url('./mobile/service_card_mobile.css');
-@import url('./mobile/service_carousel_mobile.css');
 
 @import url('./components/faq.css');
 
@@ -37,9 +35,12 @@
 
 @import url('./components/projects_carousel.css');
 @import url('./components/project_card_home.css');  
+@import url('./mobile/projects_carousel_mobile.css');
+@import url('./mobile/project_card_home_mobile.css');
 
 @import url('./components/service_card.css');
-@import url('./components/modern_services_carousel.css');
+@import url('./components/simple_services.css');
+@import url('./mobile/simple_services_mobile.css');
 @import url('./sections/service_detail.css');
 @import url('./sections/news_list.css'); 
 @import url('./components/consultant_bubble.css');

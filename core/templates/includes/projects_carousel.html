@@ -7,18 +7,6 @@
       <h2 class="section-title">{{ title }}</h2>
     {% endif %}
 
-    {% if show_navigation and projects|length > 1 %}
-      <div class="desktop-only">
-        <div class="carousel-navigation">
-          <button class="carousel-nav-btn prev" data-carousel="{{ carousel_id }}" data-direction="prev" aria-label="{% trans 'Попередні проєкти' %}">
-            <i data-lucide="chevron-left"></i>
-          </button>
-          <button class="carousel-nav-btn next" data-carousel="{{ carousel_id }}" data-direction="next" aria-label="{% trans 'Наступні проєкти' %}">
-            <i data-lucide="chevron-right"></i>
-          </button>
-        </div>
-      </div>
-    {% endif %}
   </div>
 
   <div class="projects-carousel-wrapper" id="{{ carousel_id }}" role="group">
@@ -45,20 +33,13 @@
         </div>
       {% endfor %}
     </div>
+
+    <div class="projects-carousel-nav desktop-only" aria-label="{% trans 'Навігація каруселі' %}">
+      <button class="carousel-btn prev" type="button" aria-label="{% trans 'Попередні проєкти' %}">‹</button>
+      <button class="carousel-btn next" type="button" aria-label="{% trans 'Наступні проєкти' %}">›</button>
+    </div>
   </div>
 
-  {% if show_navigation and projects|length > 1 %}
-    <div class="mobile-only">
-      <div class="carousel-navigation">
-        <button class="carousel-nav-btn prev" data-carousel="{{ carousel_id }}" data-direction="prev" aria-label="{% trans 'Попередні проєкти' %}">
-          <i data-lucide="chevron-left"></i>
-        </button>
-        <button class="carousel-nav-btn next" data-carousel="{{ carousel_id }}" data-direction="next" aria-label="{% trans 'Наступні проєкти' %}">
-          <i data-lucide="chevron-right"></i>
-        </button>
-      </div>
-    </div>
-  {% endif %}
 
   {% if projects|length > 3 %}
     <div class="carousel-indicators mobile-only" data-carousel="{{ carousel_id }}">

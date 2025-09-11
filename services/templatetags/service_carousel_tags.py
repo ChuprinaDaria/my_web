@@ -5,7 +5,7 @@ from services.models import ServiceCategory
 
 register = template.Library()
 
-@register.inclusion_tag('includes/service_carousel.html', takes_context=True)
+@register.inclusion_tag('includes/simple_service_carousel.html', takes_context=True)
 def services_carousel(context, limit=6, title=None, section_id="default", show_view_all=True):
     request = context.get('request')
     lang = get_language() or 'uk'

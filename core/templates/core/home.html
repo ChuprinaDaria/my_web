@@ -5,28 +5,24 @@
 
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 🎯 SEO TITLE - багатомовний -->
 {% block title %}
   {% if CURRENT_LANG == 'uk' %}Lazysoft — Провідна компанія з ШІ автоматизації та розробки софту
   {% elif CURRENT_LANG == 'pl' %}Lazysoft — Wiodąca firma automatyzacji AI i rozwoju oprogramowania
   {% else %}Lazysoft — Leading AI Automation & Custom Software Development Company{% endif %}
 {% endblock %}
 
-<!-- 📝 META DESCRIPTION - оптимізований для пошуку -->
 {% block meta_description %}
   {% if CURRENT_LANG == 'uk' %}Провідна компанія з ШІ автоматизації, що спеціалізується на створенні чат-ботів, автоматизації бізнесу та розумних програмних рішень. Трансформуйте свій бізнес за допомогою передових ШІ технологій.
   {% elif CURRENT_LANG == 'pl' %}Wiodąca firma automatyzacji AI specjalizująca się w niestandardowych chatbotach, automatyzacji biznesowej i inteligentnych rozwiązaniach programowych. Przekształć swój biznes dzięki najnowocześniejszej technologii AI.
   {% else %}Leading AI automation company specializing in custom chatbots, business automation, and intelligent software solutions. Transform your business with cutting-edge AI technology and data-driven insights.{% endif %}
 {% endblock %}
 
-<!-- 🔍 KEYWORDS - цільові ключові слова -->
 {% block meta_keywords %}
   {% if CURRENT_LANG == 'uk' %}ШІ автоматизація, розробка софту, чат-боти, бізнес автоматизація, ШІ рішення, lazysoft, штучний інтелект, веб розробка, дані аналіз
   {% elif CURRENT_LANG == 'pl' %}automatyzacja AI, rozwój oprogramowania, chatboty, automatyzacja biznesowa, rozwiązania AI, lazysoft, sztuczna inteligencja, rozwój stron internetowych
   {% else %}AI automation, custom software development, chatbots, business automation, AI solutions, lazysoft, artificial intelligence, web development, data analysis, machine learning{% endif %}
 {% endblock %}
 
-<!-- 🌐 OPEN GRAPH - для соцмереж -->
 {% block og_title %}
   {% if CURRENT_LANG == 'uk' %}Lazysoft — ШІ автоматизація та розробка програмного забезпечення
   {% elif CURRENT_LANG == 'pl' %}Lazysoft — Automatyzacja AI i rozwój oprogramowania
@@ -42,12 +38,6 @@
 {% block og_image %}{% static 'images/lazysoft-home-og.jpg' %}{% endblock %}
 {% block og_type %}website{% endblock %}
 
-{% block extra_head %}
-  <link rel="stylesheet" href="{% static 'css/components/projects_carousel.css' %}">
-  <link rel="stylesheet" href="{% static 'css/components/project_card_home.css' %}">
-{% endblock %}
-
-<!-- 🐦 TWITTER CARD -->
 {% block twitter_title %}
   {% if CURRENT_LANG == 'uk' %}Lazysoft — ШІ автоматизація та розробка
   {% elif CURRENT_LANG == 'pl' %}Lazysoft — Automatyzacja AI i rozwój
@@ -62,25 +52,19 @@
 
 {% block twitter_image %}{% static 'images/lazysoft-twitter-card.jpg' %}{% endblock %}
 
-<!-- 🔗 CANONICAL & HREFLANG -->
 {% block extra_meta %}
-  <!-- Canonical URL -->
   <link rel="canonical" href="https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}" />
   
-  <!-- Hreflang для багатомовності -->
   <link rel="alternate" href="https://lazysoft.dev/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.dev/uk/" hreflang="uk">  
   <link rel="alternate" href="https://lazysoft.dev/pl/" hreflang="pl">
   <link rel="alternate" href="https://lazysoft.dev/" hreflang="x-default">
   
-  <!-- 📱 Mobile app links (якщо є) -->
-  
-  <!-- 📰 Home News Carousel Fix -->
   <link rel="stylesheet" href="{% static 'css/components/home_news_carousel_fix.css' %}">
+  
   <meta name="apple-itunes-app" content="app-id=lazysoft-app">
   <meta name="google-play-app" content="app-id=com.lazysoft.app">
   
-  <!-- 🔍 Rich Snippets - Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -125,7 +109,6 @@
   }
   </script>
 
-  <!-- 🎯 WebSite Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -144,7 +127,6 @@
   }
   </script>
 
-  <!-- 📊 BreadcrumbList Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -160,7 +142,6 @@
   }
   </script>
 
-  <!-- 💼 Service Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -179,7 +160,6 @@
   }
   </script>
 
-  <!-- 🔍 SearchBox Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -197,10 +177,8 @@
   </script>
 {% endblock %}
 
-<!-- 🚀 CONTENT START -->
 {% block content %}
 
-<!-- HERO -->
 <section id="home" class="hero">
   <div class="container">
     <div class="hero-content">
@@ -210,7 +188,6 @@
         {% trans "Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency." %}
       </p>
       
-      <!-- 🎯 CTA Buttons -->
       <div class="hero-cta">
         <a href="#contact" class="cta-primary">
           {% trans "Get Your AI Solution" %}
@@ -223,17 +200,11 @@
   </div>
 </section>
 
-<!-- SERVICES PREVIEW -->
 {% services_carousel limit=6 title=_("Our Services") section_id="homepage" show_view_all=True %}
 
-
-
-
-
-<!-- PROJECTS - заміна projects_carousel -->
 <section id="projects" class="projects">
   <div class="container-reg">
-    <h2 class="section-title">
+    <h2 >
       {% if CURRENT_LANG == 'uk' %}Обрані ШІ та Автоматизаційні Проєкти
       {% elif CURRENT_LANG == 'pl' %}Wybrane Projekty AI i Automatyzacji
       {% else %}Featured AI & Automation Projects{% endif %}
@@ -243,7 +214,6 @@
   </div>
 </section>
 
-<!-- ABOUT PREVIEW -->
 <section class="about-preview">
   <div class="about-card clickable"
        data-href="{% if CURRENT_LANG == 'uk' %}/uk/about/{% elif CURRENT_LANG == 'pl' %}/pl/about/{% else %}/about/{% endif %}">
@@ -255,12 +225,10 @@
   </div>
 </section>
 
-<!-- CONTACT -->
 <section id="contact" class="contact">
   {% include "core/contact_form.html" %}
 </section>
 
-<!-- NEWS -->
 <section id="news" class="projects">
   <div class="container-reg">
     <h2 class="section-title">{% trans "🚀 Top Tech News" %}</h2>
@@ -322,7 +290,6 @@
         </div>
       </div>
 
-
       {% if daily_digest %}
         <details class="news-digest">
           <summary>
@@ -345,8 +312,6 @@
               </li>
             {% endfor %}
           </ol>
-
-
 
           <div style="text-align: center; margin: 20px; padding-top: 20px; border-top: 1px solid rgba(102, 255, 0, 0.2);">
             <a href="{% url 'news:news_list' %}" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--accent-green); text-decoration: none; padding: 10px 20px; background: rgba(102, 255, 0, 0.1); border-radius: 25px; transition: all 0.3s ease;">
@@ -371,12 +336,9 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  <script src="{% static 'js/projects_carousel.js' %}"></script>
   <script src="{% static 'js/service-card.js' %}"></script>
   
-  <!-- 📊 Google Analytics / Tag Manager -->
   <script>
-    // Google Analytics tracking
     gtag('config', 'GA_TRACKING_ID', {
       page_title: '{% if CURRENT_LANG == "uk" %}Головна{% elif CURRENT_LANG == "pl" %}Strona główna{% else %}Home{% endif %}',
       page_location: window.location.href,
@@ -387,7 +349,6 @@
     });
   </script>
 
-  <!-- 🎯 Structured Data для FAQ (якщо є) -->
   {% if faqs %}
   <script type="application/ld+json">
   {

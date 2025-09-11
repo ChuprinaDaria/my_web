@@ -7,7 +7,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- 🏷️ Title & Basic Meta -->
     <title>{% block title %}Lazysoft{% endblock %}</title>
     
     {% block meta_tags %}
@@ -16,7 +15,6 @@
       <meta name="author" content="Lazysoft">
       <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
       
-      <!-- 🌐 Open Graph Meta Tags (Facebook, Instagram, LinkedIn, Threads) -->
       <meta property="og:title" content="{% block og_title %}Lazysoft{% endblock %}">
       <meta property="og:description" content="{% block og_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
       <meta property="og:image" content="{% block og_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
@@ -28,11 +26,9 @@
       <meta property="og:site_name" content="Lazysoft">
       <meta property="og:locale" content="{% if CURRENT_LANG == 'uk' %}uk_UA{% elif CURRENT_LANG == 'pl' %}pl_PL{% else %}en_US{% endif %}">
       
-      <!-- 📘 Facebook App ID & specific tags -->
       <meta property="fb:app_id" content="{% block fb_app_id %}{% endblock %}">
       <meta property="fb:pages" content="{% block fb_pages %}{% endblock %}">
       
-      <!-- 🐦 Twitter/X Card Meta Tags -->
       <meta name="twitter:card" content="summary_large_image">
       <meta name="twitter:site" content="@lazysoft_dev">
       <meta name="twitter:creator" content="@lazysoft_dev">
@@ -41,14 +37,12 @@
       <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
       <meta name="twitter:image:alt" content="{% block twitter_image_alt %}Lazysoft - Automation & Development{% endblock %}">
       
-      <!-- 📸 Instagram specific Meta Tags -->
       <meta name="instagram:card" content="summary_large_image">
       <meta name="instagram:title" content="{% block instagram_title %}Lazysoft{% endblock %}">
       <meta name="instagram:description" content="{% block instagram_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
       <meta name="instagram:image" content="{% block instagram_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
       <meta property="instapp:owner_user_id" content="{% block instagram_user_id %}{% endblock %}">
       
-      <!-- 🧵 Threads specific Meta Tags -->
       <meta name="threads:card" content="summary_large_image">
       <meta name="threads:site" content="{% block threads_site %}@lazysoft_threads{% endblock %}">
       <meta name="threads:creator" content="{% block threads_creator %}@lazysoft_threads{% endblock %}">
@@ -56,7 +50,6 @@
       <meta name="threads:description" content="{% block threads_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
       <meta name="threads:image" content="{% block threads_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
       
-      <!-- 💼 LinkedIn specific Meta Tags -->
       <meta name="linkedin:card" content="summary_large_image">
       <meta name="linkedin:title" content="{% block linkedin_title %}Lazysoft{% endblock %}">
       <meta name="linkedin:description" content="{% block linkedin_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
@@ -64,45 +57,38 @@
       <meta property="article:author" content="https://linkedin.com/in/daria-chuprina">
       <meta property="article:publisher" content="https://linkedin.com/company/lazysoft">
       
-      <!-- 📱 Telegram Meta Tags -->
       <meta name="telegram:channel" content="@Lazysoft_news">
       <meta name="telegram:card" content="summary_large_image">
       <meta name="telegram:title" content="{% block telegram_title %}Lazysoft{% endblock %}">
       <meta name="telegram:description" content="{% block telegram_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
       <meta name="telegram:image" content="{% block telegram_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
       
-      <!-- 🎵 TikTok Meta Tags -->
       <meta name="tiktok:app_id" content="{% block tiktok_app_id %}{% endblock %}">
       <meta name="tiktok:title" content="{% block tiktok_title %}Lazysoft{% endblock %}">
       <meta name="tiktok:description" content="{% block tiktok_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
       
-      <!-- 🎨 Theme colors for different platforms -->
       <meta name="msapplication-TileColor" content="#66ff00">
       <meta name="msapplication-TileImage" content="{% static 'images/mstile-144x144.png' %}">
       <meta name="theme-color" content="#66ff00">
       <meta name="msapplication-navbutton-color" content="#66ff00">
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
       
-      <!-- 🔗 Canonical URL -->
       {% if not custom_canonical %}
         <link rel="canonical" href="https://lazysoft.dev{{ request.get_full_path }}" />
       {% endif %}
     {% endblock %}
 
     {% block extra_meta %}
-      <!-- 🌍 Hreflang для багатомовності -->
       <link rel="alternate" hreflang="en" href="https://lazysoft.dev/en{{ request.resolver_match.route }}" />
       <link rel="alternate" hreflang="uk" href="https://lazysoft.dev/uk{{ request.resolver_match.route }}" />
       <link rel="alternate" hreflang="pl" href="https://lazysoft.dev/pl{{ request.resolver_match.route }}" />
       <link rel="alternate" hreflang="x-default" href="https://lazysoft.dev/en{{ request.resolver_match.route }}" />
       
-      <!-- 📱 Mobile & PWA Meta -->
       <meta name="apple-mobile-web-app-capable" content="yes">
       <meta name="apple-mobile-web-app-title" content="Lazysoft">
       <meta name="application-name" content="Lazysoft">
       <meta name="mobile-web-app-capable" content="yes">
       
-      <!-- 🔍 Default Schema.org structured data -->
       <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -136,7 +122,6 @@
       }
       </script>
       
-      <!-- 🌍 WebSite Schema -->
       <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -157,38 +142,40 @@
       </script>
     {% endblock %}
 
-    <!-- 🎨 Fonts & Styles -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    
     <link rel="stylesheet" href="{% static 'css/components/consultant_bubble.css' %}" />
     <link rel="stylesheet" href="{% static 'css/components/consultant_chat.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/components/modern_services_carousel.css' %}" />
     
-    <!-- 📱 Mobile-specific CSS -->
+    <link rel="stylesheet" href="{% static 'css/components/projects_carousel.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/mobile/projects_carousel_mobile.css' %}" />
+    
+    <link rel="stylesheet" href="{% static 'css/components/project_card_home.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/mobile/project_card_home_mobile.css' %}" />
+    
     <link rel="stylesheet" href="{% static 'css/mobile/home_mobile_fixes.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile/footer_mobile_compact.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile/service_card_mobile.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile/service_carousel_mobile.css' %}">
     
-    <!-- 🔗 Favicon & App Icons -->
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'site.webmanifest' %}">
     
-    <link rel="stylesheet" href="{% static 'css/components/modern_services_carousel.css' %}">
     {% block extra_head %}{% endblock %}
   </head>
   
   <body data-current-lang="{{ CURRENT_LANG }}">
-    <!-- 🌟 Background Animation -->
     <div class="bg-animation">
       {% for i in "123456789abc" %}
         <span class="bg-shape"></span>
       {% endfor %}
     </div>
 
-    
     <nav class="navbar">
       <div class="burger" onclick="toggleMenu()">
         <span></span>
@@ -198,7 +185,7 @@
       <ul class="nav-links" id="mobileMenu">
         <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
         <li><a href="{% url 'projects' %}">{% trans "Projects" %}</a></li>
-        <li><a href="{% url 'services_list' %}">{% trans "Services" %}</a></li>
+        <li><a href="{% url 'services:services_list' %}">{% trans "Services" %}</a></li>
         <li><a href="{% url 'about:about' %}">{% trans "About" %}</a></li>
         <li><a href="{% url 'news:news_list' %}">{% trans "News" %}</a></li>
         <li><a href="{% url 'contacts:contact_page' %}">{% trans "Contact" %}</a></li>
@@ -219,9 +206,7 @@
       </ul>
     </nav>
 
-    
     <main>
-      
       {% block breadcrumbs %}
         {% include 'includes/breadcrumbs.html' %}
       {% endblock %}
@@ -229,21 +214,20 @@
       {% block content %}{% endblock %}
     </main>
 
-    
     {% block footer %}
       {% include "core/footer.html" %}
     {% endblock %}
 
-    <!-- 📜 Scripts -->
     <script src="{% static 'js/script.js' %}"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     
-    <!-- 🫧 Consultant Modal -->
+    <script src="{% static 'js/modern_projects_carousel.js' %}"></script>
+    
+    <script src="{% static 'js/simple_services.js' %}"></script>
+    
     <div id="consultantModal" class="consultant-modal" style="display: none;">
       <div class="modal-overlay" onclick="closeConsultantModal()"></div>
       <div class="modal-content">
-        
-        <!-- Простий Header -->
         <div class="modal-header">
           <div class="modal-title">
             <span class="modal-avatar">🤖</span>
@@ -251,13 +235,9 @@
           </div>
           <button class="modal-close" onclick="closeConsultantModal()">×</button>
         </div>
-
-        <!-- Messages -->
         <div class="chat-messages">
           <div id="messages" class="messages"></div>
         </div>
-
-        <!-- Input -->
         <div class="chat-input">
           <form id="chatForm" class="chat-form">
             <input type="text" id="messageInput" placeholder="Напишіть повідомлення..." />
@@ -267,42 +247,37 @@
       </div>
     </div>
 
-    <!-- 🫧 Consultant Scripts -->
     <script src="{% static 'js/consultant_bubble.js' %}"></script>
     <script src="{% static 'js/consultant_chat.js' %}"></script>
+    
     <script>
-      // 🎨 Глобальна функція ініціалізації Lucide іконок
       function initLucideIcons() {
-  if (typeof lucide !== 'undefined') {
-    lucide.createIcons();
-    console.log('🎨 Lucide icons initialized');
-  } else {
-    console.warn('Lucide not loaded yet');
-  }
-}
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+          console.log('🎨 Lucide icons initialized');
+        } else {
+          console.warn('Lucide not loaded yet');
+        }
+      }
 
-
-      // 🔄 Ініціалізуємо іконки при завантаженні сторінки
       window.addEventListener("load", initLucideIcons);
       document.addEventListener('DOMContentLoaded', initLucideIcons);
       
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('a, button, .cta-button, .cta-primary, .details-link, .demo-link')) {
+          return;
+        }
+        const card = e.target.closest('.clickable[data-href]');
+        if (!card) return;
+        const href = card.getAttribute('data-href');
+        if (href) window.location.href = href;
+      }, { passive: true });
       
-      
-      // 🖱️ Clickable cards functionality
       document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.clickable').forEach(function (card) {
-          card.addEventListener('click', function () {
-            const href = card.getAttribute('data-href');
-            if (href) window.location.href = href;
-          });
-        });
-        
-        // 🌐 Language detection for body attribute (fallback)
         document.body.setAttribute('data-current-lang', '{{ CURRENT_LANG }}');
       });
     </script>
 
-    <script src="{% static 'js/modern_services_carousel.js' %}"></script>
     {% block extra_scripts %}{% endblock %}
   </body>
 </html>

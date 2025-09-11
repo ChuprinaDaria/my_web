@@ -231,3 +231,19 @@ msgstr "Переглянути всі сервіси"
 
 msgid "Open Service"
 msgstr "Відкрити сервіс"
+
+# Simple Services Component
+msgid "Наші Сервіси"
+msgstr "Наші Сервіси"
+
+msgid "Опис сервісу відсутній."
+msgstr "Опис сервісу відсутній."
+
+msgid "Сервісів поки немає"
+msgstr "Сервісів поки немає"
+
+msgid "Розпочати"
+msgstr "Розпочати"
+
+msgid "Всі сервіси"
+msgstr "Всі сервіси"

@@ -15,13 +15,22 @@
   }
 }
 
-/* 🌈 RAINBOW ROTATION */
+
 @keyframes rainbow-rotate {
-  0% { 
-    filter: hue-rotate(0deg); 
+  0% {
+    background: linear-gradient(45deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3), rgba(255, 0, 128, 0.3), rgba(128, 0, 255, 0.3), rgba(0, 255, 128, 0.3), rgba(255, 128, 0, 0.3), rgba(255, 0, 255, 0.3));
   }
-  100% { 
-    filter: hue-rotate(360deg); 
+  25% {
+    background: linear-gradient(45deg, rgba(0, 255, 255, 0.3), rgba(255, 0, 128, 0.3), rgba(128, 0, 255, 0.3), rgba(0, 255, 128, 0.3), rgba(255, 128, 0, 0.3), rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3));
+  }
+  50% {
+    background: linear-gradient(45deg, rgba(255, 0, 128, 0.3), rgba(128, 0, 255, 0.3), rgba(0, 255, 128, 0.3), rgba(255, 128, 0, 0.3), rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3), rgba(255, 0, 128, 0.3));
+  }
+  75% {
+    background: linear-gradient(45deg, rgba(128, 0, 255, 0.3), rgba(0, 255, 128, 0.3), rgba(255, 128, 0, 0.3), rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3), rgba(255, 0, 128, 0.3), rgba(128, 0, 255, 0.3));
+  }
+  100% {
+    background: linear-gradient(45deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3), rgba(255, 0, 128, 0.3), rgba(128, 0, 255, 0.3), rgba(0, 255, 128, 0.3), rgba(255, 128, 0, 0.3), rgba(255, 0, 255, 0.3));
   }
 }
 
@@ -91,20 +100,20 @@
 /* ✨ GLOW PULSE */
 @keyframes glowPulse {
   0%, 100% { 
-    box-shadow: 0 4px 16px rgba(158, 255, 0, 0.3);
+    box-shadow: 0 4px 16px rgba(158, 255, 0, 0.15);
   }
   50% { 
-    box-shadow: 0 4px 24px rgba(158, 255, 0, 0.8);
+    box-shadow: 0 4px 24px rgba(158, 255, 0, 0.3);
   }
 }
 
 /* 🌈 PRIORITY GLOW (для топ проєктів) */
 @keyframes priority-glow {
   0% { 
-    box-shadow: 0 4px 16px rgba(255, 0, 255, 0.3);
+    box-shadow: 0 4px 16px rgba(255, 0, 255, 0.15);
   }
   100% { 
-    box-shadow: 0 4px 24px rgba(255, 0, 255, 0.6);
+    box-shadow: 0 4px 24px rgba(255, 0, 255, 0.25);
   }
 }
 

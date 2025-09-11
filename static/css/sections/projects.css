@@ -442,3 +442,32 @@
     align-items: center;
   }
 }
+
+/* 🎯 Декорації не повинні блокувати клік по картці */
+.project-card,
+.project-card-home {
+  position: relative;
+  cursor: pointer;
+  z-index: 0;
+}
+
+.project-card .project-glow-effect,
+.project-card .image-overlay,
+.project-card::before,
+.project-card::after,
+.project-card-home .project-glow-effect,
+.project-card-home .image-overlay,
+.project-card-home::before,
+.project-card-home::after {
+  pointer-events: none !important;
+}
+
+/* всередині кнопки/лінки працюють окремо */
+.project-card .cta-button,
+.project-card .details-link,
+.project-card .demo-link,
+.project-card-home .cta-primary,
+.project-card-home .details-link,
+.project-card-home .demo-link {
+  pointer-events: auto;
+}

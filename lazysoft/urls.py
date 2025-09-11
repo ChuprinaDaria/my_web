@@ -36,11 +36,9 @@ urlpatterns += [
 # 🔤 URL з мовними префіксами
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),
-    path('about/', include('about.urls')),
-    path('services/', include('services.urls')),
     path('projects/', include('projects.urls')),
-    path('', include('lazysoft.dashboard_urls')),
+    path('services/', include(('services.urls', 'services'), namespace='services')),
+    path('about/', include('about.urls')),
     path('news/', include(('news.urls', 'news'), namespace='news')),
     path('consultant/', include('consultant.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
@@ -49,6 +47,8 @@ urlpatterns += i18n_patterns(
     # path('account/', include('two_factor.urls')),
 
     path('contacts/', include('contacts.urls')),
+    path('', include('lazysoft.dashboard_urls')),
+    path('', include('core.urls')),
 
     prefix_default_language=True,
 )

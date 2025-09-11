@@ -1,222 +1,329 @@
-.project-card-home{
-  position: relative;
-  border-radius: 18px;
+/* ===============================================
+   🏠 PROJECT CARD HOME - DESKTOP ONLY
+   =============================================== */
+
+.project-card-home {
   background: var(--glass-bg);
-  border: 2px solid transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: 25px;
+  cursor: pointer;
+  transition: all var(--transition-normal);
   backdrop-filter: var(--blur-medium);
-  box-shadow:
-    0 4px 16px rgba(0,0,0,.25),
-    0 0 0 1px rgba(255,255,255,.08);
-  transition: transform .25s ease, box-shadow .25s ease;
+  position: relative;
   overflow: hidden;
-}
-
-.project-card-home.clickable {
-  cursor: pointer;
-}
-
-.project-card-home.clickable:hover {
-  cursor: pointer;
-  transform: translateY(-2px);
-  box-shadow:
-    0 8px 24px rgba(0,0,0,.3),
-    0 0 0 1px rgba(255,255,255,.12);
-}
-
-.project-card-home::before{
-  content:"";
-  position:absolute; inset:0;
-  border-radius: inherit;
-  padding: 2px;
-  background: var(--rainbow-gradient);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite: xor;
-  -webkit-mask-composite: xor;
-  opacity: 0.6;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+  height: auto;
+  pointer-events: auto;
   z-index: 1;
-  animation: rainbow-rotate var(--anim-rainbow) linear infinite;
 }
 
-.project-card-home::after{
-  content:"";
-  position:absolute; inset:-20%;
-  border-radius: 28px;
+.project-card-home:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 25px rgba(102, 255, 0, 0.2);
+  border-color: rgba(102, 255, 0, 0.4);
+  z-index: 10;
+}
+
+
+.project-card-home .card-tags {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 15;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: calc(100% - 30px);
+}
+
+.project-card-home .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 10px; /* Як у news cards */
+  font-weight: 600; /* Як у news cards */
+  text-transform: none; /* Як у news cards */
+  letter-spacing: normal; /* Як у news cards */
+  backdrop-filter: blur(10px);
   pointer-events: none;
-  background:
-    radial-gradient(40% 40% at 80% 10%, rgba(158,255,0,.10), transparent 60%),
-    radial-gradient(40% 40% at 10% 90%, rgba(255,0,255,.10), transparent 60%);
-  filter: blur(18px);
-  opacity: .75;
-  z-index: 0;
+  border: 1px solid rgba(102, 255, 0, 0.3); /* Як у news cards */
+  background: rgba(102, 255, 0, 0.1); /* Як у news cards */
+  color: var(--accent-green); /* Як у news cards */
 }
 
-.project-card-home > *{ position: relative; z-index: 3; }
-
-.project-card-home .card-click-area{
-  position:absolute; inset:0; z-index: 4;
+.project-card-home .chip.primary {
+  background: rgba(102, 255, 0, 0.7);
+  color: #000;
 }
 
-.project-card-home:hover{
-  transform: translateY(-3px) scale(1.005);
-  box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.3),
-    0 0 20px rgba(255, 0, 255, 0.3);
+.project-card-home .chip.innovation {
+  background: rgba(255, 69, 0, 0.7);
+  color: #fff;
 }
 
-.project-card-home:hover::before{
-  opacity: 0.8;
-  animation-duration: 2s;
+.project-card-home .chip.ai {
+  background: rgba(138, 43, 226, 0.7);
+  color: #fff;
 }
 
-@keyframes rainbow-rotate{
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
+.project-card-home .chip.top {
+  background: rgba(255, 215, 0, 0.7);
+  color: #000;
 }
 
-.project-card-home .cta-row,
-.project-card-home .secondary-actions,
-.project-card-home .details-link,
-.project-card-home .demo-link,
-.project-card-home .cta-primary{ z-index: 5; position: relative; }
-
-.card-tags{
-  position:absolute; top:12px; left:12px; right:12px;
-  display:flex; gap:8px; flex-wrap:wrap; z-index:5;
-}
-.chip{
-  display:inline-flex; align-items:center; gap:6px;
-  padding:6px 10px; border-radius:999px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.18);
-  font-size: var(--text-xs);
-  font-weight: var(--font-medium);
-  line-height: 1;
-  color: var(--text-secondary);
-}
-.chip.primary{ background: rgba(0,0,0,.35); border-color: rgba(255,255,255,.12); }
-.chip.innovation{ background: rgba(255,204,0,.12); border-color: rgba(255,204,0,.28); }
-.chip.ai{ background: rgba(0,255,128,.10); border-color: rgba(0,255,128,.22); }
-.chip.top{ background: rgba(255,255,255,.12); }
-.chip.enterprise{ background: rgba(0,153,255,.12); border-color: rgba(0,153,255,.28); }
-.chip.complex{ background: rgba(136,0,255,.12); border-color: rgba(136,0,255,.28); }
-.chip.custom{ background: color-mix(in hsl, var(--chip-color, #66ff00) 18%, transparent); border-color: color-mix(in hsl, var(--chip-color, #66ff00) 38%, transparent); }
-
-.project-image{ position:relative; border-radius:14px; overflow:hidden; }
-.project-image img{ width:100%; height:auto; display:block; border-radius:14px; }
-.project-image .image-overlay{ position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,.0) 20%, rgba(0,0,0,.15) 100%); }
-
-.project-title{ 
-  margin: 2px 2px 4px; 
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--text-white); 
+.project-card-home .chip.enterprise {
+  background: rgba(0, 123, 255, 0.7);
+  color: #fff;
 }
 
-.section-box{ background: rgba(0,0,0,.35); border:1px solid rgba(102,255,0,.18); border-radius:12px; padding:12px 14px; }
-.section-label{ 
-  font-size: var(--text-xs); 
-  letter-spacing: 0.05em; 
-  font-weight: var(--font-bold); 
-  color: var(--text-secondary); 
-  margin-bottom: 6px; 
+.project-card-home .chip.complex {
+  background: rgba(220, 53, 69, 0.7);
+  color: #fff;
+}
+
+.project-card-home .chip.custom {
+  background: var(--chip-color, #66ff00);
+  color: #000;
+}
+
+.project-card-home .tag-icon {
+  font-size: 0.625rem; /* менше ніж text-xs */
+}
+
+.project-card-home .project-image {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--glass-bg);
+  margin-bottom: 20px;
+}
+
+.project-card-home .project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.project-card-home:hover .project-image img {
+  transform: scale(1.03);
+}
+
+.project-card-home .image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 70%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  pointer-events: none;
+}
+
+.project-card-home .project-title {
+  font-size: 1.1rem; /* Як у news cards */
+  font-weight: 700; /* Як у news cards */
+  line-height: 1.4; /* Як у news cards */
+  margin-bottom: 12px; /* Як у news cards */
+  color: var(--text-white); /* Як у news cards */
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-card-home .section-box {
+  margin: 0 15px 12px 15px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.project-card-home .section-label {
+  display: block;
+  font-size: 0.75rem; /* text-xs з typography */
+  font-weight: 700;
+  color: var(--accent-green);
+  margin-bottom: 4px;
   text-transform: uppercase;
-}
-.section-text{ 
-  color: var(--text-primary); 
-  font-size: var(--text-sm); 
-  line-height: 1.5;
+  letter-spacing: 0.5px;
 }
 
-.metrics{ display:flex; gap:8px; flex-wrap:wrap; margin-top:2px; }
-.metric{ background: rgba(255,255,255,.08); }
-
-.cta-row{ margin-top:6px; display:flex; flex-direction:column; gap:10px; }
-.cta-primary{
-  --green:#66ff00;
-  display:flex; align-items:center; justify-content:center; gap:10px;
-  width:100%; padding:14px 16px; border-radius:14px;
-  font-weight: var(--font-bold); 
-  font-size: var(--text-sm);
-  background: var(--green); 
-  color: #0e0e0e; 
-  border:none;
-  box-shadow: inset 0 -2px 0 rgba(0,0,0,.2), 0 6px 18px rgba(102,255,0,.25);
-  transition: all var(--transition-normal);
-  position: relative;
+.project-card-home .section-text {
+  font-size: 0.9rem; /* Як у news cards */
+  line-height: 1.5; /* Як у news cards */
+  color: var(--text-primary); /* Як у news cards */
+  margin-bottom: 15px; /* Як у news cards */
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.cta-primary::before{
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
+.project-card-home .metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 15px 12px 15px;
+}
+
+.project-card-home .metrics .metric {
+  font-size: 0.75rem; /* text-xs з typography */
+  padding: 4px 8px;
+  background: rgba(102, 255, 0, 0.1);
+  color: var(--accent-green);
+  border: 0.5px solid rgba(102, 255, 0, 0.15);
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.project-card-home .cta-row {
+  margin-top: auto;
+  padding: 15px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.project-card-home .cta-primary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.3s;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, var(--accent-green), #80ff40);
+  color: #000;
+  border: none;
+  border-radius: 30px; /* Як у buttons.css */
+  font-weight: 700;
+  font-size: 0.875rem; /* text-sm з typography */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+  z-index: 20;
+  box-shadow: 0 4px 20px rgba(158, 255, 0, 0.3); /* Як у buttons.css */
 }
 
-.cta-primary:hover{
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 
-    inset 0 -2px 0 rgba(0,0,0,.25), 
-    0 8px 22px rgba(102,255,0,.4),
-    0 0 15px rgba(102,255,0,.3);
+.project-card-home .cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(158, 255, 0, 0.4); /* Як у buttons.css */
+  background: linear-gradient(135deg, #80ff40, var(--accent-green)); /* Як у buttons.css */
 }
 
-.cta-primary:hover::before{
-  left: 100%;
-}
-.secondary-actions{ display:flex; gap:10px; justify-content:center; }
-.details-link,.demo-link{
-  display:inline-flex; align-items:center; justify-content:center;
-  padding:10px 14px; border-radius:999px; text-decoration:none; 
-  font-weight: var(--font-semibold); 
-  font-size: var(--text-sm);
-  background: rgba(255,255,255,.1); 
-  color: var(--text-primary); 
-  border:1px solid rgba(255,255,255,.18);
-  transition: all var(--transition-normal);
-  position: relative;
-  overflow: hidden;
+.project-card-home .cta-icon {
+  font-size: 0.875rem; /* text-sm з typography */
 }
 
-.details-link::before, .demo-link::before{
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: left 0.3s;
+.project-card-home .cta-arrow {
+  font-size: 0.875rem; /* text-sm з typography */
+  transition: transform 0.3s ease;
 }
 
-.details-link:hover, .demo-link:hover{
-  transform: translateY(-1px) scale(1.05);
-  background: rgba(255,255,255,.15);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+.project-card-home .cta-primary:hover .cta-arrow {
+  transform: translateX(3px);
 }
 
-.details-link:hover::before, .demo-link:hover::before{
-  left: 100%;
+.project-card-home .secondary-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
 }
 
-.demo-link{ 
-  background: rgba(102,255,0,.12); 
-  color: var(--text-white); 
-  border-color: rgba(102,255,0,.22); 
+.project-card-home .details-link,
+.project-card-home .demo-link {
+  font-size: 0.75rem; /* text-xs з typography */
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 30px; /* Як у buttons.css */
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: var(--glass-bg); /* Сірий фон як у btn-secondary */
+  border: 2px solid var(--glass-border); /* Сірий бордер як у btn-secondary */
+  backdrop-filter: blur(20px); /* Як у btn-secondary */
+  pointer-events: auto;
+  z-index: 20;
 }
 
-.demo-link:hover{
-  background: rgba(102,255,0,.2);
-  box-shadow: 0 4px 12px rgba(102,255,0,.3);
+.project-card-home .details-link:hover,
+.project-card-home .demo-link:hover {
+  background: rgba(255, 255, 255, 0.15); /* Як у btn-secondary:hover */
+  border-color: var(--accent-green); /* Як у btn-secondary:hover */
+  color: var(--accent-green); /* Як у btn-secondary:hover */
+  transform: translateY(-2px); /* Як у btn-secondary:hover */
 }
 
-@media (min-width:520px){
-  .project-card-home{ padding:24px; }
-  .project-title{ font-size: clamp(1.5rem, 3vw, 2.2rem); }
+
+
+.project-card-home .image-overlay,
+.project-card-home::after {
+  pointer-events: none !important;
+}
+
+.project-card-home .cta-primary,
+.project-card-home .details-link,
+.project-card-home .demo-link {
+  pointer-events: auto !important;
+  z-index: 20;
+}
+
+@media (min-width: 1200px) {
+  .project-card-home {
+    min-height: 480px;
+    height: auto;
+  }
+
+  .project-card-home .project-title {
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .project-card-home .section-text {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    line-height: 1.7;
+  }
+
+  .project-card-home .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .project-card-home .cta-primary {
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .project-card-home .details-link,
+  .project-card-home .demo-link {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .project-card-home .project-image {
+    height: 200px;
+  }
 }

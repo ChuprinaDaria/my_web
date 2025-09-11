@@ -107,7 +107,7 @@
             <i data-lucide="zap"></i>
             {% trans "Get This Service" %}
           </button>
-          <a href="{% url 'services_list' %}" class="hero-cta-button secondary">
+          <a href="{% url 'services:services_list' %}" class="hero-cta-button secondary">
             <i data-lucide="grid-3x3"></i>
             {% trans "All Services" %}
           </a>
@@ -469,7 +469,7 @@
               <i data-lucide="message-circle"></i>
               {% trans "Start Free Consultation" %}
             </button>
-            <a href="{% url 'services_list' %}" class="btn-secondary hero-cta-button secondary">
+            <a href="{% url 'services:services_list' %}" class="btn-secondary hero-cta-button secondary">
               <i data-lucide="grid-3x3"></i>
               {% trans "Browse All Services" %}
             </a>

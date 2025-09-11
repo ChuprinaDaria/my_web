@@ -44,14 +44,24 @@ class ServiceFeatureAdminForm(forms.ModelForm):
         model = ServiceFeature
         fields = '__all__'
 
+
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
     form = SCForm
-    list_display = ("title_en","is_featured","priority","order","date_created")
+    list_display = ("title_en", "has_main_image", "get_cta_preview", "is_featured","priority","order","date_created")
     list_editable = ("is_featured","priority","order")
     search_fields = ("title_en","title_uk","title_pl")
     prepopulated_fields = {"slug": ("title_en",)}
     filter_horizontal = ("tags",)
+    
+    def has_main_image(self, obj):
+        return "✅" if obj.main_image else "❌"
+    has_main_image.short_description = "🖼️ Зображення"
+    
+    def get_cta_preview(self, obj):
+        return obj.cta_text_en[:20] + "..." if len(obj.cta_text_en) > 20 else obj.cta_text_en
+    get_cta_preview.short_description = "🔗 CTA"
+    
     fieldsets = (
         ("Basic", {"fields": ("title_en","title_uk","title_pl","slug","is_featured","priority","order","tags")}),
         ("Short Card Text", {"fields": ("short_description_en","short_description_uk","short_description_pl")}),
@@ -59,7 +69,8 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
         ("For Whom", {"fields": ("target_audience_en","target_audience_uk","target_audience_pl")}),
         ("Pricing", {"fields": ("pricing_en","pricing_uk","pricing_pl")}),
         ("Business Value", {"fields": ("value_proposition_en","value_proposition_uk","value_proposition_pl")}),
-        ("Media", {"fields": ("video_url","video_file","gallery_image_1","gallery_image_2","gallery_image_3","gallery_image_4")}),
+        ("Media", {"fields": ("icon", "main_image", "video_url","video_file","gallery_image_1","gallery_image_2","gallery_image_3","gallery_image_4")}),
+        ("CTA", {"fields": ("cta_text_en", "cta_text_uk", "cta_text_pl", "cta_url")}),
         ("SEO", {"fields": ("seo_title_en","seo_title_uk","seo_title_pl","seo_description_en","seo_description_uk","seo_description_pl")}),
     )
 

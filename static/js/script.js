@@ -73,13 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🍔 Инициализация мобильного меню
   initMobileMenu();
   
-  // 🖱️ Инициализация кликабельных карточек
-  initClickableCards();
+  // 🖱️ Кликабельные карточки теперь обрабатываются через делегированный клик в base.html
   
   // Додаткова ініціалізація через 1 секунду (на випадок динамічного контенту)
-  setTimeout(() => {
-    initClickableCards();
-  }, 1000);
+  // setTimeout(() => {
+  //   initClickableCards();
+  // }, 1000);
 });
 
 // 🌐 Функция переключения языка
@@ -187,46 +186,7 @@ function initMobileMenu() {
   });
 }
 
-// 🖱️ Инициализация кликабельных карточек
-function initClickableCards() {
-  // Кликабельные карточки с data-href
-  const clickableCards = document.querySelectorAll('.clickable[data-href]');
-  console.log('Found clickable cards:', clickableCards.length);
-  
-  clickableCards.forEach((card, index) => {
-    card.style.cursor = 'pointer';
-    
-    card.addEventListener('click', function(e) {
-      // Не переходимо, якщо клікнули на кнопку
-      const button = e.target.closest('button') || e.target.closest('.cta-button') || e.target.closest('.cta-primary') || e.target.closest('.cta-secondary');
-      if (button) {
-        return;
-      }
-      
-      const href = this.getAttribute('data-href');
-      if (href) {
-        window.location.href = href;
-      }
-    });
-  });
-  
-  // About карточки
-  document.querySelectorAll('.about-card[data-href]').forEach(card => {
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', function(e) {
-      // Не переходимо, якщо клікнули на кнопку
-      if (e.target.closest('button') || e.target.closest('.cta-button')) {
-        return;
-      }
-      
-      const link = this.getAttribute('data-href');
-      if (link) {
-        window.location.href = link;
-      }
-    });
-  });
-  
-}
+// 🖱️ Кликабельные карточки теперь обрабатываются через делегированный клик в base.html
 
 // 📞 Функция прокрутки к контакт форме
 function scrollToContact(serviceTitle) {

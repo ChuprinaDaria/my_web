@@ -1,0 +1,42 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<article class="service-card-horizontal">
+  <div class="service-image-section">
+    {% if service.icon %}
+      <img src="{{ service.icon.url }}" alt="{{ service.title }}">
+    {% else %}
+      <div class="service-placeholder">
+        <i data-lucide="cogs"></i>
+      </div>
+    {% endif %}
+    <span class="image-overlay"></span>
+  </div>
+
+  <div class="service-content">
+    <div class="service-meta">
+      {% for tag in service.tags|slice:":3" %}
+        <span class="chip">
+          {% if CURRENT_LANG == 'uk' %}{{ tag.name_uk|default:tag.name }}
+          {% elif CURRENT_LANG == 'pl' %}{{ tag.name_pl|default:tag.name }}
+          {% else %}{{ tag.name_en|default:tag.name }}{% endif %}
+        </span>
+      {% endfor %}
+    </div>
+
+    <h3 class="project-title">{{ service.title|safe }}</h3>
+
+    <p class="service-description">{{ service.short|safe|truncatewords:20 }}</p>
+
+    <div class="project-cta">
+      <a class="cta-button" href="/{{ CURRENT_LANG }}/services/{{ service.slug }}/">
+        {% if CURRENT_LANG == 'uk' %}Детальніше
+        {% elif CURRENT_LANG == 'pl' %}Szczegóły
+        {% else %}Learn More{% endif %}
+        <span class="cta-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <span class="project-glow-effect"></span>
+</article>

@@ -45,6 +45,20 @@ class ServiceCategory(models.Model):
     value_proposition_pl = RichTextField(blank=True, null=True)
 
     icon = models.ImageField(upload_to="services/icons/", blank=True, null=True)
+    
+    main_image = models.ImageField(
+        upload_to='services/main/', 
+        null=True, blank=True,
+        verbose_name="Головне зображення",
+        help_text="Рекомендований розмір: 400x250px"
+    )
+    
+    cta_text_en = models.CharField(max_length=50, default="Learn More")
+    cta_text_uk = models.CharField(max_length=50, default="Дізнатися більше") 
+    cta_text_pl = models.CharField(max_length=50, default="Dowiedz się więcej")
+    
+    cta_url = models.URLField(blank=True, null=True, help_text="Посилання для CTA кнопки")
+    
     is_featured = models.BooleanField(default=False)
     PRIORITY_CHOICES = [
         (1, 'Низький'),

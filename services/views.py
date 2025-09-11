@@ -21,6 +21,7 @@ def services_list(request):
             "short": s.get_short(lang),
             "is_featured": s.is_featured,
             "priority_emoji": s.get_priority_emoji(),
+            "tags": s.tags.filter(is_active=True)[:3],  # Тільки 3 теги
         })
     
     faqs = FAQ.objects.filter(is_active=True).order_by("order")
@@ -141,6 +142,7 @@ def service_detail(request, slug):
         "priority": service_category.priority,
         "related_projects_count": len(related_projects),
         "related_articles_count": len(related_articles),
+        "tags": service_category.tags.filter(is_active=True)[:3],  # Тільки 3 теги
     }
     
     print(f"🎯 Service '{service_data['title']}': {len(related_projects)} проєктів, {len(related_articles)} новин")

@@ -10,31 +10,16 @@
     {% endif %}
   </div>
 
-  <div class="services-carousel" role="region" aria-label="{{ title|default:'Services carousel' }}">
+  <div class="services-carousel services-grid" role="region" aria-label="{{ title|default:'Services carousel' }}">
     
-    <div class="carousel-nav desktop-nav">
-      <button class="nav-btn nav-prev" 
-              type="button" 
-              aria-label="{% trans 'Previous services' %}"
-              disabled>
-        <i data-lucide="chevron-left"></i>
-      </button>
-      <button class="nav-btn nav-next" 
-              type="button" 
-              aria-label="{% trans 'Next services' %}">
-        <i data-lucide="chevron-right"></i>
-      </button>
-    </div>
-
-    <div class="carousel-track" 
+    <div class="services-grid-container" 
          role="group" 
          aria-live="polite"
-         tabindex="0"
-         aria-label="{% trans 'Use arrow keys or swipe to navigate services' %}">
+         aria-label="{% trans 'Services grid' %}">
       
-      {% for service in services %}
-        <div class="carousel-slide" role="group" aria-label="{% trans 'Service' %} {{ forloop.counter }}">
-          {% include 'includes/service_card.html' with service=service %}
+      {% for service in services|slice:":5" %}
+        <div class="service-grid-item" role="group" aria-label="{% trans 'Service' %} {{ forloop.counter }}">
+          {% include 'includes/service_card_vertical.html' with service=service %}
         </div>
       {% empty %}
         <div class="carousel-empty">
@@ -47,19 +32,11 @@
       {% endfor %}
     </div>
 
-    <div class="carousel-nav mobile-nav">
-      <button class="nav-btn nav-prev" 
-              type="button" 
-              aria-label="{% trans 'Previous services' %}"
-              disabled>
-        <i data-lucide="chevron-left"></i>
-      </button>
-      <button class="nav-btn nav-next" 
-              type="button" 
-              aria-label="{% trans 'Next services' %}">
-        <i data-lucide="chevron-right"></i>
-      </button>
+    <div class="services-carousel-nav desktop-only" aria-label="{% trans 'Навігація каруселі' %}">
+      <button class="carousel-btn prev" type="button" aria-label="{% trans 'Попередні сервіси' %}">‹</button>
+      <button class="carousel-btn next" type="button" aria-label="{% trans 'Наступні сервіси' %}">›</button>
     </div>
+
 
   </div>
 
@@ -71,7 +48,7 @@
     </a>
     
     {% if show_view_all %}
-    <a href="{% url 'services_list' %}" 
+    <a href="{% url 'services:services_list' %}" 
        class="btn-secondary">
       <i data-lucide="grid-3x3" aria-hidden="true"></i>
       <span>{% trans "View All Services" %}</span>

@@ -1,7 +1,13 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<div class="project-card-home clickable" data-complexity="{{ project.complexity_level }}" data-priority="{{ project.priority }}" data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" aria-label="{% trans 'OPEN PROJECT' %}">
+<div class="project-card-home clickable" 
+     data-complexity="{{ project.complexity_level }}" 
+     data-priority="{{ project.priority }}" 
+     data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" 
+     onclick="window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';" 
+     style="cursor: pointer;" 
+     aria-label="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %} - {% trans 'VIEW PROJECT' %}">
 
   <div class="card-tags">
     {% if project.project_type_uk or project.project_type_en or project.project_type_pl %}
@@ -36,7 +42,7 @@
 
   {% if project.featured_image %}
   <div class="project-image">
-    <img src="{{ project.featured_image.url }}" alt="{{ project.get_title }}" loading="lazy">
+    <img src="{{ project.featured_image.url }}" alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}{% else %}{{ project.title_en }}{% endif %}" loading="lazy">
     <div class="image-overlay"></div>
   </div>
   {% endif %}
@@ -52,11 +58,11 @@
     <div class="section-label">{% trans "CLIENT WANTED:" %}</div>
     <div class="section-text">
       {% if CURRENT_LANG == 'uk' and project.client_request_uk %}
-        {{ project.client_request_uk|safe|truncatewords:30 }}
+        {{ project.client_request_uk|safe|truncatechars:250 }}
       {% elif CURRENT_LANG == 'pl' and project.client_request_pl %}
-        {{ project.client_request_pl|safe|truncatewords:30 }}
+        {{ project.client_request_pl|safe|truncatechars:250 }}
       {% else %}
-        {{ project.client_request_en|safe|truncatewords:30 }}
+        {{ project.client_request_en|safe|truncatechars:250 }}
       {% endif %}
     </div>
   </div>
@@ -66,11 +72,11 @@
     <div class="section-label">{% trans "WE DID:" %}</div>
     <div class="section-text">
       {% if CURRENT_LANG == 'uk' and project.short_description_uk %}
-        {{ project.short_description_uk|safe|truncatewords:28 }}
+        {{ project.short_description_uk|safe|truncatechars:250 }}
       {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}
-        {{ project.short_description_pl|safe|truncatewords:28 }}
+        {{ project.short_description_pl|safe|truncatechars:250 }}
       {% else %}
-        {{ project.short_description_en|safe|truncatewords:28 }}
+        {{ project.short_description_en|safe|truncatechars:250 }}
       {% endif %}
     </div>
   </div>
@@ -96,11 +102,13 @@
       <span class="cta-arrow">→</span>
     </button>
     <div class="secondary-actions">
-      <button class="details-link" onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
+      <button class="details-link" 
+              onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
         {% trans "FULL CASE" %}
       </button>
       {% if project.project_url %}
-        <button class="demo-link" onclick="event.stopPropagation(); window.open('{{ project.project_url }}', '_blank');">
+        <button class="demo-link" 
+                onclick="event.stopPropagation(); window.open('{{ project.project_url }}', '_blank');">
           {% trans "DEMO" %}
         </button>
       {% endif %}
