@@ -143,8 +143,7 @@ def get_dashboard_data():
     ).aggregate(
         total_savings=Sum('net_savings'),
         total_hours=Sum('manual_hours_saved'),
-        total_articles=Sum('articles_processed'),
-        avg_roi=Avg('roi_percentage')
+        total_articles=Sum('articles_processed')
     )
     
     return {

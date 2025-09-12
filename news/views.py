@@ -390,8 +390,7 @@ class ROIDashboardView(View):
             total_savings=Sum('net_savings'),
             total_hours=Sum('manual_hours_saved'),
             total_articles=Sum('articles_processed'),
-            total_leads=Sum('new_leads_generated'),
-            avg_roi=Avg('roi_percentage')
+            total_leads=Sum('new_leads_generated')
         )
         
         # Live статистика системи
@@ -437,7 +436,7 @@ class ROIDashboardView(View):
                 'total_hours': month_stats['total_hours'] or 0,
                 'total_articles': month_stats['total_articles'] or 0,
                 'total_leads': month_stats['total_leads'] or 0,
-                'avg_roi': round(month_stats['avg_roi'] or 0, 1)
+                'avg_roi': round(today_roi.roi_percentage, 1) if today_roi.roi_percentage else 0
             },
             'live': live_stats,
             'top_categories': list(top_categories),
