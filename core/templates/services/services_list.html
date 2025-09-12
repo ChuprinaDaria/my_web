@@ -233,7 +233,7 @@
     <!-- Services Grid -->
     <div class="services-grid">
       {% for service in services %}
-        <article class="service-card clickable" data-href="{% url 'service_detail' service.slug %}">
+        <article class="service-card clickable" data-href="{% url 'services:service_detail' service.slug %}">
           {% if service.icon %}
             <div class="service-icon">
               <img src="{{ service.icon.url }}" alt="{{ service.title }}" loading="lazy">
