@@ -19,7 +19,7 @@ import re
 gettext_path = r"C:\Program Files (x86)\GnuWin32\bin"
 if os.path.exists(gettext_path):
     os.environ['PATH'] = gettext_path + os.pathsep + os.environ['PATH']
-    print(f"✅ Додано gettext до PATH: {gettext_path}")
+   
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

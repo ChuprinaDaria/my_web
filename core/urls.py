@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import home, robots_txt
+from .views import home, robots_txt, WidgetMetricsAPIView
 
 urlpatterns = [
     path('', home, name='home'),
     path('robots.txt', robots_txt, name='robots_txt'),
+    path('api/widget-metrics/', WidgetMetricsAPIView.as_view(), name='widget_metrics'),
 ]

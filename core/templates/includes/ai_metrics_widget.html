@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 📡 АВТООНОВЛЕННЯ ДАНИХ
     async function updateMetrics() {
         try {
-            const response = await fetch('/news/api/roi-dashboard/');
+            const response = await fetch('/api/widget-metrics/');
             const data = await response.json();
             
             if (data.success) {
@@ -125,34 +125,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateMetricValues(data) {
         // Оновлюємо ROI
-        if (data.today && data.today.roi_percentage) {
+        if (data.metrics && data.metrics.roi_percentage) {
             const roiElement = document.querySelector('.roi .metric-value');
             if (roiElement) {
-                roiElement.innerHTML = `${Math.round(data.today.roi_percentage)}<span class="metric-unit">%</span><span class="trend-indicator trend-up">↗</span>`;
+                roiElement.innerHTML = `${Math.round(data.metrics.roi_percentage)}<span class="metric-unit">%</span><span class="trend-indicator trend-up">↗</span>`;
             }
         }
         
         // Оновлюємо години
-        if (data.today && data.today.hours_saved) {
+        if (data.metrics && data.metrics.hours_saved) {
             const hoursElement = document.querySelector('.time .metric-value');
             if (hoursElement) {
-                hoursElement.innerHTML = `${Math.round(data.today.hours_saved)}<span class="metric-unit">{% trans "год" %}</span><span class="trend-indicator trend-up">↗</span>`;
+                hoursElement.innerHTML = `${Math.round(data.metrics.hours_saved)}<span class="metric-unit">{% trans "год" %}</span><span class="trend-indicator trend-up">↗</span>`;
             }
         }
         
         // Оновлюємо статті
-        if (data.today && data.today.articles_processed) {
+        if (data.metrics && data.metrics.ai_content) {
             const articlesElement = document.querySelector('.content .metric-value');
             if (articlesElement) {
-                articlesElement.innerHTML = `${data.today.articles_processed}<span class="metric-unit">{% trans "шт" %}</span><span class="trend-indicator trend-up">↗</span>`;
+                articlesElement.innerHTML = `${data.metrics.ai_content}<span class="metric-unit">{% trans "шт" %}</span><span class="trend-indicator trend-up">↗</span>`;
             }
         }
         
         // Оновлюємо ефективність
-        if (data.today && data.today.time_efficiency) {
+        if (data.metrics && data.metrics.efficiency_growth) {
             const efficiencyElement = document.querySelector('.efficiency .metric-value');
             if (efficiencyElement) {
-                efficiencyElement.innerHTML = `+${Math.round(data.today.time_efficiency)}<span class="metric-unit">%</span><span class="trend-indicator trend-up">↗</span>`;
+                efficiencyElement.innerHTML = `+${Math.round(data.metrics.efficiency_growth)}<span class="metric-unit">%</span><span class="trend-indicator trend-up">↗</span>`;
             }
         }
     }
