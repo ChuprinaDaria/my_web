@@ -49,6 +49,52 @@ msgstr "Write your message..."
 msgid "Відправити"
 msgstr "Send"
 
+# AI Metrics Widget translations
+msgid "AI Ефективність в Дії"
+msgstr "AI Efficiency in Action"
+
+msgid "Реальні результати автоматизації для вашого бізнесу"
+msgstr "Real automation results for your business"
+
+msgid "ROI Ефективність"
+msgstr "ROI Efficiency"
+
+msgid "Рентабельність AI інвестицій"
+msgstr "ROI of AI investments"
+
+msgid "Зекономлено Часу"
+msgstr "Time Saved"
+
+msgid "Автоматизація робочих процесів"
+msgstr "Workflow automation"
+
+msgid "AI Контент"
+msgstr "AI Content"
+
+msgid "Згенеровано AI статей цього місяця"
+msgstr "AI articles generated this month"
+
+msgid "Зростання Ефективності"
+msgstr "Efficiency Growth"
+
+msgid "Покращення продуктивності процесів"
+msgstr "Process productivity improvement"
+
+msgid "Замовити Консультацію"
+msgstr "Order Consultation"
+
+msgid "Останнє оновлення:"
+msgstr "Last updated:"
+
+msgid "сьогодні"
+msgstr "today"
+
+msgid "год"
+msgstr "hrs"
+
+msgid "шт"
+msgstr "pcs"
+
 msgid "Очистити"
 msgstr "Clear"
 
