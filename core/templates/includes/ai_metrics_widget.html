@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.metrics && data.metrics.hours_saved) {
             const hoursElement = document.querySelector('.time .metric-value');
             if (hoursElement) {
-                hoursElement.innerHTML = `${Math.round(data.metrics.hours_saved)}<span class="metric-unit">{% trans "год" %}</span><span class="trend-indicator trend-up">↗</span>`;
+                hoursElement.innerHTML = `${data.metrics.hours_saved}<span class="metric-unit">{% trans "год" %}</span><span class="trend-indicator trend-up">↗</span>`;
             }
         }
         
@@ -153,6 +153,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const efficiencyElement = document.querySelector('.efficiency .metric-value');
             if (efficiencyElement) {
                 efficiencyElement.innerHTML = `+${Math.round(data.metrics.efficiency_growth)}<span class="metric-unit">%</span><span class="trend-indicator trend-up">↗</span>`;
+            }
+        }
+        
+        // Оновлюємо час останнього оновлення
+        if (data.metrics && data.metrics.last_updated) {
+            const timeElement = document.getElementById('lastUpdated');
+            if (timeElement) {
+                timeElement.textContent = `сьогодні, ${data.metrics.last_updated}`;
             }
         }
     }
