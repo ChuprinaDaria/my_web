@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.db.models import Count
+from django.http import HttpResponse
+from django.conf import settings
 
 from projects.models import Project
 from services.models import Service
@@ -82,5 +84,22 @@ def home(request):
         context['news_available'] = False
 
     return render(request, 'core/home.html', context)
+
+
+def robots_txt(request):
+    """Генерує robots.txt з урахуванням налаштувань індексації"""
+    if settings.DISABLE_GOOGLE_INDEXING:
+        content = """User-agent: *
+Disallow: /
+"""
+    else:
+        content = f"""User-agent: *
+Allow: /
+
+Sitemap: {settings.SITE_URL}/sitemap.xml
+Sitemap: {settings.SITE_URL}/sitemap-news.xml
+Sitemap: {settings.SITE_URL}/sitemap-categories.xml
+"""
+    return HttpResponse(content, content_type='text/plain')
 
 

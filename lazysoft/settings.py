@@ -109,6 +109,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
+                'core.context_processors.seo_settings',
             ],
         },
     },
@@ -259,8 +261,15 @@ NEWS_ARTICLES_PER_PAGE = 12
 NEWS_RELATED_ARTICLES = 3
 
 # 🎯 SEO налаштування
-SITE_URL = 'http://127.0.0.1:8000'
-SITE_NAME = 'LAZYSOFT'
+SITE_URL = config('SITE_URL', default='http://127.0.0.1:8000')
+SITE_NAME = config('SITE_NAME', default='LAZYSOFT')
+
+# === 📊 GOOGLE ANALYTICS ===
+GOOGLE_ANALYTICS_ID = config('GOOGLE_ANALYTICS_ID', default=None)
+GOOGLE_SITE_VERIFICATION = config('GOOGLE_SITE_VERIFICATION', default=None)
+BING_SITE_VERIFICATION = config('BING_SITE_VERIFICATION', default=None)
+YAHOO_SITE_VERIFICATION = config('YAHOO_SITE_VERIFICATION', default=None)
+DISABLE_GOOGLE_INDEXING = config('DISABLE_GOOGLE_INDEXING', default=True, cast=bool)
 
 # === 🔄 CELERY (для асинхронних завдань) ===
 # Поки що закоментовано - увімкнеш коли будеш готова

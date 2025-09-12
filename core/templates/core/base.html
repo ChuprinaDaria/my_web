@@ -13,7 +13,7 @@
       <meta name="description" content="{% block meta_description %}Lazysoft automation & development{% endblock %}">
       <meta name="keywords" content="{% block meta_keywords %}automation, AI, bots, development, lazysoft{% endblock %}">
       <meta name="author" content="Lazysoft">
-      <meta name="robots" content="{% block meta_robots %}index, follow{% endblock %}">
+      <meta name="robots" content="{% if DISABLE_GOOGLE_INDEXING %}noindex, nofollow{% else %}{% block meta_robots %}index, follow{% endblock %}{% endif %}">
       
       <meta property="og:title" content="{% block og_title %}Lazysoft{% endblock %}">
       <meta property="og:description" content="{% block og_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
@@ -22,7 +22,7 @@
       <meta property="og:image:height" content="630">
       <meta property="og:image:alt" content="{% block og_image_alt %}Lazysoft - Automation & Development{% endblock %}">
       <meta property="og:type" content="{% block og_type %}website{% endblock %}">
-      <meta property="og:url" content="https://lazysoft.dev{{ request.get_full_path }}">
+      <meta property="og:url" content="{{ SITE_URL }}{{ request.get_full_path }}">
       <meta property="og:site_name" content="Lazysoft">
       <meta property="og:locale" content="{% if CURRENT_LANG == 'uk' %}uk_UA{% elif CURRENT_LANG == 'pl' %}pl_PL{% else %}en_US{% endif %}">
       
@@ -73,16 +73,29 @@
       <meta name="msapplication-navbutton-color" content="#66ff00">
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
       
+      <!-- Google Site Verification -->
+      {% if GOOGLE_SITE_VERIFICATION %}
+        <meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}" />
+      {% endif %}
+      
+      <!-- Bing/Yahoo Verification -->
+      {% if BING_SITE_VERIFICATION %}
+        <meta name="msvalidate.01" content="{{ BING_SITE_VERIFICATION }}" />
+      {% endif %}
+      {% if YAHOO_SITE_VERIFICATION %}
+        <meta name="yandex-verification" content="{{ YAHOO_SITE_VERIFICATION }}" />
+      {% endif %}
+      
       {% if not custom_canonical %}
-        <link rel="canonical" href="https://lazysoft.dev{{ request.get_full_path }}" />
+        <link rel="canonical" href="{{ SITE_URL }}{{ request.get_full_path }}" />
       {% endif %}
     {% endblock %}
 
     {% block extra_meta %}
-      <link rel="alternate" hreflang="en" href="https://lazysoft.dev/en{{ request.resolver_match.route }}" />
-      <link rel="alternate" hreflang="uk" href="https://lazysoft.dev/uk{{ request.resolver_match.route }}" />
-      <link rel="alternate" hreflang="pl" href="https://lazysoft.dev/pl{{ request.resolver_match.route }}" />
-      <link rel="alternate" hreflang="x-default" href="https://lazysoft.dev/en{{ request.resolver_match.route }}" />
+      <link rel="alternate" hreflang="en" href="{{ SITE_URL }}/en{{ request.resolver_match.route }}" />
+      <link rel="alternate" hreflang="uk" href="{{ SITE_URL }}/uk{{ request.resolver_match.route }}" />
+      <link rel="alternate" hreflang="pl" href="{{ SITE_URL }}/pl{{ request.resolver_match.route }}" />
+      <link rel="alternate" hreflang="x-default" href="{{ SITE_URL }}/en{{ request.resolver_match.route }}" />
       
       <meta name="apple-mobile-web-app-capable" content="yes">
       <meta name="apple-mobile-web-app-title" content="Lazysoft">
@@ -94,8 +107,8 @@
         "@context": "https://schema.org",
         "@type": "Organization",
         "name": "Lazysoft",
-        "url": "https://lazysoft.dev",
-        "logo": "https://lazysoft.dev{% static 'images/logo.png' %}",
+        "url": "{{ SITE_URL }}",
+        "logo": "{{ SITE_URL }}{% static 'images/logo.png' %}",
         "description": "{% trans 'Automation and development solutions' %}",
         "sameAs": [
           "https://t.me/Lazysoft_news",
@@ -106,7 +119,7 @@
           "@type": "ContactPoint",
           "contactType": "customer service",
           "availableLanguage": ["English", "Ukrainian", "Polish"],
-          "url": "https://lazysoft.dev#contact"
+          "url": "{{ SITE_URL }}#contact"
         },
         "founder": {
           "@type": "Person",
@@ -127,15 +140,15 @@
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "Lazysoft",
-        "url": "https://lazysoft.dev",
+        "url": "{{ SITE_URL }}",
         "potentialAction": {
           "@type": "SearchAction",
-          "target": "https://lazysoft.dev/search?q={search_term_string}",
+          "target": "{{ SITE_URL }}/search?q={search_term_string}",
           "query-input": "required name=search_term_string"
         },
         "mainEntity": {
           "@type": "Organization",
-          "@id": "https://lazysoft.dev#organization"
+          "@id": "{{ SITE_URL }}#organization"
         },
         "inLanguage": ["en", "uk", "pl"]
       }
@@ -165,6 +178,17 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'site.webmanifest' %}">
+    
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    {% if GOOGLE_ANALYTICS_ID %}
+      <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
+      </script>
+    {% endif %}
     
     {% block extra_head %}{% endblock %}
   </head>
