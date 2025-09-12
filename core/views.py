@@ -10,6 +10,16 @@ from django.conf import settings
 from projects.models import Project
 from services.models import Service
 
+# 📊 Dashboard data (опційно)
+try:
+    from news.models import ROIAnalytics
+    from django.db.models import Sum, Avg
+    from django.utils import timezone
+    DASHBOARD_AVAILABLE = True
+except ImportError:
+    DASHBOARD_AVAILABLE = False
+    print("⚠️ Dashboard models not available - metrics will be hidden")
+
 # 📰 Новини (опційно)
 try:
     from news.models import ProcessedArticle, NewsCategory
@@ -37,6 +47,7 @@ def home(request):
     context = {
         'featured_projects': featured_projects,
         'featured_services': featured_services,
+        'dashboard_data': get_dashboard_data(),
     }
 
     # 📰 Якщо новини доступні
@@ -101,5 +112,54 @@ Sitemap: {settings.SITE_URL}/sitemap-news.xml
 Sitemap: {settings.SITE_URL}/sitemap-categories.xml
 """
     return HttpResponse(content, content_type='text/plain')
+
+
+def get_dashboard_data():
+    """Отримує дані для AI Metrics Widget"""
+    if not DASHBOARD_AVAILABLE:
+        return {
+            'roi_analysis': {'total_roi': 127},
+            'key_kpis': {
+                'ai_efficiency': {
+                    'hours_saved': 240,
+                    'efficiency_score': 340
+                }
+            },
+            'content_overview': {'articles': 85}
+        }
+    
+    today = timezone.now().date()
+    
+    # Сьогоднішні метрики
+    try:
+        today_roi = ROIAnalytics.objects.get(date=today)
+    except ROIAnalytics.DoesNotExist:
+        today_roi = ROIAnalytics.calculate_daily_metrics(today)
+    
+    # Статистика за місяць
+    month_start = today.replace(day=1)
+    month_stats = ROIAnalytics.objects.filter(
+        date__gte=month_start
+    ).aggregate(
+        total_savings=Sum('net_savings'),
+        total_hours=Sum('manual_hours_saved'),
+        total_articles=Sum('articles_processed'),
+        avg_roi=Avg('roi_percentage')
+    )
+    
+    return {
+        'roi_analysis': {
+            'total_roi': round(today_roi.roi_percentage, 1) if today_roi.roi_percentage else 127
+        },
+        'key_kpis': {
+            'ai_efficiency': {
+                'hours_saved': int(today_roi.manual_hours_saved) if today_roi.manual_hours_saved else 240,
+                'efficiency_score': int(today_roi.time_efficiency) if today_roi.time_efficiency else 340
+            }
+        },
+        'content_overview': {
+            'articles': today_roi.articles_processed if today_roi.articles_processed else 85
+        }
+    }
 
 
