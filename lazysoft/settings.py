@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-o(5n4*5i#g!+hzjll*fo@p-60kkq6&cw(x=z%0=m&9olx0xp6f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.1.13", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["192.168.1.13", "localhost", "127.0.0.1", "testserver"]
 CSRF_TRUSTED_ORIGINS = ["http://192.168.1.13:8000"]
 
 # Application definition - SINGLE DEFINITION
@@ -551,6 +551,9 @@ CLOUDFLARE_IPS = [
 CLOUDFLARE_API_TOKEN = config('CLOUDFLARE_API_TOKEN', default=None)
 CLOUDFLARE_ZONE_ID = config('CLOUDFLARE_ZONE_ID', default=None)
 CLOUDFLARE_EMAIL = config('CLOUDFLARE_EMAIL', default=None)
+
+# === 💰 AI COST SETTINGS ===
+AI_MANUAL_COST_PER_ARTICLE = float(os.getenv("AI_MANUAL_COST_PER_ARTICLE", 19))
 
 # Security logging
 LOGGING['loggers']['security'] = {

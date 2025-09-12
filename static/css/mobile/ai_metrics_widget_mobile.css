@@ -1,5 +1,29 @@
 /* 📱 AI METRICS WIDGET - МОБІЛЬНА ВЕРСІЯ */
 
+/* 🎨 AI МОДЕЛЬ КАРТКА - МОБІЛЬНЕ ЦЕНТРУВАННЯ */
+@media (max-width: 768px) {
+    .ai-model-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .ai-model-logo {
+        margin-bottom: 6px;
+    }
+    
+    .ai-model-logo img {
+        width: 28px !important;
+        height: 28px !important;
+    }
+    
+    .ai-model-name {
+        font-size: 1.1em;
+        font-weight: 700;
+    }
+}
+
 /* 📱 МОБІЛЬНА АДАПТАЦІЯ */
 @media (max-width: 768px) {
     .ai-metrics-widget {

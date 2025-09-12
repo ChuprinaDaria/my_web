@@ -56,10 +56,10 @@ class SimpleROIAdmin(admin.ModelAdmin):
 # === СТАТТІ (НАЙПРОСТІШІ) ===
 @admin.register(ProcessedArticle)
 class SimpleArticleAdmin(admin.ModelAdmin):
-    list_display = ['get_title', 'category', 'status', 'priority', 'created_at']
+    list_display = ['get_title', 'category', 'status', 'priority', 'show_ai_cost', 'show_ai_time', 'show_ai_ops', 'created_at']
     list_filter = ['status', 'category', 'priority']
     search_fields = ['title_uk', 'title_en', 'title_pl']
-    readonly_fields = ['created_at', 'updated_at', 'ai_image_url', 'get_original_content', 'get_original_summary', 'get_original_url']
+    readonly_fields = ['created_at', 'updated_at', 'ai_image_url', 'get_original_content', 'get_original_summary', 'get_original_url', 'show_ai_cost', 'show_ai_time', 'show_ai_ops']
     
     fieldsets = (
         ('Основна інформація', {
@@ -79,6 +79,10 @@ class SimpleArticleAdmin(admin.ModelAdmin):
         ('Бізнес інсайти', {
             'fields': ('business_insight_en', 'business_insight_uk', 'business_insight_pl'),
             'classes': ('wide',)
+        }),
+        ('AI Метадані', {
+            'fields': ('show_ai_cost', 'show_ai_time', 'show_ai_ops'),
+            'classes': ('collapse',)
         }),
         ('Метадані', {
             'fields': ('ai_image_url', 'published_at', 'created_at', 'updated_at'),
@@ -110,6 +114,53 @@ class SimpleArticleAdmin(admin.ModelAdmin):
             return obj.raw_article.original_url
         return "Немає посилання"
     get_original_url.short_description = 'Оригінальне посилання'
+    
+    def show_ai_cost(self, obj):
+        """Показує вартість AI обробки"""
+        cost = obj.get_ai_processing_cost()
+        if cost > 0:
+            return f"${cost:.4f}"
+        return "N/A"
+    show_ai_cost.short_description = "AI Вартість"
+    show_ai_cost.admin_order_field = 'ai_cost'
+    
+    def show_ai_time(self, obj):
+        """Показує час AI обробки"""
+        time = obj.get_ai_processing_time()
+        if time > 0:
+            return f"{time:.1f}с"
+        return "N/A"
+    show_ai_time.short_description = "AI Час"
+    
+    def show_ai_ops(self, obj):
+        """Показує кількість AI операцій"""
+        ops = obj.get_ai_operations_count()
+        if ops > 0:
+            return f"{ops} оп."
+        return "N/A"
+    show_ai_ops.short_description = "AI Операції"
+
+
+# === AI PROCESSING LOGS ===
+@admin.register(AIProcessingLog)
+class AIProcessingLogAdmin(admin.ModelAdmin):
+    list_display = ['article', 'log_type', 'model_used', 'show_cost', 'show_time', 'success', 'created_at']
+    list_filter = ['log_type', 'model_used', 'success', 'created_at']
+    search_fields = ['article__title', 'model_used']
+    readonly_fields = ['created_at', 'input_tokens', 'output_tokens', 'processing_time', 'cost']
+    ordering = ['-created_at']
+    
+    def show_cost(self, obj):
+        """Показує вартість операції"""
+        return f"${obj.cost:.6f}"
+    show_cost.short_description = "Вартість"
+    show_cost.admin_order_field = 'cost'
+    
+    def show_time(self, obj):
+        """Показує час обробки"""
+        return f"{obj.processing_time:.2f}с"
+    show_time.short_description = "Час"
+    show_time.admin_order_field = 'processing_time'
 
 
 # === RSS ДЖЕРЕЛА ===
@@ -146,15 +197,7 @@ class SimpleRawAdmin(admin.ModelAdmin):
     get_title.short_description = "Назва"
 
 
-# === AI ЛОГИ ===
-@admin.register(AIProcessingLog)
-class SimpleAILogAdmin(admin.ModelAdmin):
-    list_display = ['log_type', 'model_used', 'success', 'created_at']
-    list_filter = ['log_type', 'success']
-    readonly_fields = ['created_at']
-    
-    def has_add_permission(self, request):
-        return False
+# === AI ЛОГИ (видалено - використовується новий AIProcessingLogAdmin) ===
 
 
 # === СОЦМЕРЕЖІ ===

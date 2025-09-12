@@ -114,7 +114,7 @@ def projects_list(request):
     
     context = {
         "categories": localized_categories,
-        "featured_projects_qs": featured_projects_qs,
+        "featured_projects": featured_projects_qs,
         "total_projects": total_projects,
         "total_categories": categories_count,
 

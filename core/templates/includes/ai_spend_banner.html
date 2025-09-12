@@ -1,0 +1,22 @@
+{% load static i18n %}
+
+<!-- AI Spend Banner -->
+<div id="ai-spend-banner" class="glass" style="margin:12px 0; padding:10px 16px; border-radius:12px; opacity:.92; text-align:center;">
+  <small class="muted" id="ai-spend-text">{% trans "Завантаження даних AI..." %}</small>
+</div>
+
+<script>
+(async () => {
+  try {
+    const res = await fetch('/dashboard/public-api/?period=month');
+    const data = await res.json();
+    const spend = Number(data?.ai_spend_usd || 0);
+    const model = data?.ai_top_model || 'AI';
+    const text = `{% trans "Витрачено" %} ${spend.toFixed(2)}$ {% trans "за період на модель" %} ${model}`;
+    document.getElementById('ai-spend-text').textContent = text;
+  } catch (e) {
+    console.warn('AI spend banner failed', e);
+    document.getElementById('ai-spend-text').textContent = '{% trans "Дані AI недоступні" %}';
+  }
+})();
+</script>

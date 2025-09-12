@@ -220,7 +220,7 @@ class WidgetMetricsAPIView(View):
             
             # === РЕАЛІСТИЧНІ МЕТРИКИ ===
             metrics = {
-                'roi_percentage': min(abs(roi_data.get('total_roi', 25.8)), 200),  # Max 200%
+                'savings_usd': round(roi_data.get('estimated_savings', 0), 0),  # Заощаджені кошти в доларах
                 'hours_saved': round(roi_data.get('hours_saved', 17.5), 1),
                 'ai_content': content_data.get('articles', 5),
                 'efficiency_growth': min(ai_efficiency.get('efficiency_score', 85.0), 300),  # Max 300%
@@ -241,19 +241,89 @@ class WidgetMetricsAPIView(View):
             
         except Exception as e:
             # Fallback realistic data
+            from django.conf import settings
+            manual_cost = getattr(settings, 'AI_MANUAL_COST_PER_ARTICLE', 19.0)
+            demo_articles = 5
             return JsonResponse({
                 'success': True,
                 'metrics': {
-                    'roi_percentage': 28.5,      # 28.5% - реалістично
-                    'hours_saved': 15.5,         # 15.5h - за місяць  
-                    'ai_content': 8,             # 8 статей
+                    'savings_usd': demo_articles * manual_cost,  # 5 статей × $19 = $95
+                    'hours_saved': 17.5,         # 17.5h - за місяць  
+                    'ai_content': demo_articles, # 5 статей
                     'efficiency_growth': 95.0,   # 95% ефективність
                     'last_updated': timezone.now().strftime('%H:%M'),
-                    'cost_savings': 850,         # $850 заощаджено
-                    'articles_processed': 8
+                    'cost_savings': demo_articles * manual_cost,  # $600 заощаджено
+                    'articles_processed': demo_articles
                 },
                 'fallback': True,
                 'error': str(e) if request.user.is_staff else 'Using fallback data'
+            })
+
+
+class PublicDashboardAPIView(View):
+    """Публічний API для віджета метрик (без авторизації)"""
+    
+    @method_decorator(cache_page(60 * 5))  # Кешування на 5 хвилин
+    def get(self, request):
+        try:
+            from lazysoft.dashboard import LazySOFTDashboardAdmin
+            dashboard = LazySOFTDashboardAdmin()
+            data = dashboard.get_executive_summary('month')
+            
+            # Публічні дані для віджета
+            # Отримуємо AI метрики
+            ai_metrics = data.get('ai_metrics', {})
+            by_model = ai_metrics.get('by_model', {})
+            
+            # Визначаємо топ-модель за витратами
+            top_model = None
+            if by_model:
+                top_model = max(by_model.items(), key=lambda kv: kv[1].get('total_cost', 0.0))[0]
+            
+            public = {
+                "roi_analysis": {
+                    "estimated_savings": data["roi_analysis"].get("estimated_savings", 0),
+                    "hours_saved": data["roi_analysis"].get("hours_saved", 0),
+                    "articles_processed": data["roi_analysis"].get("articles_processed", 0),
+                    "cost_per_article": data["roi_analysis"].get("cost_per_article", 0),
+                },
+                "content_overview": {"articles": data["content_overview"].get("articles", 0)},
+                "ai_spend_usd": ai_metrics.get("total_cost", 0.0),  # реальні витрати AI
+                "ai_spend_by_model": by_model,  # розбивка по моделях
+                "ai_top_model": top_model,  # топ-модель за витратами
+            }
+            
+            return JsonResponse({
+                'success': True,
+                'data': public,
+                'last_updated': timezone.now().strftime('%H:%M')
+            })
+            
+        except Exception as e:
+            # Fallback дані
+            from django.conf import settings
+            manual_cost = getattr(settings, 'AI_MANUAL_COST_PER_ARTICLE', 19.0)
+            demo_articles = 5
+            
+            return JsonResponse({
+                'success': True,
+                'data': {
+                    "roi_analysis": {
+                        "estimated_savings": demo_articles * manual_cost,
+                        "hours_saved": 17.5,
+                        "articles_processed": demo_articles,
+                        "cost_per_article": 3.8,
+                    },
+                    "content_overview": {"articles": demo_articles},
+                    "ai_spend_usd": 19.0,
+                    "ai_spend_by_model": {
+                        "gpt-4o": {"total_cost": 80.0, "calls": 10, "avg_time": 2.5},
+                        "gpt-3.5-turbo": {"total_cost": 40.0, "calls": 15, "avg_time": 1.2}
+                    },
+                    "ai_top_model": "gpt-4o",
+                },
+                'last_updated': timezone.now().strftime('%H:%M'),
+                'fallback': True
             })
 
 

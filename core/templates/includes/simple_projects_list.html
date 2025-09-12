@@ -1,0 +1,80 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- ✅ SIMPLE FEATURED PROJECTS (NO CAROUSEL) -->
+<section class="featured-projects-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">
+        <span data-lang="en">Featured Projects</span>
+        <span data-lang="uk">Рекомендовані проєкти</span>
+        <span data-lang="pl">Polecane projekty</span>
+      </h2>
+      {% if featured_subtitle %}
+        <p class="section-subtitle">{{ featured_subtitle }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Вертикальний список з нативним керуванням -->
+    <div class="projects-simple-list" role="list">
+      {% for project in featured_projects|slice:":10" %}
+        <article class="project-simple-item" role="article"
+                 data-project-id="{{ project.slug }}"
+                 onclick="window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
+
+          <!-- Зображення (desktop), на мобі CSS сховає -->
+          <div class="project-media">
+            {% if project.featured_image %}
+              <img src="{{ project.featured_image.url }}"
+                   alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}{% else %}{{ project.title_en }}{% endif %}">
+            {% else %}
+              <div class="project-placeholder"><i data-lucide="image"></i></div>
+            {% endif %}
+          </div>
+
+          <!-- Контент + акордеон -->
+          <div class="project-main">
+            <button class="project-trigger" type="button"
+                    aria-expanded="false"
+                    aria-controls="pdesc-{{ forloop.counter }}"
+                    onclick="event.stopPropagation();">
+              <div class="project-title-row">
+                <h3 class="project-title">
+                  {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}
+                  {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}
+                  {% else %}{{ project.title_en }}{% endif %}
+                </h3>
+                <i data-lucide="chevron-down" class="accordion-arrow" aria-hidden="true"></i>
+              </div>
+              <p class="project-short text-secondary">
+                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags }}
+                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags }}
+                {% else %}{{ project.short_description_en|striptags }}{% endif %}
+              </p>
+            </button>
+
+            <div id="pdesc-{{ forloop.counter }}" class="project-description-accordion" hidden>
+              <div class="project-description">
+                {% if CURRENT_LANG == 'uk' and project.description_uk %}{{ project.description_uk|safe }}
+                {% elif CURRENT_LANG == 'pl' and project.description_pl %}{{ project.description_pl|safe }}
+                {% else %}{{ project.description_en|safe }}{% endif %}
+              </div>
+              <div class="project-actions">
+                <a class="btn-primary" href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/"
+                   onclick="event.stopPropagation();">{% trans "Детальніше" %}</a>
+                {% if project.project_url %}
+                  <a class="btn-secondary" href="{{ project.project_url }}" target="_blank" rel="noopener"
+                     onclick="event.stopPropagation();">{% trans "Демо" %}</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="project-glow-border" aria-hidden="true"></div>
+        </article>
+      {% empty %}
+        <div class="empty-state"><p>{% trans "Немає рекомендованих проєктів" %}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

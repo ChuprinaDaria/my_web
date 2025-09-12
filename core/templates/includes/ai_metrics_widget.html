@@ -11,22 +11,34 @@
     <!-- 📈 СІТКА МЕТРИК -->
     <div class="metrics-grid">
         
-        <!-- ROI Performance -->
+        <!-- Заощаджено коштів -->
         <div class="metric-card roi">
-            <h3 class="metric-label">{% trans "ROI Ефективність" %}</h3>
-            <p class="metric-value live">
-                {{ dashboard_data.roi_analysis.total_roi|default:"127" }}<span class="metric-unit">%</span>
-                <span class="trend-indicator trend-up">↗</span>
+            <h3 class="metric-label">{% trans "Заощаджено коштів" %}</h3>
+            <p class="metric-value live" id="roiValue">
+                $0<span class="metric-unit"></span>
             </p>
-            <p class="metric-description">{% trans "Рентабельність AI інвестицій" %}</p>
+            <p class="metric-description">{% trans "Економія від автоматизації за період" %}</p>
+        </div>
+
+        <!-- AI Model -->
+        <div class="metric-card ai-model">
+            <h3 class="metric-label">{% trans "Модель AI" %}</h3>
+            <div class="metric-value live ai-model-container" id="aiModelValue">
+                <div class="ai-model-logo">
+                    <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini" style="width: 32px; height: 32px; display: block; margin: 0 auto 8px auto;" onerror="this.style.display='none'; this.nextElementSibling.textContent='🌟';">
+                </div>
+                <div class="ai-model-name">
+                    <span id="aiModelName" style="color: #e91e63; font-weight: 700; text-shadow: none;">gemini</span>
+                </div>
+            </div>
+            <p class="metric-description">{% trans "Основна модель для обробки" %}</p>
         </div>
 
         <!-- Time Saved -->
         <div class="metric-card time">
             <h3 class="metric-label">{% trans "Зекономлено Часу" %}</h3>
-            <p class="metric-value live">
-                {{ dashboard_data.key_kpis.ai_efficiency.hours_saved|default:"240" }}<span class="metric-unit">{% trans "год" %}</span>
-                <span class="trend-indicator trend-up">↗</span>
+            <p class="metric-value live" id="timeValue">
+                0<span class="metric-unit">{% trans "год" %}</span>
             </p>
             <p class="metric-description">{% trans "Автоматизація робочих процесів" %}</p>
         </div>
@@ -34,9 +46,8 @@
         <!-- AI Content -->
         <div class="metric-card content">
             <h3 class="metric-label">{% trans "AI Контент" %}</h3>
-            <p class="metric-value live">
-                {{ dashboard_data.content_overview.articles|default:"85" }}<span class="metric-unit">{% trans "шт" %}</span>
-                <span class="trend-indicator trend-up">↗</span>
+            <p class="metric-value live" id="contentValue">
+                0<span class="metric-unit">{% trans "шт" %}</span>
             </p>
             <p class="metric-description">{% trans "Згенеровано AI статей цього місяця" %}</p>
         </div>
@@ -46,10 +57,28 @@
             <h3 class="metric-label">{% trans "Зростання Ефективності" %}</h3>
             <p class="metric-value live">
                 +{{ dashboard_data.key_kpis.ai_efficiency.efficiency_score|default:"340" }}<span class="metric-unit">%</span>
-                <span class="trend-indicator trend-up">↗</span>
             </p>
             <p class="metric-description">{% trans "Покращення продуктивності процесів" %}</p>
         </div>
+
+        <!-- AI Spend -->
+        <div class="metric-card ai-spend">
+            <h3 class="metric-label">{% trans "Витрати на AI" %}</h3>
+            <p class="metric-value live" id="aiCostValue">
+                0.03<span class="metric-unit">$</span>
+            </p>
+            <p class="metric-description">{% trans "Витрачено на AI моделі за період" %}</p>
+        </div>
+
+        <!-- AI Time -->
+        <div class="metric-card ai-time">
+            <h3 class="metric-label">{% trans "Час AI обробки" %}</h3>
+            <p class="metric-value live" id="aiTimeValue">
+                0.1<span class="metric-unit">{% trans "год" %}</span>
+            </p>
+            <p class="metric-description">{% trans "Загальний час AI обробки" %}</p>
+        </div>
+
 
     </div>
 
@@ -68,108 +97,148 @@
 
 <!-- 📡 AJAX SCRIPT -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 🔄 ЛІЧИЛЬНИК АНІМАЦІЯ
-    function animateCounters() {
-        document.querySelectorAll('.metric-value').forEach(element => {
-            const text = element.textContent;
-            const target = parseInt(text.replace(/[^\d]/g, ''));
-            if (isNaN(target)) return;
-            
-            const duration = 2000;
-            const step = target / duration * 16;
-            let current = 0;
-            
-            const counter = setInterval(() => {
-                current += step;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(counter);
-                }
-                
-                const unit = element.querySelector('.metric-unit');
-                const trend = element.querySelector('.trend-indicator');
-                const unitText = unit ? unit.outerHTML : '';
-                const trendText = trend ? trend.outerHTML : '';
-                
-                element.innerHTML = Math.floor(current) + unitText + trendText;
-            }, 16);
-        });
+// 🌍 WIDGET CONFIGURATION
+const WIDGET_CONFIG = {
+    language: '{{ LANGUAGE_CODE }}',
+    translations: {
+        today: '{% trans "сьогодні" %}',
+        hours: '{% trans "год" %}',
+        articles: '{% trans "шт" %}',
+        percent: '{% trans "%" %}'
     }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
 
     // 🕒 ОНОВЛЕННЯ ЧАСУ
     function updateTimestamp() {
         const now = new Date();
-        const timeStr = now.toLocaleTimeString('{{ LANGUAGE_CODE }}', { 
+        const timeStr = now.toLocaleTimeString(WIDGET_CONFIG.language, { 
             hour: '2-digit', 
             minute: '2-digit' 
         });
-        document.getElementById('lastUpdated').textContent = `{% trans "сьогодні" %}, ${timeStr}`;
+        document.getElementById('lastUpdated').textContent = 
+            `${WIDGET_CONFIG.translations.today}, ${timeStr}`;
     }
 
     // 📡 АВТООНОВЛЕННЯ ДАНИХ
     async function updateMetrics() {
         try {
-            const response = await fetch('/api/widget-metrics/');
+            const response = await fetch('/dashboard/public-api/?period=month');
             const data = await response.json();
             
-            if (data.success) {
-                // Оновити значення метрик
+            if (data) {
                 updateMetricValues(data);
                 updateTimestamp();
             }
         } catch (error) {
-            console.log('Metrics update failed:', error);
+            // Silent fail
         }
     }
 
     function updateMetricValues(data) {
-        // Оновлюємо ROI
-        if (data.metrics && data.metrics.roi_percentage) {
-            const roiElement = document.querySelector('.roi .metric-value');
-            if (roiElement) {
-                roiElement.innerHTML = `${Math.round(data.metrics.roi_percentage)}<span class="metric-unit">%</span><span class="trend-indicator trend-up">↗</span>`;
+        if (!data || !data.data) {
+            return;
+        }
+        
+        if (data.data.roi_analysis) {
+            const roiElement = document.getElementById('roiValue');
+            if (roiElement && typeof data.data.roi_analysis.estimated_savings !== 'undefined') {
+                const savings = data.data.roi_analysis.estimated_savings;
+                roiElement.innerHTML = `$${savings.toFixed(0)}<span class="metric-unit"></span>`;
+                roiElement.setAttribute('data-real-value', 'true');
             }
         }
         
-        // Оновлюємо години
-        if (data.metrics && data.metrics.hours_saved) {
-            const hoursElement = document.querySelector('.time .metric-value');
+        if (data.data.roi_analysis && data.data.roi_analysis.hours_saved) {
+            const hoursElement = document.getElementById('timeValue');
             if (hoursElement) {
-                hoursElement.innerHTML = `${data.metrics.hours_saved}<span class="metric-unit">{% trans "год" %}</span><span class="trend-indicator trend-up">↗</span>`;
+                hoursElement.innerHTML = `${data.data.roi_analysis.hours_saved}<span class="metric-unit">${WIDGET_CONFIG.translations.hours}</span>`;
+                hoursElement.setAttribute('data-real-value', 'true');
             }
         }
         
-        // Оновлюємо статті
-        if (data.metrics && data.metrics.ai_content) {
-            const articlesElement = document.querySelector('.content .metric-value');
+        if (data.data.content_overview && data.data.content_overview.articles) {
+            const articlesElement = document.getElementById('contentValue');
             if (articlesElement) {
-                articlesElement.innerHTML = `${data.metrics.ai_content}<span class="metric-unit">{% trans "шт" %}</span><span class="trend-indicator trend-up">↗</span>`;
+                articlesElement.innerHTML = `${data.data.content_overview.articles}<span class="metric-unit">${WIDGET_CONFIG.translations.articles}</span>`;
+                articlesElement.setAttribute('data-real-value', 'true');
             }
         }
         
-        // Оновлюємо ефективність
-        if (data.metrics && data.metrics.efficiency_growth) {
-            const efficiencyElement = document.querySelector('.efficiency .metric-value');
-            if (efficiencyElement) {
-                efficiencyElement.innerHTML = `+${Math.round(data.metrics.efficiency_growth)}<span class="metric-unit">%</span><span class="trend-indicator trend-up">↗</span>`;
+        const efficiencyElement = document.querySelector('.efficiency .metric-value');
+        if (efficiencyElement) {
+            let efficiencyValue = 99;
+            
+            if (data.data.key_kpis && data.data.key_kpis.ai_efficiency && data.data.key_kpis.ai_efficiency.efficiency_score) {
+                efficiencyValue = data.data.key_kpis.ai_efficiency.efficiency_score;
+            } else if (data.data.roi_analysis && data.data.roi_analysis.efficiency_score) {
+                efficiencyValue = data.data.roi_analysis.efficiency_score;
+            }
+            
+            efficiencyElement.innerHTML = `+${Math.round(efficiencyValue)}<span class="metric-unit">%</span>`;
+            efficiencyElement.setAttribute('data-real-value', 'true');
+        }
+        
+        if (typeof data.data.ai_spend_usd !== 'undefined') {
+            const aiCostElement = document.getElementById('aiCostValue');
+            if (aiCostElement) {
+                const spend = Number(data.data.ai_spend_usd || 0);
+                aiCostElement.innerHTML = `${spend.toFixed(2)}<span class="metric-unit">$</span>`;
+                aiCostElement.setAttribute('data-real-value', 'true');
             }
         }
         
-        // Оновлюємо час останнього оновлення
-        if (data.metrics && data.metrics.last_updated) {
+        if (data.data.ai_spend_by_model) {
+            const aiTimeElement = document.getElementById('aiTimeValue');
+            if (aiTimeElement) {
+                const modelData = Object.values(data.data.ai_spend_by_model)[0];
+                if (modelData && modelData.avg_time) {
+                    const totalTimeHours = (modelData.avg_time * modelData.calls) / 3600;
+                    aiTimeElement.innerHTML = `${totalTimeHours.toFixed(1)}<span class="metric-unit">${WIDGET_CONFIG.translations.hours}</span>`;
+                    aiTimeElement.setAttribute('data-real-value', 'true');
+                }
+            }
+        }
+        
+        if (data.data.ai_top_model) {
+            const aiModelElement = document.getElementById('aiModelName');
+            const aiModelLogo = document.querySelector('.ai-model-logo img');
+            if (aiModelElement && aiModelLogo) {
+                const model = data.data.ai_top_model.toLowerCase();
+                if (model.includes('gemini')) {
+                    aiModelLogo.src = 'https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg';
+                    aiModelLogo.style.width = '32px';
+                    aiModelLogo.style.height = '32px';
+                    aiModelLogo.style.display = 'block';
+                    aiModelLogo.style.margin = '0 auto 8px auto';
+                } else if (model.includes('gpt')) {
+                    aiModelLogo.style.display = 'none';
+                    aiModelLogo.nextElementSibling.textContent = '🧠';
+                } else if (model.includes('claude')) {
+                    aiModelLogo.style.display = 'none';
+                    aiModelLogo.nextElementSibling.textContent = '🎭';
+                } else {
+                    aiModelLogo.style.display = 'none';
+                    aiModelLogo.nextElementSibling.textContent = '🤖';
+                }
+                aiModelElement.textContent = data.data.ai_top_model;
+                aiModelElement.style.color = '#e91e63';
+                aiModelElement.style.fontWeight = '700';
+                aiModelElement.style.textShadow = 'none';
+            }
+        }
+        
+        if (data.last_updated) {
             const timeElement = document.getElementById('lastUpdated');
             if (timeElement) {
-                timeElement.textContent = `сьогодні, ${data.metrics.last_updated}`;
+                timeElement.textContent = `сьогодні, ${data.last_updated}`;
             }
         }
     }
 
-    // 🚀 ІНІЦІАЛІЗАЦІЯ
-    setTimeout(animateCounters, 500);
     updateTimestamp();
-    
-    // Автооновлення кожні 5 хвилин
+    updateMetrics();
     setInterval(updateMetrics, 300000);
 });
 </script>
