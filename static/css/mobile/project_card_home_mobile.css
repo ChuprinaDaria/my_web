@@ -104,8 +104,8 @@
   }
 
   .project-card-home .cta-row {
-    padding: 12px;
-    gap: 6px;
+    padding: 16px;
+    gap: 12px;
   }
 
   .project-card-home .cta-primary {
@@ -121,14 +121,47 @@
   }
 
   .project-card-home .secondary-actions {
-    gap: 6px;
+    gap: 10px;
+    margin-top: 8px;
   }
 
   .project-card-home .details-link,
   .project-card-home .demo-link {
-    font-size: 0.75rem; /* text-xs з typography */
-    padding: 6px 12px;
-    border-radius: 30px; /* Як у buttons.css */
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 10px !important;
+    text-decoration: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    pointer-events: auto !important;
+    z-index: 20 !important;
+  }
+  
+  .project-card-home .details-link {
+    background: rgba(255, 0, 107, 0.2) !important;
+    border: 1px solid rgba(255, 0, 107, 0.5) !important;
+    color: var(--accent-pink) !important;
+  }
+  
+  .project-card-home .details-link:hover {
+    background: rgba(255, 0, 107, 0.3) !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  .project-card-home .demo-link {
+    background: rgba(102, 255, 0, 0.1) !important;
+    border: 1px solid rgba(102, 255, 0, 0.3) !important;
+    color: var(--accent-green) !important;
+  }
+  
+  .project-card-home .demo-link:hover {
+    background: rgba(102, 255, 0, 0.2) !important;
+    transform: translateY(-1px) !important;
   }
 }
 
@@ -182,7 +215,8 @@
   }
 
   .project-card-home .cta-row {
-    padding: 10px;
+    padding: 14px;
+    gap: 10px;
   }
 
   .project-card-home .cta-primary {
@@ -194,15 +228,48 @@
 
   .project-card-home .secondary-actions {
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
+    margin-top: 6px;
   }
 
   .project-card-home .details-link,
   .project-card-home .demo-link {
-    font-size: 0.65rem;
-    text-align: center;
     padding: 4px 8px;
-    border-radius: 30px; /* Як у buttons.css */
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    pointer-events: auto;
+    z-index: 20;
+  }
+  
+  .project-card-home .details-link {
+    background: rgba(255, 0, 107, 0.2) !important;
+    border: 1px solid rgba(255, 0, 107, 0.5) !important;
+    color: var(--accent-pink) !important;
+  }
+  
+  .project-card-home .details-link:hover {
+    background: rgba(255, 0, 107, 0.3) !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  .project-card-home .demo-link {
+    background: rgba(102, 255, 0, 0.1) !important;
+    border: 1px solid rgba(102, 255, 0, 0.3) !important;
+    color: var(--accent-green) !important;
+  }
+  
+  .project-card-home .demo-link:hover {
+    background: rgba(102, 255, 0, 0.2) !important;
+    transform: translateY(-1px) !important;
   }
 }
 
@@ -226,3 +293,25 @@
     transition: none !important;
   }
 }
+
+/* Стилі для чипів */
+.project-card-home .chip.primary {
+  background: rgba(102, 255, 0, 0.7);
+  color: #000;
+}
+
+.project-card-home .chip.innovation {
+  background: rgba(255, 0, 107, 0.7);
+  color: #fff;
+}
+
+.project-card-home .chip.ai {
+  background: rgba(138, 43, 226, 0.7);
+  color: #fff;
+}
+
+.project-card-home .chip.top {
+  background: rgba(255, 215, 0, 0.7);
+  color: #000;
+}
+

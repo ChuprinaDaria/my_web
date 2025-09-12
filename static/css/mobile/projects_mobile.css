@@ -175,6 +175,11 @@
     font-size: 10px;
   }
   
+  .project-tag.highlight {
+    background: rgba(255, 0, 107, 0.9) !important;
+    color: #fff !important;
+  }
+  
   .project-title {
     font-size: 1.2rem;
     margin-bottom: var(--spacing-xs);
@@ -208,8 +213,76 @@
   
   .btn-primary,
   .btn-secondary {
-    padding: 10px 16px;
-    font-size: 0.85rem;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 10px !important;
+    text-decoration: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  
+  .btn-primary,
+  .project-card .btn-primary,
+  .project-card-home .btn-primary,
+  .projects-grid .btn-primary {
+    background: rgba(255, 0, 107, 0.2) !important;
+    border: 1px solid rgba(255, 0, 107, 0.5) !important;
+    color: var(--accent-pink) !important;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 10px !important;
+  }
+  
+  .btn-primary:hover,
+  .project-card .btn-primary:hover,
+  .project-card-home .btn-primary:hover,
+  .projects-grid .btn-primary:hover {
+    background: rgba(255, 0, 107, 0.3) !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  .btn-secondary,
+  .project-card .btn-secondary,
+  .project-card-home .btn-secondary,
+  .projects-grid .btn-secondary {
+    background: rgba(102, 255, 0, 0.1) !important;
+    border: 1px solid rgba(102, 255, 0, 0.3) !important;
+    color: var(--accent-green) !important;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 10px !important;
+  }
+  
+  .btn-secondary:hover,
+  .project-card .btn-secondary:hover,
+  .project-card-home .btn-secondary:hover,
+  .projects-grid .btn-secondary:hover {
+    background: rgba(102, 255, 0, 0.2) !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  /* Додаткові стилі для всіх кнопок */
+  .details-link, .demo-link {
+    background: rgba(255, 0, 107, 0.2) !important;
+    border: 1px solid rgba(255, 0, 107, 0.5) !important;
+    color: var(--accent-pink) !important;
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 10px !important;
+  }
+  
+  .demo-link {
+    background: rgba(102, 255, 0, 0.1) !important;
+    border: 1px solid rgba(102, 255, 0, 0.3) !important;
+    color: var(--accent-green) !important;
   }
   
   /* 💼 SERVICES CROSS-PROMO MOBILE */

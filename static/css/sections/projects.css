@@ -56,7 +56,7 @@
 }
 
 .project-tag.highlight {
-  background: rgba(255, 69, 0, 0.9);
+  background: rgba(255, 0, 107, 0.9);
   color: #fff;
 }
 
@@ -215,24 +215,45 @@
 .secondary-actions {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .details-link,
 .demo-link {
-  font-size: 0.8rem;
-  color: var(--accent-green);
-  text-decoration: none;
-  font-weight: 600;
   padding: 4px 8px;
-  border-radius: 8px;
-  transition: all var(--transition-fast);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 10px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.details-link:hover,
-.demo-link:hover {
+.details-link {
+  background: rgba(255, 0, 107, 0.2);
+  border: 1px solid rgba(255, 0, 107, 0.5);
+  color: var(--accent-pink);
+}
+
+.details-link:hover {
+  background: rgba(255, 0, 107, 0.3);
+  transform: translateY(-1px);
+}
+
+.demo-link {
   background: rgba(102, 255, 0, 0.1);
-  text-decoration: underline;
+  border: 1px solid rgba(102, 255, 0, 0.3);
+  color: var(--accent-green);
+}
+
+.demo-link:hover {
+  background: rgba(102, 255, 0, 0.2);
+  transform: translateY(-1px);
 }
 
 /* Card Glow Effect */
@@ -276,7 +297,8 @@
   
   .secondary-actions {
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
+    margin-top: 8px;
   }
 }
 

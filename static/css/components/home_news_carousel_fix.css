@@ -131,9 +131,9 @@
 }
 
 #news .news-card-meta .chip.priority-high {
-  background: rgba(255, 69, 0, 0.2);
-  border-color: rgba(255, 69, 0, 0.5);
-  color: #FF4500;
+  background: rgba(255, 0, 107, 0.2);
+  border-color: rgba(255, 0, 107, 0.5);
+  color: var(--accent-pink);
 }
 
 #news .news-card-meta .cta-arrow {

@@ -21,8 +21,7 @@
   white-space: nowrap;
 }
 
-/* 🌟 PRIMARY BUTTON - основний стиль */
-.btn-primary,
+/* 🌟 PRIMARY BUTTON - основний стиль (тільки для CTA кнопок) */
 .cta-primary,
 .cta-button {
   background: linear-gradient(135deg, var(--accent-green), #80ff40);
@@ -42,7 +41,29 @@
   text-decoration: none;
 }
 
-.btn-primary:hover,
+/* 🎯 PROJECT CARD BUTTONS - chip стиль */
+.btn-primary {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 10px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 0, 107, 0.2);
+  border: 1px solid rgba(255, 0, 107, 0.5);
+  color: var(--accent-pink);
+}
+
+.btn-primary:hover {
+  background: rgba(255, 0, 107, 0.3);
+  transform: translateY(-1px);
+}
+
 .cta-primary:hover,
 .cta-button:hover {
   transform: translateY(-2px);
@@ -50,7 +71,6 @@
   background: linear-gradient(135deg, #80ff40, var(--accent-green));
 }
 
-.btn-primary:active,
 .cta-primary:active,
 .cta-button:active {
   transform: translateY(0);
@@ -133,39 +153,39 @@
 /* 🔄 SECONDARY ACTIONS (Details, Demo links) */
 .details-link,
 .demo-link {
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 8px;
   border-radius: 12px;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  font-size: 12px;
   font-weight: 600;
+  font-size: 10px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 
-.details-link:hover,
-.demo-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
-  color: #fff;
+.details-link {
+  background: rgba(255, 0, 107, 0.2);
+  border: 1px solid rgba(255, 0, 107, 0.5);
+  color: var(--accent-pink);
+}
+
+.details-link:hover {
+  background: rgba(255, 0, 107, 0.3);
   transform: translateY(-1px);
 }
 
 .demo-link {
   background: rgba(102, 255, 0, 0.1);
-  border-color: rgba(102, 255, 0, 0.3);
+  border: 1px solid rgba(102, 255, 0, 0.3);
   color: var(--accent-green);
 }
 
 .demo-link:hover {
   background: rgba(102, 255, 0, 0.2);
-  border-color: rgba(102, 255, 0, 0.5);
-  color: #80ff20;
+  transform: translateY(-1px);
 }
 
 /* 🔄 NAVIGATION КНОПКИ */
