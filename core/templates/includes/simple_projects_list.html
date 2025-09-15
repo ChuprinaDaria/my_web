@@ -1,80 +1,88 @@
 {% load i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- ✅ SIMPLE FEATURED PROJECTS (NO CAROUSEL) -->
-<section class="featured-projects-section">
-  <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">
-        <span data-lang="en">Featured Projects</span>
-        <span data-lang="uk">Рекомендовані проєкти</span>
-        <span data-lang="pl">Polecane projekty</span>
-      </h2>
-      {% if featured_subtitle %}
-        <p class="section-subtitle">{{ featured_subtitle }}</p>
-      {% endif %}
-    </div>
+<!-- ✅ MODERN FEATURED PROJECTS (WITH ACCORDION) -->
+<div class="section-header">
+  <h2>
+    {% trans "Featured Projects" %}
+  </h2>
+  {% if featured_subtitle %}
+    <p>{{ featured_subtitle }}</p>
+  {% endif %}
+</div>
 
-    <!-- Вертикальний список з нативним керуванням -->
-    <div class="projects-simple-list" role="list">
+<!-- Сучасний список проєктів з акордеоном -->
+<div class="projects-simple-list" role="list">
       {% for project in featured_projects|slice:":10" %}
-        <article class="project-simple-item" role="article"
-                 data-project-id="{{ project.slug }}"
-                 onclick="window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
+        <article class="project-simple-item" role="article" data-project-id="{{ project.slug }}">
 
-          <!-- Зображення (desktop), на мобі CSS сховає -->
+          <!-- Зображення проєкту -->
           <div class="project-media">
             {% if project.featured_image %}
               <img src="{{ project.featured_image.url }}"
-                   alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}{% else %}{{ project.title_en }}{% endif %}">
+                   alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}{% else %}{{ project.title_en }}{% endif %}"
+                   loading="lazy">
             {% else %}
-              <div class="project-placeholder"><i data-lucide="image"></i></div>
+              <div class="project-placeholder">
+                <i data-lucide="image" class="placeholder-icon"></i>
+              </div>
             {% endif %}
           </div>
 
-          <!-- Контент + акордеон -->
-          <div class="project-main">
+          <!-- Основний контент -->
+          <div class="project-content">
+            <!-- Тригер акордеону -->
             <button class="project-trigger" type="button"
                     aria-expanded="false"
-                    aria-controls="pdesc-{{ forloop.counter }}"
-                    onclick="event.stopPropagation();">
-              <div class="project-title-row">
-                <h3 class="project-title">
+                    aria-controls="project-desc-{{ forloop.counter }}">
+              
+              <div class="project-header">
+                <h3>
                   {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}
-                  {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}
+                  {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl %}
                   {% else %}{{ project.title_en }}{% endif %}
                 </h3>
                 <i data-lucide="chevron-down" class="accordion-arrow" aria-hidden="true"></i>
               </div>
-              <p class="project-short text-secondary">
-                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags }}
-                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags }}
-                {% else %}{{ project.short_description_en|striptags }}{% endif %}
+              
+              <p>
+                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:20 }}
+                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:20 }}
+                {% else %}{{ project.short_description_en|striptags|truncatewords:20 }}{% endif %}
               </p>
             </button>
 
-            <div id="pdesc-{{ forloop.counter }}" class="project-description-accordion" hidden>
-              <div class="project-description">
+            <!-- Розгорнутий опис (акордеон) -->
+            <div id="project-desc-{{ forloop.counter }}" class="project-description-accordion" hidden>
+              <div>
                 {% if CURRENT_LANG == 'uk' and project.description_uk %}{{ project.description_uk|safe }}
                 {% elif CURRENT_LANG == 'pl' and project.description_pl %}{{ project.description_pl|safe }}
                 {% else %}{{ project.description_en|safe }}{% endif %}
               </div>
+              
+              <!-- Дії проєкту -->
               <div class="project-actions">
-                <a class="btn-primary" href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/"
-                   onclick="event.stopPropagation();">{% trans "Детальніше" %}</a>
+                <a class="btn-primary" href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/">
+                  <i data-lucide="arrow-right"></i>
+                  {% trans "View Details" %}
+                </a>
                 {% if project.project_url %}
-                  <a class="btn-secondary" href="{{ project.project_url }}" target="_blank" rel="noopener"
-                     onclick="event.stopPropagation();">{% trans "Демо" %}</a>
+                  <a class="btn-secondary" href="{{ project.project_url }}" target="_blank" rel="noopener">
+                    <i data-lucide="external-link"></i>
+                    {% trans "Demo" %}
+                  </a>
                 {% endif %}
               </div>
             </div>
           </div>
 
+          <!-- Декоративний glow ефект -->
           <div class="project-glow-border" aria-hidden="true"></div>
         </article>
       {% empty %}
-        <div class="empty-state"><p>{% trans "Немає рекомендованих проєктів" %}</p></div>
+        <div class="empty-state">
+          <i data-lucide="folder-x" class="empty-icon"></i>
+          <p>{% trans "No featured projects available" %}</p>
+        </div>
       {% endfor %}
-    </div>
-  </div>
-</section>
+</div>

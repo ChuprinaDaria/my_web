@@ -1,0 +1,102 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 📋 All Projects Grid Section -->
+<section class="all-projects-section">
+  <div class="container">
+    
+    <!-- Section Header -->
+        <div class="section-header">
+          <h2>
+            {% trans "All Projects" %}
+          </h2>
+        </div>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid">
+      {% for project in all_projects %}
+        <article class="project-card glass card" 
+                 onclick="location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
+          
+          <!-- Project Image -->
+          {% if project.featured_image %}
+            <div class="project-image">
+              <img src="{{ project.featured_image.url }}" 
+                   alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}{% else %}{{ project.title_en }}{% endif %}" 
+                   loading="lazy">
+              <div class="image-overlay"></div>
+            </div>
+          {% endif %}
+
+          <!-- Project Tags -->
+          <div class="project-tags">
+            {% if project.is_ai_powered %}
+              <span class="project-tag ai-powered">🤖 AI</span>
+            {% endif %}
+            {% if project.is_top_project %}
+              <span class="project-tag top-project">👑</span>
+            {% endif %}
+            {% if project.is_innovative %}
+              <span class="project-tag innovative">💡</span>
+            {% endif %}
+            {% if project.is_enterprise %}
+              <span class="project-tag enterprise">🏢</span>
+            {% endif %}
+          </div>
+
+          <!-- Project Content -->
+          <div class="project-content">
+              <h3>
+                {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}
+                {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}
+                {% else %}{{ project.title_en }}{% endif %}
+              </h3>
+            
+            <p class="project-description">
+              {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:20 }}
+              {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:20 }}
+              {% else %}{{ project.short_description_en|striptags|truncatewords:20 }}{% endif %}
+            </p>
+            
+            <!-- Project Metrics -->
+            <div class="project-metrics">
+              {% if project.development_duration_weeks %}
+                <span class="metric-item">
+                  📅 {{ project.development_duration_weeks }} 
+                  {% trans "weeks" %}
+                </span>
+              {% endif %}
+              {% if project.budget_range %}
+                <span class="metric-item">💰 {{ project.get_budget_range_display }}</span>
+              {% endif %}
+            </div>
+            
+            <!-- Project Actions -->
+            <div class="project-actions">
+              <button class="btn-primary" onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
+                {% trans "View Case" %}
+              </button>
+              
+              {% if project.project_url %}
+                <button class="btn-secondary" onclick="event.stopPropagation(); window.open('{{ project.project_url }}', '_blank');">
+                  {% trans "Demo" %}
+                </button>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="project-glow-effect"></div>
+        </article>
+        
+      {% empty %}
+        <div class="empty-state">
+          <i data-lucide="folder-x"></i>
+          <p>
+            {% trans "No projects available" %}
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>

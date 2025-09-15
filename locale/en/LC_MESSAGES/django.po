@@ -12,285 +12,110 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Get to know our work"
-msgstr "Get to know our work"
+msgid "Projects - LazySoft"
+msgstr "Projects - LazySoft"
 
-# Consultant translations
-msgid "RAG Консультант"
-msgstr "RAG Consultant"
+msgid "Discover our portfolio of automation and AI projects"
+msgstr "Discover our portfolio of automation and AI projects"
 
-msgid "Ваш персональний AI-помічник"
-msgstr "Your personal AI assistant"
+msgid "Related Services"
+msgstr "Related Services"
 
-msgid "Час сесії:"
-msgstr "Session time:"
+msgid "No related services available"
+msgstr "No related services available"
 
-msgid "Початок:"
-msgstr "Start:"
+msgid "Need Custom Project?"
+msgstr "Need Custom Project?"
 
-msgid "Швидкі питання:"
-msgstr "Quick questions:"
+msgid "Let's create something unique for your business. From automation to custom solutions."
+msgstr "Let's create something unique for your business. From automation to custom solutions."
 
-msgid "Як почати роботу з вашим продуктом?"
-msgstr "How to start working with your product?"
+msgid "Custom Project Development"
+msgstr "Custom Project Development"
 
-msgid "Які послуги ви надаєте?"
-msgstr "What services do you provide?"
+msgid "Start Project"
+msgstr "Start Project"
 
-msgid "Скільки коштує розробка?"
-msgstr "How much does development cost?"
+msgid "Fast Development"
+msgstr "Fast Development"
 
-msgid "Як зв'язатися з командою?"
-msgstr "How to contact the team?"
+msgid "Quality Guarantee"
+msgstr "Quality Guarantee"
 
-msgid "Напишіть ваше повідомлення..."
-msgstr "Write your message..."
+msgid "Full Support"
+msgstr "Full Support"
 
-msgid "Відправити"
-msgstr "Send"
-
-# AI Metrics Widget translations
-msgid "AI Ефективність в Дії"
-msgstr "AI Efficiency in Action"
-
-msgid "Реальні результати автоматизації для вашого бізнесу"
-msgstr "Real automation results for your business"
-
-msgid "ROI Ефективність"
-msgstr "ROI Efficiency"
-
-msgid "Рентабельність AI інвестицій"
-msgstr "ROI of AI investments"
-
-msgid "Зекономлено Часу"
-msgstr "Time Saved"
-
-msgid "Автоматизація робочих процесів"
-msgstr "Workflow automation"
-
-msgid "AI Контент"
-msgstr "AI Content"
-
-msgid "Згенеровано AI статей цього місяця"
-msgstr "AI articles generated this month"
-
-msgid "Зростання Ефективності"
-msgstr "Efficiency Growth"
-
-msgid "Покращення продуктивності процесів"
-msgstr "Process productivity improvement"
-
-msgid "Замовити Консультацію"
-msgstr "Order Consultation"
-
-msgid "Останнє оновлення:"
-msgstr "Last updated:"
-
-msgid "сьогодні"
-msgstr "today"
-
-msgid "год"
-msgstr "hrs"
-
-msgid "шт"
-msgstr "pcs"
-
-msgid "Очистити"
-msgstr "Clear"
-
-msgid "Експорт"
-msgstr "Export"
-
-msgid "Почати чат"
-msgstr "Start chat"
-
-msgid "Our Projects"
-msgstr "Our Projects"
-
-msgid "See what we've created for our clients"
-msgstr "See what we've created for our clients"
-
-msgid "Services"
-msgstr "Services"
-
-msgid "Our Services"
-msgstr "Our Services"
-
-msgid "Learn how we can help your business"
-msgstr "Learn how we can help your business"
-
-msgid "About Us"
-msgstr "About Us"
-
-msgid "About Lazysoft — Tech meets Laziness"
-msgstr "About Lazysoft — Tech meets Laziness"
-
-msgid "Discover how Lazysoft was born — a project driven by automation, creativity, and strategic laziness. Read the story of how our founder transitioned into tech at 37 and built a future out of Python and purpose."
-msgstr "Discover how Lazysoft was born — a project driven by automation, creativity, and strategic laziness. Read the story of how our founder transitioned into tech at 37 and built a future out of Python and purpose."
-
-msgid "A tech collective born from automation, humor, and one woman's lazy genius."
-msgstr "A tech collective born from automation, humor, and one woman's lazy genius."
-
-msgid "We automate, we innovate, we're Lazysoft. Learn the story behind the name."
-msgstr "We automate, we innovate, we're Lazysoft. Learn the story behind the name."
-
-msgid "Our Story in Pictures"
-msgstr "Our Story in Pictures"
-
-msgid "Our Story in Motion"
-msgstr "Our Story in Motion"
-
-msgid "Featured Story"
-msgstr "Featured Story"
-
-msgid "Your browser does not support the video tag."
-msgstr "Your browser does not support the video tag."
-
-msgid "Learn our story and approach"
-msgstr "Learn our story and approach"
-
-# Project card translations
-msgid "INNOVATIVE"
-msgstr "INNOVATIVE"
-
-msgid "AI TECHNOLOGIES"
-msgstr "AI TECHNOLOGIES"
-
-msgid "ENTERPRISE"
-msgstr "ENTERPRISE"
-
-msgid "COMPLEX"
-msgstr "COMPLEX"
-
-msgid "CLIENT WANTED:"
-msgstr "CLIENT WANTED:"
-
-msgid "WE DID:"
-msgstr "WE DID:"
-
-msgid "ORDER YOUR OWN"
-msgstr "ORDER YOUR OWN"
-
-msgid "FULL CASE"
-msgstr "FULL CASE"
-
-msgid "DEMO"
-msgstr "DEMO"
-
-msgid "OPEN PROJECT"
-msgstr "OPEN PROJECT"
-
-# Common UI translations
-msgid "Home"
-msgstr "Home"
-
-msgid "Contact"
-msgstr "Contact"
-
-msgid "From bots to full-stack automation"
-msgstr "From bots to full-stack automation"
-
-msgid "View more"
-msgstr "View more"
-
-msgid "Client request:"
-msgstr "Client request:"
-
-msgid "What we did:"
-msgstr "What we did:"
-
-msgid "Get Your Own Bot"
-msgstr "Get Your Own Bot"
-
-msgid "Full Case"
-msgstr "Full Case"
-
-msgid "Live Demo"
-msgstr "Live Demo"
-
-msgid "Previous"
-msgstr "Previous"
-
-msgid "Next"
-msgstr "Next"
-
-msgid "All News"
-msgstr "All News"
-
-msgid "Tech News"
-msgstr "Tech News"
-
-# Projects page translations
-msgid "Solutions"
-msgstr "Solutions"
-
-msgid "Projects"
-msgstr "Projects"
-
-msgid "Success Rate"
-msgstr "Success Rate"
-
-msgid "Filter by Technology"
-msgstr "Filter by Technology"
+msgid "Latest Tech News"
+msgstr "Latest Tech News"
 
 msgid "All Projects"
 msgstr "All Projects"
 
-msgid "Start Your Project"
-msgstr "Start Your Project"
+msgid "Featured Projects"
+msgstr "Featured Projects"
+
+msgid "No featured projects available"
+msgstr "No featured projects available"
+
+msgid "View Details"
+msgstr "View Details"
+
+msgid "Demo"
+msgstr "Demo"
+
+msgid "View Case"
+msgstr "View Case"
+
+msgid "No projects available"
+msgstr "No projects available"
+
+msgid "weeks"
+msgstr "weeks"
+
+msgid "Projects"
+msgstr "Projects"
+
+msgid "Solutions"
+msgstr "Solutions"
+
+msgid "Success Rate"
+msgstr "Success Rate"
+
+msgid "Our Services"
+msgstr "Our Services"
+
+msgid "Explore services related to our projects"
+msgstr "Explore services related to our projects"
 
 msgid "projects"
 msgstr "projects"
 
-msgid "Learn More About Service"
-msgstr "Learn More About Service"
+msgid "View All Services"
+msgstr "View All Services"
 
-msgid "Need Similar Solution?"
-msgstr "Need Similar Solution?"
-
-msgid "Get Quote"
-msgstr "Get Quote"
-
-msgid "Service Details"
-msgstr "Service Details"
-
-msgid "Related Tech News"
-msgstr "Related Tech News"
+msgid "Other news of the day"
+msgstr "Other news of the day"
 
 msgid "View All Tech News"
 msgstr "View All Tech News"
 
-msgid "Popular Technologies"
-msgstr "Popular Technologies"
+msgid "Stay updated with the latest technology trends and insights"
+msgstr "Stay updated with the latest technology trends and insights"
 
-msgid "Ready to automate your business? Let's discuss your needs and create a custom solution."
-msgstr "Ready to automate your business? Let's discuss your needs and create a custom solution."
+msgid "Related Projects"
+msgstr "Related Projects"
 
-msgid "Get Free Consultation"
-msgstr "Get Free Consultation"
+msgid "No related projects available"
+msgstr "No related projects available"
 
-msgid "All Our Services"
-msgstr "All Our Services"
+msgid "Need Custom Development?"
+msgstr "Need Custom Development?"
 
-msgid "View All Services"
-msgstr "View All Services"
+msgid "Custom Service Development"
+msgstr "Custom Service Development"
 
-msgid "Open Service"
-msgstr "Open Service"
+msgid "News System Under Development"
+msgstr "News System Under Development"
 
-# Simple Services Component
-msgid "Наші Сервіси"
-msgstr "Our Services"
-
-msgid "Опис сервісу відсутній."
-msgstr "Service description is not available."
-
-msgid "Сервісів поки немає"
-msgstr "No services available yet"
-
-msgid "Розпочати"
-msgstr "Get Started"
-
-msgid "Всі сервіси"
-msgstr "All Services"
-
+msgid "Our AI-powered news system is coming soon"
+msgstr "Our AI-powered news system is coming soon"

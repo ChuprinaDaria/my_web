@@ -169,7 +169,7 @@
     <link rel="stylesheet" href="{% static 'css/components/ai_metrics_widget.css' %}">
     
     <!-- Projects Page -->
-    <link rel="stylesheet" href="{% static 'css/pages/projects.css' %}">
+    <link rel="stylesheet" href="{% static 'css/sections/projects_clean.css' %}">
     
     <!-- Mobile Styles - MUST BE LAST -->
     <link rel="stylesheet" href="{% static 'css/mobile/projects_carousel_mobile.css' %}">
@@ -180,6 +180,8 @@
     <link rel="stylesheet" href="{% static 'css/mobile/service_carousel_mobile.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile/ai_metrics_widget_mobile.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile/projects_mobile.css' %}">
+    
+    {% block extra_css %}{% endblock %}
     
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
@@ -261,7 +263,7 @@
       <div class="modal-overlay" onclick="closeConsultantModal()"></div>
       <div class="modal-content">
         <div class="modal-header">
-          <div class="modal-title">
+          <div>
             <span class="modal-avatar">🤖</span>
             <span>RAG Консультант</span>
           </div>

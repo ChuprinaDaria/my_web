@@ -327,6 +327,173 @@
   animation: pulse 2s infinite;
 }
 
+/* 🏷️ SERVICE TAGS */
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.service-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(102, 255, 0, 0.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(102, 255, 0, 0.2);
+}
+
+/* 📊 SERVICE METRICS */
+.service-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: auto;
+}
+
+.metric {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metric.priority {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff4444;
+  border-color: rgba(255, 0, 0, 0.2);
+}
+
+.metric.featured {
+  background: rgba(255, 215, 0, 0.1);
+  color: #ffd700;
+  border-color: rgba(255, 215, 0, 0.2);
+}
+
+.metric.projects {
+  background: rgba(102, 255, 0, 0.1);
+  color: var(--accent-green);
+  border-color: rgba(102, 255, 0, 0.2);
+}
+
+/* 🎯 SERVICE CTA */
+.service-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cta-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-green);
+}
+
+.cta-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-green);
+  transition: transform 0.2s ease;
+}
+
+.service-card:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* 📱 MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .service-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: var(--spacing-md);
+    margin: 0;
+  }
+  
+  .service-content {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+  }
+  
+  .service-description {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  .service-tags {
+    gap: 4px;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .service-tag {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .service-metrics {
+    gap: 4px;
+    margin-top: var(--spacing-xs);
+  }
+  
+  .metric {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+  }
+  
+  .service-cta {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+  }
+  
+  .cta-text {
+    font-size: 0.8rem;
+  }
+  
+  .cta-arrow {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .service-description {
+    font-size: 0.75rem;
+  }
+  
+  .service-tag {
+    font-size: 0.65rem;
+    padding: 1px 4px;
+  }
+  
+  .metric {
+    font-size: 0.65rem;
+    padding: 1px 3px;
+  }
+  
+  .cta-text {
+    font-size: 0.75rem;
+  }
+}
+
 /* 📊 METRICS */
 .project-metrics {
   display: flex;

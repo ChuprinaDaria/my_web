@@ -12,284 +12,110 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-msgid "Get to know our work"
-msgstr "Poznaj naszą pracę"
+msgid "Projects - LazySoft"
+msgstr "Projekty - LazySoft"
 
-# Consultant translations
-msgid "RAG Консультант"
-msgstr "Konsultant RAG"
+msgid "Discover our portfolio of automation and AI projects"
+msgstr "Odkryj nasze portfolio projektów automatyzacji i AI"
 
-msgid "Ваш персональний AI-помічник"
-msgstr "Twój osobisty asystent AI"
+msgid "Related Services"
+msgstr "Powiązane usługi"
 
-msgid "Час сесії:"
-msgstr "Czas sesji:"
+msgid "No related services available"
+msgstr "Brak dostępnych powiązanych usług"
 
-msgid "Початок:"
-msgstr "Początek:"
+msgid "Need Custom Project?"
+msgstr "Potrzebujesz niestandardowego projektu?"
 
-msgid "Швидкі питання:"
-msgstr "Szybkie pytania:"
+msgid "Let's create something unique for your business. From automation to custom solutions."
+msgstr "Stwórzmy coś wyjątkowego dla Twojego biznesu. Od automatyzacji po niestandardowe rozwiązania."
 
-msgid "Як почати роботу з вашим продуктом?"
-msgstr "Jak zacząć pracę z waszym produktem?"
+msgid "Custom Project Development"
+msgstr "Rozwój niestandardowego projektu"
 
-msgid "Які послуги ви надаєте?"
-msgstr "Jakie usługi oferujecie?"
+msgid "Start Project"
+msgstr "Rozpocznij projekt"
 
-msgid "Скільки коштує розробка?"
-msgstr "Ile kosztuje rozwój?"
+msgid "Fast Development"
+msgstr "Szybki rozwój"
 
-msgid "Як зв'язатися з командою?"
-msgstr "Jak skontaktować się z zespołem?"
+msgid "Quality Guarantee"
+msgstr "Gwarancja jakości"
 
-msgid "Напишіть ваше повідомлення..."
-msgstr "Napisz swoją wiadomość..."
+msgid "Full Support"
+msgstr "Pełne wsparcie"
 
-msgid "Відправити"
-msgstr "Wyślij"
-
-# AI Metrics Widget translations
-msgid "AI Ефективність в Дії"
-msgstr "Efektywność AI w Akcji"
-
-msgid "Реальні результати автоматизації для вашого бізнесу"
-msgstr "Rzeczywiste rezultaty automatyzacji dla Twojego biznesu"
-
-msgid "ROI Ефективність"
-msgstr "Efektywność ROI"
-
-msgid "Рентабельність AI інвестицій"
-msgstr "Rentowność inwestycji AI"
-
-msgid "Зекономлено Часу"
-msgstr "Zaoszczędzony Czas"
-
-msgid "Автоматизація робочих процесів"
-msgstr "Automatyzacja procesów roboczych"
-
-msgid "AI Контент"
-msgstr "Treść AI"
-
-msgid "Згенеровано AI статей цього місяця"
-msgstr "Artykuły AI wygenerowane w tym miesiącu"
-
-msgid "Зростання Ефективності"
-msgstr "Wzrost Efektywności"
-
-msgid "Покращення продуктивності процесів"
-msgstr "Poprawa produktywności procesów"
-
-msgid "Замовити Консультацію"
-msgstr "Zamów Konsultację"
-
-msgid "Останнє оновлення:"
-msgstr "Ostatnia aktualizacja:"
-
-msgid "сьогодні"
-msgstr "dzisiaj"
-
-msgid "год"
-msgstr "godz"
-
-msgid "шт"
-msgstr "szt"
-
-msgid "Очистити"
-msgstr "Wyczyść"
-
-msgid "Експорт"
-msgstr "Eksport"
-
-msgid "Почати чат"
-msgstr "Rozpocznij czat"
-
-msgid "Our Projects"
-msgstr "Nasze projekty"
-
-msgid "See what we've created for our clients"
-msgstr "Zobacz co stworzyliśmy dla naszych klientów"
-
-msgid "Services"
-msgstr "Usługi"
-
-msgid "Our Services"
-msgstr "Nasze usługi"
-
-msgid "Learn how we can help your business"
-msgstr "Dowiedz się jak możemy pomóc Twojemu biznesowi"
-
-msgid "About Us"
-msgstr "O nas"
-
-msgid "About Lazysoft — Tech meets Laziness"
-msgstr "O Lazysoft — Technologia spotyka się z lenistwem"
-
-msgid "Discover how Lazysoft was born — a project driven by automation, creativity, and strategic laziness. Read the story of how our founder transitioned into tech at 37 and built a future out of Python and purpose."
-msgstr "Odkryj, jak narodził się Lazysoft — projekt napędzany automatyzacją, kreatywnością i strategicznym lenistwem. Przeczytaj historię o tym, jak nasza założycielka przeszła do technologii w wieku 37 lat i zbudowała przyszłość z Pythona i celu."
-
-msgid "A tech collective born from automation, humor, and one woman's lazy genius."
-msgstr "Kolektyw technologiczny zrodzony z automatyzacji, humoru i leniwego geniuszu jednej kobiety."
-
-msgid "We automate, we innovate, we're Lazysoft. Learn the story behind the name."
-msgstr "Automatyzujemy, innowujemy, jesteśmy Lazysoft. Poznaj historię za nazwą."
-
-msgid "Our Story in Pictures"
-msgstr "Nasza historia w obrazach"
-
-msgid "Our Story in Motion"
-msgstr "Nasza historia w ruchu"
-
-msgid "Featured Story"
-msgstr "Polecana historia"
-
-msgid "Your browser does not support the video tag."
-msgstr "Twoja przeglądarka nie obsługuje tagu wideo."
-
-msgid "Learn our story and approach"
-msgstr "Poznaj naszą historię i podejście"
-
-# Project card translations
-msgid "INNOVATIVE"
-msgstr "INNOWACYJNY"
-
-msgid "AI TECHNOLOGIES"
-msgstr "TECHNOLOGIE AI"
-
-msgid "ENTERPRISE"
-msgstr "KORPORACYJNY"
-
-msgid "COMPLEX"
-msgstr "SKOMPLIKOWANY"
-
-msgid "CLIENT WANTED:"
-msgstr "KLIENT CHCIAŁ:"
-
-msgid "WE DID:"
-msgstr "ZROBILIŚMY:"
-
-msgid "ORDER YOUR OWN"
-msgstr "ZAMÓW SOBIE TAKI"
-
-msgid "FULL CASE"
-msgstr "Szczegółowy przypadek"
-
-msgid "DEMO"
-msgstr "Demo"
-
-msgid "OPEN PROJECT"
-msgstr "Otwórz projekt"
-
-# Common UI translations
-msgid "Home"
-msgstr "Strona główna"
-
-msgid "Contact"
-msgstr "Kontakt"
-
-msgid "From bots to full-stack automation"
-msgstr "Od botów do pełnej automatyzacji"
-
-msgid "View more"
-msgstr "Zobacz więcej"
-
-msgid "Client request:"
-msgstr "Klient chciał:"
-
-msgid "What we did:"
-msgstr "Zrobiliśmy:"
-
-msgid "Get Your Own Bot"
-msgstr "Zamów sobie taki"
-
-msgid "Full Case"
-msgstr "Szczegółowy przypadek"
-
-msgid "Live Demo"
-msgstr "Demo"
-
-msgid "Previous"
-msgstr "Poprzednia"
-
-msgid "Next"
-msgstr "Następna"
-
-msgid "All News"
-msgstr "Wszystkie wiadomości"
-
-msgid "Tech News"
-msgstr "Wiadomości techniczne"
-
-# Projects page translations
-msgid "Solutions"
-msgstr "Rozwiązania"
-
-msgid "Projects"
-msgstr "Projekty"
-
-msgid "Success Rate"
-msgstr "Wskaźnik sukcesu"
-
-msgid "Filter by Technology"
-msgstr "Filtruj według technologii"
+msgid "Latest Tech News"
+msgstr "Najnowsze wiadomości techniczne"
 
 msgid "All Projects"
 msgstr "Wszystkie projekty"
 
-msgid "Start Your Project"
-msgstr "Rozpocznij swój projekt"
+msgid "Featured Projects"
+msgstr "Polecane projekty"
+
+msgid "No featured projects available"
+msgstr "Brak dostępnych polecanych projektów"
+
+msgid "View Details"
+msgstr "Zobacz szczegóły"
+
+msgid "Demo"
+msgstr "Demo"
+
+msgid "View Case"
+msgstr "Zobacz przypadek"
+
+msgid "No projects available"
+msgstr "Brak dostępnych projektów"
+
+msgid "weeks"
+msgstr "tygodni"
+
+msgid "Projects"
+msgstr "Projekty"
+
+msgid "Solutions"
+msgstr "Rozwiązania"
+
+msgid "Success Rate"
+msgstr "Wskaźnik sukcesu"
+
+msgid "Our Services"
+msgstr "Nasze usługi"
+
+msgid "Explore services related to our projects"
+msgstr "Poznaj usługi związane z naszymi projektami"
 
 msgid "projects"
 msgstr "projektów"
 
-msgid "Learn More About Service"
-msgstr "Dowiedz się więcej o usłudze"
+msgid "View All Services"
+msgstr "Zobacz wszystkie usługi"
 
-msgid "Need Similar Solution?"
-msgstr "Potrzebujesz podobnego rozwiązania?"
-
-msgid "Get Quote"
-msgstr "Otrzymaj ofertę"
-
-msgid "Service Details"
-msgstr "Szczegóły usługi"
-
-msgid "Related Tech News"
-msgstr "Powiązane wiadomości techniczne"
+msgid "Other news of the day"
+msgstr "Inne wiadomości dnia"
 
 msgid "View All Tech News"
 msgstr "Zobacz wszystkie wiadomości techniczne"
 
-msgid "Popular Technologies"
-msgstr "Popularne technologie"
+msgid "Stay updated with the latest technology trends and insights"
+msgstr "Bądź na bieżąco z najnowszymi trendami technologicznymi i spostrzeżeniami"
 
-msgid "Ready to automate your business? Let's discuss your needs and create a custom solution."
-msgstr "Gotowy do automatyzacji swojego biznesu? Omówmy Twoje potrzeby i stwórzmy indywidualne rozwiązanie."
+msgid "Related Projects"
+msgstr "Powiązane projekty"
 
-msgid "Get Free Consultation"
-msgstr "Otrzymaj bezpłatną konsultację"
+msgid "No related projects available"
+msgstr "Brak dostępnych powiązanych projektów"
 
-msgid "All Our Services"
-msgstr "Wszystkie nasze usługi"
+msgid "Need Custom Development?"
+msgstr "Potrzebujesz niestandardowego rozwoju?"
 
-msgid "View All Services"
-msgstr "Zobacz wszystkie usługi"
+msgid "Custom Service Development"
+msgstr "Rozwój niestandardowej usługi"
 
-msgid "Open Service"
-msgstr "Otwórz usługę"
+msgid "News System Under Development"
+msgstr "System wiadomości w rozwoju"
 
-# Simple Services Component
-msgid "Наші Сервіси"
-msgstr "Nasze Usługi"
-
-msgid "Опис сервісу відсутній."
-msgstr "Opis usługi nie jest dostępny."
-
-msgid "Сервісів поки немає"
-msgstr "Brak dostępnych usług"
-
-msgid "Розпочати"
-msgstr "Rozpocznij"
-
-msgid "Всі сервіси"
-msgstr "Wszystkie usługi"
+msgid "Our AI-powered news system is coming soon"
+msgstr "Nasz system wiadomości oparty na AI wkrótce się pojawi"

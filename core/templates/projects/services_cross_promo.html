@@ -1,0 +1,69 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 💼 Services Cross-Promo Section -->
+<section class="related-services-cross-promo">
+  <div class="container">
+    
+    <!-- Section Header -->
+        <div class="section-header">
+          <h2>
+            {% trans "Our Services" %}
+          </h2>
+          <p>
+            {% trans "Explore services related to our projects" %}
+          </p>
+        </div>
+
+    <!-- Services Grid -->
+    <div class="services-promo-grid">
+      {% for service in related_services|slice:":6" %}
+        <article class="service-promo-card glass card" 
+                 onclick="location.href='/{{ CURRENT_LANG }}/services/{{ service.slug }}/'">
+          
+          <div class="service-icon">
+            {% if service.icon %}
+              <img src="{{ service.icon.url }}" alt="{{ service.title }}" loading="lazy">
+            {% else %}
+              🔧
+            {% endif %}
+          </div>
+          
+          <div class="service-content">
+              <h3>
+                {% if CURRENT_LANG == 'uk' and service.title_uk %}{{ service.title_uk }}
+                {% elif CURRENT_LANG == 'pl' and service.title_pl %}{{ service.title_pl }}
+                {% else %}{{ service.title_en }}{% endif %}
+              </h3>
+              
+              <p>
+                {% if CURRENT_LANG == 'uk' and service.short_description_uk %}{{ service.short_description_uk|striptags|truncatewords:10 }}
+                {% elif CURRENT_LANG == 'pl' and service.short_description_pl %}{{ service.short_description_pl|striptags|truncatewords:10 }}
+                {% else %}{{ service.short_description_en|striptags|truncatewords:10 }}{% endif %}
+              </p>
+            
+            <div class="service-metrics">
+              <span class="projects-count">
+                {{ service.projects_count|default:0 }} 
+                {% trans "projects" %}
+              </span>
+            </div>
+          </div>
+          
+          <div class="service-arrow">
+            <i data-lucide="arrow-right"></i>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+    
+    <!-- View All Services -->
+    <div class="section-footer">
+      <a href="/{{ CURRENT_LANG }}/services/" class="view-all-services btn-secondary">
+        {% trans "View All Services" %}
+        <i data-lucide="arrow-right"></i>
+      </a>
+    </div>
+    
+  </div>
+</section>

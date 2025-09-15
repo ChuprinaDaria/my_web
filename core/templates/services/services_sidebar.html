@@ -1,0 +1,81 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<!-- 🚀 Services Page Sidebar -->
+<aside class="services-sidebar">
+  
+  <!-- Related Projects -->
+  <!-- Debug: related_projects count = {{ related_projects|length }} -->
+  <!-- Debug: related_projects = {{ related_projects }} -->
+  <div class="sidebar-section">
+    <h3>
+      <i data-lucide="grid-3x3"></i>
+      {% trans "Related Projects" %}
+    </h3>
+    {% if related_projects %}
+      <div class="related-projects-list">
+        {% for project in related_projects %}
+          <a href="/projects/{{ project.slug }}/" class="project-item">
+            <div class="project-icon">
+              {% if project.featured_image %}
+                <img src="{{ project.featured_image.url }}" alt="{{ project.title_en }}" loading="lazy">
+              {% else %}
+                <span>🚀</span>
+              {% endif %}
+            </div>
+            <div class="project-info">
+              <span class="project-name">
+                {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}
+                {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}
+                {% else %}{{ project.title_en }}{% endif %}
+              </span>
+              <small class="project-description">
+                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|truncatewords:8 }}
+                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|truncatewords:8 }}
+                {% else %}{{ project.short_description_en|truncatewords:8 }}{% endif %}
+              </small>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: var(--text-secondary); text-align: center; padding: 20px;">
+        {% trans "No related projects available" %}
+      </p>
+    {% endif %}
+  </div>
+
+<!-- CTA Sidebar -->
+<div class="sidebar-section glass card cta-sidebar">
+    <h3>
+      <i data-lucide="sparkles"></i>
+      {% trans "Need Custom Project?" %}
+    </h3>
+    <p class="cta-description">
+      {% trans "Let's create something unique for your business. From automation to custom solutions." %}
+    </p>
+    <button class="sidebar-cta-button" 
+            data-project-title="{% trans 'Custom Project Development' %}">
+      <i data-lucide="arrow-right"></i>
+      {% trans "Start Project" %}
+    </button>
+    
+    <div class="cta-features">
+      <div class="cta-feature">
+        <i data-lucide="zap"></i>
+        <span>{% trans "Fast Development" %}</span>
+      </div>
+      <div class="cta-feature">
+        <i data-lucide="shield-check"></i>
+        <span>{% trans "Quality Guarantee" %}</span>
+      </div>
+      <div class="cta-feature">
+        <i data-lucide="headphones"></i>
+        <span>{% trans "Full Support" %}</span>
+      </div>
+    </div>
+  </div>
+
+</aside>
+
+<script src="{% static 'js/services_sidebar.js' %}"></script>

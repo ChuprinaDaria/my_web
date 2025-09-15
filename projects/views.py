@@ -5,11 +5,18 @@ from services.models import ServiceCategory
 from django.utils.translation import get_language
 from django.http import JsonResponse
 from django.http import HttpResponse
+from news.models import ProcessedArticle
+from django.utils import timezone
 
 
 def projects_list(request):
     lang = get_language()
 
+    # Отримуємо всі активні проєкти
+    all_projects = Project.objects.filter(is_active=True).select_related('category').prefetch_related('tags').order_by('-priority', '-order', '-project_date')
+    total_projects = all_projects.count()
+
+    # Отримуємо категорії, які мають проєкти
     categories_with_projects = ServiceCategory.objects.prefetch_related(
         'projects__tags'
     ).annotate(
@@ -18,13 +25,11 @@ def projects_list(request):
         projects_count__gt=0
     ).order_by('title_en')
 
-    total_projects = 0
     localized_categories = []
 
     for category in categories_with_projects:
         projects = category.projects.filter(is_active=True).order_by('-priority', '-order', '-project_date')
         project_count = projects.count()
-        total_projects += project_count
 
         localized_projects = []
         for project in projects:
@@ -69,23 +74,6 @@ def projects_list(request):
         is_featured=True
     ).select_related('category').prefetch_related('tags').order_by('-priority', '-order', '-project_date')
 
-    related_news = []
-    try:
-        from news.models import ProcessedArticle
-        
-        all_project_tags = set()
-        for category in categories_with_projects:
-            for project in category.projects.filter(is_active=True):
-                all_project_tags.update(project.tags.values_list('slug', flat=True))
-        
-        if all_project_tags:
-            related_news = ProcessedArticle.objects.filter(
-                status='published',
-                tags__slug__in=list(all_project_tags)
-            ).distinct().order_by('-published_at')[:10]
-            
-    except ImportError:
-        pass
 
     try:
         from core.models import Tag
@@ -112,21 +100,149 @@ def projects_list(request):
 
     categories_count = categories_with_projects.count()
     
+    # Збираємо ServiceCategory з категорій проєктів для related_services
+    # Отримуємо унікальні категорії з активних проєктів
+    project_categories = all_projects.values_list('category', flat=True).distinct()
+    print(f"🔍 Debug: project_categories IDs: {list(project_categories)}")
+    
+    # Підбираємо новини за категоріями послуг
+    related_news = []
+    try:
+        from news.models import ProcessedArticle
+        
+        # Використовуємо ServiceCategory замість тегів
+        project_category_ids = list(project_categories)
+        
+        if project_category_ids:
+            related_news = ProcessedArticle.objects.filter(
+                status='published',
+                category_id__in=project_category_ids
+            ).distinct().order_by('-published_at')[:3]
+            
+    except ImportError:
+        pass
+    
+    # Перевіряємо, чи є ServiceCategory в цих категоріях
+    all_service_categories = ServiceCategory.objects.all()
+    print(f"🔍 Debug: total ServiceCategory: {all_service_categories.count()}")
+    
+    # Показуємо всі ServiceCategory
+    for category in all_service_categories[:5]:  # Показуємо перші 5 категорій
+        print(f"🔍 Debug: ServiceCategory '{category.title_en}' id: {category.id}")
+    
+    # Шукаємо ServiceCategory з ID категорій проєктів та додаємо кількість проєктів
+    related_services = ServiceCategory.objects.filter(
+        id__in=project_categories
+    ).annotate(
+        projects_count=models.Count('projects', filter=models.Q(projects__is_active=True))
+    ).order_by('-priority', '-date_created')[:6]
+    
+    print(f"🔍 Debug: found related_services (ServiceCategory): {related_services.count()}")
+    if not related_services.exists():
+        # Якщо немає ServiceCategory в категоріях проєктів, показуємо будь-які ServiceCategory
+        related_services = ServiceCategory.objects.all().annotate(
+            projects_count=models.Count('projects', filter=models.Q(projects__is_active=True))
+        ).order_by('-priority', '-date_created')[:6]
+        print(f"🔍 Debug: fallback to any ServiceCategory: {related_services.count()}")
+        
+        for category in related_services:
+            print(f"🔍 Debug: fallback ServiceCategory '{category.title_en}' id: {category.id}, projects: {category.projects_count}")
+    else:
+        for category in related_services:
+            print(f"🔍 Debug: ServiceCategory '{category.title_en}' id: {category.id}, projects: {category.projects_count}")
+
+    # Додаткові дані для сайдбару
+    completed_projects = all_projects.filter(project_status='completed').count()
+    
+    # Технології
+    try:
+        from projects.models import Technology
+        available_technologies = Technology.objects.filter(projects__is_active=True).distinct()[:10]
+        total_technologies = available_technologies.count()
+    except ImportError:
+        available_technologies = []
+        total_technologies = 0
+    
+    # Теги проєктів
+    try:
+        from projects.models import ProjectTag
+        project_tags = ProjectTag.objects.annotate(
+            project_count=models.Count('projects', filter=models.Q(projects__is_active=True))
+        ).filter(project_count__gt=0).order_by('-project_count')[:8]
+    except ImportError:
+        project_tags = []
+    
+    # Середня тривалість проєктів
+    avg_duration = all_projects.aggregate(
+        avg_duration=models.Avg('development_duration_weeks')
+    )['avg_duration']
+    avg_project_duration = f"{avg_duration:.0f}w" if avg_duration else None
+
+    # Отримуємо daily digest новин
+    try:
+        today = timezone.now().date()
+        print(f"🔍 Debug: today = {today}")
+        
+        # Спочатку перевіряємо, чи є новини взагалі
+        all_articles = ProcessedArticle.objects.all()
+        print(f"🔍 Debug: total ProcessedArticle count: {all_articles.count()}")
+        
+        # Перевіряємо новини за сьогодні
+        today_articles = ProcessedArticle.objects.filter(
+            published_at__date=today
+        )
+        print(f"🔍 Debug: today articles count: {today_articles.count()}")
+        
+        # Перевіряємо опубліковані новини
+        published_articles = ProcessedArticle.objects.filter(
+            status='published'
+        )
+        print(f"🔍 Debug: published articles count: {published_articles.count()}")
+        
+        # Отримуємо daily digest
+        daily_digest = ProcessedArticle.objects.filter(
+            status='published',
+            published_at__date=today
+        ).order_by('-priority', '-published_at')[:10]
+        
+        print(f"🔍 Debug: daily_digest count: {daily_digest.count()}")
+        
+        # Якщо немає новин за сьогодні, беремо останні опубліковані
+        if not daily_digest.exists():
+            daily_digest = ProcessedArticle.objects.filter(
+                status='published'
+            ).order_by('-published_at')[:10]
+            print(f"🔍 Debug: fallback daily_digest count: {daily_digest.count()}")
+            
+    except ImportError:
+        daily_digest = []
+        print("🔍 Debug: ImportError for ProcessedArticle")
+
     context = {
         "categories": localized_categories,
         "featured_projects": featured_projects_qs,
+        "all_projects": all_projects,
+        "related_services": related_services,
         "total_projects": total_projects,
         "total_categories": categories_count,
+        "completed_projects": completed_projects,
+        "available_technologies": available_technologies,
+        "total_technologies": total_technologies,
+        "project_tags": project_tags,
+        "avg_project_duration": avg_project_duration,
+        "daily_digest": daily_digest,
 
-        "related_news": [
+        "related_articles": [
             {
                 'uuid': str(article.uuid),
-                'title': article.get_title(lang),
+                'title_en': article.title_en,
+                'title_uk': article.title_uk,
+                'title_pl': article.title_pl,
                 'summary': article.get_summary(lang)[:150] + '...',
                 'url': article.get_absolute_url(),
-                'image': article.ai_image_url,
+                'featured_image': article.ai_image_url,
                 'published_at': article.published_at,
-                'category': article.category.get_name(lang) if article.category else '',
+                'category': article.category,
             }
             for article in related_news
         ],
@@ -134,16 +250,18 @@ def projects_list(request):
         "popular_tags": popular_tags_data,
         "show_tag_filter": bool(popular_tags_data),
 
-        "overview_title": {
-            "en": f"{total_projects}+ Projects Across {categories_count} Solutions",
-            "uk": f"{total_projects}+ проєктів у {categories_count} рішеннях", 
-            "pl": f"{total_projects}+ projektów w {categories_count} rozwiązaniach"
-        }.get(lang, ""),
+        "overview_title_en": f"{total_projects}+ Projects Across {categories_count} Solutions",
+        "overview_title_uk": f"{total_projects}+ проєктів у {categories_count} рішеннях", 
+        "overview_title_pl": f"{total_projects}+ projektów w {categories_count} rozwiązaniach",
         
-        "overview_description": {
-            "en": f"Explore our portfolio of {total_projects} completed automation and AI projects. Each solution is cross-connected with relevant insights and services.",
-            "uk": f"Досліджуйте наше портфоліо з {total_projects} завершених проєктів автоматизації та ШІ. Кожне рішення пов'язане з відповідними інсайтами та сервісами.",
-            "pl": f"Poznaj nasze portfolio {total_projects} ukończonych projektów automatyzacji i AI. Każde rozwiązanie jest połączone z odpowiednimi spostrzeżeniami i usługami."
+        "overview_description_en": f"Explore our portfolio of {total_projects} completed automation and AI projects. Each solution is cross-connected with relevant insights and services.",
+        "overview_description_uk": f"Досліджуйте наше портфоліо з {total_projects} завершених проєктів автоматизації та ШІ. Кожне рішення пов'язане з відповідними інсайтами та сервісами.",
+        "overview_description_pl": f"Poznaj nasze portfolio {total_projects} ukończonych projektów automatyzacji i AI. Każde rozwiązanie jest połączone z odpowiednimi spostrzeżeniami i usługami.",
+        
+        "featured_subtitle": {
+            "en": f"Handpicked {featured_projects_qs.count()} most successful automation projects",
+            "uk": f"Відібрані {featured_projects_qs.count()} найуспішніших проєктів автоматизації",
+            "pl": f"Wybrane {featured_projects_qs.count()} najbardziej udanych projektów automatyzacji"
         }.get(lang, ""),
 
         "seo_title": {
@@ -162,8 +280,16 @@ def projects_list(request):
     }
 
     print(f"🎯 Оптимізація: {total_projects} проєктів у {categories_count} категоріях (пусті відфільтровані)")
-    print(f"📰 Sidebar: {len(related_news)} новин за тегами")
+    print(f"📰 Sidebar: {len(related_news)} новин за категоріями послуг")
     print(f"🏷️ Теги: {len(popular_tags_data)} популярних")
+    print(f"🔍 Debug: all_projects={all_projects.count()}, featured_projects={featured_projects_qs.count()}, related_services={len(related_services)}")
+    print(f"🔍 Debug: project_categories={list(project_categories)}")
+    print(f"🔍 Debug: related_articles={len(context.get('related_articles', []))}")
+    print(f"🔍 Debug: project_tags={len(project_tags)}")
+    print(f"🔍 Debug: overview_title_uk={context.get('overview_title_uk', 'MISSING')}")
+    print(f"🔍 Debug: overview_description_uk={context.get('overview_description_uk', 'MISSING')}")
+    print(f"🔍 Debug: FINAL related_services count: {len(related_services) if related_services else 0}")
+    print(f"🔍 Debug: daily_digest count: {len(daily_digest) if daily_digest else 0}")
 
     return render(request, "projects/projects.html", context)
 
@@ -255,10 +381,13 @@ def project_detail(request, slug):
             )
 
         if (not raw_related_articles) and ProcessedArticle:
-            raw_related_articles = (
-                ProcessedArticle.objects.filter(status='published', tags__slug__in=tag_slugs)
-                .distinct().order_by('-published_at')[:3]
-            )
+            # Використовуємо категорії проєкту замість тегів
+            project_category_ids = [project.category_id] if hasattr(project, 'category_id') and project.category_id else []
+            if project_category_ids:
+                raw_related_articles = (
+                    ProcessedArticle.objects.filter(status='published', category_id__in=project_category_ids)
+                    .distinct().order_by('-published_at')[:3]
+                )
 
     # --- нормалізуємо related_* у словники з локалізованими полями
     related_services = []

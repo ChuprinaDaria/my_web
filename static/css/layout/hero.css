@@ -40,16 +40,7 @@
 }
 
 /* 🎨 Hero заголовок H1 */
-.hero h1 {
-  font-size: clamp(3rem, 8vw, 6rem);
-  font-weight: 700;
-  margin: 0;
-  color: var(--accent-green);
-  text-align: center;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  position: relative;
-}
+/* Typography styles use base/typography.css */
 
 /* ✨ Glow ефект для H1 */
 .hero h1::after {
@@ -206,9 +197,7 @@
     gap: 20px;
   }
   
-  .hero h1 {
-    font-size: clamp(2.5rem, 12vw, 4rem);
-  }
+  /* Typography styles use base/typography.css */
   
   .hero .subtitle {
     font-size: clamp(1.1rem, 5vw, 1.5rem);
@@ -256,9 +245,7 @@
     gap: 15px;
   }
   
-  .hero h1 {
-    font-size: clamp(2rem, 15vw, 3.5rem);
-  }
+  /* Typography styles use base/typography.css */
   
   .cta-primary,
   .cta-secondary {

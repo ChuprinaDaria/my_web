@@ -69,7 +69,7 @@
       <div class="other-news-list">
         {% for article in other_news %}
           <a href="{{ article.get_absolute_url }}" class="other-news-item">
-            <div class="news-title">
+            <div>
               {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:8 }}
               {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:8 }}
               {% else %}{{ article.title_en|truncatewords:8 }}{% endif %}

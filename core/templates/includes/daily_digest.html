@@ -1,0 +1,40 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% if daily_digest %}
+  <details class="news-digest">
+    <summary>
+      📰 {% trans "Other news of the day" %} ({{ daily_digest|length }})
+      <span class="dot"></span>
+    </summary>
+
+    <ol class="digest-list">
+      {% for article in daily_digest %}
+        <li class="digest-item">
+          <a class="digest-link" href="{{ article.get_absolute_url }}">
+            <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:'H:i' }}</time>
+            <span>
+              {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:8 }}
+              {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:8 }}
+              {% else %}{{ article.title_en|truncatewords:8 }}{% endif %}
+            </span>
+            <span class="digest-cta">{{ article.category.icon }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ol>
+
+    <div style="text-align: center; margin: 5px; padding-top: 5px; border-top: 1px solid rgba(102, 255, 0, 0.2);">
+      <a href="{% url 'news:news_list' %}" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--accent-green); text-decoration: none; padding: 10px 20px; background: rgba(102, 255, 0, 0.1); border-radius: 25px; transition: all 0.3s ease;">
+        {% trans "View All Tech News" %}
+        <span style="margin-left: 5px;">→</span>
+      </a>
+    </div>
+  </details>
+{% else %}
+  <div class="project-card" style="text-align: center; opacity: 0.6;">
+    <div style="font-size: 4rem; margin-bottom: 20px;">🔧</div>
+    <h4>{% trans "News System Under Development" %}</h4>
+    <p>{% trans "Our AI-powered news system is coming soon" %}</p>
+  </div>
+{% endif %}

@@ -24,6 +24,27 @@ def services_list(request):
             "tags": s.tags.filter(is_active=True)[:3],  # Тільки 3 теги
         })
     
+    # Отримуємо пов'язані проєкти
+    related_projects = Project.objects.filter(
+        is_active=True
+    ).select_related('category').prefetch_related('tags').order_by(
+        '-priority', '-project_date'
+    )[:5]  # Тільки 5 проєктів для sidebar
+    
+    # Локалізуємо проєкти
+    localized_projects = []
+    for project in related_projects:
+        localized_projects.append({
+            "slug": project.slug,
+            "title_en": project.title_en,
+            "title_uk": project.title_uk,
+            "title_pl": project.title_pl,
+            "short_description_en": project.short_description_en,
+            "short_description_uk": project.short_description_uk,
+            "short_description_pl": project.short_description_pl,
+            "featured_image": project.featured_image,
+        })
+    
     faqs = FAQ.objects.filter(is_active=True).order_by("order")
     localized_faqs = [
         {
@@ -36,6 +57,7 @@ def services_list(request):
     return render(request, "services/services_list.html", {
         "services": services, 
         "faqs": localized_faqs,
+        "related_projects": localized_projects,
         "lang": lang,
         "debug_faqs": localized_faqs
     })

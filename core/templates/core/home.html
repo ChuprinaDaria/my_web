@@ -183,7 +183,7 @@
   <div class="container">
     <div class="hero-content">
       <h1>Lazysoft</h1>
-      <h2 class="subtitle">{% trans "Leading AI Automation & Custom Software Development Company" %}</h2>
+      <h2>{% trans "Leading AI Automation & Custom Software Development Company" %}</h2>
       <p class="description">
         {% trans "Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency." %}
       </p>
@@ -228,13 +228,10 @@
   </div>
 </section>
 
-<section id="contact" class="contact">
-  {% include "core/contact_form.html" %}
-</section>
 
 <section id="news" class="projects">
   <div class="container-reg">
-    <h2 class="section-title">{% trans "🚀 Top Tech News" %}</h2>
+    <h2>{% trans "🚀 Top Tech News" %}</h2>
 
     <!-- AI Spend Banner -->
     {% include "includes/ai_spend_banner.html" %}
@@ -296,49 +293,17 @@
         </div>
       </div>
 
-      {% if daily_digest %}
-        <details class="news-digest">
-          <summary>
-            {% blocktrans %}📰 Other news of the day ({{ daily_digest|length }}){% endblocktrans %}
-            <span class="dot"></span>
-          </summary>
-
-          <ol class="digest-list">
-            {% for article in daily_digest %}
-              <li class="digest-item">
-                <a class="digest-link" href="{{ article.get_absolute_url }}">
-                  <time datetime="{{ article.published_at|date:'c' }}">{{ article.published_at|date:'H:i' }}</time>
-                  <span class="digest-title">
-                    {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:8 }}
-                    {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:8 }}
-                    {% else %}{{ article.title_en|truncatewords:8 }}{% endif %}
-                  </span>
-                  <span class="digest-cta">{{ article.category.icon }}</span>
-                </a>
-              </li>
-            {% endfor %}
-          </ol>
-
-          <div style="text-align: center; margin: 20px; padding-top: 20px; border-top: 1px solid rgba(102, 255, 0, 0.2);">
-            <a href="{% url 'news:news_list' %}" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--accent-green); text-decoration: none; padding: 10px 20px; background: rgba(102, 255, 0, 0.1); border-radius: 25px; transition: all 0.3s ease;">
-              {% trans "View All Tech News" %}
-              <span style="margin-left: 5px;">→</span>
-            </a>
-          </div>
-        </details>
-      {% endif %}
-    {% else %}
-      <div class="project-card" style="text-align: center; opacity: 0.6;">
-        <div style="font-size: 4rem; margin-bottom: 20px;">🔧</div>
-        <h4>{% trans "News System Under Development" %}</h4>
-        <p>{% trans "Our AI-powered news system is coming soon" %}</p>
-      </div>
+      {% include "includes/daily_digest.html" %}
     {% endif %}
   </div>
 </section>
 
 {% include 'includes/social_share.html' %}
 
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/components/news_digest.css' %}?v=1.2">
 {% endblock %}
 
 {% block extra_scripts %}

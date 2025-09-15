@@ -180,7 +180,7 @@
   padding: 16px 32px;
   border: none;
   border-radius: 30px;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 16px;
   text-decoration: none;

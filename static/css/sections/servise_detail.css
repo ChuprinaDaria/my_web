@@ -75,16 +75,7 @@
 }
 
 /* HERO TITLE */
-.service-hero-content h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 800;
-  margin: 32px 0;
-  background: linear-gradient(135deg, #ffffff, #66ff00);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1.2;
-}
+/* Typography styles use base/typography.css */
 
 .service-hero-content .description {
   font-size: clamp(1.1rem, 3vw, 1.4rem);
@@ -476,9 +467,7 @@
     padding: 60px 0;
   }
   
-  .service-hero-content h1 {
-    font-size: 2.5rem;
-  }
+  /* Typography styles use base/typography.css */
   
   .service-hero-header {
     flex-direction: column;
@@ -516,9 +505,7 @@
     padding: 6px 12px;
   }
   
-  .service-hero-content h1 {
-    font-size: 2rem;
-  }
+  /* Typography styles use base/typography.css */
   
   .content-section,
   .sidebar-section {

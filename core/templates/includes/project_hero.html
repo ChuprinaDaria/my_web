@@ -15,7 +15,7 @@
 
       <!-- Project Subtitle -->
       {% if project.short_description_uk or project.short_description_en or project.short_description_pl %}
-        <div class="project-subtitle">
+        <div>
           {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:30 }}
           {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:30 }}
           {% else %}{{ project.short_description_en|striptags|truncatewords:30 }}{% endif %}

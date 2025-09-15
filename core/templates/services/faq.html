@@ -17,12 +17,12 @@
 
 {% block content %}
 <main class="faq-page container py-16">
-  <h1 class="neon-text text-4xl text-center mb-10">{% trans "Frequently Asked Questions" %}</h1>
+  <h1>{% trans "Frequently Asked Questions" %}</h1>
 
   <div class="faq-list space-y-8 max-w-4xl mx-auto">
     {% for faq in faqs %}
       <div class="faq-item bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
-        <h2 class="text-accent-green text-xl font-semibold flex items-center gap-2">
+        <h2>
           <i data-lucide="circle-help" class="w-5 h-5"></i> {{ faq.question|safe }}
         </h2>
         <p class="text-gray-300 mt-2">{{ faq.answer|safe }}</p>

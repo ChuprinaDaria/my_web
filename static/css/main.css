@@ -13,7 +13,7 @@
 @import url('./components/related_work_section.css');
 @import url('./components/badges.css');
 
-@import url('./sections/projects.css');
+@import url('./sections/projects_clean.css');
 @import url('./sections/services.css');
 @import url('./sections/news.css');
 
@@ -281,3 +281,6 @@ main {
     font-size: 1.3rem;
   }
 }
+
+/* Mobile Projects Styles */
+@import url('./mobile/projects_mobile.css');

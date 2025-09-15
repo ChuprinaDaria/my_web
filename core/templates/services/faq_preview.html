@@ -5,7 +5,7 @@
 <div class="faq-list space-y-8 max-w-4xl mx-auto">
   {% for faq in faqs|slice:":3" %}
     <div class="faq-item bg-white/5 backdrop-blur p-6 rounded-xl border border-white/10">
-      <h3 class="text-xl font-semibold text-accent-green flex gap-2 items-center">
+      <h3>
         <i data-lucide="circle-help" class="w-5 h-5"></i> {{ faq.question|safe }}
       </h3>
       <p class="text-gray-300 mt-2">{{ faq.answer|safe }}</p>

@@ -109,7 +109,7 @@
           {% if article.get_interesting_facts %}
             <div class="interesting-facts glass">
               <h2>
-                <span class="heading-icon">✨</span>
+                <span>✨</span>
                 <span data-lang="en">Interesting Facts</span>
                 <span data-lang="uk">Цікавинки</span>
                 <span data-lang="pl">Interesujące fakty</span>
@@ -127,7 +127,7 @@
             <div class="business-opportunities card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
               <div class="card-header">
                 <div class="card-icon">🚀</div>
-                <h2 class="card-title">
+                <h2>
                   <span data-lang="en">Business Opportunities</span>
                   <span data-lang="uk">Бізнес можливості</span>
                   <span data-lang="pl">Możliwości biznesowe</span>
@@ -148,7 +148,7 @@
             <div class="lazysoft-recommendations card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
               <div class="card-header">
                 <div class="card-icon">🎯</div>
-                <h2 class="card-title">
+                <h2>
                   <span data-lang="en">LAZYSOFT Recommendations</span>
                   <span data-lang="uk">Рекомендації LAZYSOFT</span>
                   <span data-lang="pl">Rekomendacje LAZYSOFT</span>
@@ -266,36 +266,5 @@
 
 </article>
 
-<!-- Контакт форма -->
-<section id="contact" class="contact">
-  {% include "core/contact_form.html" %}
-</section>
 
-<script>
-// Smooth scroll to contact function
-function scrollToContact(articleTitle) {
-  const contactSection = document.getElementById('contact');
-  if (contactSection) {
-    contactSection.scrollIntoView({ 
-      behavior: 'smooth',
-      block: 'start'
-    });
-    
-    // Fill form with article info
-    setTimeout(() => {
-      const messageField = document.querySelector('#contact textarea, #contact input[name="message"]');
-      if (messageField && articleTitle) {
-        const currentLang = document.documentElement.lang || 'uk';
-        const messages = {
-          'uk': `Привіт! Прочитав статтю "${articleTitle}" і хочу дізнатися, як ви можете допомогти з автоматизацією подібних рішень для мого бізнесу.`,
-          'en': `Hi! I read the article "${articleTitle}" and want to know how you can help with automation of similar solutions for my business.`,
-          'pl': `Cześć! Przeczytałem artykuł "${articleTitle}" i chcę wiedzieć, jak możecie pomóc z automatyzacją podobnych rozwiązań dla mojego biznesu.`
-        };
-        messageField.value = messages[currentLang] || messages['uk'];
-        messageField.focus();
-      }
-    }, 1000);
-  }
-}
-</script>
 {% endblock %}

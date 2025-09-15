@@ -10,8 +10,8 @@
   gap: 10px;
   padding: 16px 32px;
   border: none;
-  border-radius: 30px; /* Більш закруглені */
-  font-family: "Inter", sans-serif;
+  border-radius: 30px;
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 16px;
   text-decoration: none;
@@ -27,9 +27,10 @@
   background: linear-gradient(135deg, var(--accent-green), #80ff40);
   color: #000;
   border: none;
-  border-radius: 30px; /* Додав для cta-button */
+  border-radius: 30px;
   box-shadow: 0 4px 20px rgba(158, 255, 0, 0.3);
-  padding: 16px 32px; /* Додав padding */
+  padding: 16px 32px;
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 16px;
   display: inline-flex;
@@ -45,6 +46,7 @@
 .btn-primary {
   padding: 4px 8px;
   border-radius: 12px;
+  font-family: var(--font-heading);
   font-weight: 600;
   font-size: 10px;
   text-decoration: none;
@@ -83,8 +85,9 @@
   border: 2px solid var(--glass-border);
   color: var(--text-primary);
   backdrop-filter: blur(20px);
-  border-radius: 30px; /* Додав для консистентності */
+  border-radius: 30px;
   padding: 16px 32px;
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 16px;
   display: inline-flex;
@@ -110,6 +113,7 @@
   border: 1px solid var(--accent-green);
   color: var(--accent-green);
   padding: 14px 28px;
+  font-family: var(--font-heading);
 }
 
 .btn-ghost:hover {
@@ -124,6 +128,7 @@
   color: var(--accent-green);
   text-decoration: underline;
   padding: 12px 20px;
+  font-family: var(--font-heading);
 }
 
 .btn-link:hover {
@@ -134,18 +139,21 @@
 /* 📏 BUTTON SIZES */
 .btn-sm {
   padding: 12px 24px;
+  font-family: var(--font-heading);
   font-size: 14px;
   font-weight: 600;
 }
 
 .btn-md {
   padding: 16px 32px;
+  font-family: var(--font-heading);
   font-size: 16px;
   font-weight: 700;
 }
 
 .btn-lg {
   padding: 18px 36px;
+  font-family: var(--font-heading);
   font-size: 18px;
   font-weight: 700;
 }
@@ -155,6 +163,7 @@
 .demo-link {
   padding: 4px 8px;
   border-radius: 12px;
+  font-family: var(--font-heading);
   font-weight: 600;
   font-size: 10px;
   text-decoration: none;
@@ -195,6 +204,7 @@
   border: 1px solid var(--glass-border);
   border-radius: 25px;
   color: var(--text-primary);
+  font-family: var(--font-heading);
   font-weight: 600;
   transition: all 0.3s ease;
   backdrop-filter: blur(20px);
@@ -220,6 +230,7 @@
   border-radius: 25px;
   color: var(--text-primary);
   text-decoration: none;
+  font-family: var(--font-heading);
   font-weight: 600;
   font-size: 14px;
   transition: all 0.3s ease;
@@ -253,6 +264,7 @@
   background: linear-gradient(135deg, #ff00ff, #ff0080);
   color: #fff;
   box-shadow: 0 4px 20px rgba(255, 0, 255, 0.3);
+  font-family: var(--font-heading);
 }
 
 .btn-priority:hover,
@@ -270,7 +282,8 @@
   background: linear-gradient(135deg, var(--accent-green), #80ff40);
   color: #000;
   border: none;
-  border-radius: 30px; /* Більш закруглені */
+  border-radius: 30px;
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
@@ -285,6 +298,7 @@
 .sidebar-cta-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 25px rgba(158, 255, 0, 0.4);
+  background: linear-gradient(135deg, #80ff40, var(--accent-green));
 }
 
 /* 🔄 HERO CTA BUTTONS */
@@ -300,7 +314,8 @@
 .hero-cta .cta-primary,
 .hero-cta .cta-secondary {
   padding: 16px 32px;
-  border-radius: 30px; /* Як на скріні */
+  border-radius: 30px;
+  font-family: var(--font-heading);
   font-weight: 700;
   font-size: 16px;
   text-decoration: none;

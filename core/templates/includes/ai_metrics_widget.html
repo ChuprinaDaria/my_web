@@ -4,8 +4,8 @@
     
     <!-- 📊 ЗАГОЛОВОК -->
     <div class="widget-header">
-        <h2 class="widget-title" data-lang="uk">🤖 AI Ефективність в Дії</h2>
-        <p class="widget-subtitle">{% trans "Реальні результати автоматизації для вашого бізнесу" %}</p>
+        <h2 data-lang="uk">🤖 AI Ефективність в Дії</h2>
+        <p>{% trans "Реальні результати автоматизації для вашого бізнесу" %}</p>
     </div>
 
     <!-- 📈 СІТКА МЕТРИК -->
@@ -13,7 +13,7 @@
         
         <!-- Заощаджено коштів -->
         <div class="metric-card roi">
-            <h3 class="metric-label">{% trans "Заощаджено коштів" %}</h3>
+            <h3>{% trans "Заощаджено коштів" %}</h3>
             <p class="metric-value live" id="roiValue">
                 $0<span class="metric-unit"></span>
             </p>
@@ -22,7 +22,7 @@
 
         <!-- AI Model -->
         <div class="metric-card ai-model">
-            <h3 class="metric-label">{% trans "Модель AI" %}</h3>
+            <h3>{% trans "Модель AI" %}</h3>
             <div class="metric-value live ai-model-container" id="aiModelValue">
                 <div class="ai-model-logo">
                     <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg" alt="Gemini" style="width: 32px; height: 32px; display: block; margin: 0 auto 8px auto;" onerror="this.style.display='none'; this.nextElementSibling.textContent='🌟';">
@@ -36,7 +36,7 @@
 
         <!-- Time Saved -->
         <div class="metric-card time">
-            <h3 class="metric-label">{% trans "Зекономлено Часу" %}</h3>
+            <h3>{% trans "Зекономлено Часу" %}</h3>
             <p class="metric-value live" id="timeValue">
                 0<span class="metric-unit">{% trans "год" %}</span>
             </p>
@@ -45,7 +45,7 @@
 
         <!-- AI Content -->
         <div class="metric-card content">
-            <h3 class="metric-label">{% trans "AI Контент" %}</h3>
+            <h3>{% trans "AI Контент" %}</h3>
             <p class="metric-value live" id="contentValue">
                 0<span class="metric-unit">{% trans "шт" %}</span>
             </p>
@@ -54,7 +54,7 @@
 
         <!-- Process Efficiency -->
         <div class="metric-card efficiency">
-            <h3 class="metric-label">{% trans "Зростання Ефективності" %}</h3>
+            <h3>{% trans "Зростання Ефективності" %}</h3>
             <p class="metric-value live">
                 +{{ dashboard_data.key_kpis.ai_efficiency.efficiency_score|default:"340" }}<span class="metric-unit">%</span>
             </p>
@@ -63,7 +63,7 @@
 
         <!-- AI Spend -->
         <div class="metric-card ai-spend">
-            <h3 class="metric-label">{% trans "Витрати на AI" %}</h3>
+            <h3>{% trans "Витрати на AI" %}</h3>
             <p class="metric-value live" id="aiCostValue">
                 0.03<span class="metric-unit">$</span>
             </p>
@@ -72,7 +72,7 @@
 
         <!-- AI Time -->
         <div class="metric-card ai-time">
-            <h3 class="metric-label">{% trans "Час AI обробки" %}</h3>
+            <h3>{% trans "Час AI обробки" %}</h3>
             <p class="metric-value live" id="aiTimeValue">
                 0.1<span class="metric-unit">{% trans "год" %}</span>
             </p>

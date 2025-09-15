@@ -56,7 +56,7 @@
 
       <!-- Заголовок та опис -->
       <div class="hero-content">
-        <h1 class="hero-title">
+        <h1>
           {{ contact_info.get_title|default:_("Контакти") }}
         </h1>
         
@@ -106,7 +106,7 @@
       
       <!-- Використовуємо card-content для тексту -->
       <div class="card-content hero-photo-content">
-        <h3 class="card-title">
+        <h3>
           {{ contact_info.get_hero_title }}
         </h3>
         
@@ -144,7 +144,7 @@
         <!-- Ліва частина - Форма -->
         <div class="contact-form-section">
           <div class="form-container">
-            <h3 class="form-title">
+            <h3>
               {% trans "Напишіть нам" %}
             </h3>
             
@@ -218,7 +218,7 @@
           
           <!-- Контактна інформація -->
           <div class="info-block">
-            <h4 class="info-title">
+            <h4>
               {% trans "Контактна інформація" %}
             </h4>
             
@@ -259,7 +259,7 @@
           <!-- Адреса офісу -->
           {% if contact_info.get_address_line_1 %}
           <div class="info-block">
-            <h4 class="info-title">
+            <h4>
               {% trans "Адреса офісу" %}
             </h4>
             
@@ -295,7 +295,7 @@
           
           <!-- Соціальні мережі -->
           <div class="info-block">
-            <h4 class="info-title">
+            <h4>
               {% trans "Слідкуйте за нами" %}
             </h4>
             

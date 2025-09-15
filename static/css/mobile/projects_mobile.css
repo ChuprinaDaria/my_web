@@ -2,20 +2,17 @@
    📱 MOBILE PROJECTS CSS - Окремо від Desktop
    =============================================== */
 
-/* 🏠 Mobile Projects Page */
+/* 📱 Mobile Projects Page */
 @media (max-width: 768px) {
   
   /* 🎯 HERO SECTION MOBILE */
-  .projects-hero {
+  .projects-hero-section {
     padding: 40px 0;
   }
   
-  .hero-title {
-    font-size: 2rem;
-    margin-bottom: 15px;
-  }
+  /* Typography styles use base/typography.css */
   
-  .hero-description {
+  .projects-subtitle {
     font-size: 1rem;
     margin-bottom: 30px;
     padding: 0 15px;
@@ -41,6 +38,10 @@
   }
   
   /* 🏷️ TECH TAGS MOBILE */
+  .popular-technologies {
+    margin-bottom: 30px;
+  }
+  
   .tech-tags {
     justify-content: center;
     padding: 0 15px;
@@ -53,89 +54,6 @@
   
   .tech-tag small {
     font-size: 10px;
-  }
-  
-  /* 🎠 ACCORDION MOBILE */
-  .featured-projects-section {
-    padding: 40px 0;
-  }
-  
-  .projects-accordion-container {
-    height: 400px;
-    margin: 0 15px;
-    border-radius: var(--radius-lg);
-  }
-  
-  .project-accordion-item {
-    height: 140px;
-  }
-  
-  .project-accordion-card {
-    flex-direction: column;
-    text-align: center;
-    padding: 10px;
-  }
-  
-  .project-image-large {
-    width: 100%;
-    height: 100px;
-    margin-bottom: 10px;
-  }
-  
-  .project-content-right {
-    padding: 10px 0 0 0;
-  }
-  
-  .project-priority {
-    position: relative;
-    top: auto;
-    right: auto;
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-  }
-  
-  .project-title-main {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
-  }
-  
-  .project-description-main {
-    font-size: 0.85rem;
-    margin-bottom: 12px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  .project-actions {
-    flex-direction: row;
-    gap: 8px;
-  }
-  
-  .project-detail-btn,
-  .project-demo-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-    flex: 1;
-  }
-  
-  /* 🎮 NAVIGATION MOBILE */
-  .accordion-navigation {
-    position: relative;
-    right: auto;
-    top: auto;
-    transform: none;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 15px;
-    padding: 0 15px;
-  }
-  
-  .nav-btn {
-    width: 36px;
-    height: 36px;
   }
   
   /* 📋 PROJECTS GRID MOBILE */
@@ -151,23 +69,17 @@
   
   /* 🃏 PROJECT CARD MOBILE */
   .project-card {
-    padding: var(--spacing-md);
     border-radius: var(--radius-xl);
   }
   
   .project-image {
-    margin: -var(--spacing-md) -var(--spacing-md) var(--spacing-sm) -var(--spacing-md);
-    border-radius: var(--radius-xl) var(--radius-xl) var(--radius-md) var(--radius-md);
-  }
-  
-  .project-image img {
     height: 180px;
   }
   
   .project-tags {
     flex-wrap: wrap;
     gap: 4px;
-    margin-bottom: var(--spacing-sm);
+    padding: 12px 15px 0;
   }
   
   .project-tag {
@@ -175,19 +87,18 @@
     font-size: 10px;
   }
   
-  .project-tag.highlight {
-    background: rgba(255, 0, 107, 0.9) !important;
-    color: #fff !important;
+  .project-content {
+    padding: 15px;
   }
   
   .project-title {
     font-size: 1.2rem;
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: 8px;
   }
   
   .project-description {
     font-size: 0.9rem;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 12px;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
@@ -197,7 +108,7 @@
   
   .project-metrics {
     gap: 8px;
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 12px;
     flex-wrap: wrap;
   }
   
@@ -213,76 +124,10 @@
   
   .btn-primary,
   .btn-secondary {
-    padding: 4px 8px !important;
-    border-radius: 12px !important;
-    font-weight: 600 !important;
-    font-size: 10px !important;
-    text-decoration: none !important;
-    border: none !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-  }
-  
-  .btn-primary,
-  .project-card .btn-primary,
-  .project-card-home .btn-primary,
-  .projects-grid .btn-primary {
-    background: rgba(255, 0, 107, 0.2) !important;
-    border: 1px solid rgba(255, 0, 107, 0.5) !important;
-    color: var(--accent-pink) !important;
-    padding: 4px 8px !important;
-    border-radius: 12px !important;
-    font-weight: 600 !important;
-    font-size: 10px !important;
-  }
-  
-  .btn-primary:hover,
-  .project-card .btn-primary:hover,
-  .project-card-home .btn-primary:hover,
-  .projects-grid .btn-primary:hover {
-    background: rgba(255, 0, 107, 0.3) !important;
-    transform: translateY(-1px) !important;
-  }
-  
-  .btn-secondary,
-  .project-card .btn-secondary,
-  .project-card-home .btn-secondary,
-  .projects-grid .btn-secondary {
-    background: rgba(102, 255, 0, 0.1) !important;
-    border: 1px solid rgba(102, 255, 0, 0.3) !important;
-    color: var(--accent-green) !important;
-    padding: 4px 8px !important;
-    border-radius: 12px !important;
-    font-weight: 600 !important;
-    font-size: 10px !important;
-  }
-  
-  .btn-secondary:hover,
-  .project-card .btn-secondary:hover,
-  .project-card-home .btn-secondary:hover,
-  .projects-grid .btn-secondary:hover {
-    background: rgba(102, 255, 0, 0.2) !important;
-    transform: translateY(-1px) !important;
-  }
-  
-  /* Додаткові стилі для всіх кнопок */
-  .details-link, .demo-link {
-    background: rgba(255, 0, 107, 0.2) !important;
-    border: 1px solid rgba(255, 0, 107, 0.5) !important;
-    color: var(--accent-pink) !important;
-    padding: 4px 8px !important;
-    border-radius: 12px !important;
-    font-weight: 600 !important;
-    font-size: 10px !important;
-  }
-  
-  .demo-link {
-    background: rgba(102, 255, 0, 0.1) !important;
-    border: 1px solid rgba(102, 255, 0, 0.3) !important;
-    color: var(--accent-green) !important;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    text-align: center;
+    justify-content: center;
   }
   
   /* 💼 SERVICES CROSS-PROMO MOBILE */
@@ -305,6 +150,9 @@
   .service-promo-card {
     padding: 16px;
     border-radius: var(--radius-md);
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
   }
   
   .service-icon {
@@ -325,6 +173,10 @@
   
   .service-metrics {
     font-size: 0.75rem;
+  }
+  
+  .service-arrow {
+    display: none; /* Прибираємо на мобілці */
   }
   
   .view-all-services {
@@ -352,15 +204,13 @@
 @media (max-width: 480px) {
   
   /* 🎯 HERO EXTRA SMALL */
-  .projects-hero {
+  .projects-hero-section {
     padding: 30px 0;
   }
   
-  .hero-title {
-    font-size: 1.8rem;
-  }
+  /* Typography styles use base/typography.css */
   
-  .hero-description {
+  .projects-subtitle {
     font-size: 0.9rem;
   }
   
@@ -374,55 +224,17 @@
     font-size: 2rem;
   }
   
-  /* 🎠 ACCORDION EXTRA SMALL */
-  .projects-accordion-container {
-    height: 350px;
-    margin: 0 10px;
-  }
-  
-  .project-accordion-item {
-    height: 120px;
-  }
-  
-  .project-image-large {
-    height: 80px;
-  }
-  
-  .project-title-main {
-    font-size: 1rem;
-  }
-  
-  .project-description-main {
-    font-size: 0.8rem;
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
-  }
-  
-  .project-actions {
-    gap: 6px;
-  }
-  
-  .project-detail-btn,
-  .project-demo-btn {
-    padding: 5px 10px;
-    font-size: 0.75rem;
-  }
-  
   /* 📋 GRID EXTRA SMALL */
   .projects-grid {
     padding: 0 10px;
     gap: 15px;
   }
   
-  .project-card {
-    padding: var(--spacing-sm);
+  .project-content {
+    padding: 12px;
   }
   
   .project-image {
-    margin: -var(--spacing-sm) -var(--spacing-sm) var(--spacing-xs) -var(--spacing-sm);
-  }
-  
-  .project-image img {
     height: 160px;
   }
   
@@ -464,17 +276,13 @@
 /* 🌈 MOBILE ANIMATIONS - спрощені */
 @media (max-width: 768px) {
   
-  /* Менше анімацій на мобілці для продуктивності */
+  /* Менше анімацій на мобільці для продуктивності */
   .project-card {
     transition: transform 0.2s ease;
   }
   
   .project-card:hover {
     transform: translateY(-4px) scale(1.02);
-  }
-  
-  .project-accordion-card {
-    transition: background-color 0.2s ease;
   }
   
   .service-promo-card {
@@ -505,21 +313,19 @@
   /* Краще читання тексту */
   .project-description,
   .service-description,
-  .hero-description {
+  .projects-subtitle {
     line-height: 1.5;
   }
   
   /* Більші кнопки для touch */
   .btn-primary,
   .btn-secondary,
-  .project-detail-btn,
-  .project-demo-btn,
   .view-all-services {
     min-height: 44px;
     min-width: 44px;
   }
   
-  /* Відступи для краещого UX */
+  /* Відступи для кращого UX */
   .section-header {
     margin-bottom: 30px;
     padding: 0 15px;
@@ -530,45 +336,457 @@
   }
   
   /* Скролінг оптимізація */
-  .projects-accordion-container,
+  .projects-grid,
   .services-promo-grid {
     -webkit-overflow-scrolling: touch;
   }
 }
 
-/* 📱 Mobile styles for simple project list */
+/* ===============================================
+   📱 SIMPLE PROJECTS LIST - MOBILE STYLES
+   =============================================== */
+
+/* 📱 TABLET STYLES (768px - 1024px) */
+@media (max-width: 1024px) {
+  .featured-projects-section {
+    padding: var(--spacing-2xl) 0;
+  }
+  
+  .projects-simple-list {
+    max-width: 100%;
+    margin: 0;
+    padding: 0 var(--spacing-md);
+  }
+  
+  .project-simple-item {
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .project-media {
+    width: 160px;
+    height: 120px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .project-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 100%;
+  }
+  
+  .project-title {
+    font-size: 1.6rem;
+  }
+  
+  .project-content {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .project-trigger {
+    width: 100%;
+    text-align: left;
+  }
+  
+  .project-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .project-header h3 {
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--spacing-sm);
+  }
+  
+  /* 🎬 PROJECT ACTIONS */
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* 📱 MOBILE STYLES (max-width: 768px) */
 @media (max-width: 768px) {
-  .projects-simple-list { 
-    gap: var(--spacing-md); 
+  /* 🏗️ PROJECTS LAYOUT */
+  .projects-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
   }
-
-  .project-simple-item { 
-    grid-template-columns: 1fr; 
-    padding: var(--spacing-md); 
+  
+  .projects-main {
+    width: 100%;
+    order: 1;
   }
-
-  .project-media { 
-    display: block; 
-    height: 180px; /* компактніше */
-    border-radius: var(--radius-lg);
+  
+  .projects-sidebar {
+    width: 100%;
+    order: 2;
+    position: static;
+    margin-top: var(--spacing-lg);
+  }
+  
+  /* 🏗️ SECTION LAYOUT */
+  .featured-projects-section {
+    padding: var(--spacing-xl) 0;
+    overflow-x: hidden;
+  }
+  
+  .featured-projects-section .container {
+    max-width: 100%;
+    padding: 0 var(--spacing-sm);
+    margin: 0 auto;
+  }
+  
+  .section-header {
+    margin-bottom: var(--spacing-xl);
+    padding: 0;
+    text-align: center;
+  }
+  
+  .projects-main .section-header {
+    text-align: left;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  /* Typography styles use base/typography.css */
+  
+  /* 📋 PROJECTS LIST */
+  .projects-simple-list {
+    gap: var(--spacing-md);
+    padding: 0;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  
+  /* 🃏 PROJECT ITEM - VERTICAL LAYOUT */
+  .project-simple-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
     margin-bottom: var(--spacing-sm);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
   }
-
-  .project-main { 
-    gap: var(--spacing-xs); 
+  
+  /* 🖼️ PROJECT MEDIA - FULL WIDTH */
+  .project-media {
+    width: 100%;
+    height: 200px;
+    order: 1;
+    max-width: 100%;
+    overflow: hidden;
   }
-
-  .project-title-row { 
-    grid-template-columns: 1fr auto; 
+  
+  .project-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 100%;
   }
-
-  .project-actions { 
-    flex-direction: column; 
-    align-items: stretch; 
+  
+  /* 📝 PROJECT CONTENT */
+  .project-content {
+    order: 2;
+    width: 100%;
+    min-width: 0;
   }
+  
+  .project-trigger {
+    width: 100%;
+    text-align: left;
+  }
+  
+  .project-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .project-header h3 {
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--spacing-sm);
+  }
+  
+  .project-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  /* 🎬 PROJECT ACTIONS */
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  /* 🔽 ACCORDION ARROW - RIGHT ALIGNED */
+  .accordion-arrow {
+    align-self: flex-end;
+    margin-top: -30px;
+  }
+  
+  /* 🎬 PROJECT ACTIONS - STACKED */
+  .project-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+  }
+}
 
-  .btn-primary, .btn-secondary { 
-    width: 100%; 
-    text-align: center; 
+/* 📱 SMALL MOBILE (max-width: 480px) */
+@media (max-width: 480px) {
+  /* 🏗️ PROJECTS LAYOUT */
+  .projects-layout {
+    gap: var(--spacing-md);
+  }
+  
+  .projects-sidebar {
+    margin-top: var(--spacing-md);
+  }
+  
+  /* 🏗️ SECTION LAYOUT */
+  .featured-projects-section {
+    padding: var(--spacing-lg) 0;
+    overflow-x: hidden;
+  }
+  
+  .featured-projects-section .container {
+    max-width: 100%;
+    padding: 0 var(--spacing-xs);
+    margin: 0 auto;
+  }
+  
+  .section-header {
+    margin-bottom: var(--spacing-lg);
+    padding: 0;
+    text-align: center;
+  }
+  
+  .projects-main .section-header {
+    text-align: left;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Typography styles use base/typography.css */
+  
+  /* 📋 PROJECTS LIST */
+  .projects-simple-list {
+    gap: var(--spacing-sm);
+    padding: 0;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  
+  /* 🃏 PROJECT ITEM - COMPACT */
+  .project-simple-item {
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+  
+  /* 🖼️ PROJECT MEDIA */
+  .project-media {
+    height: 180px;
+    border-radius: var(--radius-md);
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .project-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 100%;
+  }
+  
+  /* 📝 PROJECT CONTENT */
+  .project-content {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .project-trigger {
+    width: 100%;
+    text-align: left;
+  }
+  
+  .project-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .project-header h3 {
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--spacing-sm);
+  }
+  
+  /* 🎬 PROJECT ACTIONS */
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.95rem;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  /* 😔 EMPTY STATE */
+  .empty-state {
+    padding: var(--spacing-xl);
+  }
+  
+  .empty-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .empty-state p {
+    font-size: 1rem;
+  }
+}
+
+/* 📱 EXTRA SMALL MOBILE (max-width: 320px) */
+@media (max-width: 320px) {
+  .project-simple-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .project-media {
+    height: 150px;
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+}
+
+/* 🎭 MOBILE FOCUS STATES */
+@media (max-width: 768px) {
+  .project-trigger:focus {
+    outline-offset: 2px;
+  }
+  
+  .project-actions a:focus {
+    outline-offset: 1px;
+  }
+}
+
+/* 🎪 MOBILE ANIMATIONS */
+@media (max-width: 768px) {
+  .project-simple-item {
+    animation-duration: 0.4s;
+  }
+  
+  /* Менші затримки на мобільному */
+  .project-simple-item:nth-child(2) { animation-delay: 0.05s; }
+  .project-simple-item:nth-child(3) { animation-delay: 0.1s; }
+  .project-simple-item:nth-child(4) { animation-delay: 0.15s; }
+  .project-simple-item:nth-child(5) { animation-delay: 0.2s; }
+}
+
+/* 📱 TOUCH IMPROVEMENTS */
+@media (max-width: 768px) {
+  .project-trigger {
+    min-height: 44px; /* Мінімальний розмір для touch */
+    padding: var(--spacing-sm) 0;
+  }
+  
+  .accordion-arrow {
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* Збільшені кнопки для touch */
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    min-height: 48px;
+    font-weight: 600;
+  }
+}
+
+/* 🎯 HOVER DISABLE ON TOUCH DEVICES */
+@media (hover: none) and (pointer: coarse) {
+  .project-simple-item:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+  }
+  
+  .project-simple-item:hover .project-glow-border {
+    opacity: 0;
+  }
+  
+  .project-simple-item:hover .project-media img {
+    transform: none;
+  }
+  
+  .project-trigger:hover .project-title {
+    color: var(--text-white);
+  }
+  
+  .project-actions .btn-primary:hover,
+  .project-actions .btn-secondary:hover {
+    transform: none;
   }
 }

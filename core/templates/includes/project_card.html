@@ -24,7 +24,7 @@
 
   <!-- Main Content -->
   <div class="project-content">
-    <h3 class="project-title">
+    <h3>
       {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|safe }}
       {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|safe }}
       {% else %}{{ project.title_en|safe }}{% endif %}

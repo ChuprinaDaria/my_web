@@ -7,7 +7,7 @@
   <!-- Project Tags -->
   {% if project_tags %}
     <div class="sidebar-section glass card">
-      <h3 class="sidebar-title">
+      <h3>
         <i data-lucide="tags"></i>
         {% trans "Project Tags" %}
       </h3>
@@ -25,7 +25,7 @@
   <!-- Technologies -->
   {% if project.technologies_used %}
     <div class="sidebar-section glass card">
-      <h3 class="sidebar-title">
+      <h3>
         <i data-lucide="code"></i>
         {% trans "Technologies" %}
       </h3>
@@ -39,7 +39,7 @@
 
   <!-- Project Info -->
   <div class="sidebar-section glass card">
-    <h3 class="sidebar-title">
+    <h3>
       <i data-lucide="info"></i>
       {% trans "Project Info" %}
     </h3>
@@ -78,7 +78,7 @@
   <!-- Client Review -->
   {% if project.review and project.review.is_active %}
     <div class="sidebar-section glass card">
-      <h3 class="sidebar-title">
+      <h3>
         <i data-lucide="message-square"></i>
         {% trans "Client Review" %}
       </h3>
@@ -111,7 +111,7 @@
   <!-- Related Articles -->
   {% if related_articles %}
     <div class="sidebar-section glass card">
-      <h3 class="sidebar-title">
+      <h3>
         <i data-lucide="newspaper"></i>
         {% trans "Related News" %}
       </h3>
@@ -119,7 +119,7 @@
         {% for article in related_articles %}
           <a href="{{ article.url }}" class="related-item" target="_blank">
             <div class="related-content">
-              <h4 class="related-title">{{ article.title|truncatewords:8 }}</h4>
+              <h4>{{ article.title|truncatewords:8 }}</h4>
               <div class="related-meta">
                 {% if article.category %}<span class="related-category">{{ article.category }}</span>{% endif %}
                 <time class="related-date">{{ article.published_at|date:"j.m" }}</time>
@@ -139,7 +139,7 @@
   <!-- Related Services -->
   {% if related_services %}
     <div class="sidebar-section glass card">
-      <h3 class="sidebar-title">
+      <h3>
         <i data-lucide="grid-3x3"></i>
         {% trans "Related Services" %}
       </h3>
@@ -161,7 +161,7 @@
 
   <!-- CTA Sidebar -->
   <div class="sidebar-section glass card cta-sidebar">
-    <h3 class="sidebar-title">
+    <h3>
       <i data-lucide="sparkles"></i>
       {% trans "Want Similar?" %}
     </h3>

@@ -1,9 +1,9 @@
 {% extends "core/base.html" %}
-{% load static i18n project_carousel_tags %}
+{% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-{% block title %}{{ seo_title|default:"Projects - LazySoft" }}{% endblock %}
-{% block meta_description %}{{ seo_description|default:"Poznaj nasze portfolio projektów automatyzacji i AI" }}{% endblock %}
+{% block title %}{{ seo_title|default:"{% trans 'Projects - LazySoft' %}" }}{% endblock %}
+{% block meta_description %}{{ seo_description|default:"{% trans 'Discover our portfolio of automation and AI projects' %}" }}{% endblock %}
 
 {% block extra_meta %}
   <!-- Canonical + hreflang -->
@@ -13,16 +13,16 @@
   <link rel="alternate" href="https://lazysoft.dev/pl/projects/" hreflang="pl">
   
   <!-- OG Tags -->
-  <meta property="og:title" content="{{ seo_title|default:'Projects - LazySoft' }}">
-  <meta property="og:description" content="{{ seo_description }}">
+  <meta property="og:title" content="{{ seo_title|default:'{% trans "Projects - LazySoft" %}' }}">
+  <meta property="og:description" content="{{ seo_description|default:'{% trans "Discover our portfolio of automation and AI projects" %}' }}">
   <meta property="og:image" content="{{ og_image|default:'https://lazysoft.dev/static/images/projects-og.jpg' }}">
   <meta property="og:url" content="https://lazysoft.dev/{{ CURRENT_LANG }}/projects/">
   <meta property="og:type" content="website">
   
   <!-- Social Media -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ seo_title }}">
-  <meta name="twitter:description" content="{{ seo_description }}">
+  <meta name="twitter:title" content="{{ seo_title|default:'{% trans "Projects - LazySoft" %}' }}">
+  <meta name="twitter:description" content="{{ seo_description|default:'{% trans "Discover our portfolio of automation and AI projects" %}' }}">
   <meta name="twitter:image" content="{{ og_image|default:'https://lazysoft.dev/static/images/projects-og.jpg' }}">
 {% endblock %}
 
@@ -30,268 +30,59 @@
 <main class="projects-page">
 
   <!-- Hero Section -->
-  <section class="projects-hero">
-    <div class="container">
-      
-      
-      <!-- Hero Content -->
-      <div class="hero-content">
-        <h1 class="hero-title">
-          <span data-lang="en">{{ overview_title_en|default:"Our Projects Portfolio" }}</span>
-          <span data-lang="uk">{{ overview_title_uk|default:"Наші проєкти" }}</span>
-          <span data-lang="pl">{{ overview_title_pl|default:"Nasze projekty" }}</span>
-        </h1>
-        
-        <div class="hero-description">
-          <span data-lang="en">{{ overview_description_en|default:"Discover our completed automation and AI projects" }}</span>
-          <span data-lang="uk">{{ overview_description_uk|default:"Познайомтеся з нашими проєктами автоматизації та AI" }}</span>
-          <span data-lang="pl">{{ overview_description_pl|default:"Poznaj nasze portfolio projektów automatyzacji i AI" }}</span>
-        </div>
-        
-        <!-- ✅ ЗАЛИШАЄМО - Statistics -->
-        <div class="projects-stats">
-          <div class="stat-item">
-            <span class="stat-number">3+</span>
-            <span class="stat-label">
-              <span data-lang="en">Solutions</span>
-              <span data-lang="uk">Рішення</span>
-              <span data-lang="pl">Rozwiązania</span>
-            </span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">{{ total_projects|default:"4" }}+</span>
-            <span class="stat-label">
-              <span data-lang="en">Projects</span>
-              <span data-lang="uk">Проєкти</span>
-              <span data-lang="pl">Projekty</span>
-            </span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">
-              <span data-lang="en">Success Rate</span>
-              <span data-lang="uk">Успішність</span>
-              <span data-lang="pl">Wskaźnik sukcesu</span>
-            </span>
-          </div>
-        </div>
+  {% include 'projects/projects_hero.html' %}
 
-        <!-- ✅ ЗАЛИШАЄМО - Popular Technologies (БЕЗ фільтрації) -->
-        <div class="popular-technologies">
-          <h3>
-            <span data-lang="en">Popular Technologies</span>
-            <span data-lang="uk">Популярні технології</span>
-            <span data-lang="pl">Popularne technologie</span>
-          </h3>
-          <div class="tech-tags">
-            <span class="tech-tag ai">
-              🎨 <span data-lang="en">AI Automation</span>
-              <span data-lang="uk">AI Автоматизація</span>
-              <span data-lang="pl">AI Automatyzacja</span>
-              <small>2 projects</small>
-            </span>
-            <span class="tech-tag web">
-              ⚙️ Web <small>1 project</small>
-            </span>
-            <span class="tech-tag chatbot">
-              🤖 <span data-lang="en">Chat Bot</span>
-              <span data-lang="uk">Чат Бот</span>
-              <span data-lang="pl">Chat Bot</span>
-              <small>1 project</small>
-            </span>
-          </div>
+  <!-- Featured Projects with Sidebar -->
+  <section class="featured-projects-section">
+    <div class="container">
+      <div class="projects-layout">
+        
+        <!-- Featured Projects -->
+        <div class="projects-main">
+          {% include "includes/simple_projects_list.html" %}
         </div>
+        
+        <!-- Projects Sidebar -->
+        <aside class="projects-sidebar">
+          {% include 'projects/projects_sidebar.html' %}
+        </aside>
+        
       </div>
     </div>
   </section>
 
-  <!-- ✅ SIMPLE FEATURED PROJECTS (NO CAROUSEL) -->
-  {% include "includes/simple_projects_list.html" %}
-
-  <!-- All Projects Grid -->
+  <!-- All Projects -->
   <section class="all-projects-section">
     <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">
-          <span data-lang="en">All Projects</span>
-          <span data-lang="uk">Усі проєкти</span>
-          <span data-lang="pl">Wszystkie projekty</span>
-        </h2>
-      </div>
-
-      <!-- Projects Grid -->
-      <div class="projects-grid">
-        {% for project in all_projects %}
-          <article class="project-card" onclick="location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
-            
-            <!-- Project Image -->
-            {% if project.featured_image %}
-              <div class="project-image">
-                <img src="{{ project.featured_image.url }}" 
-                     alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}{% else %}{{ project.title_en }}{% endif %}" 
-                     loading="lazy">
-                <div class="image-overlay"></div>
-              </div>
-            {% endif %}
-
-            <!-- Project Tags -->
-            <div class="project-tags">
-              {% if project.is_ai_powered %}
-                <span class="project-tag ai-powered">🤖 AI</span>
-              {% endif %}
-              {% if project.is_top_project %}
-                <span class="project-tag top-project">👑</span>
-              {% endif %}
-              {% if project.is_innovative %}
-                <span class="project-tag innovative">💡</span>
-              {% endif %}
-              {% if project.is_enterprise %}
-                <span class="project-tag enterprise">🏢</span>
-              {% endif %}
-            </div>
-
-            <!-- Project Content -->
-            <div class="project-content">
-              <h3 class="project-title">
-                {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}
-                {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}
-                {% else %}{{ project.title_en }}{% endif %}
-              </h3>
-              
-              <p class="project-description">
-                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:20 }}
-                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:20 }}
-                {% else %}{{ project.short_description_en|striptags|truncatewords:20 }}{% endif %}
-              </p>
-              
-              <!-- Project Metrics -->
-              <div class="project-metrics">
-                {% if project.development_duration_weeks %}
-                  <span class="metric-item">
-                    📅 {{ project.development_duration_weeks }} 
-                    <span data-lang="en">weeks</span>
-                    <span data-lang="uk">тижнів</span>
-                    <span data-lang="pl">tygodni</span>
-                  </span>
-                {% endif %}
-                {% if project.budget_range %}
-                  <span class="metric-item">💰 {{ project.get_budget_range_display }}</span>
-                {% endif %}
-              </div>
-              
-              <!-- Project Actions -->
-              <div class="project-actions">
-                <button class="btn-primary" onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
-                  <span data-lang="en">View Case</span>
-                  <span data-lang="uk">Переглянути кейс</span>
-                  <span data-lang="pl">Zobacz case</span>
-                </button>
-                
-                {% if project.project_url %}
-                  <button class="btn-secondary" onclick="event.stopPropagation(); window.open('{{ project.project_url }}', '_blank');">
-                    <span data-lang="en">Demo</span>
-                    <span data-lang="uk">Демо</span>
-                    <span data-lang="pl">Demo</span>
-                  </button>
-                {% endif %}
-              </div>
-            </div>
-
-            <div class="project-glow-effect"></div>
-          </article>
-        {% empty %}
-          <div class="empty-state">
-            <i data-lucide="folder-x"></i>
-            <p>
-              <span data-lang="en">No projects available</span>
-              <span data-lang="uk">Проєкти поки недоступні</span>
-              <span data-lang="pl">Brak dostępnych projektów</span>
-            </p>
-          </div>
-        {% endfor %}
-      </div>
+      {% include 'projects/projects_grid.html' %}
     </div>
   </section>
 
-  <!-- 🆕 CROSS-PROMO SERVICES -->
-  <section class="related-services-cross-promo">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">
-          <span data-lang="en">Our Services</span>
-          <span data-lang="uk">Наші послуги</span>
-          <span data-lang="pl">Wszystkie nasze usługi</span>
-        </h2>
-        <p class="section-subtitle">
-          <span data-lang="en">Explore services related to our projects</span>
-          <span data-lang="uk">Досліджуйте послуги пов'язані з нашими проєктами</span>
-          <span data-lang="pl">Poznaj usługi powiązane z naszymi projektami</span>
-        </p>
-      </div>
+  <!-- Services Cross-Promo -->
+  {% include 'projects/services_cross_promo.html' %}
 
-      <!-- Services Cross-Promo Grid -->
-      <div class="services-promo-grid">
-        {% for service in related_services|slice:":6" %}
-          <article class="service-promo-card" onclick="location.href='/{{ CURRENT_LANG }}/services/{{ service.slug }}/'">
-            <div class="service-icon">
-              {% if service.icon %}
-                <img src="{{ service.icon.url }}" alt="{{ service.title }}" loading="lazy">
-              {% else %}
-                🏢
-              {% endif %}
-            </div>
-            
-            <div class="service-content">
-              <h3 class="service-title">
-                {% if CURRENT_LANG == 'uk' and service.title_uk %}{{ service.title_uk }}
-                {% elif CURRENT_LANG == 'pl' and service.title_pl %}{{ service.title_pl }}
-                {% else %}{{ service.title_en }}{% endif %}
-              </h3>
-              
-              <p class="service-description">
-                {% if CURRENT_LANG == 'uk' and service.short_description_uk %}{{ service.short_description_uk|striptags|truncatewords:10 }}
-                {% elif CURRENT_LANG == 'pl' and service.short_description_pl %}{{ service.short_description_pl|striptags|truncatewords:10 }}
-                {% else %}{{ service.short_description_en|striptags|truncatewords:10 }}{% endif %}
-              </p>
-              
-              <div class="service-metrics">
-                <span class="projects-count">
-                  {{ service.projects_count|default:0 }} 
-                  <span data-lang="en">projects</span>
-                  <span data-lang="uk">проєктів</span>
-                  <span data-lang="pl">projektów</span>
-                </span>
-              </div>
-            </div>
-            
-            <div class="service-arrow">
-              <i data-lucide="arrow-right"></i>
-            </div>
-          </article>
-        {% endfor %}
-      </div>
-      
-      <!-- View All Services -->
-      <div class="section-footer">
-        <a href="/{{ CURRENT_LANG }}/services/" class="view-all-services">
-          <span data-lang="en">View All Services</span>
-          <span data-lang="uk">Переглянути всі послуги</span>
-          <span data-lang="pl">Zobacz wszystkie usługi</span>
-          <i data-lucide="arrow-right"></i>
-        </a>
-      </div>
+  <!-- Projects News Section -->
+  {% include "includes/projects_news_section.html" %}
+
+  <!-- News Section -->
+  <section class="news-section">
+    <div class="container">
+      {% include "includes/daily_digest.html" %}
     </div>
   </section>
 
 </main>
 
-<!-- Contact Section -->
-<section id="contact" class="contact">
-  {% include "core/contact_form.html" %}
-</section>
-
 {% endblock %}
 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/sidebar_desktop.css' %}?v=1.3">
+<link rel="stylesheet" href="{% static 'css/sidebar_mobile.css' %}?v=1.3">
+<link rel="stylesheet" href="{% static 'css/sections/projects_news_section_desktop.css' %}?v=1.0">
+<link rel="stylesheet" href="{% static 'css/sections/projects_news_section_mobile.css' %}?v=1.0">
+<link rel="stylesheet" href="{% static 'css/components/news_digest.css' %}?v=1.2">
+{% endblock %}
 
 {% block extra_scripts %}
 <script src="{% static 'js/simple_projects_accordion.js' %}"></script>

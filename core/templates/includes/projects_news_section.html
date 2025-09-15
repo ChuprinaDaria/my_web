@@ -1,0 +1,71 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% if related_articles %}
+  <section class="projects-news-section">
+    <div class="container">
+      <div class="news-section-header">
+        <h2>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-newspaper">
+            <path d="M15 18h-5"></path>
+            <path d="M18 14h-8"></path>
+            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"></path>
+            <rect width="8" height="4" x="10" y="6" rx="1"></rect>
+          </svg>
+          {% trans "Latest Tech News" %}
+        </h2>
+        <p class="news-section-subtitle">
+          {% trans "Stay updated with the latest technology trends and insights" %}
+        </p>
+      </div>
+      
+      <div class="news-grid">
+        {% for article in related_articles %}
+          <article class="news-card glass card fade-in-up">
+            <a href="{{ article.url }}" class="news-link" target="_blank" rel="noopener">
+              {% if article.featured_image %}
+                <div class="news-image">
+                  <img src="{{ article.featured_image }}" alt="{{ article.title }}" loading="lazy">
+                  <div class="image-overlay"></div>
+                </div>
+              {% endif %}
+              
+              <div class="news-content">
+                <h3 class="news-title">
+                  {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:12 }}
+                  {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:12 }}
+                  {% else %}{{ article.title_en|truncatewords:12 }}{% endif %}
+                </h3>
+                
+                <div class="news-meta">
+                  {% if article.category %}
+                    <span class="news-category">
+                      {% if CURRENT_LANG == 'uk' and article.category.name_uk %}{{ article.category.name_uk }}
+                      {% elif CURRENT_LANG == 'pl' and article.category.name_pl %}{{ article.category.name_pl }}
+                      {% else %}{{ article.category.name_en }}{% endif %}
+                    </span>
+                  {% endif %}
+                  <time class="news-date">{{ article.published_at|date:"j.m.Y" }}</time>
+                </div>
+                
+                <div class="news-excerpt">
+                  <p>{{ article.summary }}</p>
+                </div>
+              </div>
+            </a>
+          </article>
+        {% endfor %}
+      </div>
+      
+      <div class="news-section-footer">
+        <a href="{% url 'news:news_list' %}" class="btn-primary">
+          {% trans "View All Tech News" %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right">
+            <path d="M5 12h14"></path>
+            <path d="m12 5 7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+{% endif %}

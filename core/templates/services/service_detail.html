@@ -69,9 +69,9 @@
           {% endif %}
         </div>
 
-        <h1 class="project-main-title">{{ service.title|safe }}</h1>
+        <h1>{{ service.title|safe }}</h1>
         
-        <p class="project-subtitle">
+        <p>
           {% if service.short %}
             {{ service.short|safe|striptags|truncatewords:35 }}
           {% else %}
@@ -231,7 +231,7 @@
           
           <!-- 🎯 Quick Contact CTA -->
           <div class="sidebar-section cta-sidebar">
-            <h3 class="sidebar-title">
+            <h3>
               <i data-lucide="message-circle"></i>
               {% trans "Quick Contact" %}
             </h3>
@@ -246,7 +246,7 @@
 
           <!-- 📊 Service Info -->
           <div class="sidebar-section">
-            <h3 class="sidebar-title">
+            <h3>
               <i data-lucide="info"></i>
               {% trans "Service Details" %}
             </h3>
@@ -284,7 +284,7 @@
           <!-- 🏷️ Service Tags -->
           {% if service.tags.all %}
           <div class="sidebar-section">
-            <h3 class="sidebar-title">
+            <h3>
               <i data-lucide="tag"></i>
               {% trans "Service Tags" %}
             </h3>
@@ -308,7 +308,7 @@
           <!-- 🔗 Related Articles - НОВА крос-промоція -->
           {% if related_articles %}
           <div class="sidebar-section">
-            <h3 class="sidebar-title">
+            <h3>
               <i data-lucide="newspaper"></i>
               {% trans "Related News" %}
             </h3>
@@ -321,7 +321,7 @@
                     </div>
                   {% endif %}
                   <div class="related-content">
-                    <h4 class="related-title">{{ article.title|safe|truncatewords:8 }}</h4>
+                    <h4>{{ article.title|safe|truncatewords:8 }}</h4>
                     <div class="related-meta">
                       {% if article.published_at %}
                         <span>{{ article.published_at|date:"M d" }}</span>
@@ -348,11 +348,11 @@
   <section class="related-projects-section">
     <div class="container">
       <header class="related-header">
-        <h2 class="related-title">
+        <h2>
           <i data-lucide="rocket"></i>
           {% trans "Related Projects" %}
         </h2>
-        <p class="related-subtitle">{% trans "See how we've successfully implemented this service for other clients" %}</p>
+        <p>{% trans "See how we've successfully implemented this service for other clients" %}</p>
       </header>
       
       <div class="related-projects-grid">
@@ -365,7 +365,7 @@
               </div>
             {% endif %}
             <div class="project-content">
-              <h3 class="project-title">{{ project.title|safe }}</h3>
+              <h3>{{ project.title|safe }}</h3>
               <p class="project-description">{{ project.short_description|safe|striptags|truncatewords:15 }}</p>
               
               <!-- Project Badges -->
@@ -419,8 +419,8 @@
   <section class="related-services-section">
     <div class="container">
       <header class="related-header">
-        <h2 class="related-title">{% trans "You Might Also Like" %}</h2>
-        <p class="related-subtitle">{% trans "Discover related services, projects, and insights" %}</p>
+        <h2>{% trans "You Might Also Like" %}</h2>
+        <p>{% trans "Discover related services, projects, and insights" %}</p>
       </header>
       
       <div class="cross-promotion-grid">
@@ -439,7 +439,7 @@
                   {% elif item.type == 'service' %}🛠️ {% trans "Service" %}
                   {% endif %}
                 </div>
-                <h3 class="cross-promotion-title">{{ item.title|safe }}</h3>
+                <h3>{{ item.title|safe }}</h3>
                 <p class="cross-promotion-summary">{{ item.summary|safe }}</p>
               </div>
             </a>
