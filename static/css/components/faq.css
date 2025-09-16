@@ -5,7 +5,7 @@
 
 /* 📋 FAQ PREVIEW SECTION */
 .faq-preview {
-  padding: var(--spacing-3xl) 0;
+  padding: var(--spacing-xl) 0;
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -235,4 +235,17 @@
 .faq-answer {
   position: relative;
   z-index: 2;
+}
+
+/* 📱 МОБІЛЬНІ СТИЛІ ДЛЯ FAQ */
+@media (max-width: 768px) {
+  .faq-preview {
+    padding: var(--spacing-lg) 0; /* Зменшуємо відступ на мобільних */
+  }
+}
+
+@media (max-width: 480px) {
+  .faq-preview {
+    padding: var(--spacing-md) 0; /* Ще менший відступ на маленьких екранах */
+  }
 }

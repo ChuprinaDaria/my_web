@@ -4,45 +4,12 @@
 <!-- 📰 News Sidebar -->
 <aside class="news-sidebar">
   
-  <!-- Categories Navigation -->
-  <div class="sidebar-section glass card">
-    <h3>
-      <i data-lucide="folder"></i>
-      <span data-lang="en">Categories</span>
-      <span data-lang="uk">Категорії</span>
-      <span data-lang="pl">Kategorie</span>
-    </h3>
-    <div class="categories-list">
-      <a href="{% url 'news:news_list' %}" 
-         class="category-item {% if not current_category %}active{% endif %}">
-        <i data-lucide="newspaper"></i>
-        <span data-lang="en">All News</span>
-        <span data-lang="uk">Всі новини</span>
-        <span data-lang="pl">Wszystkie wiadomości</span>
-        <small>({{ total_articles }})</small>
-      </a>
-      
-      {% for category in categories %}
-      <a href="{% url 'news:news_category' category.slug %}" 
-         class="category-item {% if current_category.slug == category.slug %}active{% endif %}">
-        <i data-lucide="tag"></i>
-        <span data-lang="en">{{ category.name_en }}</span>
-        <span data-lang="uk">{{ category.name_uk }}</span>
-        <span data-lang="pl">{{ category.name_pl }}</span>
-        <small>({{ category.articles_count }})</small>
-      </a>
-      {% endfor %}
-    </div>
-  </div>
-
   <!-- Search Form -->
   <div class="sidebar-section glass card">
-    <h3>
-      <i data-lucide="search"></i>
-      <span data-lang="en">Search</span>
-      <span data-lang="uk">Пошук</span>
-      <span data-lang="pl">Szukaj</span>
-    </h3>
+           <h3>
+             <i data-lucide="search"></i>
+             {% trans "Search" %}
+           </h3>
     <form method="GET" class="search-form">
       <div class="search-input-group">
         <input type="search" 
@@ -57,15 +24,38 @@
     </form>
   </div>
 
+  <!-- Categories Navigation -->
+  <div class="sidebar-section glass card">
+           <h3>
+             <i data-lucide="folder"></i>
+             {% trans "Categories" %}
+           </h3>
+    <div class="categories-list">
+      <a href="{% url 'news:news_list' %}" 
+         class="category-item {% if not current_category %}active{% endif %}">
+        <i data-lucide="newspaper"></i>
+        {% trans "All News" %}
+        <small>({{ total_articles }})</small>
+      </a>
+      
+      {% for category in categories %}
+      <a href="{% url 'news:news_category' category.slug %}" 
+         class="category-item {% if current_category.slug == category.slug %}active{% endif %}">
+        <i data-lucide="tag"></i>
+        {{ category.get_name }}
+        <small>({{ category.articles_count }})</small>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
   <!-- Other News (Non-Top 10) -->
   {% if other_news %}
     <div class="sidebar-section glass card">
-      <h3>
-        <i data-lucide="clock"></i>
-        <span data-lang="en">Other News</span>
-        <span data-lang="uk">Інші новини</span>
-        <span data-lang="pl">Inne wiadomości</span>
-      </h3>
+           <h3>
+             <i data-lucide="clock"></i>
+             {% trans "Other News" %}
+           </h3>
       <div class="other-news-list">
         {% for article in other_news %}
           <a href="{{ article.get_absolute_url }}" class="other-news-item">
@@ -86,12 +76,10 @@
 
   <!-- Tech Tags -->
   <div class="sidebar-section glass card">
-    <h3>
-      <i data-lucide="hash"></i>
-      <span data-lang="en">Tech Tags</span>
-      <span data-lang="uk">Технологічні теги</span>
-      <span data-lang="pl">Tagi technologiczne</span>
-    </h3>
+           <h3>
+             <i data-lucide="hash"></i>
+             {% trans "Tech Tags" %}
+           </h3>
     <div class="tech-tags">
       <span class="tech-tag">AI & ML</span>
       <span class="tech-tag">Blockchain</span>
@@ -101,6 +89,60 @@
       <span class="tech-tag">IoT</span>
       <span class="tech-tag">Startups</span>
       <span class="tech-tag">Automation</span>
+    </div>
+  </div>
+
+  <!-- Related Services -->
+  {% if related_services %}
+    <div class="sidebar-section glass card">
+           <h3>
+             <i data-lucide="grid-3x3"></i>
+             {% trans "Related Services" %}
+           </h3>
+      <div class="related-services-list">
+        {% for service in related_services %}
+          <a href="{{ service.url }}" class="service-item">
+            <div class="service-icon">
+              {% if service.icon %}<img src="{{ service.icon.url }}" alt="{{ service.title }}">{% else %}<span>🔧</span>{% endif %}
+            </div>
+            <div class="service-info">
+              <span class="service-name">{{ service.title }}</span>
+              <small class="service-description">{{ service.short|truncatewords:8 }}</small>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- CTA Sidebar -->
+  <div class="sidebar-section glass card cta-sidebar">
+    <h3>
+      <i data-lucide="sparkles"></i>
+      {% trans "Need Custom Project?" %}
+    </h3>
+    <p class="cta-description">
+      {% trans "Let's create something unique for your business. From automation to custom solutions." %}
+    </p>
+    <button class="sidebar-cta-button" 
+            data-project-title="{% trans 'Custom Project Development' %}">
+      <i data-lucide="arrow-right"></i>
+      {% trans "Start Project" %}
+    </button>
+    
+    <div class="cta-features">
+      <div class="cta-feature">
+        <i data-lucide="zap"></i>
+        {% trans "Fast Development" %}
+      </div>
+      <div class="cta-feature">
+        <i data-lucide="shield-check"></i>
+        {% trans "Quality Guarantee" %}
+      </div>
+      <div class="cta-feature">
+        <i data-lucide="headphones"></i>
+        {% trans "Full Support" %}
+      </div>
     </div>
   </div>
 

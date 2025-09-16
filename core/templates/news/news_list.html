@@ -38,49 +38,33 @@
         <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
           <span style="font-size: 4rem; margin-right: 20px;">{{ current_category.icon }}</span>
           <div>
-            <h1 data-lang="en">{{ current_category.name_en|safe }}</h1>
-            <h1 data-lang="uk" class="active">{{ current_category.name_uk|safe }}</h1>
-            <h1 data-lang="pl">{{ current_category.name_pl|safe }}</h1>
+            <h1>{{ current_category.get_name|safe }}</h1>
           </div>
         </div>
-        <p data-lang="en">{{ current_category.description_en|safe }}</p>
-        <p data-lang="uk" class="active">{{ current_category.description_uk|safe }}</p>
-        <p data-lang="pl">{{ current_category.description_pl|safe }}</p>
+        <p>{{ current_category.get_description|safe }}</p>
       {% else %}
         <!-- Main News Page -->
-        <h1 data-lang="en">TECH INSIGHTS by LAZYSOFT</h1>
-        <h1 data-lang="uk" class="active">TECH ІНСАЙТИ від LAZYSOFT</h1>
-        <h1 data-lang="pl">TECH INSIGHTS od LAZYSOFT</h1>
+        <h1>{% trans "TECH INSIGHTS by LAZYSOFT" %}</h1>
         
-        <p data-lang="en">Not just news — business insights for European entrepreneurs</p>
-        <p data-lang="uk" class="active">Не просто новини — бізнес-інсайти для європейських підприємців</p>
-        <p data-lang="pl">Nie tylko wiadomości — biznesowe wglądy dla europejskich przedsiębiorców</p>
+        <p>{% trans "Not just news — business insights for European entrepreneurs" %}</p>
       {% endif %}
     </div>
   </section>
 
-  <!-- AI Spend Banner -->
-  {% include "includes/ai_spend_banner.html" %}
-
+  
   <!-- Category CTA -->
   {% if current_category and current_category.cta_title_uk %}
   <section class="category-cta py-8">
     <div class="container max-w-4xl mx-auto">
       <div class="service-card" style="text-align: center;">
         <div class="service-text">
-          <h3 data-lang="en">{{ current_category.cta_title_en|safe }}</h3>
-          <h3 data-lang="uk" class="active">{{ current_category.cta_title_uk|safe }}</h3>
-          <h3 data-lang="pl">{{ current_category.cta_title_pl|safe }}</h3>
+          <h3>{{ current_category.get_cta_title|safe }}</h3>
           
-          <p data-lang="en">{{ current_category.cta_description_en|safe }}</p>
-          <p data-lang="uk" class="active">{{ current_category.cta_description_uk|safe }}</p>
-          <p data-lang="pl">{{ current_category.cta_description_pl|safe }}</p>
+          <p>{{ current_category.get_cta_description|safe }}</p>
           
           <a href="{{ current_category.cta_link }}" 
              style="display: inline-block; margin-top: 15px; padding: 12px 30px; background: var(--accent-green); color: black; border-radius: 25px; text-decoration: none; font-weight: bold;">
-            <span data-lang="en">{{ current_category.cta_button_text_en }} →</span>
-            <span data-lang="uk" class="active">{{ current_category.cta_button_text_uk }} →</span>
-            <span data-lang="pl">{{ current_category.cta_button_text_pl }} →</span>
+            {{ current_category.get_cta_button_text }} →
           </a>
         </div>
       </div>
@@ -114,9 +98,7 @@
                 <div class="news-meta">
                   <span class="category-chip">
                     {{ article.category.icon }}
-                    <span data-lang="en">{{ article.category.name_en }}</span>
-                    <span data-lang="uk" class="active">{{ article.category.name_uk }}</span>
-                    <span data-lang="pl">{{ article.category.name_pl }}</span>
+                    {{ article.category.get_name }}
                   </span>
                   
                   {% if article.is_top_article %}
@@ -130,16 +112,12 @@
 
                 <!-- Article Title -->
                 <h3>
-                  <span data-lang="en">{{ article.title_en|safe }}</span>
-                  <span data-lang="uk" class="active">{{ article.title_uk|safe }}</span>
-                  <span data-lang="pl">{{ article.title_pl|safe }}</span>
+                  {{ article.get_title|safe }}
                 </h3>
 
                 <!-- Summary -->
                 <p class="news-summary">
-                  <span data-lang="en">{{ article.summary_en|safe|truncatewords:15 }}</span>
-                  <span data-lang="uk" class="active">{{ article.summary_uk|safe|truncatewords:15 }}</span>
-                  <span data-lang="pl">{{ article.summary_pl|safe|truncatewords:15 }}</span>
+                  {{ article.get_summary|safe|truncatewords:15 }}
                 </p>
 
                 <!-- Footer Info -->
@@ -176,9 +154,7 @@
               {% if page_obj.has_previous %}
               <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn">
                 <i data-lucide="chevron-left"></i>
-                <span data-lang="en">Previous</span>
-                <span data-lang="uk" class="active">Попередня</span>
-                <span data-lang="pl">Poprzednia</span>
+                <span>{% trans "Previous" %}</span>
               </a>
               {% endif %}
               
@@ -188,9 +164,7 @@
               
               {% if page_obj.has_next %}
               <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn">
-                <span data-lang="en">Next</span>
-                <span data-lang="uk" class="active">Наступна</span>
-                <span data-lang="pl">Następna</span>
+                <span>{% trans "Next" %}</span>
                 <i data-lucide="chevron-right"></i>
               </a>
               {% endif %}
@@ -203,21 +177,11 @@
               <div class="empty-icon">
                 <i data-lucide="newspaper"></i>
               </div>
-              <h2>
-                <span data-lang="en">No news yet in this category</span>
-                <span data-lang="uk" class="active">Поки що немає новин в цій категорії</span>
-                <span data-lang="pl">Jeszcze brak wiadomości w tej kategorii</span>
-              </h2>
-              <p>
-                <span data-lang="en">Fresh tech insights are coming soon. Check back later!</span>
-                <span data-lang="uk" class="active">Свіжі технологічні інсайти з'являться незабаром. Повертайтеся пізніше!</span>
-                <span data-lang="pl">Świeże technologiczne wglądy pojawią się wkrótce. Sprawdź później!</span>
-              </p>
+              <h2>{% trans "No news yet in this category" %}</h2>
+              <p>{% trans "Fresh tech insights are coming soon. Check back later!" %}</p>
               <a href="{% url 'news:news_list' %}" class="back-link">
                 <i data-lucide="chevron-left"></i>
-                <span data-lang="en">View all news</span>
-                <span data-lang="uk" class="active">Переглянути всі новини</span>
-                <span data-lang="pl">Zobacz wszystkie wiadomości</span>
+                <span>{% trans "View all news" %}</span>
               </a>
             </div>
           {% endif %}
@@ -227,38 +191,15 @@
         <!-- Sidebar Column -->
         <aside class="news-sidebar">
           {% include 'includes/news_sidebar.html' %}
-          
-          <!-- Other News - Інші новини що не в топі -->
-          {% if other_news %}
-          <div class="sidebar-section glass card">
-            <h3>
-              <i data-lucide="clock"></i>
-              <span data-lang="en">Other News</span>
-              <span data-lang="uk" class="active">Інші новини</span>
-              <span data-lang="pl">Inne wiadomości</span>
-            </h3>
-            <div class="other-news-list">
-              {% for article in other_news %}
-                <a href="{{ article.get_absolute_url }}" class="other-news-item">
-                  <div>
-                    {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:8 }}
-                    {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:8 }}
-                    {% else %}{{ article.title_en|truncatewords:8 }}{% endif %}
-                  </div>
-                  <div class="news-meta">
-                    <span class="news-category">{{ article.category.icon }}</span>
-                    <time class="news-date">{{ article.published_at|date:'j.m' }}</time>
-                  </div>
-                </a>
-              {% endfor %}
-            </div>
-          </div>
-          {% endif %}
         </aside>
 
       </div>
     </div>
   </section>
+
+  <!-- Services Cross-Promo -->
+  {% include 'includes/related_work_section.html' %}
+  
 
   <!-- Social Sharing -->
   {% include 'includes/social_share.html' %}
@@ -267,6 +208,7 @@
 {% endblock %}
 
 {% block extra_scripts %}
+<script src="{% static 'js/services_sidebar.js' %}"></script>
 <script>
 // Initialize Lucide icons
 document.addEventListener('DOMContentLoaded', function() {

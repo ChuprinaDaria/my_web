@@ -7,24 +7,25 @@
     width: 100%;
     max-width: 100%;
     box-sizing: border-box;
-    padding: var(--spacing-md);
+    padding: var(--spacing-lg); /* Збільшуємо внутрішні відступи */
     margin: 0;
     transition: all 0.3s ease;
     touch-action: pan-y;
     -webkit-tap-highlight-color: transparent;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.08) 0%,
-      rgba(255, 255, 255, 0.03) 50%,
-      rgba(255, 255, 255, 0.08) 100%
-    );
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Покращуємо бордер */
     box-shadow: 
       0 4px 20px rgba(0, 0, 0, 0.2),
       0 0 0 1px rgba(255, 255, 255, 0.05),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Вимикаємо псевдоелементи на мобільних */
+  .service-card::before,
+  .service-card::after {
+    display: none !important;
   }
   
   .service-content {
@@ -67,8 +68,17 @@
   
   .metric {
     font-size: 0.7rem;
-    padding: 2px 4px;
+    padding: 4px 8px;
     white-space: nowrap;
+    border-radius: var(--radius-pill);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  
+  .metric i {
+    width: 12px;
+    height: 12px;
   }
   
   .service-cta {
@@ -91,19 +101,9 @@
   }
   
   .service-card:hover {
-    transform: translateY(-2px) scale(1.01);
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.12) 0%,
-      rgba(255, 255, 255, 0.06) 50%,
-      rgba(255, 255, 255, 0.12) 100%
-    );
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 
-      0 6px 25px rgba(0, 0, 0, 0.25),
-      0 0 0 1px rgba(102, 255, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    border-color: var(--accent-green);
+    box-shadow: 0 10px 30px var(--green-glow-primary);
   }
   
   .service-card:active {
@@ -112,12 +112,26 @@
     transition: all 0.1s ease;
   }
   
-  .service-image {
-    width: 80px;
-    height: 80px;
+  .service-icon {
+    width: calc(100% - var(--spacing-2xl)); /* Ще більші відступи з боків */
+    height: 140px; /* Значно зменшена висота */
     order: 1;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-lg); /* Співпадає з карткою */
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--glass-bg);
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Менш помітний бордер */
+    margin: var(--spacing-lg) auto var(--spacing-xl) auto; /* Ще більші відступи */
+    overflow: hidden;
+  }
+  
+  .service-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc(var(--radius-lg) - 1px); /* Внутрішній радіус */
   }
   
   .service-text {
@@ -186,12 +200,7 @@
     max-width: 100%;
     box-sizing: border-box;
     margin: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.06) 0%,
-      rgba(255, 255, 255, 0.02) 50%,
-      rgba(255, 255, 255, 0.06) 100%
-    );
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -234,7 +243,16 @@
   
   .metric {
     font-size: 0.65rem;
-    padding: 1px 3px;
+    padding: 3px 6px;
+    border-radius: var(--radius-pill);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  
+  .metric i {
+    width: 10px;
+    height: 10px;
   }
   
   .service-cta {
@@ -250,9 +268,16 @@
     height: 12px;
   }
   
-  .service-image {
-    width: 60px;
-    height: 60px;
+  .service-icon {
+    width: calc(100% - var(--spacing-xl)); /* Ще більші відступи */
+    height: 120px; /* Ще менше на маленьких екранах */
+    margin: var(--spacing-md) auto var(--spacing-lg) auto; /* Ще більші відступи */
+  }
+  
+  .service-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   
   .service-text h3 {
@@ -272,19 +297,9 @@
   }
   
   .service-card:hover {
-    transform: translateY(-1px) scale(1.005);
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.04) 50%,
-      rgba(255, 255, 255, 0.1) 100%
-    );
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    box-shadow: 
-      0 4px 20px rgba(0, 0, 0, 0.2),
-      0 0 0 1px rgba(102, 255, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transform: translateY(-1px);
+    border-color: var(--accent-green);
+    box-shadow: 0 8px 25px var(--green-glow-primary);
   }
 }
 
@@ -380,5 +395,32 @@
     font-size: 0.75rem;
     -webkit-line-clamp: 2;
     line-clamp: 2;
+  }
+  
+  /* 📭 NO SERVICES STATE - MOBILE */
+  .no-services {
+    padding: var(--spacing-2xl) var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+  }
+  
+  .no-services-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .no-services-icon i {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .no-services h3 {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .no-services p {
+    font-size: 0.9rem;
+    max-width: 300px;
   }
 }

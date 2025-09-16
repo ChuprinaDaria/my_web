@@ -15,6 +15,7 @@
 
 @import url('./sections/projects_clean.css');
 @import url('./sections/services.css');
+@import url('./sections/service_card_desktop.css');
 @import url('./sections/news.css');
 
 @import url('./utilities/responsive.css');
@@ -41,9 +42,11 @@
 @import url('./components/service_card.css');
 @import url('./components/simple_services.css');
 @import url('./mobile/simple_services_mobile.css');
+@import url('./mobile/service_card_mobile.css');
 @import url('./sections/service_detail.css');
 @import url('./sections/news_list.css'); 
 @import url('./components/consultant_bubble.css');
+@import url('./components/news_digest.css');
 
 *, *::before, *::after {
   margin: 0;

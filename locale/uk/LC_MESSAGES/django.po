@@ -119,3 +119,69 @@ msgstr "Система новин у розробці"
 
 msgid "Our AI-powered news system is coming soon"
 msgstr "Наша система новин на базі ШІ скоро з'явиться"
+
+msgid "TECH INSIGHTS by LAZYSOFT"
+msgstr "TECH ІНСАЙТИ від LAZYSOFT"
+
+msgid "Not just news — business insights for European entrepreneurs"
+msgstr "Не просто новини — бізнес-інсайти для європейських підприємців"
+
+msgid "Search"
+msgstr "Пошук"
+
+msgid "Categories"
+msgstr "Категорії"
+
+msgid "All News"
+msgstr "Всі новини"
+
+msgid "Other News"
+msgstr "Інші новини"
+
+msgid "Tech Tags"
+msgstr "Технологічні теги"
+
+msgid "Previous"
+msgstr "Попередня"
+
+msgid "Next"
+msgstr "Наступна"
+
+msgid "No news yet in this category"
+msgstr "Поки що немає новин в цій категорії"
+
+msgid "Fresh tech insights are coming soon. Check back later!"
+msgstr "Свіжі технологічні інсайти з'являться незабаром. Повертайтеся пізніше!"
+
+msgid "View all news"
+msgstr "Переглянути всі новини"
+
+msgid "Business Impact"
+msgstr "Вплив на бізнес"
+
+msgid "Interesting Facts"
+msgstr "Цікавинки"
+
+msgid "Business Opportunities"
+msgstr "Бізнес можливості"
+
+msgid "LAZYSOFT Recommendations"
+msgstr "Рекомендації LAZYSOFT"
+
+msgid "Need Automation?"
+msgstr "Потрібна автоматизація?"
+
+msgid "Let's discuss how this technology can transform your business"
+msgstr "Обговоримо, як ця технологія може трансформувати ваш бізнес"
+
+msgid "Let's Talk"
+msgstr "Поговоримо"
+
+msgid "Related News"
+msgstr "Схожі новини"
+
+msgid "All Tech News"
+msgstr "Всі новини"
+
+msgid "🤖 AI Ефективність в Дії"
+msgstr "🤖 AI Ефективність в Дії"

@@ -2,6 +2,8 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
+{% block body_class %}services-list{% endblock %}
+
 <!-- SEO TITLE - використовуємо Django i18n -->
 {% block title %}
   {{ seo_title|default:"{% trans 'Lazysoft Services — AI Automation, Custom Chatbots & Software Development' %}" }}
@@ -225,6 +227,7 @@
 </section>
 {% endif %}
 
+
 <!-- SERVICES GRID -->
 <section id="services-categories" class="services-categories">
   <div class="container">
@@ -233,78 +236,18 @@
     <!-- Services Layout with Sidebar -->
     <div class="services-layout">
       <!-- Services Grid -->
-      <div class="services-main">
-        <div class="services-grid">
-      {% for service in services %}
-        <article class="service-card clickable" data-href="{% url 'services:service_detail' service.slug %}">
-          {% if service.icon %}
-            <div class="service-icon">
-              <img src="{{ service.icon.url }}" alt="{{ service.title }}" loading="lazy">
-            </div>
-          {% endif %}
-          
-          <div class="service-content">
-            <h3>{{ service.title|safe }}</h3>
-            <p class="service-description">{{ service.short|safe|truncatewords:20 }}</p>
-            
-            <!-- Service Tags -->
-            {% if service.tags %}
-              <div class="service-tags">
-                {% for tag in service.tags|slice:":3" %}
-                  <span class="service-tag">{{ tag }}</span>
-                {% endfor %}
-              </div>
-            {% endif %}
-            
-            <!-- Service Metrics -->
-            <div class="service-metrics">
-              {% if service.is_featured %}
-                <span class="metric featured">⭐ {% trans "Featured" %}</span>
-              {% endif %}
-              {% if service.priority_emoji %}
-                <span class="metric priority">{{ service.priority_emoji }} {% trans "Priority" %}</span>
-              {% endif %}
-              {% if service.projects_count %}
-                <span class="metric projects">🚀 {{ service.projects_count }} {% trans "projects" %}</span>
-              {% endif %}
-            </div>
-            
-            <div class="service-cta">
-              <span class="cta-text">{% trans "Learn More" %}</span>
-              <i data-lucide="arrow-right" class="cta-arrow"></i>
-            </div>
-          </div>
-          
-          <div class="service-glow-effect"></div>
-        </article>
-      {% empty %}
-        <div class="no-services">
-          <div class="no-services-icon">
-            <i data-lucide="wrench"></i>
-          </div>
-          <h3>{% trans "Services Coming Soon" %}</h3>
-          <p>{% trans "We're preparing amazing automation solutions for you!" %}</p>
-        </div>
-      {% endfor %}
-        </div>
-      </div>
+      {% include 'includes/services_grid.html' %}
       
       <!-- Services Sidebar -->
-      <aside class="services-sidebar">
-        {% include 'services/services_sidebar.html' %}
-      </aside>
+      {% include 'includes/services_sidebar_standalone.html' %}
     </div>
   </div>
 </section>
 
 
-<!-- DEBUG FAQ -->
-<!-- FAQ count: {{ faqs|length }} -->
-<!-- Debug FAQ: {{ debug_faqs|length }} -->
 
-<!-- FAQ PREVIEW -->
 {% if faqs %}
-<section class="faq-preview">
+<section id="faq" class="faq-preview">
   <div class="container">
     <h2>{% trans "Frequently Asked Questions" %}</h2>
     
@@ -326,9 +269,9 @@
       {% endfor %}
     </div>
     
-    {% if faqs|length > 6 %}
+    {% if faqs %}
       <div class="faq-cta">
-        <a href="#faq" class="cta-secondary">
+        <a href="{% url 'services:faq_list' %}" class="cta-secondary">
           {% trans "View All FAQ" %}
         </a>
       </div>
@@ -336,25 +279,29 @@
   </div>
 </section>
 {% else %}
-<!-- DEBUG: Показуємо якщо немає FAQ -->
-<section class="faq-preview">
-  <div class="container">
-    <h2>{% trans "Frequently Asked Questions" %}</h2>
-    <div style="text-align: center; padding: 2rem; color: #666;">
-      <p>{% trans "No FAQ available. Please add FAQ entries in Django admin." %}</p>
-    </div>
-  </div>
-</section>
+
+
 {% endif %}
 
 <!-- RELATED WORK SECTION -->
 {% include 'includes/related_work_section.html' %}
 
 
+ <!-- Projects News Section -->
+ {% include "includes/projects_news_section.html" %}
+
+ <!-- News Section -->
+ 
+     {% include "includes/daily_digest.html" %}
+   
+
+
 </main>
 {% endblock %}
 
 {% block extra_scripts %}
+  <script src="{% static 'js/services_sidebar.js' %}"></script>
+  
   <!-- Google Analytics tracking -->
   <script>
     <!-- Google Analytics tracking -->
@@ -431,4 +378,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/sidebar_desktop.css' %}?v=1.3">
 <link rel="stylesheet" href="{% static 'css/sidebar_mobile.css' %}?v=1.3">
+<link rel="stylesheet" href="{% static 'css/sections/projects_news_section_desktop.css' %}?v=1.0">
+<link rel="stylesheet" href="{% static 'css/sections/projects_news_section_mobile.css' %}?v=1.0">
+<link rel="stylesheet" href="{% static 'css/components/news_digest.css' %}?v=1.2">
 {% endblock %}

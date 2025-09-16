@@ -168,6 +168,32 @@
   align-items: start;
 }
 
+/* 📏 Відступ перед секцією Our Services на services_list */
+.services-list .services-categories {
+  margin-top: 4rem;
+}
+
+/* 📱 Зменшені відступи на мобільних пристроях */
+@media (max-width: 768px) {
+  .services-list .services-categories {
+    margin-top: 2rem; /* Зменшено з 4rem до 2rem */
+  }
+  
+  .services-list .faq-preview {
+    margin-top: 2rem; /* Зменшено відступ перед FAQ */
+  }
+}
+
+@media (max-width: 480px) {
+  .services-list .services-categories {
+    margin-top: 1.5rem; /* Ще менший відступ на маленьких екранах */
+  }
+  
+  .services-list .faq-preview {
+    margin-top: 1.5rem; /* Ще менший відступ перед FAQ */
+  }
+}
+
 .services-main {
   min-width: 0;
 }
@@ -185,6 +211,23 @@
 .faq-preview {
   padding: var(--spacing-4xl) 0;
   background: var(--bg-secondary);
+}
+
+/* 📱 Зменшені відступи для всіх секцій на мобільних */
+@media (max-width: 768px) {
+  .services-hero,
+  .tech-stack-section,
+  .services-categories{
+    padding: var(--spacing-xl) 0; /* Зменшено з var(--spacing-4xl) */
+  }
+}
+
+@media (max-width: 480px) {
+  .services-hero,
+  .tech-stack-section,
+  .services-categories {
+    padding: var(--spacing-lg) 0; /* Ще менше на маленьких екранах */
+  }
 }
 
 .faq-preview .container {
@@ -275,6 +318,36 @@
 }
 
 @media (max-width: 768px) {
+  .services-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  
+  .services-main {
+    width: 100%;
+    order: 1;
+  }
+  
+  .services-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: 0;
+  }
+  
+  /* Спеціально для головної сторінки */
+  #homepage .services-main {
+    width: 100%;
+  }
+  
+  #homepage .services-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: 0;
+  }
+  
   .services-hero .subtitle {
     font-size: 1.3rem;
   }
@@ -322,6 +395,19 @@
 }
 
 @media (max-width: 480px) {
+  .services-layout {
+    gap: var(--spacing-md);
+  }
+  
+  .services-grid {
+    gap: var(--spacing-md);
+  }
+  
+  /* Спеціально для головної сторінки */
+  #homepage .services-grid {
+    gap: var(--spacing-md);
+  }
+  
   .services-hero {
     padding: var(--spacing-3xl) 0;
   }

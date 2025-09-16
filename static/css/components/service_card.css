@@ -367,21 +367,24 @@
 }
 
 .metric.priority {
-  background: rgba(255, 0, 0, 0.1);
-  color: #ff4444;
-  border-color: rgba(255, 0, 0, 0.2);
+  background: linear-gradient(135deg, rgba(255, 0, 107, 0.2), rgba(255, 0, 107, 0.1));
+  color: var(--accent-pink);
+  border-color: rgba(255, 0, 107, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 0, 107, 0.2);
 }
 
 .metric.featured {
-  background: rgba(255, 215, 0, 0.1);
-  color: #ffd700;
-  border-color: rgba(255, 215, 0, 0.2);
+  background: linear-gradient(135deg, rgba(158, 255, 0, 0.2), rgba(158, 255, 0, 0.1));
+  color: var(--accent-green);
+  border-color: rgba(158, 255, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(158, 255, 0, 0.2);
 }
 
 .metric.projects {
-  background: rgba(102, 255, 0, 0.1);
+  background: linear-gradient(135deg, rgba(158, 255, 0, 0.2), rgba(158, 255, 0, 0.1));
   color: var(--accent-green);
-  border-color: rgba(102, 255, 0, 0.2);
+  border-color: rgba(158, 255, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(158, 255, 0, 0.2);
 }
 
 /* 🎯 SERVICE CTA */

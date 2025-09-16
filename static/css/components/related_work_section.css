@@ -3,12 +3,13 @@
    =============================================== */
 
 .related-work-section {
-  padding: var(--spacing-4xl) 0;
+  padding: var(--spacing-4xl) 0 !important;
+  margin: var(--spacing-3xl) 0 var(--spacing-4xl) 0 !important; /* Додаємо відступи зверху та знизу */
   background: linear-gradient(
     135deg, 
     rgba(102, 255, 0, 0.02) 0%, 
     rgba(255, 0, 255, 0.02) 100%
-  );
+  ) !important;
 }
 
 .related-work-section h2.section-title {
@@ -121,7 +122,8 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .related-work-section {
-    padding: var(--spacing-3xl) 0;
+    padding: var(--spacing-3xl) 0 !important;
+    margin: var(--spacing-xl) 0 var(--spacing-3xl) 0 !important; /* Менші відступи на мобільних */
   }
   
   .related-work-section h2.section-title {
@@ -149,6 +151,10 @@
 }
 
 @media (max-width: 480px) {
+  .related-work-section {
+    margin: var(--spacing-lg) 0 var(--spacing-2xl) 0 !important; /* Ще менші відступи на маленьких екранах */
+  }
+  
   .related-work-section h2.section-title {
     font-size: 1.8rem;
   }

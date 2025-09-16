@@ -237,6 +237,13 @@
   
   .cta-sidebar {
     min-width: 300px;
+    margin: var(--spacing-lg) auto 0 auto; /* Додаємо відступ зверху */
+    text-align: center; /* Центруємо текст */
+  }
+  
+  .sidebar-section {
+    margin: 0 auto !important; /* Центруємо всі sidebar секції */
+    text-align: center !important; /* Центруємо текст */
   }
   
   .sidebar-cta-button {
@@ -284,6 +291,16 @@
   .cta-feature {
     font-size: 0.75rem;
     font-family: var(--font-body);
+  }
+  
+  .cta-sidebar {
+    margin: var(--spacing-md) auto 0 auto; /* Додаємо відступ зверху */
+    text-align: center; /* Центруємо текст */
+  }
+  
+  .sidebar-section {
+    margin: 0 auto !important; /* Центруємо всі sidebar секції */
+    text-align: center !important; /* Центруємо текст */
   }
 }
 
@@ -364,5 +381,139 @@
   .sidebar-cta-button:hover {
     transform: none;
     box-shadow: 0 4px 20px rgba(158, 255, 0, 0.3);
+  }
+}
+
+/* 🎯 Додаткові стилі для центрування sidebar секцій */
+@media (max-width: 768px) {
+  .related-projects-list {
+    text-align: center !important;
+  }
+  
+  .project-item {
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .related-projects-list {
+    text-align: center !important;
+  }
+  
+  .project-item {
+    justify-content: center !important;
+  }
+}
+
+/* 🎯 Специфічні стилі для CTA sidebar з відступом зверху */
+/* Десктоп та планшети */
+.sidebar-section.cta-sidebar {
+  margin: var(--spacing-xl) auto 0 auto !important;
+  text-align: center !important;
+}
+
+@media (max-width: 1024px) {
+  .sidebar-section.cta-sidebar {
+    margin: var(--spacing-lg) auto 0 auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-section.cta-sidebar {
+    margin: var(--spacing-lg) auto 0 auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-section.cta-sidebar {
+    margin: var(--spacing-md) auto 0 auto !important;
+  }
+}
+
+/* Додаткові стилі для service-icon зображень */
+.service-icon img,
+.project-icon img {
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  max-width: 36px;
+  max-height: 36px;
+}
+
+/* Специфічні мобільні стилі для related-services-list */
+@media (max-width: 1024px) {
+  .related-services-list .service-item {
+    padding: var(--spacing-lg);
+  }
+  
+  .related-services-list .service-icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .related-services-list .service-icon img {
+    max-width: 45px;
+    max-height: 45px;
+  }
+  
+  .related-services-list .service-name {
+    font-size: 1rem;
+  }
+  
+  .related-services-list .service-description {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .related-services-list .service-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .related-services-list .service-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .related-services-list .service-icon img {
+    max-width: 36px;
+    max-height: 36px;
+  }
+  
+  .related-services-list .service-name {
+    font-size: 0.9rem;
+  }
+  
+  .related-services-list .service-description {
+    font-size: 0.75rem;
+  }
+  
+  .related-services-list .service-item:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 480px) {
+  .related-services-list .service-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .related-services-list .service-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .related-services-list .service-icon img {
+    max-width: 32px;
+    max-height: 32px;
+  }
+  
+  .related-services-list .service-name {
+    font-size: 0.85rem;
+  }
+  
+  .related-services-list .service-description {
+    font-size: 0.7rem;
   }
 }

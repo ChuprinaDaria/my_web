@@ -45,11 +45,36 @@ def home(request):
         .annotate(related_projects_count=Count('category__projects', distinct=True))
         .order_by('-related_projects_count', 'title_en')
     )[:3]
+    
+    # 🛠️ Сервіси для services_grid (ServiceCategory) - максимум 5 сервісів для головної
+    from services.models import ServiceCategory
+    lang = get_language() or 'uk'
+    
+    # Спочатку шукаємо featured сервіси
+    featured_services = ServiceCategory.objects.filter(is_featured=True).select_related().prefetch_related('tags').order_by('-priority', '-order', '-date_created')[:5]
+    
+    # Якщо немає featured, беремо будь-які сервіси
+    if not featured_services.exists():
+        featured_services = ServiceCategory.objects.select_related().prefetch_related('tags').order_by('-priority', '-order', '-date_created')[:5]
+    
+    services = []
+    for s in featured_services:
+        services.append({
+            "slug": s.slug,
+            "title": s.get_title(lang),
+            "short": s.get_short(lang),
+            "is_featured": s.is_featured,
+            "priority_emoji": s.get_priority_emoji(),
+            "icon": s.icon.url if s.icon else None,
+            "main_image": s.main_image.url if s.main_image else None,
+            "tags": s.tags.filter(is_active=True)[:3],
+        })
 
     # 🧰 Базовий контекст
     context = {
         'featured_projects': featured_projects,
         'featured_services': featured_services,
+        'services': services,  # Додаємо для services_grid
         'dashboard_data': get_dashboard_data(),
     }
 

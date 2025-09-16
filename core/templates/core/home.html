@@ -1,7 +1,6 @@
 {% extends "core/base.html" %}
 {% load static i18n %}
 {% load project_carousel_tags %}
-{% load service_carousel_tags %}
 
 {% get_current_language as CURRENT_LANG %}
 
@@ -203,7 +202,21 @@
 <!-- 🤖 AI METRICS WIDGET -->
 {% include "includes/ai_metrics_widget.html" %}
 
-{% services_carousel limit=6 title=_("Our Services") section_id="homepage" show_view_all=True %}
+<!-- SERVICES GRID -->
+<section id="services-categories" class="services-categories">
+  <div class="container">
+    <h2>{% trans "Our Services" %}</h2>
+    
+    <!-- Services Layout with Sidebar -->
+    <div class="services-layout">
+      <!-- Services Grid -->
+      {% include 'includes/services_grid.html' %}
+      
+     
+    </div>
+  </div>
+</section>
+
 
 <section id="projects" class="projects">
   <div class="container-reg">

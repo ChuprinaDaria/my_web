@@ -119,3 +119,69 @@ msgstr "News System Under Development"
 
 msgid "Our AI-powered news system is coming soon"
 msgstr "Our AI-powered news system is coming soon"
+
+msgid "TECH INSIGHTS by LAZYSOFT"
+msgstr "TECH INSIGHTS by LAZYSOFT"
+
+msgid "Not just news — business insights for European entrepreneurs"
+msgstr "Not just news — business insights for European entrepreneurs"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Categories"
+msgstr "Categories"
+
+msgid "All News"
+msgstr "All News"
+
+msgid "Other News"
+msgstr "Other News"
+
+msgid "Tech Tags"
+msgstr "Tech Tags"
+
+msgid "Previous"
+msgstr "Previous"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "No news yet in this category"
+msgstr "No news yet in this category"
+
+msgid "Fresh tech insights are coming soon. Check back later!"
+msgstr "Fresh tech insights are coming soon. Check back later!"
+
+msgid "View all news"
+msgstr "View all news"
+
+msgid "Business Impact"
+msgstr "Business Impact"
+
+msgid "Interesting Facts"
+msgstr "Interesting Facts"
+
+msgid "Business Opportunities"
+msgstr "Business Opportunities"
+
+msgid "LAZYSOFT Recommendations"
+msgstr "LAZYSOFT Recommendations"
+
+msgid "Need Automation?"
+msgstr "Need Automation?"
+
+msgid "Let's discuss how this technology can transform your business"
+msgstr "Let's discuss how this technology can transform your business"
+
+msgid "Let's Talk"
+msgstr "Let's Talk"
+
+msgid "Related News"
+msgstr "Related News"
+
+msgid "All Tech News"
+msgstr "All Tech News"
+
+msgid "🤖 AI Ефективність в Дії"
+msgstr "🤖 AI Efficiency in Action"

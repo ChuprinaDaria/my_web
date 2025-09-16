@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404
 from django.utils.translation import get_language
-from .models import ServiceCategory, FAQ
+from django.core.paginator import Paginator
+from .models import ServiceCategory, FAQ, ServiceOverview
 from projects.models import Project
+from news.models import ProcessedArticle
 
 def get_localized_field(obj, field_name, lang):
     """Helper для отримання локалізованого поля"""
@@ -11,6 +13,7 @@ def get_localized_field(obj, field_name, lang):
 
 def services_list(request):
     lang = get_language()
+    # Показуємо всі сервіси (включаючи всі featured) на сторінці services_list
     items = ServiceCategory.objects.select_related().prefetch_related('tags').order_by('-priority', '-order', '-date_created')
     services = []
     
@@ -21,6 +24,8 @@ def services_list(request):
             "short": s.get_short(lang),
             "is_featured": s.is_featured,
             "priority_emoji": s.get_priority_emoji(),
+            "icon": s.icon.url if s.icon else None,
+            "main_image": s.main_image.url if s.main_image else None,
             "tags": s.tags.filter(is_active=True)[:3],  # Тільки 3 теги
         })
     
@@ -53,11 +58,60 @@ def services_list(request):
         }
         for f in faqs
     ]
+    
+    # Отримуємо ServiceOverview для hero секції
+    service_overview = ServiceOverview.objects.first()
+    overview_title = None
+    overview_description = None
+    
+    if service_overview:
+        overview_title = get_localized_field(service_overview, "title", lang)
+        overview_description = get_localized_field(service_overview, "description", lang)
+    
+    # Отримуємо останні статті для projects_news_section
+    latest_articles = ProcessedArticle.objects.filter(
+        status='published'
+    ).order_by('-published_at')[:3]  # Тільки 3 останні статті
+    
+    # Локалізуємо статті
+    related_articles = []
+    for article in latest_articles:
+        related_articles.append({
+            "title_en": getattr(article, 'title_en', ''),
+            "title_uk": getattr(article, 'title_uk', ''),
+            "title_pl": getattr(article, 'title_pl', ''),
+            "summary": get_localized_field(article, "summary", lang),
+            "url": article.get_absolute_url(lang) if hasattr(article, 'get_absolute_url') else '#',
+            "featured_image": article.ai_image_url,
+            "published_at": article.published_at,
+            "category": getattr(article, 'category', None),
+        })
+    
+    # Отримуємо daily_digest для news section
+    daily_digest_articles = ProcessedArticle.objects.filter(
+        status='published'
+    ).order_by('-published_at')[:5]  # 5 статей для daily digest
+    
+    # Локалізуємо daily_digest
+    daily_digest = []
+    for article in daily_digest_articles:
+        daily_digest.append({
+            "title_en": getattr(article, 'title_en', ''),
+            "title_uk": getattr(article, 'title_uk', ''),
+            "title_pl": getattr(article, 'title_pl', ''),
+            "published_at": article.published_at,
+            "category": getattr(article, 'category', None),
+            "get_absolute_url": article.get_absolute_url(lang) if hasattr(article, 'get_absolute_url') else '#',
+        })
 
     return render(request, "services/services_list.html", {
         "services": services, 
         "faqs": localized_faqs,
         "related_projects": localized_projects,
+        "related_articles": related_articles,
+        "daily_digest": daily_digest,
+        "overview_title": overview_title,
+        "overview_description": overview_description,
         "lang": lang,
         "debug_faqs": localized_faqs
     })
@@ -174,5 +228,27 @@ def service_detail(request, slug):
         "related_projects": related_projects,
         "related_articles": related_articles,
         "cross_promotion_content": cross_promotion_content,
+        "lang": lang,
+    })
+
+def faq_list(request):
+    """FAQ сторінка"""
+    lang = get_language()
+    
+    # Отримуємо всі FAQ
+    faqs = FAQ.objects.filter(is_active=True).order_by('-priority', '-date_created')
+    
+    # Локалізуємо FAQ
+    localized_faqs = []
+    for faq in faqs:
+        localized_faqs.append({
+            'question': faq.get_question(lang),
+            'answer': faq.get_answer(lang),
+            'priority': faq.priority,
+            'date_created': faq.date_created,
+        })
+    
+    return render(request, "services/faq.html", {
+        "faqs": localized_faqs,
         "lang": lang,
     })

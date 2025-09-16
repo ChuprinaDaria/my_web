@@ -95,6 +95,24 @@ class NewsListView(ListView):
             status='published'
         ).count()
         
+        # Пов'язані сервіси для sidebar
+        try:
+            from services.models import ServiceCategory
+            related_services = ServiceCategory.objects.all().order_by('-priority', '-order')[:6]
+            
+            context['related_services'] = [
+                {
+                    'slug': s.slug,
+                    'title': s.get_title(language),
+                    'short': s.get_short(language),
+                    'url': f'/{language}/services/{s.slug}/',
+                    'icon': s.icon
+                }
+                for s in related_services
+            ]
+        except ImportError:
+            context['related_services'] = []
+        
         # SEO метадані
         if category_slug:
             category = context['current_category']

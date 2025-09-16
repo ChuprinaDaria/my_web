@@ -52,11 +52,9 @@
   </section>
 
   <!-- All Projects -->
-  <section class="all-projects-section">
-    <div class="container">
+  
       {% include 'projects/projects_grid.html' %}
-    </div>
-  </section>
+    
 
   <!-- Services Cross-Promo -->
   {% include 'projects/services_cross_promo.html' %}
@@ -65,11 +63,13 @@
   {% include "includes/projects_news_section.html" %}
 
   <!-- News Section -->
-  <section class="news-section">
-    <div class="container">
+  
       {% include "includes/daily_digest.html" %}
-    </div>
-  </section>
+    
+
+<!-- Social Sharing -->
+{% include 'includes/social_share.html' %}
+
 
 </main>
 

@@ -26,6 +26,21 @@ document.addEventListener('DOMContentLoaded', function() {
       // The href will handle navigation
     });
   });
+  
+  // Handle FAQ link clicks
+  const faqLinks = document.querySelectorAll('a[href="#faq"]');
+  faqLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const faqSection = document.querySelector('#faq');
+      if (faqSection) {
+        faqSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
 });
 
 // Scroll to contact function

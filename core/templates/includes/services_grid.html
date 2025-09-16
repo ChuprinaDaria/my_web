@@ -1,0 +1,62 @@
+{% load i18n %}
+<!-- SERVICES GRID -->
+<div class="services-main">
+  <div class="services-grid">
+    {% for service in services %}
+      <article class="service-card clickable" data-href="{% url 'services:service_detail' service.slug %}">
+        {% if service.main_image %}
+          <div class="service-icon">
+            <img src="{{ service.main_image }}" alt="{{ service.title }}" loading="lazy">
+          </div>
+        {% elif service.icon %}
+          <div class="service-icon">
+            <img src="{{ service.icon }}" alt="{{ service.title }}" loading="lazy">
+          </div>
+        {% endif %}
+        
+        <div class="service-content">
+          <h3>{{ service.title|safe }}</h3>
+          <p class="service-description">{{ service.short|safe|truncatewords:20 }}</p>
+          
+          <!-- Service Tags -->
+          {% if service.tags %}
+            <div class="service-tags">
+              {% for tag in service.tags|slice:":3" %}
+                <span class="service-tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          <!-- Service Metrics -->
+          <div class="service-metrics">
+            {% if service.is_featured %}
+              <span class="metric featured">
+                <i data-lucide="star"></i>
+                {% trans "Featured" %}
+              </span>
+            {% endif %}
+            {% if service.priority_emoji %}
+              <span class="metric priority">
+                <i data-lucide="alert-circle"></i>
+                {% trans "Priority" %}
+              </span>
+            {% endif %}
+            {% if service.projects_count %}
+              <span class="metric projects">
+                <i data-lucide="rocket"></i>
+                {{ service.projects_count }} {% trans "projects" %}
+              </span>
+            {% endif %}
+          </div>
+          
+          <div class="service-cta">
+            <span class="cta-text">{% trans "Learn More" %}</span>
+            <i data-lucide="arrow-right" class="cta-arrow"></i>
+          </div>
+        </div>
+        
+        <div class="service-glow-effect"></div>
+      </article>
+    {% endfor %}
+  </div>
+</div>

@@ -19,9 +19,7 @@
       <div class="article-meta">
         <span class="category-badge">
           {{ article.category.icon }} 
-          <span data-lang="en">{{ article.category.name_en }}</span>
-          <span data-lang="uk">{{ article.category.name_uk }}</span>
-          <span data-lang="pl">{{ article.category.name_pl }}</span>
+          {{ article.category.get_name }}
         </span>
         
         {% if article.is_top_article %}
@@ -35,9 +33,7 @@
 
       <!-- Заголовок -->
       <h2>
-        <span data-lang="en">{{ article.title_en|safe }}</span>
-        <span data-lang="uk">{{ article.title_uk|safe }}</span>
-        <span data-lang="pl">{{ article.title_pl|safe }}</span>
+        {{ article.get_title|safe }}
       </h2>
 
       <!-- Мета інформація -->
@@ -82,9 +78,7 @@
           <div class="article-summary glass">
             <div class="summary-icon">💡</div>
             <div class="summary-content">
-              <div data-lang="en">{{ article.summary_en|safe }}</div>
-              <div data-lang="uk">{{ article.summary_uk|safe }}</div>
-              <div data-lang="pl">{{ article.summary_pl|safe }}</div>
+              {{ article.get_summary|safe }}
             </div>
           </div>
 
@@ -93,15 +87,11 @@
             <div class="card-header">
               <div class="card-icon">🎯</div>
               <h2>
-                <span data-lang="en">Business Impact</span>
-                <span data-lang="uk">Вплив на бізнес</span>
-                <span data-lang="pl">Wpływ na biznes</span>
+                {% trans "Business Impact" %}
               </h2>
             </div>
             <div class="card-content">
-              <div data-lang="en">{{ article.business_insight_en|safe }}</div>
-              <div data-lang="uk">{{ article.business_insight_uk|safe }}</div>
-              <div data-lang="pl">{{ article.business_insight_pl|safe }}</div>
+              {{ article.get_business_insight|safe }}
             </div>
           </div>
 
@@ -110,9 +100,7 @@
             <div class="interesting-facts glass">
               <h2>
                 <span>✨</span>
-                <span data-lang="en">Interesting Facts</span>
-                <span data-lang="uk">Цікавинки</span>
-                <span data-lang="pl">Interesujące fakty</span>
+                {% trans "Interesting Facts" %}
               </h2>
               <ul class="facts-list">
                 {% for fact in article.get_interesting_facts %}
@@ -128,16 +116,12 @@
               <div class="card-header">
                 <div class="card-icon">🚀</div>
                 <h2>
-                  <span data-lang="en">Business Opportunities</span>
-                  <span data-lang="uk">Бізнес можливості</span>
-                  <span data-lang="pl">Możliwości biznesowe</span>
+                  {% trans "Business Opportunities" %}
                 </h2>
               </div>
               <div class="card-content">
                 <div class="opportunities-content">
-                  <div data-lang="en">{{ article.business_opportunities_en|safe }}</div>
-                  <div data-lang="uk">{{ article.business_opportunities_uk|safe }}</div>
-                  <div data-lang="pl">{{ article.business_opportunities_pl|safe }}</div>
+                  {{ article.get_business_opportunities|safe }}
                 </div>
               </div>
             </div>
@@ -149,16 +133,12 @@
               <div class="card-header">
                 <div class="card-icon">🎯</div>
                 <h2>
-                  <span data-lang="en">LAZYSOFT Recommendations</span>
-                  <span data-lang="uk">Рекомендації LAZYSOFT</span>
-                  <span data-lang="pl">Rekomendacje LAZYSOFT</span>
+                  {% trans "LAZYSOFT Recommendations" %}
                 </h2>
               </div>
               <div class="card-content">
                 <div class="recommendations-content">
-                  <div data-lang="en">{{ article.lazysoft_recommendations_en|safe }}</div>
-                  <div data-lang="uk">{{ article.lazysoft_recommendations_uk|safe }}</div>
-                  <div data-lang="pl">{{ article.lazysoft_recommendations_pl|safe }}</div>
+                  {{ article.get_lazysoft_recommendations|safe }}
                 </div>
               </div>
             </div>
@@ -172,20 +152,14 @@
           <!-- CTA блок -->
           <div class="sidebar-block cta-block glass">
             <h3>
-              <span data-lang="en">Need Automation?</span>
-              <span data-lang="uk">Потрібна автоматизація?</span>
-              <span data-lang="pl">Potrzebujesz automatyzacji?</span>
+              {% trans "Need Automation?" %}
             </h3>
             <p>
-              <span data-lang="en">Let's discuss how this technology can transform your business</span>
-              <span data-lang="uk">Обговоримо, як ця технологія може трансформувати ваш бізнес</span>
-              <span data-lang="pl">Omówmy, jak ta technologia może przekształcić Twój biznes</span>
+              {% trans "Let's discuss how this technology can transform your business" %}
             </p>
             <button class="cta-button" onclick="scrollToContact('{{ article.get_title }}');">
               <span class="button-icon">💬</span>
-              <span data-lang="en">Let's Talk</span>
-              <span data-lang="uk">Поговоримо</span>
-              <span data-lang="pl">Porozmawiajmy</span>
+              {% trans "Let's Talk" %}
             </button>
           </div>
 
@@ -193,9 +167,7 @@
           {% if related_articles %}
             <div class="sidebar-block related-articles glass">
               <h3>
-                <span data-lang="en">Related News</span>
-                <span data-lang="uk">Схожі новини</span>
-                <span data-lang="pl">Podobne wiadomości</span>
+                {% trans "Related News" %}
               </h3>
               <div class="related-list">
                 {% for related in related_articles %}
@@ -254,9 +226,7 @@
       <div class="nav-links">
         <a href="/{{ CURRENT_LANG }}/news/" class="nav-link back">
           <span class="nav-icon">←</span>
-          <span data-lang="en">All Tech News</span>
-          <span data-lang="uk">Всі новини</span>
-          <span data-lang="pl">Wszystkie wiadomości</span>
+          {% trans "All Tech News" %}
         </a>
         
   </section>

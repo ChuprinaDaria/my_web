@@ -440,6 +440,8 @@
 .cta-sidebar {
   background: linear-gradient(135deg, rgba(102, 255, 0, 0.1), rgba(255, 0, 255, 0.1));
   border: 1px solid rgba(102, 255, 0, 0.3);
+  margin: var(--spacing-xl) auto 0 auto !important; /* Центруємо */
+  text-align: center !important; /* Центруємо текст */
 }
 
 .cta-description {

@@ -3,11 +3,16 @@
    =============================================== */
 
 .projects-news-section {
-  margin: var(--spacing-xxl) 0;
+  margin: var(--spacing-4xl) 0 var(--spacing-xxl) 0 !important;
   padding: var(--spacing-xxl) 0;
   background: linear-gradient(135deg, rgba(102, 255, 0, 0.02) 0%, rgba(0, 0, 0, 0.1) 100%);
   border-top: 1px solid rgba(102, 255, 0, 0.1);
   border-bottom: 1px solid rgba(102, 255, 0, 0.1);
+}
+
+/* Додатковий селектор для забезпечення відступу після related-work-section */
+.related-work-section + .projects-news-section {
+  margin-top: var(--spacing-4xl) !important;
 }
 
 .news-section-header {

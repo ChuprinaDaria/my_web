@@ -471,9 +471,10 @@
 }
 
 .service-icon {
-  width: 60px;
-  height: 60px;
-  background: var(--accent-green);
+  width: 300px;
+  height: 220px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
@@ -481,6 +482,7 @@
   font-size: 1.5rem;
   color: var(--primary-black);
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .service-icon img {
