@@ -1,6 +1,7 @@
 # news/management/commands/daily_news_pipeline.py
 import time
 from django.core.management.base import BaseCommand, CommandError
+from django.core.management import call_command
 from django.utils import timezone
 from datetime import datetime, timedelta
 from news.services.smart_news_pipeline import SmartNewsPipeline
@@ -210,7 +211,6 @@ class Command(BaseCommand):
         self.stdout.write('\n📡 Крок 0: Парсинг RSS джерел...')
         
         try:
-            from django.core.management import call_command
             from io import StringIO
             
             # Перехоплюємо вивід RSS команди
@@ -319,27 +319,37 @@ class Command(BaseCommand):
         if result.articles_published > 0:
             self.stdout.write(f'\n📢 Автопублікація {result.articles_published} статей...')
             
-            # Тут можна додати логіку постингу в Telegram
+            # Автоматична публікація в Telegram через Celery
             try:
-                # Отримуємо останні опубліковані статті
-                recent_articles = ProcessedArticle.objects.filter(
-                    status='published',
-                    published_at__date=result.date
-                ).order_by('-priority', '-published_at')[:3]  # Топ 3
+                from news.tasks import auto_publish_recent_articles
                 
-                posted_count = 0
-                for article in recent_articles:
-                    try:
-                        # Тут буде виклик Telegram posting
-                        # call_command('post_telegram', uuid=str(article.uuid), lang='uk')
-                        posted_count += 1
-                    except Exception as e:
-                        self.stdout.write(f'   ⚠️ Помилка постингу: {e}')
-                
-                self.stdout.write(f'   ✅ Опубліковано в Telegram: {posted_count} статей')
+                # Створюємо завдання для публікації
+                task = auto_publish_recent_articles.delay('uk', 3)
+                self.stdout.write(f'   📢 Створено Celery завдання: {task.id}')
+                self.stdout.write(f'   ✅ Завдання публікації в Telegram поставлено в чергу')
                 
             except Exception as e:
-                self.stdout.write(f'   ❌ Помилка автопублікації: {e}')
+                self.stdout.write(f'   ❌ Помилка створення завдання публікації: {e}')
+                
+                # Fallback - пряма публікація
+                try:
+                    recent_articles = ProcessedArticle.objects.filter(
+                        status='published',
+                        published_at__date=result.date
+                    ).order_by('-priority', '-published_at')[:3]
+                    
+                    posted_count = 0
+                    for article in recent_articles:
+                        try:
+                            call_command('post_telegram', uuid=str(article.uuid), lang='uk')
+                            posted_count += 1
+                        except Exception as e:
+                            self.stdout.write(f'   ⚠️ Помилка постингу: {e}')
+                    
+                    self.stdout.write(f'   ✅ Опубліковано в Telegram (fallback): {posted_count} статей')
+                    
+                except Exception as e:
+                    self.stdout.write(f'   ❌ Помилка fallback публікації: {e}')
 
     def _show_post_pipeline_stats(self, date):
         """Показує статистику після пайплайна"""

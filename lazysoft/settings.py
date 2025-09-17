@@ -234,6 +234,8 @@ FIVEFILTERS_MAX_RETRIES = config('FIVEFILTERS_MAX_RETRIES', default=2, cast=int)
 
 # === 🖼️ STOCK IMAGES API ===
 UNSPLASH_ACCESS_KEY = config('UNSPLASH_ACCESS_KEY', default=None)
+PEXELS_API_KEY = config('PEXELS_API_KEY', default=None)
+PIXABAY_API_KEY = config('PIXABAY_API_KEY', default=None)
 STOCK_IMAGE_CACHE_TIMEOUT = config('STOCK_IMAGE_CACHE_TIMEOUT', default=2592000, cast=int)  # 30 днів
 # === 🤖 AI НАЛАШТУВАННЯ ===
 # AI API ключі

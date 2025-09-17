@@ -54,8 +54,30 @@ def _looks_public_image_url(url: str) -> bool:
     host = urlparse(url).hostname or ""
     if host in {"127.0.0.1", "localhost"}:
         return False
-    # легка перевірка по розширенню; без HEAD, щоб не ловити фейли
-    return url.lower().split("?")[0].endswith((".jpg", ".jpeg", ".png", ".gif", ".webp"))
+    
+    # Перевіряємо розширення в URL або в параметрах
+    url_lower = url.lower()
+    
+    # 1. Розширення в кінці URL
+    if url_lower.split("?")[0].endswith((".jpg", ".jpeg", ".png", ".gif", ".webp")):
+        return True
+    
+    # 2. Розширення в параметрах (для Unsplash, Pexels тощо)
+    if any(ext in url_lower for ext in [".jpg", ".jpeg", ".png", ".gif", ".webp"]):
+        return True
+    
+    # 3. Відомі домени зображень
+    image_domains = [
+        "unsplash.com", "images.unsplash.com",
+        "pexels.com", "images.pexels.com", 
+        "pixabay.com", "cdn.pixabay.com",
+        "imgur.com", "i.imgur.com"
+    ]
+    
+    if any(domain in host for domain in image_domains):
+        return True
+    
+    return False
 
 # ---------- API ----------
 
