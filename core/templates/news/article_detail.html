@@ -157,7 +157,7 @@
             <p>
               {% trans "Let's discuss how this technology can transform your business" %}
             </p>
-            <button class="cta-button" onclick="scrollToContact('{{ article.get_title }}');">
+            <button class="cta-button" onclick="window.ctaModal && window.ctaModal.show('news_article', 'Стаття: {{ article.get_title|escapejs }}');">
               <span class="button-icon">💬</span>
               {% trans "Let's Talk" %}
             </button>

@@ -48,6 +48,108 @@ msgstr "Pełne wsparcie"
 msgid "Latest Tech News"
 msgstr "Najnowsze wiadomości techniczne"
 
+# Success Modal Translations
+msgid "Thank you!"
+msgstr "Dziękujemy!"
+
+msgid "We will contact you soon"
+msgstr "Skontaktujemy się z Tobą wkrótce"
+
+# CTA Modal Translations
+msgid "Free Consultation"
+msgstr "Darmowa konsultacja"
+
+msgid "Get expert consultation from our specialists"
+msgstr "Otrzymaj ekspercką konsultację od naszych specjalistów"
+
+msgid "Contact Now"
+msgstr "Skontaktuj się teraz"
+
+msgid "Later"
+msgstr "Później"
+
+msgid "100% free • No obligations • Quick response"
+msgstr "100% za darmo • Bez zobowiązań • Szybka odpowiedź"
+
+msgid "Зв'язатися з нами"
+msgstr "Skontaktuj się z nami"
+
+msgid "Заповніть форму і ми зв'яжемося з вами найближчим часом"
+msgstr "Wypełnij formularz, a skontaktujemy się z Tobą wkrótce"
+
+msgid "Ім'я"
+msgstr "Imię"
+
+msgid "Телефон"
+msgstr "Telefon"
+
+msgid "Компанія"
+msgstr "Firma"
+
+msgid "Тема"
+msgstr "Temat"
+
+msgid "Повідомлення"
+msgstr "Wiadomość"
+
+msgid "Розкажіть про ваш проєкт або запитання..."
+msgstr "Opowiedz nam o swoim projekcie lub pytaniu..."
+
+msgid "Надіслати заявку"
+msgstr "Wyślij zgłoszenie"
+
+msgid "Надсилаємо..."
+msgstr "Wysyłanie..."
+
+msgid "Дякуємо!"
+msgstr "Dziękujemy!"
+
+msgid "Ваше повідомлення надіслано. Ми зв'яжемося з вами найближчим часом."
+msgstr "Twoja wiadomość została wysłana. Skontaktujemy się z Tobą wkrótce."
+
+msgid "Зрозуміло"
+msgstr "Rozumiem"
+
+# About page translations
+msgid "About Us"
+msgstr "O nas"
+
+msgid "Our Story"
+msgstr "Nasza historia"
+
+msgid "What We Do"
+msgstr "Co robimy"
+
+msgid "Our Mission"
+msgstr "Nasza misja"
+
+msgid "Gallery"
+msgstr "Galeria"
+
+msgid "Gallery Image 1"
+msgstr "Obraz galerii 1"
+
+msgid "Gallery Image 2"
+msgstr "Obraz galerii 2"
+
+msgid "Gallery Image 3"
+msgstr "Obraz galerii 3"
+
+msgid "About Us Video"
+msgstr "Film o nas"
+
+msgid "Ready to Automate?"
+msgstr "Gotowi do automatyzacji?"
+
+msgid "Let's discuss how we can help transform your business with smart automation."
+msgstr "Omówmy, jak możemy pomóc przekształcić Twój biznes dzięki inteligentnej automatyzacji."
+
+msgid "Get Started"
+msgstr "Zacznij"
+
+msgid "Our Projects"
+msgstr "Nasze projekty"
+
 msgid "All Projects"
 msgstr "Wszystkie projekty"
 

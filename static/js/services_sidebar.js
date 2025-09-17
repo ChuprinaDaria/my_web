@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     lucide.createIcons();
   }
   
-  // Handle CTA button clicks
-  const ctaButtons = document.querySelectorAll('.sidebar-cta-button');
+  // Handle CTA button clicks (тільки для кнопок без onclick обробника)
+  const ctaButtons = document.querySelectorAll('.sidebar-cta-button:not([onclick])');
   ctaButtons.forEach(button => {
     button.addEventListener('click', function(e) {
       e.preventDefault();

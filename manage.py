@@ -2,7 +2,15 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import locale
 
+# Форсуємо UTF-8
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+try:
+    locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+except locale.Error:
+    # Fallback для Windows
+    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 def main():
     """Run administrative tasks."""

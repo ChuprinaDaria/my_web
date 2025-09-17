@@ -167,6 +167,7 @@
     
     <!-- AI Metrics Widget -->
     <link rel="stylesheet" href="{% static 'css/components/ai_metrics_widget.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/contact_modal.css' %}">
     
     <!-- Projects Page -->
     <link rel="stylesheet" href="{% static 'css/sections/projects_clean.css' %}">
@@ -285,6 +286,22 @@
     <script src="{% static 'js/consultant_chat.js' %}"></script>
     
     <script>
+      // Django контекст для JavaScript
+      window.DJANGO_CONTEXT = {
+        csrfToken: '{{ csrf_token }}',
+        currentLanguage: '{{ CURRENT_LANG }}',
+        modalTitle: '{% trans "Зв\'язатися з нами" %}',
+        modalDetails: '{% trans "Заповніть форму і ми зв\'яжемося з вами найближчим часом" %}',
+        ctaTitle: '{% trans "Безкоштовна консультація" %}',
+        ctaDescription: '{% trans "Отримайте експертну консультацію від наших спеціалістів" %}',
+        ctaPrimaryBtn: '{% trans "Зв\'язатися зараз" %}',
+        ctaSecondaryBtn: '{% trans "Пізніше" %}',
+        ctaFooter: '{% trans "100% безкоштовно • Без зобов\'язань • Швидка відповідь" %}',
+        thankYou: '{% trans "Дякуємо!" %}',
+        successMessage: '{% trans "Ваше повідомлення надіслано. Ми зв\'яжемося з вами найближчим часом." %}',
+        understood: '{% trans "Зрозуміло" %}'
+      };
+      
       function initLucideIcons() {
         if (typeof lucide !== 'undefined') {
           lucide.createIcons();
@@ -311,6 +328,15 @@
         document.body.setAttribute('data-current-lang', '{{ CURRENT_LANG }}');
       });
     </script>
+
+    <!-- Контактна модалка -->
+    {% include 'partials/contact_modal.html' %}
+    
+    <!-- Скрипти для форм -->
+    <script src="{% static 'js/contact_forms.js' %}"></script>
+    
+    <!-- Універсальна CTA модалка -->
+    <script src="{% static 'js/universal_cta_modal.js' %}"></script>
 
     {% block extra_scripts %}{% endblock %}
   </body>

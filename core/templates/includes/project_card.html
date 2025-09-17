@@ -69,7 +69,7 @@
     <div class="project-cta">
       <button class="cta-button" 
               data-project-title="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}"
-              onclick="event.stopPropagation(); scrollToContact(this.dataset.projectTitle);">
+              onclick="event.stopPropagation(); window.ctaModal && window.ctaModal.show('project_card', 'Проєкт: ' + this.dataset.projectTitle);">
         <span class="cta-icon">💬</span>
         <span class="cta-text">
           {% if CURRENT_LANG == 'uk' %}Замовити собі такий

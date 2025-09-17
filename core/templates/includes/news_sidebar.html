@@ -125,7 +125,8 @@
       {% trans "Let's create something unique for your business. From automation to custom solutions." %}
     </p>
     <button class="sidebar-cta-button" 
-            data-project-title="{% trans 'Custom Project Development' %}">
+            data-project-title="{% trans 'Custom Project Development' %}"
+            onclick="window.ctaModal && window.ctaModal.show('news_sidebar', 'Проєкт: ' + this.dataset.projectTitle);">
       <i data-lucide="arrow-right"></i>
       {% trans "Start Project" %}
     </button>

@@ -103,7 +103,7 @@
 
         <!-- 🚀 Hero Actions -->
         <div class="project-hero-actions">
-          <button class="hero-cta-button primary" onclick="scrollToContact('{{ service.title|escapejs }}');">
+          <button class="hero-cta-button primary" onclick="window.ctaModal && window.ctaModal.show('service_hero', 'Послуга: {{ service.title|escapejs }}');">
             <i data-lucide="zap"></i>
             {% trans "Get This Service" %}
           </button>
@@ -238,7 +238,7 @@
             <p class="cta-description">
               {% trans "Ready to implement this service? Let's discuss your specific needs and create a custom solution." %}
             </p>
-            <button class="sidebar-cta-button" onclick="scrollToContact('{{ service.title|escapejs }}');">
+            <button class="sidebar-cta-button" onclick="window.ctaModal && window.ctaModal.show('service_sidebar', 'Послуга: {{ service.title|escapejs }}');">
               <i data-lucide="send"></i>
               {% trans "Start Discussion" %}
             </button>
@@ -465,7 +465,7 @@
           <div class="cta-actions">
             <button class="btn-primary hero-cta-button primary" 
                     data-service-title="{{ service.title|escapejs }}"
-                    onclick="scrollToContact(this.dataset.serviceTitle);">
+                    onclick="window.ctaModal && window.ctaModal.show('service_detail', 'Консультація: ' + this.dataset.serviceTitle);">
               <i data-lucide="message-circle"></i>
               {% trans "Start Free Consultation" %}
             </button>

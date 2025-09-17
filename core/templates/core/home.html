@@ -188,7 +188,7 @@
       </p>
       
       <div class="hero-cta">
-        <a href="#contact" class="cta-primary">
+        <a href="#contact" class="cta-primary" onclick="window.ctaModal && window.ctaModal.show('home_hero'); return false;">
           {% trans "Get Your AI Solution" %}
         </a>
         <a href="{% url 'projects' %}" class="cta-secondary">

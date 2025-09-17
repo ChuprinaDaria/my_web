@@ -48,6 +48,108 @@ msgstr "Full Support"
 msgid "Latest Tech News"
 msgstr "Latest Tech News"
 
+# Success Modal Translations
+msgid "Thank you!"
+msgstr "Thank you!"
+
+msgid "We will contact you soon"
+msgstr "We will contact you soon"
+
+# CTA Modal Translations
+msgid "Free Consultation"
+msgstr "Free Consultation"
+
+msgid "Get expert consultation from our specialists"
+msgstr "Get expert consultation from our specialists"
+
+msgid "Contact Now"
+msgstr "Contact Now"
+
+msgid "Later"
+msgstr "Later"
+
+msgid "100% free • No obligations • Quick response"
+msgstr "100% free • No obligations • Quick response"
+
+msgid "Зв'язатися з нами"
+msgstr "Contact Us"
+
+msgid "Заповніть форму і ми зв'яжемося з вами найближчим часом"
+msgstr "Fill out the form and we will contact you soon"
+
+msgid "Ім'я"
+msgstr "Name"
+
+msgid "Телефон"
+msgstr "Phone"
+
+msgid "Компанія"
+msgstr "Company"
+
+msgid "Тема"
+msgstr "Subject"
+
+msgid "Повідомлення"
+msgstr "Message"
+
+msgid "Розкажіть про ваш проєкт або запитання..."
+msgstr "Tell us about your project or question..."
+
+msgid "Надіслати заявку"
+msgstr "Send Request"
+
+msgid "Надсилаємо..."
+msgstr "Sending..."
+
+msgid "Дякуємо!"
+msgstr "Thank you!"
+
+msgid "Ваше повідомлення надіслано. Ми зв'яжемося з вами найближчим часом."
+msgstr "Your message has been sent. We will contact you soon."
+
+msgid "Зрозуміло"
+msgstr "Got it"
+
+# About page translations
+msgid "About Us"
+msgstr "About Us"
+
+msgid "Our Story"
+msgstr "Our Story"
+
+msgid "What We Do"
+msgstr "What We Do"
+
+msgid "Our Mission"
+msgstr "Our Mission"
+
+msgid "Gallery"
+msgstr "Gallery"
+
+msgid "Gallery Image 1"
+msgstr "Gallery Image 1"
+
+msgid "Gallery Image 2"
+msgstr "Gallery Image 2"
+
+msgid "Gallery Image 3"
+msgstr "Gallery Image 3"
+
+msgid "About Us Video"
+msgstr "About Us Video"
+
+msgid "Ready to Automate?"
+msgstr "Ready to Automate?"
+
+msgid "Let's discuss how we can help transform your business with smart automation."
+msgstr "Let's discuss how we can help transform your business with smart automation."
+
+msgid "Get Started"
+msgstr "Get Started"
+
+msgid "Our Projects"
+msgstr "Our Projects"
+
 msgid "All Projects"
 msgstr "All Projects"
 

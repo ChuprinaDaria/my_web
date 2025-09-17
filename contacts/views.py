@@ -8,8 +8,14 @@ from django.views.generic import TemplateView
 from django.core.mail import send_mail
 from django.conf import settings
 import json
+import logging
+from datetime import datetime
 
 from .models import Contact, ContactSubmission
+from services.asana_service import asana_service
+from news.services.telegram import tg_send_message
+
+logger = logging.getLogger(__name__)
 
 class ContactView(TemplateView):
     template_name = 'contacts/contacts.html'
@@ -53,7 +59,12 @@ def submit_contact_form(request):
                     'error': f'Поле "{field}" є обов\'язковим'
                 }, status=400)
         
-        # Створюємо запис
+        # Отримуємо дані трекінгу CTA
+        cta_source = data.get('cta_source', '')
+        page_url = data.get('page_url', '') or request.META.get('HTTP_REFERER', '')
+        session_id = data.get('session_id', '') or request.session.session_key or ''
+        
+        # Створюємо запис в БД
         submission = ContactSubmission.objects.create(
             name=data.get('name'),
             email=data.get('email'),
@@ -63,20 +74,56 @@ def submit_contact_form(request):
             message=data.get('message'),
             referred_from=data.get('referred_from', 'contact_page'),
             ip_address=get_client_ip(request),
-            user_agent=request.META.get('HTTP_USER_AGENT', '')
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            # CTA трекінг поля
+            cta_source=cta_source,
+            page_url=page_url,
+            session_id=session_id
         )
         
-        # Відправляємо email адміну
-        try:
-            send_notification_email(submission)
-        except Exception as e:
-            # Логуємо помилку, але не падаємо
-            print(f"Email notification failed: {e}")
-        
-        return JsonResponse({
+        # Відправляємо відповідь користувачу НЕГАЙНО
+        response = JsonResponse({
             'success': True,
             'message': 'Дякуємо! Ваше повідомлення надіслано. Ми зв\'яжемося з вами найближчим часом.'
         })
+        
+        # Запускаємо асинхронні завдання в фоновому режимі
+        import threading
+        
+        def background_tasks():
+            # 🚀 Створюємо таск в Asana
+            try:
+                if asana_service:
+                    asana_task_id = asana_service.create_lead_task(submission)
+                    if asana_task_id:
+                        submission.asana_task_id = asana_task_id
+                        submission.save(update_fields=['asana_task_id'])
+                        logger.info(f"✅ Asana task created: {asana_task_id}")
+                    else:
+                        logger.warning("⚠️ Failed to create Asana task, but submission saved")
+                else:
+                    logger.warning("⚠️ Asana service not configured - check ASANA_TOKEN, ASANA_WORKSPACE_ID, ASANA_PROJECT_ID")
+            except Exception as e:
+                logger.error(f"⚠️ Asana integration error: {e}")
+            
+            # 📱 Відправляємо повідомлення в Telegram
+            try:
+                send_lead_notification_to_telegram(submission)
+            except Exception as e:
+                logger.error(f"Telegram notification failed: {e}")
+            
+            # Відправляємо email адміну
+            try:
+                send_notification_email(submission)
+            except Exception as e:
+                logger.error(f"Email notification failed: {e}")
+        
+        # Запускаємо в окремому потоці
+        thread = threading.Thread(target=background_tasks)
+        thread.daemon = True
+        thread.start()
+        
+        return response
         
     except Exception as e:
         return JsonResponse({
@@ -122,3 +169,85 @@ IP: {submission.ip_address}
         recipient_list=['info@lazysoft.pl'],
         fail_silently=False,
     )
+
+def sync_submission_to_asana(submission):
+    """
+    Синхронізує зміни ContactSubmission з Asana
+    Використовується в admin.py або signals
+    """
+    if not asana_service or not submission.asana_task_id:
+        return False
+    
+    try:
+        # Оновлюємо статус в Asana
+        success = asana_service.update_task_status(
+            submission.asana_task_id, 
+            submission.status
+        )
+        
+        # Додаємо коментар якщо є admin_notes
+        if submission.admin_notes and success:
+            asana_service.add_task_comment(
+                submission.asana_task_id,
+                f"💬 Адмін нотатка: {submission.admin_notes}"
+            )
+        
+        return success
+        
+    except Exception as e:
+        print(f"Error syncing to Asana: {e}")
+        return False
+
+def send_lead_notification_to_telegram(submission):
+    """
+    Відправляє повідомлення про новий лід в Telegram чат з адміном
+    """
+    try:
+        # Формуємо повідомлення
+        asana_link = f"https://app.asana.com/0/0/{submission.asana_task_id}" if submission.asana_task_id else "Не створено"
+        
+        message = f"""
+🎯 <b>НОВИЙ ЛІД З САЙТУ</b>
+
+👤 <b>Клієнт:</b> {submission.name}
+📧 <b>Email:</b> {submission.email}
+📞 <b>Телефон:</b> {submission.phone or 'Не вказано'}
+🏢 <b>Компанія:</b> {submission.company or 'Не вказано'}
+
+📝 <b>Тема:</b> {submission.subject}
+💬 <b>Повідомлення:</b>
+{submission.message[:200]}{'...' if len(submission.message) > 200 else ''}
+
+🎯 <b>CTA трекінг:</b>
+• CTA джерело: {submission.cta_source or 'Не вказано'}
+• Сторінка: {submission.page_url or 'Не вказано'}
+• Session ID: {submission.session_id or 'Не вказано'}
+
+📊 <b>Деталі:</b>
+• Джерело: {submission.referred_from or 'contact_page'}
+• Дата: {submission.created_at.strftime('%d.%m.%Y о %H:%M')}
+• IP: {submission.ip_address or 'Невідома'}
+
+⏰ <b>Time:</b> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+🔗 <b>Asana таск:</b> <a href="{asana_link}">Перейти до таска</a>
+        """.strip()
+        
+        # Відправляємо в Telegram адмінський чат
+        from news.services.telegram import _tg_request
+        admin_chat_id = getattr(settings, 'TELEGRAM_ADMIN_CHAT_ID', None)
+        
+        if admin_chat_id:
+            data = {
+                "chat_id": admin_chat_id,
+                "text": message,
+                "parse_mode": "HTML",
+                "disable_web_page_preview": False,
+            }
+            _tg_request("sendMessage", data)
+            logger.info(f"Telegram notification sent to admin chat for lead {submission.id}")
+        else:
+            logger.warning("No Telegram admin chat configured")
+        
+    except Exception as e:
+        logger.error(f"Failed to send Telegram notification: {e}")

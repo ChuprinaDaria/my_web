@@ -1,0 +1,154 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/sections/about.css' %}">
+{% endblock %}
+
+{% block title %}{{ page_title }} | Lazysoft{% endblock %}
+{% block meta_description %}{{ page_description }}{% endblock %}
+
+<!-- Додати OG теги -->
+{% block extra_head %}
+  <meta property="og:title" content="{{ page_title }} | Lazysoft">
+  <meta property="og:description" content="{{ page_description }}">
+  <meta property="og:type" content="website">
+  {% if about.gallery_image_1 %}
+    <meta property="og:image" content="{{ request.build_absolute_uri }}{{ about.gallery_image_1.url }}">
+  {% endif %}
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block content %}
+<section class="about-page">
+  <div class="container">
+    
+   
+
+    <!-- Hero Section -->
+    <h1 class="page-title">
+      {% get_current_language as LANGUAGE_CODE %}
+      {% if LANGUAGE_CODE == 'en' %}{{ about.title_en }}
+      {% elif LANGUAGE_CODE == 'uk' %}{{ about.title_uk }}
+      {% else %}{{ about.title_pl }}{% endif %}
+    </h1>
+    
+    <p class="page-subtitle">
+      {% if LANGUAGE_CODE == 'en' %}{{ about.subtitle_en }}
+      {% elif LANGUAGE_CODE == 'uk' %}{{ about.subtitle_uk }}
+      {% else %}{{ about.subtitle_pl }}{% endif %}
+    </p>
+
+    <!-- Main Content -->
+    <div class="about-content">
+      <div class="content-section">
+        <h2>{% trans "Our Story" %}</h2>
+        {% if LANGUAGE_CODE == 'en' %}{{ about.story_en|safe }}
+        {% elif LANGUAGE_CODE == 'uk' %}{{ about.story_uk|safe }}
+        {% else %}{{ about.story_pl|safe }}{% endif %}
+      </div>
+
+      <div class="content-section">
+        <h2>{% trans "What We Do" %}</h2>
+        {% if LANGUAGE_CODE == 'en' %}{{ about.services_en|safe }}
+        {% elif LANGUAGE_CODE == 'uk' %}{{ about.services_uk|safe }}
+        {% else %}{{ about.services_pl|safe }}{% endif %}
+      </div>
+
+      <div class="content-section">
+        <h2>{% trans "Our Mission" %}</h2>
+        {% if LANGUAGE_CODE == 'en' %}{{ about.mission_en|safe }}
+        {% elif LANGUAGE_CODE == 'uk' %}{{ about.mission_uk|safe }}
+        {% else %}{{ about.mission_pl|safe }}{% endif %}
+      </div>
+    </div>
+
+    <!-- Gallery Section (як в проєктах) -->
+    {% if about.gallery_image_1 or about.gallery_image_2 or about.gallery_image_3 %}
+      <section class="about-gallery-section">
+        <div class="gallery-header">
+          <h2>{% trans "Gallery" %}</h2>
+        </div>
+        
+        <div class="gallery-grid">
+          {% if about.gallery_image_1 %}
+            <div class="gallery-item" onclick="openLightbox('{{ about.gallery_image_1.url }}')">
+              <img src="{{ about.gallery_image_1.url }}" alt="{% trans 'Gallery Image 1' %}" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+          {% if about.gallery_image_2 %}
+            <div class="gallery-item" onclick="openLightbox('{{ about.gallery_image_2.url }}')">
+              <img src="{{ about.gallery_image_2.url }}" alt="{% trans 'Gallery Image 2' %}" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+          {% if about.gallery_image_3 %}
+            <div class="gallery-item" onclick="openLightbox('{{ about.gallery_image_3.url }}')">
+              <img src="{{ about.gallery_image_3.url }}" alt="{% trans 'Gallery Image 3' %}" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </section>
+    {% endif %}
+
+    <!-- Video Section -->
+    {% if about.video_url or about.video_file %}
+      <section class="about-video-section">
+        <div class="video-header">
+          <h2>{% trans "About Us Video" %}</h2>
+        </div>
+        
+        <div class="video-container glass">
+          {% if about.video_url %}
+            <iframe src="{{ about.video_url }}" frameborder="0" allowfullscreen></iframe>
+          {% elif about.video_file %}
+            <video controls>
+              <source src="{{ about.video_file.url }}" type="video/mp4">
+            </video>
+          {% endif %}
+        </div>
+      </section>
+    {% endif %}
+
+    <!-- CTA Section -->
+    <div class="about-cta">
+      <h2>{% trans "Ready to Automate?" %}</h2>
+      <p>{% trans "Let's discuss how we can help transform your business with smart automation." %}</p>
+      
+      <a href="{% url 'contacts:contact_page' %}" class="cta-button" onclick="window.ctaModal && window.ctaModal.show('about_page'); return false;">
+        {% trans "Get Started" %}
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-content">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-image" src="" alt="">
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openLightbox(imageSrc) {
+  document.getElementById('lightbox').style.display = 'flex';
+  document.getElementById('lightbox-image').src = imageSrc;
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
+}
+</script>
+{% endblock %}

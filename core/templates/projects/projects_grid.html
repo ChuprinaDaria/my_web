@@ -77,6 +77,11 @@
                 {% trans "View Case" %}
               </button>
               
+              <button class="btn-cta" onclick="event.stopPropagation(); window.ctaModal && window.ctaModal.show('projects_grid', 'Проєкт: {{ project.title_en|escapejs }}');">
+                <i data-lucide="message-circle"></i>
+                {% trans "Start Free Consultation" %}
+              </button>
+              
               {% if project.project_url %}
                 <button class="btn-secondary" onclick="event.stopPropagation(); window.open('{{ project.project_url }}', '_blank');">
                   {% trans "Demo" %}

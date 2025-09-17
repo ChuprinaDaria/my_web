@@ -247,6 +247,38 @@ class ContactSubmission(models.Model):
         verbose_name='Джерело ліда'
     )
     
+    # Asana інтеграція
+    asana_task_id = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True,
+        help_text="ID таска в Asana для відстеження"
+    )
+    
+    # CTA трекінг поля
+    cta_source = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True,
+        help_text="Джерело CTA кнопки (наприклад: service_detail, project_detail, footer_cta)",
+        verbose_name="CTA джерело"
+    )
+    
+    page_url = models.URLField(
+        blank=True, 
+        null=True,
+        help_text="URL сторінки з якої була відправлена форма",
+        verbose_name="URL сторінки"
+    )
+    
+    session_id = models.CharField(
+        max_length=40, 
+        blank=True, 
+        null=True,
+        help_text="ID сесії користувача для відстеження",
+        verbose_name="ID сесії"
+    )
+    
     class Meta:
         verbose_name = "Лід/Заявка"
         verbose_name_plural = "Ліди/Заявки"

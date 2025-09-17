@@ -1,0 +1,63 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<div id="consultationModal" class="consultation-modal" style="display: none;">
+    <div class="consultation-modal-overlay"></div>
+    <div class="consultation-modal-content">
+        <button class="consultation-modal-close" onclick="closeConsultationModal()">&times;</button>
+        
+        <div class="modal-header">
+            <p class="modal-subtitle">
+                {% trans "Заповніть форму і ми зв'яжемося з вами найближчим часом" %}
+            </p>
+            <h2 class="modal-title">
+                {% trans "Зв'язатися з нами" %}
+            </h2>
+        </div>
+        
+        <form id="quickConsultationForm" class="modal-contact-form" method="post" action="{% url 'contacts:submit_form' %}">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="modal_consultation">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modal_name">{% trans "Ім'я" %} *</label>
+                    <input type="text" id="modal_name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal_email">Email *</label>
+                    <input type="email" id="modal_email" name="email" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modal_phone">{% trans "Телефон" %}</label>
+                    <input type="tel" id="modal_phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="modal_company">{% trans "Компанія" %}</label>
+                    <input type="text" id="modal_company" name="company">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="modal_subject">{% trans "Тема" %} *</label>
+                <input type="text" id="modal_subject" name="subject" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="modal_message">{% trans "Повідомлення" %} *</label>
+                <textarea id="modal_message" name="message" rows="5" required 
+                          placeholder="{% trans 'Розкажіть про ваш проєкт або запитання...' %}"></textarea>
+            </div>
+            
+            <button type="submit" class="btn-modal-submit">
+                <span class="btn-text">{% trans "Надіслати заявку" %}</span>
+                <span class="btn-loading" style="display: none;">{% trans "Надсилаємо..." %}</span>
+            </button>
+            
+            <div id="modalFormMessage" class="modal-message" style="display: none;"></div>
+        </form>
+    </div>
+</div>

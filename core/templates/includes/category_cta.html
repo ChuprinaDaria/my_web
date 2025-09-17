@@ -5,7 +5,7 @@
     <p class="category-cta-text">
       {% trans "Need a similar solution?" %}
     </p>
-    <button class="btn-secondary" onclick="scrollToContact('{{ category.title }}');">
+    <button class="btn-secondary" onclick="window.ctaModal && window.ctaModal.show('category_cta', 'Категорія: {{ category.title|escapejs }}');">
       <i data-lucide="message-circle"></i>
       {% trans "Let's Discuss" %}
     </button>

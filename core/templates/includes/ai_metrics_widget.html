@@ -84,7 +84,7 @@
 
     <!-- 🎯 CALL TO ACTION -->
     <div class="metrics-cta">
-        <a href="{% url 'contacts:contact_page' %}" class="cta-button">
+        <a href="{% url 'contacts:contact_page' %}" class="cta-button" onclick="window.ctaModal && window.ctaModal.show('ai_metrics_widget'); return false;">
             <span>{% trans "Замовити Консультацію" %}</span>
         </a>
     </div>

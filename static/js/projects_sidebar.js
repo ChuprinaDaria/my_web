@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  const ctaButton = document.querySelector('.sidebar-cta-button');
+  const ctaButton = document.querySelector('.sidebar-cta-button:not([onclick])');
   if (ctaButton) {
     ctaButton.addEventListener('click', function() {
       const projectTitle = this.getAttribute('data-project-title');

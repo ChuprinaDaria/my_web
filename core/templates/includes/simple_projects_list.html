@@ -4,7 +4,7 @@
 <!-- ✅ MODERN FEATURED PROJECTS (WITH ACCORDION) -->
 <div class="section-header">
   <h2>
-    {% trans "Featured Projects" %}
+    {% trans "Our Projects" %}
   </h2>
   {% if featured_subtitle %}
     <p>{{ featured_subtitle }}</p>
@@ -39,16 +39,16 @@
               <div class="project-header">
                 <h3>
                   {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}
-                  {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl %}
+                  {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}
                   {% else %}{{ project.title_en }}{% endif %}
                 </h3>
                 <i data-lucide="chevron-down" class="accordion-arrow" aria-hidden="true"></i>
               </div>
               
               <p>
-                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:20 }}
-                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:20 }}
-                {% else %}{{ project.short_description_en|striptags|truncatewords:20 }}{% endif %}
+                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|safe|striptags|truncatewords:20 }}
+                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|safe|striptags|truncatewords:20 }}
+                {% else %}{{ project.short_description_en|safe|striptags|truncatewords:20 }}{% endif %}
               </p>
             </button>
 

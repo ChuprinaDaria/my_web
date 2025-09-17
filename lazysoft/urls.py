@@ -48,7 +48,7 @@ urlpatterns += i18n_patterns(
 
     path('contacts/', include('contacts.urls')),
     path('', include('lazysoft.dashboard_urls')),
-    path('', include('core.urls')),
+    path('', include(('core.urls', 'core'), namespace='core')),
 
     prefix_default_language=True,
 )

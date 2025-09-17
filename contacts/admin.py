@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 import csv
 from .models import Contact, ContactSubmission
+from .views import sync_submission_to_asana
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
@@ -54,14 +55,15 @@ class ContactAdmin(admin.ModelAdmin):
 class ContactSubmissionAdmin(admin.ModelAdmin):
     list_display = [
         'name', 'email', 'subject', 'status', 'assigned_to', 
-        'lead_score', 'estimated_budget', 'is_processed', 'created_at'
+        'lead_score', 'estimated_budget', 'is_processed', 
+        'cta_source', 'asana_task_id', 'created_at'
     ]
     list_filter = [
         'status', 'assigned_to', 'lead_source', 'is_processed', 
-        'created_at', 'company'
+        'cta_source', 'created_at', 'company'
     ]
     search_fields = ['name', 'email', 'subject', 'company', 'message']
-    readonly_fields = ['created_at', 'ip_address', 'user_agent']
+    readonly_fields = ['created_at', 'ip_address', 'user_agent', 'asana_task_id']
     
     fieldsets = (
         ('Дані клієнта', {
@@ -89,6 +91,14 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
             ),
             'classes': ['collapse']
         }),
+        ('CTA трекінг', {
+            'fields': (
+                'cta_source',
+                'page_url',
+                'session_id'
+            ),
+            'classes': ['collapse']
+        }),
         ('Адміністрування', {
             'fields': (
                 'is_processed',
@@ -99,7 +109,7 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
     
     # Дозволяємо масове оновлення статусу
     list_editable = ['status', 'assigned_to', 'lead_score']  # Редагування прямо зі списку
-    actions = ['mark_as_processed', 'mark_as_unprocessed', 'assign_to_manager', 'mark_as_qualified', 'export_to_csv']
+    actions = ['mark_as_processed', 'mark_as_unprocessed', 'assign_to_manager', 'mark_as_qualified', 'export_to_csv', 'sync_to_asana']
     
     def mark_as_processed(self, request, queryset):
         queryset.update(is_processed=True)
@@ -163,3 +173,29 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
         return response
     
     export_to_csv.short_description = "Експорт в CSV"
+    
+    def sync_to_asana(self, request, queryset):
+        """Синхронізувати вибрані заявки з Asana"""
+        synced_count = 0
+        failed_count = 0
+        
+        for submission in queryset:
+            if sync_submission_to_asana(submission):
+                synced_count += 1
+            else:
+                failed_count += 1
+        
+        if synced_count > 0:
+            self.message_user(
+                request, 
+                f"✅ Синхронізовано {synced_count} заявок з Asana"
+            )
+        
+        if failed_count > 0:
+            self.message_user(
+                request, 
+                f"⚠️ Не вдалося синхронізувати {failed_count} заявок", 
+                level='WARNING'
+            )
+
+    sync_to_asana.short_description = "Синхронізувати з Asana"

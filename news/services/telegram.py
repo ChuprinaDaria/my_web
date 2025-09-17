@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from datetime import datetime
 from urllib.parse import urlparse
 
 import requests
@@ -25,7 +26,7 @@ def _dump_markup(reply_markup):
     if not reply_markup:
         return None
     # Telegram очікує JSON-рядок
-    return json.dumps(reply_markup, ensure_ascii=False)
+    return json.dumps(reply_markup, ensure_ascii=False).encode('utf-8').decode('utf-8')
 
 def _tg_request(method: str, data: dict, files=None):
     url = f"https://api.telegram.org/bot{settings.TELEGRAM_BOT_TOKEN}/{method}"
@@ -147,7 +148,7 @@ def send_security_alert(ip_address, attack_type, details):
 🖕 Attack Blocked: {attack_type}
 📍 IP: {ip_address}
 📝 Details: {details}
-⏰ Time: {os.popen('date /t & time /t').read().strip()}
+⏰ Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 Linus Security System™ is operational! 🤘
         """
@@ -156,7 +157,7 @@ Linus Security System™ is operational! 🤘
         admin_chat_id = getattr(settings, "TELEGRAM_ADMIN_CHAT_ID", None)
         if admin_chat_id:
             _tg_request("sendMessage", {
-                "chat_id": admin_chat_id,
+                "chat_id": admin_chat_id,  # ← Тут правильно, в приватний чат
                 "text": message,
                 "parse_mode": "HTML"
             })

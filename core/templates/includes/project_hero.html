@@ -57,7 +57,7 @@
         
         <button class="btn-secondary"
                 data-project-title="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}"
-                onclick="scrollToContact(this.dataset.projectTitle);">
+                onclick="window.ctaModal && window.ctaModal.show('project_hero', 'Проєкт: ' + this.dataset.projectTitle);">
           <i data-lucide="message-circle"></i>
           {% trans "Get Similar Project" %}
         </button>

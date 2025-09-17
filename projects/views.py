@@ -69,10 +69,10 @@ def projects_list(request):
             "service_url": f"/{lang}/services/#{category.slug}",
         })
 
+    # Отримуємо 6 випадкових проєктів замість тільки featured
     featured_projects_qs = Project.objects.filter(
-        is_active=True, 
-        is_featured=True
-    ).select_related('category').prefetch_related('tags').order_by('-priority', '-order', '-project_date')
+        is_active=True
+    ).select_related('category').prefetch_related('tags').order_by('?')[:6]
 
 
     try:
@@ -259,9 +259,9 @@ def projects_list(request):
         "overview_description_pl": f"Poznaj nasze portfolio {total_projects} ukończonych projektów automatyzacji i AI. Każde rozwiązanie jest połączone z odpowiednimi spostrzeżeniami i usługami.",
         
         "featured_subtitle": {
-            "en": f"Handpicked {featured_projects_qs.count()} most successful automation projects",
-            "uk": f"Відібрані {featured_projects_qs.count()} найуспішніших проєктів автоматизації",
-            "pl": f"Wybrane {featured_projects_qs.count()} najbardziej udanych projektów automatyzacji"
+            "en": f"Explore our {featured_projects_qs.count()} selected automation projects",
+            "uk": f"Ознайомтеся з нашими {featured_projects_qs.count()} обраними проєктами автоматизації",
+            "pl": f"Poznaj nasze {featured_projects_qs.count()} wybrane projekty automatyzacji"
         }.get(lang, ""),
 
         "seo_title": {

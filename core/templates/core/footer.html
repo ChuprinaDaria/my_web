@@ -16,10 +16,10 @@
         {% elif CURRENT_LANG == 'pl' %}Uzyskaj bezpłatną konsultację i dowiedz się, jak AI może przekształcić Twój biznes.
         {% else %}Get a free consultation and discover how AI can transform your business.{% endif %}
       </p>
-      <a href="{% url 'contacts:contact_page' %}" class="footer-cta-button">
+      <button class="footer-cta-button" onclick="window.ctaModal && window.ctaModal.show('footer_cta');">
         <i data-lucide="message-circle"></i>
         {% trans "Start Free Consultation" %}
-      </a>
+      </button>
     </div>
 
     <!-- FOOTER CONTENT -->

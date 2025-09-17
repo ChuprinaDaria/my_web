@@ -10,9 +10,21 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
+import locale
+import sys
+
+# Форсуємо UTF-8 кодування для всього проекту
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+try:
+    locale.setlocale(locale.LC_ALL, 'C.UTF-8')
+except locale.Error:
+    # Fallback для Windows
+    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+sys.stdout.reconfigure(encoding='utf-8')
+
 from pathlib import Path
 from decouple import config
-import os
 import logging
 import re
 
@@ -74,7 +86,7 @@ INSTALLED_APPS = [
     'news',
     'projects',
     'services',
-    'contacts',
+    'contacts.apps.ContactsConfig',
     'accounts',
     'consultant',
 ]
@@ -393,6 +405,18 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
+# === 📧 EMAIL CONFIGURATION ===
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'serwer2555348.home.pl'
+EMAIL_PORT = 587  # Або 465 для SSL
+EMAIL_USE_TLS = True  # True для порту 587
+EMAIL_USE_AUTHENTICATION = True  # Додаємо авторизацію
+# EMAIL_USE_SSL = True  # Використовуй це замість TLS якщо порт 465
+EMAIL_HOST_USER = 'info@lazysoft.pl'  # Твоя повна email адреса
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD', default='')  # Пароль з .env
+DEFAULT_FROM_EMAIL = 'info@lazysoft.pl'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+
 # Створюємо папки якщо їх немає
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
 os.makedirs(BASE_DIR / 'media', exist_ok=True)
@@ -551,6 +575,11 @@ CLOUDFLARE_IPS = [
 CLOUDFLARE_API_TOKEN = config('CLOUDFLARE_API_TOKEN', default=None)
 CLOUDFLARE_ZONE_ID = config('CLOUDFLARE_ZONE_ID', default=None)
 CLOUDFLARE_EMAIL = config('CLOUDFLARE_EMAIL', default=None)
+
+# === 📋 ASANA INTEGRATION ===
+ASANA_TOKEN = config('ASANA_TOKEN', default=None)
+ASANA_WORKSPACE_ID = config('ASANA_WORKSPACE_ID', default=None)
+ASANA_PROJECT_ID = config('ASANA_PROJECT_ID', default=None)
 
 # === 💰 AI COST SETTINGS ===
 AI_MANUAL_COST_PER_ARTICLE = float(os.getenv("AI_MANUAL_COST_PER_ARTICLE", 19))

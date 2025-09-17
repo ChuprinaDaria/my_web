@@ -10,6 +10,9 @@
 {% block extra_meta %}
   <link rel="canonical" href="https://lazysoft.dev{% url 'contacts:contact_page' %}" />
   
+  <!-- CSS для контактної форми -->
+  <link rel="stylesheet" href="{% static 'css/sections/contact_form.css' %}" />
+  
   <!-- Schema.org для контактів -->
   <script type="application/ld+json">
   {
@@ -148,7 +151,7 @@
               {% trans "Напишіть нам" %}
             </h3>
             
-            <form id="contactForm" class="contact-form" method="post">
+            <form id="contactForm" class="contact-form" method="post" action="{% url 'contacts:submit_form' %}">
               {% csrf_token %}
               
               <div class="form-row">
@@ -363,6 +366,12 @@
 }
 </script>
 
+<!-- JavaScript для обробки форм -->
+<script src="{% static 'js/contact_forms.js' %}"></script>
+
+<!-- Універсальна CTA модалка -->
+<script src="{% static 'js/universal_cta_modal.js' %}"></script>
+
 <script>
 // 🌐 Django i18n контекст для JS
 const DJANGO_CONTEXT = {
@@ -377,6 +386,17 @@ const DJANGO_CONTEXT = {
     error: '{% trans "Виникла помилка при відправці" %}',
     networkError: '{% trans "Виникла помилка мережі. Спробуйте ще раз." %}',
     
+    // Модалка переклади
+    modalTitle: '{% trans "Thank you!" %}',
+    modalDetails: '{% trans "We will contact you soon" %}',
+    
+    // CTA модалка переклади
+    ctaTitle: '{% trans "Free Consultation" %}',
+    ctaDescription: '{% trans "Get expert consultation from our specialists" %}',
+    ctaPrimaryBtn: '{% trans "Contact Now" %}',
+    ctaSecondaryBtn: '{% trans "Later" %}',
+    ctaFooter: '{% trans "100% free • No obligations • Quick response" %}',
+    
     // Автозаповнення для subject
     subjects: {
       service_ai: '{% trans "Питання щодо AI послуг" %}',
@@ -384,62 +404,6 @@ const DJANGO_CONTEXT = {
     }
   }
 };
-
-// 📝 Обробка форми контакту
-document.getElementById('contactForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  
-  const form = this;
-  const submitBtn = form.querySelector('.submit-btn');
-  const btnText = submitBtn.querySelector('.btn-text');
-  const btnLoading = submitBtn.querySelector('.btn-loading');
-  const messageDiv = document.getElementById('formMessage');
-  
-  // Показуємо стан завантаження
-  submitBtn.disabled = true;
-  btnText.style.display = 'none';
-  btnLoading.style.display = 'inline';
-  messageDiv.style.display = 'none';
-  
-  // Збираємо дані форми
-  const formData = new FormData(form);
-  
-  try {
-    const response = await fetch(DJANGO_CONTEXT.submitUrl, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'X-CSRFToken': DJANGO_CONTEXT.csrfToken
-      }
-    });
-    
-    const result = await response.json();
-    
-    if (result.success) {
-      messageDiv.className = 'form-message success';
-      messageDiv.textContent = result.message || DJANGO_CONTEXT.messages.success;
-      form.reset(); // Очищаємо форму
-    } else {
-      messageDiv.className = 'form-message error';
-      messageDiv.textContent = result.error || DJANGO_CONTEXT.messages.error;
-    }
-    
-  } catch (error) {
-    messageDiv.className = 'form-message error';
-    messageDiv.textContent = DJANGO_CONTEXT.messages.networkError;
-  }
-  
-  // Повертаємо кнопку в нормальний стан
-  submitBtn.disabled = false;
-  btnText.style.display = 'inline';
-  btnLoading.style.display = 'none';
-  messageDiv.style.display = 'block';
-  
-  // Автоматично приховуємо повідомлення через 5 секунд
-  setTimeout(() => {
-    messageDiv.style.display = 'none';
-  }, 5000);
-});
 
 // 🔄 Ініціалізуємо Lucide іконки після завантаження
 document.addEventListener('DOMContentLoaded', function() {
@@ -449,15 +413,6 @@ document.addEventListener('DOMContentLoaded', function() {
   } else if (typeof lucide !== 'undefined') {
     lucide.createIcons();
     console.log('🎨 Lucide icons initialized directly');
-  }
-  
-  // 📋 Автозаповнення теми при переході з іншої сторінки
-  const urlParams = new URLSearchParams(window.location.search);
-  const referredFrom = urlParams.get('from');
-  const subjectField = document.getElementById('subject');
-  
-  if (referredFrom && subjectField && DJANGO_CONTEXT.messages.subjects[referredFrom]) {
-    subjectField.value = DJANGO_CONTEXT.messages.subjects[referredFrom];
   }
 });
 
@@ -473,6 +428,44 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       });
     }
   });
+});
+
+// 🎯 Тестування CTA модалки (можна видалити в продакшені)
+document.addEventListener('DOMContentLoaded', function() {
+  // Додаємо кнопку для тестування CTA модалки
+  const testButton = document.createElement('button');
+  testButton.textContent = '🎯 Test CTA Modal';
+  testButton.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: #66ff00;
+    color: #000;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(102, 255, 0, 0.3);
+  `;
+  
+  testButton.addEventListener('click', function() {
+    if (window.ctaModal) {
+      window.ctaModal.show('test_button', 'Тестова CTA модалка');
+    } else {
+      console.error('CTA Modal not initialized');
+    }
+  });
+  
+  document.body.appendChild(testButton);
+  
+  // Автоматичне показування CTA модалки через 10 секунд (тільки для тестування)
+  setTimeout(() => {
+    if (window.ctaModal) {
+      window.ctaModal.show('auto_timer', 'Автоматична CTA модалка');
+    }
+  }, 10000);
 });
 </script>
 {% endblock %}

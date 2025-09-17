@@ -445,3 +445,295 @@
   outline: 2px solid var(--accent-green);
   outline-offset: 2px;
 }
+
+/* 🎉 SUCCESS NOTIFICATION MODAL - Універсальний */
+.success-notification-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  margin: 0 !important;
+  
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.9);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  
+  background: rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(8px);
+  
+  /* Форсуємо позиціонування */
+  transform-origin: center center !important;
+  box-sizing: border-box !important;
+}
+
+.success-notification-modal.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: scale(1) !important;
+  pointer-events: auto !important;
+}
+
+.success-notification-modal.hiding {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: scale(0.95) !important;
+}
+
+.success-modal-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+  cursor: pointer !important;
+}
+
+.success-modal-content {
+  position: relative !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 24px !important;
+  padding: 2rem 1.5rem !important;
+  width: 100% !important;
+  max-width: 400px !important;
+  text-align: center !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+  animation: successSlideIn 0.4s ease !important;
+}
+
+@keyframes successSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.success-icon {
+  width: 64px !important;
+  height: 64px !important;
+  margin: 0 auto 1rem !important;
+  background: rgba(102, 255, 0, 0.2) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #66ff00 !important;
+  animation: successIconPulse 1s ease-out !important;
+}
+
+@keyframes successIconPulse {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-icon svg {
+  width: 24px !important;
+  height: 24px !important;
+  stroke-width: 3 !important;
+}
+
+.success-title {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: #66ff00 !important;
+  margin-bottom: 1rem !important;
+  text-shadow: 0 2px 10px rgba(102, 255, 0, 0.3) !important;
+}
+
+.success-message {
+  font-size: 1rem !important;
+  color: #ffffff !important;
+  line-height: 1.5 !important;
+  margin-bottom: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.success-details {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 0.9rem !important;
+}
+
+.success-details p {
+  margin: 0 !important;
+}
+
+/* 🔥 КРИТИЧНІ СТИЛІ - перебивають ВСЕ */
+.success-notification-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 1rem !important;
+  box-sizing: border-box !important;
+  transform-origin: center center !important;
+  
+  /* Фон для iOS Safari */
+  background: rgba(0, 0, 0, 0.8) !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.success-notification-modal * {
+  box-sizing: border-box !important;
+}
+
+.success-modal-content {
+  background: rgba(60, 60, 60, 0.95) !important;
+  background-color: rgba(60, 60, 60, 0.95) !important;
+  border: 2px solid rgba(102, 255, 0, 0.3) !important;
+  border-radius: 20px !important;
+  padding: 2rem 1.5rem !important;
+  width: 100% !important;
+  max-width: 400px !important;
+  text-align: center !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  
+}
+
+.success-title {
+  color: #66ff00 !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 1rem !important;
+  text-shadow: none !important;
+}
+
+.success-message {
+  color: #ffffff !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  margin-bottom: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.success-details {
+  color: #cccccc !important;
+  font-size: 0.9rem !important;
+}
+
+.success-icon {
+  background: rgba(102, 255, 0, 0.2) !important;
+  background-color: rgba(102, 255, 0, 0.2) !important;
+  color: #66ff00 !important;
+}
+
+/* 📱 Мобільні фікси для модалки */
+@media (max-width: 768px) {
+  .success-notification-modal {
+    background: #000000 !important;
+    background-color: #000000 !important;
+    opacity: 0.9 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    align-items: center !important;
+    padding: 1rem !important;
+  }
+  
+  .success-modal-content {
+    background: #2a2a2a !important;
+    background-color: #2a2a2a !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    max-width: calc(100vw - 2rem) !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .success-notification-modal {
+    padding: 0.5rem !important;
+  }
+  
+  .success-modal-content {
+    max-width: calc(100vw - 1rem) !important;
+    padding: 1.5rem 1rem !important;
+  }
+  
+  .success-title {
+    font-size: 1.3rem !important;
+  }
+  
+  .success-message {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* iOS Safari фікс */
+@supports (-webkit-touch-callout: none) {
+  .success-notification-modal {
+    background: #000000 !important;
+    backdrop-filter: none !important;
+  }
+  
+  .success-modal-content {
+    background: #2a2a2a !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* 🎯 CTA Button Styles */
+.btn-cta {
+  background: linear-gradient(135deg, #66ff00 0%, #4ddb00 100%) !important;
+  color: #000 !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 50px !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(102, 255, 0, 0.3) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  text-decoration: none !important;
+}
+
+.btn-cta:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(102, 255, 0, 0.4) !important;
+}
+
+.btn-cta:active {
+  transform: translateY(0) !important;
+}
+
+.btn-cta i {
+  width: 16px !important;
+  height: 16px !important;
+}
