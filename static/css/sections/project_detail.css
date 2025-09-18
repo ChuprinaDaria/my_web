@@ -684,6 +684,26 @@
   transform: scale(1.1);
 }
 
+/* ===== Article Detail image overrides ===== */
+.news-detail-page .article-image {
+  padding: 20px 0;
+  height: auto;
+  overflow: visible;
+}
+
+.news-detail-page .article-image .image-container {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+.news-detail-page .article-image img {
+  width: 100%;
+  height: auto !important;
+  object-fit: contain !important;
+  max-height: none !important;
+  display: block;
+}
+
 .service-content,
 .article-content {
   padding: 24px;

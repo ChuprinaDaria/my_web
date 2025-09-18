@@ -12,42 +12,42 @@
 {% block content %}
 <article class="news-detail-page">
   <!-- Герой секція -->
-  <section class="news-hero">
+  <section class="news-hero hero compact">
     <div class="container">
-      
-      <!-- Категорія та мета інфо -->
-      <div class="article-meta">
-        <span class="category-badge">
-          {{ article.category.icon }} 
-          {{ article.category.get_name }}
-        </span>
+      <div class="hero-content">
         
-        {% if article.is_top_article %}
-          <span class="top-article-badge">👑 TOP</span>
-        {% endif %}
-        
-        {% if article.priority >= 3 %}
-          <span class="priority-badge">🔥 HOT</span>
-        {% endif %}
-      </div>
+        <!-- Заголовок -->
+        <h1 class="article-title">
+          {{ article_title|safe }}
+        </h1>
 
-      <!-- Заголовок -->
-      <h2>
-        {{ article.get_title|safe }}
-      </h2>
-
-      <!-- Мета інформація -->
-      <div class="article-info">
-        <time datetime="{{ article.published_at|date:'c' }}" class="publish-date">
-          📅 {{ article.published_at|date:'j F Y' }}
-        </time>
-        <span class="reading-time">⏱️ {{ article.get_reading_time }} хв читання</span>
-        <span class="views-count">👁️ {{ article.get_total_views }} переглядів</span>
-        {% if article.original_source_url and article.original_source_name %}
-          <span class="source-info">
-            🔗 <a href="{{ article.original_source_url }}" target="_blank" rel="nofollow noopener">{{ article.original_source_name }}</a>
+        <!-- Категорія та мета інфо (під H1) -->
+        <div class="article-meta">
+          <span class="category-badge">
+            {{ article.category.icon }} 
+            {{ category_name }}
           </span>
-        {% endif %}
+          {% if article.is_top_article %}
+            <span class="top-article-badge">👑 TOP</span>
+          {% endif %}
+          {% if article.priority >= 3 %}
+            <span class="priority-badge">🔥 HOT</span>
+          {% endif %}
+        </div>
+
+        <!-- Мета інформація -->
+        <div class="article-info">
+          <time datetime="{{ article.published_at|date:'c' }}" class="publish-date">
+            📅 {{ article.published_at|date:'j F Y' }}
+          </time>
+          <span class="reading-time">⏱️ {{ article.get_reading_time }} {% trans "min" %}</span>
+          <span class="views-count">👁️ {{ article.get_total_views }} {% trans "views" %}</span>
+          {% if article.original_source_url and article.original_source_name %}
+            <span class="source-info">
+              🔗 <a href="{{ article.original_source_url }}" target="_blank" rel="nofollow noopener">{{ article.original_source_name }}</a>
+            </span>
+          {% endif %}
+        </div>
       </div>
     </div>
   </section>
@@ -75,10 +75,15 @@
         <div class="main-content">
           
           <!-- Короткий опис -->
-          <div class="article-summary glass">
-            <div class="summary-icon">💡</div>
-            <div class="summary-content">
-              {{ article.get_summary|safe }}
+          <div class="article-summary card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
+            <div class="card-header">
+              <div class="card-icon">💡</div>
+              <h2>{% trans "Summary" %}</h2>
+            </div>
+            <div class="card-content">
+              <div class="summary-content">
+                {{ article_summary|safe }}
+              </div>
             </div>
           </div>
 
@@ -91,27 +96,29 @@
               </h2>
             </div>
             <div class="card-content">
-              {{ article.get_business_insight|safe }}
+              {{ article_business_insight|safe }}
             </div>
           </div>
 
           <!-- Цікавинки (якщо є) -->
-          {% if article.get_interesting_facts %}
-            <div class="interesting-facts glass">
-              <h2>
-                <span>✨</span>
-                {% trans "Interesting Facts" %}
-              </h2>
-              <ul class="facts-list">
-                {% for fact in article.get_interesting_facts %}
-                  <li class="fact-item">{{ fact }}</li>
-                {% endfor %}
-              </ul>
+          {% if article_interesting_facts %}
+            <div class="interesting-facts card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
+              <div class="card-header">
+                <div class="card-icon">✨</div>
+                <h2>{% trans "Interesting Facts" %}</h2>
+              </div>
+              <div class="card-content">
+                <ul class="facts-list">
+                  {% for fact in article_interesting_facts %}
+                    <li class="fact-item">{{ fact }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
             </div>
           {% endif %}
 
           <!-- Бізнес можливості (якщо є) -->
-          {% if article.business_opportunities_en or article.business_opportunities_uk or article.business_opportunities_pl %}
+          {% if article_business_opportunities %}
             <div class="business-opportunities card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
               <div class="card-header">
                 <div class="card-icon">🚀</div>
@@ -121,14 +128,14 @@
               </div>
               <div class="card-content">
                 <div class="opportunities-content">
-                  {{ article.get_business_opportunities|safe }}
+                  {{ article_business_opportunities|safe }}
                 </div>
               </div>
             </div>
           {% endif %}
 
           <!-- LAZYSOFT рекомендації -->
-          {% if article.lazysoft_recommendations_en or article.lazysoft_recommendations_uk or article.lazysoft_recommendations_pl %}
+          {% if article_lazysoft_recommendations %}
             <div class="lazysoft-recommendations card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
               <div class="card-header">
                 <div class="card-icon">🎯</div>
@@ -138,87 +145,21 @@
               </div>
               <div class="card-content">
                 <div class="recommendations-content">
-                  {{ article.get_lazysoft_recommendations|safe }}
+                  {{ article_lazysoft_recommendations|safe }}
                 </div>
               </div>
             </div>
           {% endif %}
         </div>
 
-        <!-- Сайдбар -->
-        <aside class="article-sidebar">
-          
-
-          <!-- CTA блок -->
-          <div class="sidebar-block cta-block glass">
-            <h3>
-              {% trans "Need Automation?" %}
-            </h3>
-            <p>
-              {% trans "Let's discuss how this technology can transform your business" %}
-            </p>
-            <button class="cta-button" onclick="window.ctaModal && window.ctaModal.show('news_article', 'Стаття: {{ article.get_title|escapejs }}');">
-              <span class="button-icon">💬</span>
-              {% trans "Let's Talk" %}
-            </button>
-          </div>
-
-          <!-- Схожі статті -->
-          {% if related_articles %}
-            <div class="sidebar-block related-articles glass">
-              <h3>
-                {% trans "Related News" %}
-              </h3>
-              <div class="related-list">
-                {% for related in related_articles %}
-                  <a href="{{ related.get_absolute_url }}" class="related-item">
-                    <p>{{ related.get_title|truncatewords:10 }}</p
-                    <p>
-                      {{ related.category.icon }} {{ related.published_at|date:'j.m' }}
-                    </p>
-                  </a>
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
-
-          {% if related_projects %}
-            <section class="related-projects">
-              <h3>{% trans "Пов'язані проєкти" %}</h3>
-              <div class="cards-grid">
-                {% for p in related_projects %}
-                  <a href="/{{ CURRENT_LANG }}/projects/{{ p.slug }}/" class="project-card glass">
-                    {% if p.featured_image %}
-                      <img src="{{ p.featured_image }}" alt="{{ p.title }}">
-                    {% endif %}
-                    <h3>{{ p.title }}</h3>
-                    <p>{{ p.short_description }}</p>
-                  </a>
-                {% endfor %}
-              </div>
-            </section>
-          {% endif %}
-
-          {% if related_services %}
-            <section class="related-services">
-              <h3>{% trans "Пов'язані послуги" %}</h3>
-              <div class="cards-grid">
-                {% for s in related_services %}
-                  <a href="/{{ CURRENT_LANG }}/services/{{ s.slug }}/" class="service-card glass">
-                    {% if s.featured_image %}
-                      <img src="{{ s.featured_image }}" alt="{{ s.title }}">
-                    {% endif %}
-                    <h3>{{ s.title }}</h3>
-                    <p>{{ s.short_description }}</p>
-                  </a>
-                {% endfor %}
-              </div>
-            </section>
-          {% endif %}
+        <!-- Sidebar Column -->
+        <aside class="news-sidebar">
+          {% include 'includes/news_sidebar.html' %}
         </aside>
       </div>
     </div>
   </section>
+
 
   <!-- Навігація -->
   <section class="article-navigation">
@@ -231,10 +172,13 @@
         
   </section>
 
+</article>
+
+  <!-- RELATED WORK SECTION -->
+  {% include 'includes/related_work_section.html' %}
+
   <!-- Соціальні мережі -->
   {% include 'includes/social_share.html' %}
-
-</article>
 
 
 {% endblock %}

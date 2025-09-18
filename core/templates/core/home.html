@@ -233,7 +233,12 @@
 <section class="about-preview">
   <div class="about-card clickable"
        data-href="{% if CURRENT_LANG == 'uk' %}/uk/about/{% elif CURRENT_LANG == 'pl' %}/pl/about/{% else %}/about/{% endif %}">
-    <img src="{% static 'images/about-preview.jpg' %}" alt="{% trans 'About Lazysoft' %}" class="about-image" />
+    <img src="{% static 'images/about-preview-optimized.jpg' %}" 
+         alt="{% trans 'About Lazysoft' %}" 
+         class="about-image" 
+         loading="lazy"
+         width="600" 
+         height="400" />
     <div class="about-text">
       <h3>{% trans "Born to automate. Fired for it." %}</h3>
       <p>{% trans "The story of how laziness became a philosophy, a tech stack, and an efficient business model. Discover Lazysoft — where automation meets rebellion." %}</p>
@@ -272,11 +277,11 @@
                 {% endif %}
               </div>
 
-              <h4>
+              <h3 class="news-article-title">
                 {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|safe }}
                 {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|safe }}
                 {% else %}{{ article.title_en|safe }}{% endif %}
-              </h4>
+              </h3>
 
               <p>
                 {% if CURRENT_LANG == 'uk' and article.business_insight_uk %}{{ article.business_insight_uk|safe|truncatewords:25 }}
@@ -299,7 +304,7 @@
           {% empty %}
             <div class="news-card" style="text-align: center; opacity: 0.7;">
               <div style="font-size: 4rem; margin-bottom: 20px;">📰</div>
-              <h4>{% trans "Tech News Coming Soon" %}</h4>
+              <h3>{% trans "Tech News Coming Soon" %}</h3>
               <p>{% trans "Fresh business insights are being prepared" %}</p>
             </div>
           {% endfor %}
@@ -320,8 +325,6 @@
 {% endblock %}
 
 {% block extra_scripts %}
-  <script src="{% static 'js/service-card.js' %}"></script>
-  
   <script>
     gtag('config', 'GA_TRACKING_ID', {
       page_title: '{% if CURRENT_LANG == "uk" %}Головна{% elif CURRENT_LANG == "pl" %}Strona główna{% else %}Home{% endif %}',

@@ -1,11 +1,16 @@
+<!DOCTYPE html>
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 {% get_available_languages as LANGUAGES %}
-<!DOCTYPE html>
 <html lang="{{ CURRENT_LANG }}">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    
+    <!-- Preload критичних ресурсів -->
+    <link rel="preload" href="{% static 'images/about-preview-optimized.jpg' %}" as="image" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <title>{% block title %}Lazysoft{% endblock %}</title>
     
@@ -155,32 +160,20 @@
       </script>
     {% endblock %}
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Main CSS -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v=1.1" />
     
-    <link rel="stylesheet" href="{% static 'css/components/consultant_bubble.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/components/consultant_chat.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/components/modern_services_carousel.css' %}" />
-    
-    <link rel="stylesheet" href="{% static 'css/components/projects_carousel.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/components/project_card_home.css' %}" />
-    
-    <!-- AI Metrics Widget -->
+    <!-- Additional CSS files not included in main.css -->
+    <link rel="stylesheet" href="{% static 'css/components/consultant_chat.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/modern_services_carousel.css' %}">
     <link rel="stylesheet" href="{% static 'css/components/ai_metrics_widget.css' %}">
     <link rel="stylesheet" href="{% static 'css/components/contact_modal.css' %}">
-    
-    <!-- Projects Page -->
-    <link rel="stylesheet" href="{% static 'css/sections/projects_clean.css' %}">
-    
-    <!-- Mobile Styles - MUST BE LAST -->
-    <link rel="stylesheet" href="{% static 'css/mobile/projects_carousel_mobile.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mobile/project_card_home_mobile.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile/home_mobile_fixes.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile/footer_mobile_compact.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mobile/service_card_mobile.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mobile/service_carousel_mobile.css' %}">
     <link rel="stylesheet" href="{% static 'css/mobile/ai_metrics_widget_mobile.css' %}">
-    <link rel="stylesheet" href="{% static 'css/mobile/projects_mobile.css' %}">
     
     {% block extra_css %}{% endblock %}
     
@@ -218,7 +211,7 @@
         <span></span>
       </div>
       <ul class="nav-links" id="mobileMenu">
-        <li><a href="{% url 'home' %}">{% trans "Home" %}</a></li>
+        <li><a href="{% url 'core:home' %}">{% trans "Home" %}</a></li>
         <li><a href="{% url 'projects' %}">{% trans "Projects" %}</a></li>
         <li><a href="{% url 'services:services_list' %}">{% trans "Services" %}</a></li>
         <li><a href="{% url 'about:about' %}">{% trans "About" %}</a></li>
@@ -227,13 +220,13 @@
         
         <li class="lang-switcher">
           <div class="language-selector">
-            <a href="/uk{{ request.get_full_path|slice:'3:' }}" 
+            <a href="/uk{{ request.path|slice:'3:' }}" 
                class="lang-btn {% if CURRENT_LANG == 'uk' %}active{% endif %}"
                hreflang="uk">UA</a>
-            <a href="/pl{{ request.get_full_path|slice:'3:' }}" 
+            <a href="/pl{{ request.path|slice:'3:' }}" 
                class="lang-btn {% if CURRENT_LANG == 'pl' %}active{% endif %}"
                hreflang="pl">PL</a>
-            <a href="/en{{ request.get_full_path|slice:'3:' }}" 
+            <a href="/en{{ request.path|slice:'3:' }}" 
                class="lang-btn {% if CURRENT_LANG == 'en' %}active{% endif %}"
                hreflang="en">EN</a>
           </div>
@@ -253,11 +246,12 @@
       {% include "core/footer.html" %}
     {% endblock %}
 
+    <!-- Critical JavaScript - Load immediately -->
     <script src="{% static 'js/script.js' %}"></script>
+    
+    <!-- Non-critical JavaScript - Load asynchronously -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
     <script src="{% static 'js/modern_projects_carousel.js' %}"></script>
-    
     <script src="{% static 'js/simple_services.js' %}"></script>
     
     <div id="consultantModal" class="consultant-modal" style="display: none;">
@@ -288,18 +282,18 @@
     <script>
       // Django контекст для JavaScript
       window.DJANGO_CONTEXT = {
-        csrfToken: '{{ csrf_token }}',
-        currentLanguage: '{{ CURRENT_LANG }}',
-        modalTitle: '{% trans "Зв\'язатися з нами" %}',
-        modalDetails: '{% trans "Заповніть форму і ми зв\'яжемося з вами найближчим часом" %}',
-        ctaTitle: '{% trans "Безкоштовна консультація" %}',
-        ctaDescription: '{% trans "Отримайте експертну консультацію від наших спеціалістів" %}',
-        ctaPrimaryBtn: '{% trans "Зв\'язатися зараз" %}',
-        ctaSecondaryBtn: '{% trans "Пізніше" %}',
-        ctaFooter: '{% trans "100% безкоштовно • Без зобов\'язань • Швидка відповідь" %}',
-        thankYou: '{% trans "Дякуємо!" %}',
-        successMessage: '{% trans "Ваше повідомлення надіслано. Ми зв\'яжемося з вами найближчим часом." %}',
-        understood: '{% trans "Зрозуміло" %}'
+        csrfToken: "{{ csrf_token }}",
+        currentLanguage: "{{ CURRENT_LANG }}",
+        modalTitle: "{% trans 'Зв\'язатися з нами' %}",
+        modalDetails: "{% trans 'Заповніть форму і ми зв\'яжемося з вами найближчим часом' %}",
+        ctaTitle: "{% trans 'Безкоштовна консультація' %}",
+        ctaDescription: "{% trans 'Отримайте експертну консультацію від наших спеціалістів' %}",
+        ctaPrimaryBtn: "{% trans 'Зв\'язатися зараз' %}",
+        ctaSecondaryBtn: "{% trans 'Пізніше' %}",
+        ctaFooter: "{% trans '100% безкоштовно • Без зобов\'язань • Швидка відповідь' %}",
+        thankYou: "{% trans 'Дякуємо!' %}",
+        successMessage: "{% trans 'Ваше повідомлення надіслано. Ми зв\'яжемося з вами найближчим часом.' %}",
+        understood: "{% trans 'Зрозуміло' %}"
       };
       
       function initLucideIcons() {

@@ -28,28 +28,34 @@ if SITEMAPS_AVAILABLE:
         path('sitemap-categories.xml', sitemap, {'sitemaps': {'categories': NewsCategorySitemap}}, name='categories_sitemap'),
     ]
 
-# robots.txt (без i18n)
+# robots.txt (без i18n) - ВІДКЛЮЧЕНО НА DEV
+# ВАЖЛИВО: використовуємо пряму view з core.urls
+# 🚫 На розробці robots.txt може заважати тестуванню, тому відключаємо
+if not settings.DEBUG:  # Тільки на production
+    from core.views import robots_txt
+    urlpatterns += [
+        path('robots.txt', robots_txt, name='robots'),
+    ]
+
+# 🔐 2FA (БЕЗ i18n!) - ВИМКНЕНО
+# КАНОН: не імпортуємо список, просто include модуля
 urlpatterns += [
-    path('robots.txt', include('core.urls')),
+    path('account/', include('django.contrib.auth.urls')),
+    # path('', include('two_factor.urls')),  # ВИМКНЕНО
 ]
 
-# 🔤 URL з мовними префіксами
+# 🔤 Усе, що має мовні префікси
 urlpatterns += i18n_patterns(
     path('admin/', admin.site.urls),
+    path('', include(('core.urls', 'core'), namespace='core')),
+    path('', include('lazysoft.dashboard_urls')),
     path('projects/', include('projects.urls')),
     path('services/', include(('services.urls', 'services'), namespace='services')),
     path('about/', include('about.urls')),
     path('news/', include(('news.urls', 'news'), namespace='news')),
     path('consultant/', include('consultant.urls')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
-
-    # 🔐 2FA — тимчасово відключено
-    # path('account/', include('two_factor.urls')),
-
     path('contacts/', include('contacts.urls')),
-    path('', include('lazysoft.dashboard_urls')),
-    path('', include(('core.urls', 'core'), namespace='core')),
-
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     prefix_default_language=True,
 )
 

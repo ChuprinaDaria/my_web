@@ -272,7 +272,19 @@ class ModernProjectsCarousel {
       const isVisible = index >= this.currentIndex && 
                        index < this.currentIndex + this.options.slidesToShow;
       
-      slide.setAttribute('aria-hidden', !isVisible ? 'true' : 'false');
+      // Не використовуємо aria-hidden для слайдів з інтерактивними елементами
+      // Замість цього використовуємо tabindex
+      const buttons = slide.querySelectorAll('button, a, input, select, textarea');
+      buttons.forEach(button => {
+        button.tabIndex = isVisible ? 0 : -1;
+      });
+      
+      // Додаємо візуальне приховування через CSS клас замість aria-hidden
+      if (!isVisible) {
+        slide.classList.add('visually-hidden-slide');
+      } else {
+        slide.classList.remove('visually-hidden-slide');
+      }
     });
     
     this.track.setAttribute('aria-live', 'polite');

@@ -52,7 +52,7 @@ class ConsultantBubble {
         </div>
       </div>
     `;
-
+    
     // Додаємо до body
     document.body.insertAdjacentHTML('beforeend', bubbleHTML);
     this.bubble = document.getElementById('consultant-bubble');

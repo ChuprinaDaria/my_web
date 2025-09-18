@@ -38,6 +38,7 @@
 @import url('./components/project_card_home.css');  
 @import url('./mobile/projects_carousel_mobile.css');
 @import url('./mobile/project_card_home_mobile.css');
+@import url('./mobile/projects_mobile.css');
 
 @import url('./components/service_card.css');
 @import url('./components/simple_services.css');
@@ -284,6 +285,3 @@ main {
     font-size: 1.3rem;
   }
 }
-
-/* Mobile Projects Styles */
-@import url('./mobile/projects_mobile.css');

@@ -229,6 +229,15 @@ class ArticleDetailView(DetailView):
         context['og_image'] = article.ai_image_url
         context['og_url'] = self.request.build_absolute_uri()
 
+        # Localized content for template
+        context['article_title'] = article.get_title(language)
+        context['article_summary'] = article.get_summary(language)
+        context['article_business_insight'] = article.get_business_insight(language)
+        context['article_business_opportunities'] = article.get_business_opportunities(language)
+        context['article_lazysoft_recommendations'] = article.get_lazysoft_recommendations(language)
+        context['article_interesting_facts'] = article.get_interesting_facts(language)
+        context['category_name'] = article.category.get_name(language)
+
         # Схожі статті
         context['related_articles'] = ProcessedArticle.objects.filter(
             category=article.category, status='published'
@@ -288,6 +297,43 @@ class ArticleDetailView(DetailView):
 
         if article.ai_image_url:
             context['structured_data']['image'] = article.ai_image_url
+
+        # Sidebar data identical to NewsListView
+        context['categories'] = NewsCategory.objects.filter(
+            is_active=True
+        ).annotate(
+            articles_count=Count('articles', filter=Q(articles__status='published'))
+        ).order_by('order')
+
+        top_articles = ProcessedArticle.objects.filter(
+            status='published',
+            is_top_article=True
+        ).order_by('-published_at')[:10]
+
+        context['other_news'] = ProcessedArticle.objects.filter(
+            status='published'
+        ).exclude(
+            id__in=[a.id for a in top_articles]
+        ).exclude(id=article.id).order_by('-published_at')[:8]
+
+        context['total_articles'] = ProcessedArticle.objects.filter(status='published').count()
+        context['search_query'] = self.request.GET.get('search', '')
+
+        try:
+            from services.models import ServiceCategory
+            related_services = ServiceCategory.objects.all().order_by('-priority', '-order')[:6]
+            context['related_services'] = [
+                {
+                    'slug': s.slug,
+                    'title': s.get_title(language),
+                    'short': s.get_short(language),
+                    'url': f'/{language}/services/{s.slug}/',
+                    'icon': s.icon
+                }
+                for s in related_services
+            ]
+        except Exception:
+            context['related_services'] = []
 
         return context
 

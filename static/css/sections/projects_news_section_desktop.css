@@ -4,6 +4,7 @@
 
 .projects-news-section {
   margin: var(--spacing-4xl) 0 var(--spacing-xxl) 0 !important;
+  margin-top: calc(var(--spacing-4xl) + var(--spacing-xxl) + var(--spacing-xl)) !important;
   padding: var(--spacing-xxl) 0;
   background: linear-gradient(135deg, rgba(102, 255, 0, 0.02) 0%, rgba(0, 0, 0, 0.1) 100%);
   border-top: 1px solid rgba(102, 255, 0, 0.1);
@@ -12,7 +13,7 @@
 
 /* Додатковий селектор для забезпечення відступу після related-work-section */
 .related-work-section + .projects-news-section {
-  margin-top: var(--spacing-4xl) !important;
+  margin-top: calc(var(--spacing-4xl) + var(--spacing-xxl) + var(--spacing-xl)) !important;
 }
 
 .news-section-header {
@@ -142,6 +143,7 @@
 
 .news-section-footer {
   text-align: center;
+  margin-top: var(--spacing-xl);
 }
 
 .news-section-footer .btn-primary {

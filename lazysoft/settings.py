@@ -67,18 +67,19 @@ INSTALLED_APPS = [
     
     # 🎯 CRM apps - видалено
     # 'crm',
+    # 'crm',
     'django_filters',
     'crispy_forms',
     'crispy_bootstrap5',
     'django_select2',
     'django_extensions',
-    
-    # 🔐 2FA Security - відключено
-    # 'django_otp',
-    # 'django_otp.plugins.otp_totp',  # Google Authenticator
-    # 'two_factor',
-    # опційно: 'otp_yubikey',
-    
+        
+    # 🔐 2FA Security
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+        
     # 🧠 Your apps
     'core',
     'about',
@@ -102,12 +103,18 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'django_otp.middleware.OTPMiddleware',  # 🔐 2FA Middleware - відключено
+    # 'django_otp.middleware.OTPMiddleware',  # 🔐 2FA Middleware - ВИМКНЕНО
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
-    # 🖕 LINUS SECURITY SYSTEM™ - Захищаємо від хакерів!
-    'core.middleware.security.LinusSecurityMiddleware',
+    # 🖕 LINUS SECURITY SYSTEM™ - Захищаємо від хакерів! (ТИМЧАСОВО ВИМКНЕНО)
+     'core.middleware.security.LinusSecurityMiddleware',
+    
+    # 🔒 Lighthouse-сумісний Security Middleware
+    #'core.middleware.lighthouse_compatible.LighthouseCompatibleSecurityMiddleware',
+    
+    # 🔒 Full Security Headers Middleware (ВИМКНЕНО - блокує Lighthouse)
+    # 'core.middleware.security_headers.SecurityHeadersMiddleware',
 ]
 
 ROOT_URLCONF = 'lazysoft.urls'
@@ -190,6 +197,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -209,6 +217,11 @@ PARLER_LANGUAGES = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# CDN налаштування (для майбутнього використання)
+# Розкоментуйте для використання CDN:
+# STATIC_URL = 'https://your-cdn-domain.com/static/'
+# MEDIA_URL = 'https://your-cdn-domain.com/media/'
 
 # CKEditor config
 CKEDITOR_UPLOAD_PATH = "uploads/"
@@ -287,7 +300,7 @@ GOOGLE_ANALYTICS_ID = config('GOOGLE_ANALYTICS_ID', default=None)
 GOOGLE_SITE_VERIFICATION = config('GOOGLE_SITE_VERIFICATION', default=None)
 BING_SITE_VERIFICATION = config('BING_SITE_VERIFICATION', default=None)
 YAHOO_SITE_VERIFICATION = config('YAHOO_SITE_VERIFICATION', default=None)
-DISABLE_GOOGLE_INDEXING = config('DISABLE_GOOGLE_INDEXING', default=True, cast=bool)
+DISABLE_GOOGLE_INDEXING = config('DISABLE_GOOGLE_INDEXING', default=False, cast=bool)
 
 # === 🔄 CELERY (для асинхронних завдань) ===
 # Поки що закоментовано - увімкнеш коли будеш готова
@@ -406,6 +419,48 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+# === 🔒 ДОДАТКОВІ НАЛАШТУВАННЯ БЕЗПЕКИ ===
+# Content Security Policy налаштування
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = (
+    "'self'", 
+    "'unsafe-inline'", 
+    "'unsafe-eval'",
+    "https://www.googletagmanager.com",
+    "https://www.google-analytics.com",
+    "https://unpkg.com",
+    "https://cdn.jsdelivr.net"
+)
+CSP_STYLE_SRC = (
+    "'self'", 
+    "'unsafe-inline'",
+    "https://fonts.googleapis.com"
+)
+CSP_FONT_SRC = (
+    "'self'",
+    "https://fonts.gstatic.com"
+)
+CSP_IMG_SRC = (
+    "'self'", 
+    "data:", 
+    "blob:",
+    "https://images.unsplash.com",
+    "https://cdn.pixabay.com",
+    "https://images.pexels.com"
+)
+CSP_CONNECT_SRC = (
+    "'self'",
+    "https://www.google-analytics.com",
+    "https://analytics.google.com"
+)
+
+# Trusted Types для захисту від DOM-based XSS
+CSP_REQUIRE_TRUSTED_TYPES_FOR = "'script'"
+
+# Додаткові заголовки безпеки
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+# COOP буде додано через middleware для кращого контролю
 
 # === 📧 EMAIL CONFIGURATION ===
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -588,8 +643,8 @@ AI_MANUAL_COST_PER_ARTICLE = float(os.getenv("AI_MANUAL_COST_PER_ARTICLE", 19))
 
 # Security logging
 LOGGING['loggers']['security'] = {
-    'handlers': ['file'],
-    'level': 'WARNING',
+    'handlers': ['file', 'console'],
+    'level': 'INFO',
     'propagate': True,
 }
 
@@ -599,3 +654,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Select2 settings
 SELECT2_CACHE_BACKEND = "default"
+
+# === 🔐 LOGIN SETTINGS ===
+LOGIN_URL = 'login'  # Стандартний Django login
+LOGIN_REDIRECT_URL = '/admin/'  # Прямо в адмін панель

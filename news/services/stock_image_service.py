@@ -239,3 +239,4 @@ class StockImageService:
 
 # Singleton інстанс для використання в проекті
 stock_image_service = StockImageService()
+

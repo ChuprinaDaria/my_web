@@ -1,22 +1,16 @@
-{% load static i18n %}
-{% get_current_language as CURRENT_LANG %}
-
+{% load i18n %}
 <!-- 📰 News Sidebar -->
 <aside class="news-sidebar">
-  
+
   <!-- Search Form -->
   <div class="sidebar-section glass card">
-           <h3>
-             <i data-lucide="search"></i>
-             {% trans "Search" %}
-           </h3>
+    <h3>
+      <i data-lucide="search"></i>
+      {% trans "Search" %}
+    </h3>
     <form method="GET" class="search-form">
       <div class="search-input-group">
-        <input type="search" 
-               name="search" 
-               value="{{ search_query }}" 
-               placeholder="{% trans 'Search tech news...' %}"
-               class="search-input">
+        <input type="search" name="search" value="{{ request.GET.search }}" placeholder="{% trans 'Search tech news...' %}" class="search-input">
         <button type="submit" class="search-button">
           <i data-lucide="search"></i>
         </button>
@@ -24,27 +18,52 @@
     </form>
   </div>
 
+  <!-- Related Services (moved up under Search) -->
+  {% if related_services %}
+    <div class="sidebar-section glass card">
+      <h3>
+        <i data-lucide="grid-3x3"></i>
+        {% trans "Related services" %}
+      </h3>
+      <div class="related-services-list">
+        {% for service in related_services %}
+          <a href="{{ service.url }}" class="service-item">
+            <div class="service-icon">
+              {% if service.icon %}
+                <img src="{{ service.icon.url|default:service.icon }}" alt="{{ service.title|default:service.slug }}" loading="lazy">
+              {% else %}
+                <span>⚡</span>
+              {% endif %}
+            </div>
+            <div class="service-info">
+              <span class="service-name">{{ service.title|default:service.slug }}</span>
+              <small class="service-description">{{ service.short|default:''|truncatewords:8 }}</small>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
   <!-- Categories Navigation -->
   <div class="sidebar-section glass card">
-           <h3>
-             <i data-lucide="folder"></i>
-             {% trans "Categories" %}
-           </h3>
+    <h3>
+      <i data-lucide="folder"></i>
+      {% trans "Categories" %}
+    </h3>
     <div class="categories-list">
-      <a href="{% url 'news:news_list' %}" 
-         class="category-item {% if not current_category %}active{% endif %}">
+      <a href="/{{ CURRENT_LANG }}/news/" class="category-item {% if not current_category %}active{% endif %}">
         <i data-lucide="newspaper"></i>
-        {% trans "All News" %}
+        {% trans "All news" %}
         <small>({{ total_articles }})</small>
       </a>
       
       {% for category in categories %}
-      <a href="{% url 'news:news_category' category.slug %}" 
-         class="category-item {% if current_category.slug == category.slug %}active{% endif %}">
-        <i data-lucide="tag"></i>
-        {{ category.get_name }}
-        <small>({{ category.articles_count }})</small>
-      </a>
+        <a href="/{{ CURRENT_LANG }}/news/category/{{ category.slug }}/" class="category-item {% if current_category and current_category.slug == category.slug %}active{% endif %}">
+          <i data-lucide="tag"></i>
+          {{ category.get_name }}
+          <small>({{ category.articles_count }})</small>
+        </a>
       {% endfor %}
     </div>
   </div>
@@ -52,21 +71,19 @@
   <!-- Other News (Non-Top 10) -->
   {% if other_news %}
     <div class="sidebar-section glass card">
-           <h3>
-             <i data-lucide="clock"></i>
-             {% trans "Other News" %}
-           </h3>
+      <h3>
+        <i data-lucide="clock"></i>
+        {% trans "Other news" %}
+      </h3>
       <div class="other-news-list">
-        {% for article in other_news %}
+        {% for article in other_news|slice:":5" %}
           <a href="{{ article.get_absolute_url }}" class="other-news-item">
             <div>
-              {% if CURRENT_LANG == 'uk' and article.title_uk %}{{ article.title_uk|truncatewords:8 }}
-              {% elif CURRENT_LANG == 'pl' and article.title_pl %}{{ article.title_pl|truncatewords:8 }}
-              {% else %}{{ article.title_en|truncatewords:8 }}{% endif %}
+              {{ article.get_title|truncatewords:8 }}
             </div>
             <div class="news-meta">
               <span class="news-category">{{ article.category.icon }}</span>
-              <time class="news-date">{{ article.published_at|date:'j.m' }}</time>
+              <time class="news-date">{{ article.published_at|date:"d.m" }}</time>
             </div>
           </a>
         {% endfor %}
@@ -76,10 +93,10 @@
 
   <!-- Tech Tags -->
   <div class="sidebar-section glass card">
-           <h3>
-             <i data-lucide="hash"></i>
-             {% trans "Tech Tags" %}
-           </h3>
+    <h3>
+      <i data-lucide="hash"></i>
+      {% trans "Tech tags" %}
+    </h3>
     <div class="tech-tags">
       <span class="tech-tag">AI & ML</span>
       <span class="tech-tag">Blockchain</span>
@@ -95,56 +112,28 @@
   <!-- Related Services -->
   {% if related_services %}
     <div class="sidebar-section glass card">
-           <h3>
-             <i data-lucide="grid-3x3"></i>
-             {% trans "Related Services" %}
-           </h3>
+      <h3>
+        <i data-lucide="grid-3x3"></i>
+        {% trans "Related services" %}
+      </h3>
       <div class="related-services-list">
         {% for service in related_services %}
           <a href="{{ service.url }}" class="service-item">
             <div class="service-icon">
-              {% if service.icon %}<img src="{{ service.icon.url }}" alt="{{ service.title }}">{% else %}<span>🔧</span>{% endif %}
+              {% if service.icon %}
+                <img src="{{ service.icon.url|default:service.icon }}" alt="{{ service.title|default:service.slug }}" loading="lazy">
+              {% else %}
+                <span>⚡</span>
+              {% endif %}
             </div>
             <div class="service-info">
-              <span class="service-name">{{ service.title }}</span>
-              <small class="service-description">{{ service.short|truncatewords:8 }}</small>
+              <span class="service-name">{{ service.title|default:service.slug }}</span>
+              <small class="service-description">{{ service.short|default:''|truncatewords:8 }}</small>
             </div>
           </a>
         {% endfor %}
       </div>
     </div>
   {% endif %}
-
-  <!-- CTA Sidebar -->
-  <div class="sidebar-section glass card cta-sidebar">
-    <h3>
-      <i data-lucide="sparkles"></i>
-      {% trans "Need Custom Project?" %}
-    </h3>
-    <p class="cta-description">
-      {% trans "Let's create something unique for your business. From automation to custom solutions." %}
-    </p>
-    <button class="sidebar-cta-button" 
-            data-project-title="{% trans 'Custom Project Development' %}"
-            onclick="window.ctaModal && window.ctaModal.show('news_sidebar', 'Проєкт: ' + this.dataset.projectTitle);">
-      <i data-lucide="arrow-right"></i>
-      {% trans "Start Project" %}
-    </button>
-    
-    <div class="cta-features">
-      <div class="cta-feature">
-        <i data-lucide="zap"></i>
-        {% trans "Fast Development" %}
-      </div>
-      <div class="cta-feature">
-        <i data-lucide="shield-check"></i>
-        {% trans "Quality Guarantee" %}
-      </div>
-      <div class="cta-feature">
-        <i data-lucide="headphones"></i>
-        {% trans "Full Support" %}
-      </div>
-    </div>
-  </div>
 
 </aside>
