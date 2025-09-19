@@ -12,6 +12,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: core/templates/components/cookie_consent.html:9
+msgid "Cookies & Privacy"
+msgstr "Cookies & Privacy"
+
+#: core/templates/components/cookie_consent.html:14
+msgid "\n        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n      "
+msgstr "We use cookies to improve your experience on the site. By continuing to use the site, you agree to our <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">Privacy Policy</a>."
+
+#: core/templates/components/cookie_consent.html:22
+msgid "Прийняти"
+msgstr "Accept"
+
+#: core/templates/components/cookie_consent.html:24
+msgid "Відхилити"
+msgstr "Decline"
+
 msgid "Projects - LazySoft"
 msgstr "Projects - LazySoft"
 
@@ -287,3 +303,61 @@ msgstr "All Tech News"
 
 msgid "🤖 AI Ефективність в Дії"
 msgstr "🤖 AI Efficiency in Action"
+
+# AI Metrics Widget
+msgid "Реальні результати автоматизації для вашого бізнесу"
+msgstr "Real results of automation for your business"
+
+msgid "Заощаджено коштів"
+msgstr "Money Saved"
+
+msgid "Економія від автоматизації за період"
+msgstr "Savings from automation for the period"
+
+msgid "Модель AI"
+msgstr "AI Model"
+
+msgid "Основна модель для обробки"
+msgstr "Primary processing model"
+
+msgid "Зекономлено Часу"
+msgstr "Time Saved"
+
+msgid "год"
+msgstr "h"
+
+msgid "Автоматизація робочих процесів"
+msgstr "Workflow automation"
+
+msgid "AI Контент"
+msgstr "AI Content"
+
+msgid "шт"
+msgstr "pcs"
+
+msgid "Згенеровано AI статей цього місяця"
+msgstr "AI-generated articles this month"
+
+msgid "Зростання Ефективності"
+msgstr "Efficiency Growth"
+
+msgid "Покращення продуктивності процесів"
+msgstr "Process productivity improvement"
+
+msgid "Витрати на AI"
+msgstr "AI Spend"
+
+msgid "Час AI обробки"
+msgstr "AI Processing Time"
+
+msgid "Загальний час AI обробки"
+msgstr "Total AI processing time"
+
+msgid "Замовити Консультацію"
+msgstr "Request a Consultation"
+
+msgid "Останнє оновлення:"
+msgstr "Last updated:"
+
+msgid "сьогодні"
+msgstr "today"

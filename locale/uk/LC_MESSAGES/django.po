@@ -12,6 +12,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: core/templates/components/cookie_consent.html:9
+msgid "Cookies & Privacy"
+msgstr "Cookies та Конфіденційність"
+
+#: core/templates/components/cookie_consent.html:14
+msgid "\n        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n      "
+msgstr "\n        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n      "
+
+#: core/templates/components/cookie_consent.html:22
+msgid "Прийняти"
+msgstr "Прийняти"
+
+#: core/templates/components/cookie_consent.html:24
+msgid "Відхилити"
+msgstr "Відхилити"
+
 msgid "Projects - LazySoft"
 msgstr "Проєкти - LazySoft"
 

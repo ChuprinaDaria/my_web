@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<!-- 🍪 COOKIE CONSENT MODAL -->
+<div id="cookieConsentOverlay" class="cookie-consent-overlay">
+  <div class="cookie-consent-modal">
+    <!-- Cookie Icon (використовую emoji для простоти) -->
+    <div class="cookie-icon">🍪</div>
+    
+    <!-- Заголовок -->
+    <h3>{% trans "Cookies & Privacy" %}</h3>
+    
+    <!-- Текст -->
+    <p>
+      {% trans "We use cookies to improve your experience on the site." %}
+      {% trans "By continuing to browse, you agree to our" %}
+      <a href="{% url 'terms:static_page' slug='privacy-policy' %}" target="_blank">{% trans "privacy policy" %}</a>.
+    </p>
+    
+    <!-- Кнопки -->
+    <div class="cookie-buttons">
+      <button id="acceptCookies" class="cookie-btn accept">
+        {% trans "Прийняти" %}
+      </button>
+      <button id="declineCookies" class="cookie-btn decline">
+        {% trans "Відхилити" %}
+      </button>
+    </div>
+  </div>
+</div>
+
+

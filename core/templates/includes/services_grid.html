@@ -3,7 +3,7 @@
 <div class="services-main">
   <div class="services-grid">
     {% for service in services %}
-      <article class="service-card clickable" data-href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/{{ service.slug }}/">
+      <article class="service-card clickable" data-href="/{{ CURRENT_LANG }}/services/{{ service.slug }}/">
         {% if service.main_image %}
           <div class="service-icon">
             <img src="{{ service.main_image }}" alt="{{ service.title }}" loading="lazy">
@@ -16,7 +16,7 @@
         
         <div class="service-content">
           <h3>{{ service.title|safe }}</h3>
-          <p class="service-description">{{ service.short|safe|truncatewords:20 }}</p>
+          <p class="service-description">{{ service.short|striptags|truncatewords:20 }}</p>
           
           <!-- Service Tags -->
           {% if service.tags %}

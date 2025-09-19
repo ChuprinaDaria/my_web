@@ -246,6 +246,8 @@
       {% include "core/footer.html" %}
     {% endblock %}
 
+    {% include 'components/cookie_consent.html' %}
+
     <!-- Critical JavaScript - Load immediately -->
     <script src="{% static 'js/script.js' %}"></script>
     
@@ -334,6 +336,8 @@
     
     <!-- Обробник кліків для карток -->
     <script src="{% static 'js/clickable_handler.js' %}"></script>
+
+    <script src="{% static 'js/cookie_consent.js' %}"></script>
 
     {% block extra_scripts %}{% endblock %}
   </body>

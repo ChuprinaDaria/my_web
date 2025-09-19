@@ -1,3 +1,15 @@
+# Django authentication backends (with axes)
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+# django-axes settings
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1  # год
+AXES_LOCKOUT_TEMPLATE = 'security/lockout.html'
+AXES_LOCK_OUT_AT_FAILURE = True
+AXES_LOCKOUT_URL = '/control/login/'
+AXES_ENABLED = True
 """
 Django settings for lazysoft project.
 
@@ -46,7 +58,7 @@ SECRET_KEY = 'django-insecure-o(5n4*5i#g!+hzjll*fo@p-60kkq6&cw(x=z%0=m&9olx0xp6f
 DEBUG = True
 
 ALLOWED_HOSTS = ["192.168.1.13", "localhost", "127.0.0.1", "testserver"]
-CSRF_TRUSTED_ORIGINS = ["http://192.168.1.13:8000"]
+CSRF_TRUSTED_ORIGINS = ["http://192.168.1.13:8000", "https://lazysoft.pl", "https://*.lazysoft.pl"]
 
 # Application definition - SINGLE DEFINITION
 INSTALLED_APPS = [
@@ -73,12 +85,13 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     'django_select2',
     'django_extensions',
+    'axes',
         
     # 🔐 2FA Security
     'django_otp',
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
-    'two_factor',
+    'django_otp.plugins.otp_email',
         
     # 🧠 Your apps
     'core',
@@ -90,6 +103,7 @@ INSTALLED_APPS = [
     'contacts.apps.ContactsConfig',
     'accounts',
     'consultant',
+    'terms',
 ]
 
 
@@ -102,11 +116,13 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',  # For i18n
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'django_otp.middleware.OTPMiddleware',  # 🔐 2FA Middleware - ВИМКНЕНО
+    'django_otp.middleware.OTPMiddleware',  # 🔐 2FA Middleware - УВІМКНЕНО
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
+    'core.middleware.RequireOTPForAdminMiddleware',
+    'core.middleware.cookie_consent.CookieConsentMiddleware',
     # 🖕 LINUS SECURITY SYSTEM™ - Захищаємо від хакерів! (ТИМЧАСОВО ВИМКНЕНО)
      'core.middleware.security.LinusSecurityMiddleware',
     
@@ -134,6 +150,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
                 'core.context_processors.seo_settings',
+                'core.context_processors.cookie_consent',
             ],
         },
     },
@@ -656,5 +673,34 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 SELECT2_CACHE_BACKEND = "default"
 
 # === 🔐 LOGIN SETTINGS ===
-LOGIN_URL = 'login'  # Стандартний Django login
-LOGIN_REDIRECT_URL = '/admin/'  # Прямо в адмін панель
+LOGIN_URL = 'admin_2fa_login'
+LOGIN_REDIRECT_URL = '/control/'
+
+# === 🔐 2FA SETTINGS ===
+# Microsoft Authenticator (TOTP) налаштування
+OTP_TOTP_ISSUER = 'LAZYSOFT Admin'
+OTP_TOTP_TOLERANCE = 1  # Допуск у секундах для синхронізації
+
+# Email 2FA налаштування (якщо потрібно)
+OTP_EMAIL_SENDER = 'noreply@lazysoft.com.ua'
+OTP_EMAIL_SUBJECT = 'LAZYSOFT Admin - 2FA Code'
+
+# Статичні токени для резервного доступу
+OTP_STATIC_THROTTLE_FACTOR = 2
+
+# === 🌐 HTTPS / Security Headers ===
+if DEBUG:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_SSL_REDIRECT = False
+    SECURE_HSTS_SECONDS = 0
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False
+else:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_SSL_REDIRECT = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

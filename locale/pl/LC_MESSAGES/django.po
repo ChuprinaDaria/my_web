@@ -12,6 +12,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
+#: core/templates/components/cookie_consent.html:9
+msgid "Cookies & Privacy"
+msgstr "Pliki cookie i prywatność"
+
+#: core/templates/components/cookie_consent.html:14
+msgid "\n        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n      "
+msgstr "Używamy plików cookie, aby poprawić Twoje doświadczenia na stronie. Kontynuując korzystanie z witryny, zgadzasz się z naszą <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">polityką prywatności</a>."
+
+#: core/templates/components/cookie_consent.html:22
+msgid "Прийняти"
+msgstr "Akceptuj"
+
+#: core/templates/components/cookie_consent.html:24
+msgid "Відхилити"
+msgstr "Odrzuć"
+
 msgid "Projects - LazySoft"
 msgstr "Projekty - LazySoft"
 
@@ -287,3 +303,61 @@ msgstr "Wszystkie wiadomości"
 
 msgid "🤖 AI Ефективність в Дії"
 msgstr "🤖 AI Efektywność w Działaniu"
+
+# AI Metrics Widget
+msgid "Реальні результати автоматизації для вашого бізнесу"
+msgstr "Realne wyniki automatyzacji dla Twojej firmy"
+
+msgid "Заощаджено коштів"
+msgstr "Zaoszczędzone środki"
+
+msgid "Економія від автоматизації за період"
+msgstr "Oszczędności z automatyzacji w danym okresie"
+
+msgid "Модель AI"
+msgstr "Model AI"
+
+msgid "Основна модель для обробки"
+msgstr "Główny model przetwarzania"
+
+msgid "Зекономлено Часу"
+msgstr "Zaoszczędzono czasu"
+
+msgid "год"
+msgstr "godz"
+
+msgid "Автоматизація робочих процесів"
+msgstr "Automatyzacja procesów roboczych"
+
+msgid "AI Контент"
+msgstr "AI Treści"
+
+msgid "шт"
+msgstr "szt"
+
+msgid "Згенеровано AI статей цього місяця"
+msgstr "Wygenerowane artykuły AI w tym miesiącu"
+
+msgid "Зростання Ефективності"
+msgstr "Wzrost efektywności"
+
+msgid "Покращення продуктивності процесів"
+msgstr "Poprawa wydajności procesów"
+
+msgid "Витрати на AI"
+msgstr "Wydatki na AI"
+
+msgid "Час AI обробки"
+msgstr "Czas przetwarzania AI"
+
+msgid "Загальний час AI обробки"
+msgstr "Łączny czas przetwarzania AI"
+
+msgid "Замовити Консультацію"
+msgstr "Zamówić konsultację"
+
+msgid "Останнє оновлення:"
+msgstr "Ostatnia aktualizacja:"
+
+msgid "сьогодні"
+msgstr "dzisiaj"

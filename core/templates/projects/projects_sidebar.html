@@ -17,7 +17,7 @@
     {% if related_services %}
       <div class="related-services-list">
         {% for service in related_services %}
-          <a href="/services/{{ service.slug }}/" class="service-item">
+          <a href="/{{ CURRENT_LANG }}/services/{{ service.slug }}/" class="service-item">
             <div class="service-icon">
               {% if service.icon %}
                 <img src="{{ service.icon.url }}" alt="{{ service.title_en }}" loading="lazy">

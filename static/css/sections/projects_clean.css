@@ -608,11 +608,11 @@
 .project-simple-item {
   display: flex;
   align-items: flex-start;
-  gap: var(--spacing-xl);
-  padding: var(--spacing-xl);
+  gap: var(--spacing-2xl);
+  padding: calc(var(--spacing-xl) + 8px);
   background: var(--glass-bg);
   border: 2px solid transparent;
-  border-radius: var(--radius-xl);
+  border-radius: calc(var(--radius-xl) + 4px);
   transition: all var(--transition-normal);
   position: relative;
   width: 100%;
@@ -637,8 +637,8 @@
 
 /* 🖼️ PROJECT MEDIA */
 .project-media {
-  width: 200px;
-  height: 150px;
+  width: 240px;
+  height: 170px;
   flex-shrink: 0;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -686,7 +686,7 @@
   width: 100%;
   background: transparent;
   border: none;
-  padding: 0;
+  padding: 8px 0 0 0;
   text-align: left;
   cursor: pointer;
   margin-bottom: var(--spacing-md);

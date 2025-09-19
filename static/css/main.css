@@ -48,6 +48,7 @@
 @import url('./sections/news_list.css'); 
 @import url('./components/consultant_bubble.css');
 @import url('./components/news_digest.css');
+@import url('./components/cookie_consent.css');
 
 *, *::before, *::after {
   margin: 0;

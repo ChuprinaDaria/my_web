@@ -15,7 +15,7 @@
     {% if related_projects %}
       <div class="related-projects-list">
         {% for project in related_projects %}
-          <a href="/projects/{{ project.slug }}/" class="project-item">
+          <a href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" class="project-item">
             <div class="project-icon">
               {% if project.featured_image %}
                 <img src="{{ project.featured_image.url }}" alt="{{ project.title_en }}" loading="lazy">
@@ -30,9 +30,9 @@
                 {% else %}{{ project.title_en }}{% endif %}
               </span>
               <small class="project-description">
-                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|truncatewords:8 }}
-                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|truncatewords:8 }}
-                {% else %}{{ project.short_description_en|truncatewords:8 }}{% endif %}
+                {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:8 }}
+                {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:8 }}
+                {% else %}{{ project.short_description_en|striptags|truncatewords:8 }}{% endif %}
               </small>
             </div>
           </a>

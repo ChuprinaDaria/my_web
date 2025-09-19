@@ -1,0 +1,51 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}{{ page_title }} | Lazysoft{% endblock %}
+
+{% block meta_description %}{{ meta_description|default:"Lazysoft legal documents and policies" }}{% endblock %}
+
+{% block meta_keywords %}
+  {% if page.slug == 'privacy-policy' %}privacy policy, data protection, GDPR{% endif %}
+  {% if page.slug == 'terms-of-service' %}terms of service, user agreement{% endif %}
+  {% if page.slug == 'cookies-policy' %}cookies policy, tracking, analytics{% endif %}
+{% endblock %}
+
+{% block og_title %}{{ page_title }}{% endblock %}
+{% block og_description %}{{ meta_description|default:"Lazysoft legal documents and policies" }}{% endblock %}
+{% block og_type %}article{% endblock %}
+
+{% block twitter_title %}{{ page_title }}{% endblock %}
+{% block twitter_description %}{{ meta_description|default:"Lazysoft legal documents and policies" }}{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/{{ page.slug }}/" />
+  
+  <link rel="alternate" href="https://lazysoft.dev/en/{{ page.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.dev/uk/{{ page.slug }}/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.dev/pl/{{ page.slug }}/" hreflang="pl">
+{% endblock %}
+
+{% block content %}
+<div class="static-page-container">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <article class="static-page-content">
+          <header class="page-header">
+            <h1>{{ page_title }}</h1>
+            <p class="last-updated text-muted">
+              {% trans "Last updated:" %} {{ page.updated_at|date:"F d, Y" }}
+            </p>
+          </header>
+          
+          <div class="page-content">
+            {{ page_content|safe }}
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

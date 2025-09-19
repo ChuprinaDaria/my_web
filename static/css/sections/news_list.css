@@ -306,7 +306,7 @@
   }
   
   .news-sidebar {
-    order: -1; /* Sidebar зверху на планшетах */
+    order: 2; /* На планшетах іде після контенту */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
@@ -323,8 +323,10 @@
   }
   
   .news-layout {
-    gap: 40px;
+    gap: 30px;
   }
+  .news-content { order: 1; }
+  .news-sidebar { order: 2; }
   
   .news-grid {
     grid-template-columns: 1fr;

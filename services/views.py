@@ -236,17 +236,16 @@ def faq_list(request):
     lang = get_language()
     
     # Отримуємо всі FAQ
-    faqs = FAQ.objects.filter(is_active=True).order_by('-priority', '-date_created')
+    faqs = FAQ.objects.filter(is_active=True).order_by('order')
     
     # Локалізуємо FAQ
-    localized_faqs = []
-    for faq in faqs:
-        localized_faqs.append({
-            'question': faq.get_question(lang),
-            'answer': faq.get_answer(lang),
-            'priority': faq.priority,
-            'date_created': faq.date_created,
-        })
+    localized_faqs = [
+        {
+            'question': get_localized_field(faq, 'question', lang),
+            'answer': get_localized_field(faq, 'answer', lang),
+        }
+        for faq in faqs
+    ]
     
     return render(request, "services/faq.html", {
         "faqs": localized_faqs,

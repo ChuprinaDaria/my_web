@@ -131,16 +131,42 @@ class WidgetMetricsAPIView(TemplateView):
         return JsonResponse(data)
 
 class PublicDashboardAPIView(TemplateView):
-    """API для публічного дашборду"""
-    
+    """Публічні метрики для AI widgets (без чутливих даних)."""
+
     def get(self, request, *args, **kwargs):
-        # Тут можна додати логіку для публічного дашборду
-        data = {
-            'status': 'success',
-            'message': 'Public dashboard API',
-        }
-        
-        return JsonResponse(data)
+        period = request.GET.get('period', 'month')
+        try:
+            from lazysoft.dashboard import LazySOFTDashboardAdmin
+            dashboard_admin = LazySOFTDashboardAdmin()
+            full = dashboard_admin.get_executive_summary(period)
+
+            # Витягуємо та мапимо AI метрики під віджет
+            ai_metrics = full.get('ai_metrics', {}) or {}
+            by_model = ai_metrics.get('by_model', {}) or {}
+            # Обираємо топ-модель за сумарною вартістю або кількістю викликів
+            ai_top_model = ''
+            if by_model:
+                ai_top_model = max(
+                    by_model.items(), key=lambda kv: (kv[1].get('total_cost', 0), kv[1].get('calls', 0))
+                )[0]
+
+            safe_data = {
+                'roi_analysis': full.get('roi_analysis', {}),
+                'content_overview': full.get('content_overview', {}),
+                'key_kpis': full.get('key_kpis', {}),
+                'ai_spend_usd': float(ai_metrics.get('total_cost', 0.0) or 0.0),
+                'ai_spend_by_model': by_model,
+                'ai_top_model': ai_top_model,
+            }
+
+            return JsonResponse({
+                'period': period,
+                'data': safe_data,
+                'last_updated': timezone.now().strftime('%H:%M')
+            })
+        except Exception as e:
+            logger.error(f"PublicDashboardAPIView error: {e}")
+            return JsonResponse({'period': period, 'data': {}, 'error': 'unavailable'}, status=500)
 
 def robots_txt(request):
     """Robots.txt для SEO"""

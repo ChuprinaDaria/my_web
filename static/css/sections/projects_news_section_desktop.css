@@ -11,6 +11,11 @@
   border-bottom: 1px solid rgba(102, 255, 0, 0.1);
 }
 
+/* Додаємо внутрішній відступ зверху всередині контейнера */
+.projects-news-section > .container {
+  padding-top: var(--spacing-xxl) !important;
+}
+
 /* Додатковий селектор для забезпечення відступу після related-work-section */
 .related-work-section + .projects-news-section {
   margin-top: calc(var(--spacing-4xl) + var(--spacing-xxl) + var(--spacing-xl)) !important;
@@ -18,6 +23,7 @@
 
 .news-section-header {
   text-align: center;
+  margin-top: var(--spacing-xxl);
   margin-bottom: var(--spacing-xxl);
 }
 

@@ -97,12 +97,18 @@ class NewsCategory(models.Model):
     def __str__(self):
         return self.name_uk
     
-    def get_name(self, language='uk'):
-        """Отримати назву для конкретної мови"""
+    def get_name(self, language=None):
+        """Отримати назву поточною мовою (або вказаною)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'name_{language}', self.name_uk)
     
-    def get_description(self, language='uk'):
-        """Отримати опис для конкретної мови"""
+    def get_description(self, language=None):
+        """Отримати опис поточною мовою (або вказаною)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'description_{language}', self.description_uk)
     
     def get_cta_title(self, language='uk'):
@@ -309,12 +315,18 @@ class ProcessedArticle(models.Model):
         minutes = max(1, words // 200)
         return minutes
 
-    def get_cta_title(self, language='uk'):
-        """CTA заголовок для конкретної мови"""
+    def get_cta_title(self, language=None):
+        """CTA заголовок для поточної мови (або вказаної)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'cta_title_{language}', '')
 
-    def get_cta_description(self, language='uk'):
-        """CTA опис для конкретної мови"""
+    def get_cta_description(self, language=None):
+        """CTA опис для поточної мови (або вказаної)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'cta_description_{language}', '')
 
     def get_absolute_url(self, language=None):
@@ -389,24 +401,39 @@ class ProcessedArticle(models.Model):
     def __str__(self):
         return self.title_uk
     
-    def get_title(self, language='uk'):
-        """Заголовок для конкретної мови"""
+    def get_title(self, language=None):
+        """Заголовок для поточної мови (або вказаної)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'title_{language}', self.title_uk)
     
-    def get_summary(self, language='uk'):
-        """Короткий опис для конкретної мови"""
+    def get_summary(self, language=None):
+        """Короткий опис для поточної мови (або вказаної)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'summary_{language}', self.summary_uk)
     
-    def get_business_insight(self, language='uk'):
-        """Бізнес-інсайт для конкретної мови"""
+    def get_business_insight(self, language=None):
+        """Бізнес-інсайт для поточної мови (або вказаної)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'business_insight_{language}', self.business_insight_uk)
     
-    def get_local_context(self, language='uk'):
-        """Локальний контекст для конкретної мови"""
+    def get_local_context(self, language=None):
+        """Локальний контекст для поточної мови (або вказаної)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'local_context_{language}', self.local_context_uk)
     
-    def get_key_takeaways(self, language='uk'):
-        """Ключові висновки для конкретної мови"""
+    def get_key_takeaways(self, language=None):
+        """Ключові висновки для поточної мови (або вказаної)."""
+        if language is None:
+            from django.utils.translation import get_language
+            language = get_language() or 'uk'
         return getattr(self, f'key_takeaways_{language}', self.key_takeaways_uk)
     
     def get_total_views(self):

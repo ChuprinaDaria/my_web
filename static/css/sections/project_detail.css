@@ -717,6 +717,27 @@
   color: var(--text-primary);
 }
 
+/* Hero overrides for news detail */
+.news-hero .article-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+  font-weight: 800;
+  margin-bottom: var(--spacing-md);
+  color: var(--text-white);
+}
+
+.news-hero .article-meta {
+  font-size: 1rem;
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  align-items: center;
+}
+
+.news-hero .article-info {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
 .service-description,
 .article-summary {
   font-size: 0.9rem;
