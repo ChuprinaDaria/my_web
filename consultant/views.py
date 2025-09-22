@@ -10,6 +10,8 @@ import uuid
 import time
 import random
 from .models import ChatSession, Message, ConsultantProfile, KnowledgeBase, ChatAnalytics
+from rag.services import RAGConsultantService
+rag_service = RAGConsultantService()
 
 
 def consultant_chat(request):
@@ -94,7 +96,12 @@ def send_message(request):
         
         # Генеруємо відповідь консультанта
         start_time = time.time()
-        assistant_response = generate_consultant_response(message_content, chat_session)
+        rag_result = rag_service.process_user_query(
+            query=message_content,
+            session_id=chat_session.session_id,
+            language='uk'
+        )
+        assistant_response = rag_result['response']
         processing_time = time.time() - start_time
         
         # Зберігаємо відповідь консультанта
@@ -193,7 +200,7 @@ def generate_consultant_response(user_message, chat_session):
     
     # Додаємо загальні поради
     general_advice = [
-        "Якщо у вас є додаткові питання, не соромтеся запитати!",
+        "Якщо у вас є додаткові питання, не соромтесь запитати!",
         "Можу допомогти з більш детальним поясненням.",
         "Чи є щось конкретне, що вас цікавить?",
         "Готовий продовжити нашу розмову!",

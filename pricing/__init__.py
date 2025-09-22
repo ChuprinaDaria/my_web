@@ -1,0 +1,2 @@
+# pricing/__init__.py
+default_app_config = 'pricing.apps.PricingConfig'

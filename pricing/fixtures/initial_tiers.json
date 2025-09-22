@@ -1,0 +1,47 @@
+[
+    {
+        "model": "pricing.pricingtier",
+        "pk": 1,
+        "fields": {
+            "name": "basic",
+            "display_name_uk": "Базовий пакет",
+            "display_name_en": "Basic Package", 
+            "display_name_pl": "Pakiet podstawowy",
+            "order": 1
+        }
+    },
+    {
+        "model": "pricing.pricingtier", 
+        "pk": 2,
+        "fields": {
+            "name": "standard",
+            "display_name_uk": "Стандарт",
+            "display_name_en": "Standard Package",
+            "display_name_pl": "Pakiet standardowy", 
+            "is_popular": true,
+            "order": 2
+        }
+    },
+    {
+        "model": "pricing.pricingtier",
+        "pk": 3,
+        "fields": {
+            "name": "premium",
+            "display_name_uk": "Преміум",
+            "display_name_en": "Premium Package",
+            "display_name_pl": "Pakiet premium",
+            "order": 3
+        }
+    },
+    {
+        "model": "pricing.pricingtier",
+        "pk": 4,
+        "fields": {
+            "name": "enterprise",
+            "display_name_uk": "Корпоративний",
+            "display_name_en": "Enterprise Package",
+            "display_name_pl": "Pakiet korporacyjny",
+            "order": 4
+        }
+    }
+]

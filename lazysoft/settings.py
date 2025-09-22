@@ -52,12 +52,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-o(5n4*5i#g!+hzjll*fo@p-60kkq6&cw(x=z%0=m&9olx0xp6f'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-o(5n4*5i#g!+hzjll*fo@p-60kkq6&cw(x=z%0=m&9olx0xp6f')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ["192.168.1.13", "localhost", "127.0.0.1", "testserver"]
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,192.168.1.13,testserver').split(',')
 CSRF_TRUSTED_ORIGINS = ["http://192.168.1.13:8000", "https://lazysoft.pl", "https://*.lazysoft.pl"]
 
 # Application definition - SINGLE DEFINITION
@@ -99,11 +99,16 @@ INSTALLED_APPS = [
     'blog',
     'news',
     'projects',
+    'pricing',
     'services',
     'contacts.apps.ContactsConfig',
     'accounts',
     'consultant',
     'terms',
+    'rag',
+    
+    # 📊 Vector database
+    'pgvector',
 ]
 
 
@@ -163,13 +168,59 @@ WSGI_APPLICATION = 'lazysoft.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Lazysoft',       # назва БД, яку створила в pgAdmin
-        'USER': 'lazysoft_user',       # свій користувач PostgreSQL
-        'PASSWORD': 'Severussnape1987?',
-        'HOST': 'localhost',      # якщо локально
-        'PORT': '5432',           # стандартний порт PostgreSQL
+        'NAME': config('DB_NAME', default='Lazysoft'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default='password'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
+
+# RAG налаштування
+RAG_SETTINGS = {
+    # Embedding модель
+    'EMBEDDING_MODEL': 'gemini',  # або 'openai'
+    'GEMINI_EMBEDDING_MODEL': 'models/embedding-001',
+    'OPENAI_EMBEDDING_MODEL': 'text-embedding-3-small',
+    
+    # Розміри векторів
+    'GEMINI_EMBEDDING_DIMENSIONS': 768,
+    'OPENAI_EMBEDDING_DIMENSIONS': 1536,
+    
+    # Vector search параметри
+    'SIMILARITY_THRESHOLD': 0.7,  # Мінімальна схожість для релевантності
+    'MAX_SEARCH_RESULTS': 10,     # Максимум результатів пошуку
+    'MAX_CONTEXT_LENGTH': 4000,   # Максимум токенів для контексту
+    
+    # RAG поведінка
+    'AUTO_GENERATE_EMBEDDINGS': True,  # Автоматично генерувати для нового контенту
+    'REINDEX_INTERVAL_HOURS': 24,      # Переіндексація кожні 24 год
+    
+    # Що індексувати
+    'INDEXABLE_MODELS': [
+        'services.ServiceCategory',
+        'projects.Project', 
+        'services.FAQ',
+        'rag.KnowledgeSource',
+    ],
+    
+    # Мови для індексації
+    'SUPPORTED_LANGUAGES': ['uk', 'en', 'pl'],
+    
+    # Консультант налаштування  
+    'CONSULTANT_NAME': 'Юлія',
+    'CONSULTANT_PERSONALITY': 'Дружелюбна IT експертка, яка допомагає з технічними рішеннями',
+    'DEFAULT_LANGUAGE': 'uk',
+}
+
+# Celery для асинхронної обробки embeddings (опціонально)
+if os.getenv('REDIS_URL'):
+    CELERY_BROKER_URL = os.getenv('REDIS_URL')
+    CELERY_RESULT_BACKEND = os.getenv('REDIS_URL')
+    CELERY_TASK_ROUTES = {
+        'rag.tasks.generate_embedding': {'queue': 'embeddings'},
+        'rag.tasks.reindex_knowledge_base': {'queue': 'maintenance'},
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -663,6 +714,12 @@ LOGGING['loggers']['security'] = {
     'handlers': ['file', 'console'],
     'level': 'INFO',
     'propagate': True,
+}
+
+LOGGING['loggers']['rag'] = {
+    'handlers': ['file', 'console'],
+    'level': 'INFO',
+    'propagate': False,
 }
 
 # === 🎯 CRM SETTINGS ===

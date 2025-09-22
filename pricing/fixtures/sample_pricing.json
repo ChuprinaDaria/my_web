@@ -1,0 +1,71 @@
+[
+    {
+        "model": "pricing.servicepricing",
+        "pk": 1,
+        "fields": {
+            "service_category": 6,
+            "tier": 1,
+            "price_from": 500.00,
+            "price_to": null,
+            "timeline_weeks_from": 2,
+            "timeline_weeks_to": 4,
+            "features_included_uk": "Базові функції\nПідтримка по email\n5GB сховища\nБазові інтеграції",
+            "features_included_en": "Basic features\nEmail support\n5GB storage\nBasic integrations",
+            "features_included_pl": "Podstawowe funkcje\nWsparcie email\n5GB miejsca\nPodstawowe integracje",
+            "complexity_level": "simple",
+            "suitable_for_uk": "Стартапи та малі бізнеси, які потребують базового функціоналу",
+            "suitable_for_en": "Startups and small businesses needing basic functionality",
+            "suitable_for_pl": "Startupy i małe firmy potrzebujące podstawowej funkcjonalności",
+            "is_active": true,
+            "order": 1,
+            "date_created": "2024-01-15T10:00:00Z",
+            "date_updated": "2024-01-15T10:00:00Z"
+        }
+    },
+    {
+        "model": "pricing.servicepricing",
+        "pk": 2,
+        "fields": {
+            "service_category": 6,
+            "tier": 2,
+            "price_from": 1200.00,
+            "price_to": 1800.00,
+            "timeline_weeks_from": 4,
+            "timeline_weeks_to": 8,
+            "features_included_uk": "Всі базові функції\nПріоритетна підтримка\n50GB сховища\nAPI доступ\nРозширені інтеграції\nАналітика",
+            "features_included_en": "All basic features\nPriority support\n50GB storage\nAPI access\nAdvanced integrations\nAnalytics",
+            "features_included_pl": "Wszystkie podstawowe funkcje\nWsparcie priorytetowe\n50GB miejsca\nDostęp API\nZaawansowane integracje\nAnalityka",
+            "complexity_level": "medium",
+            "suitable_for_uk": "Середні бізнеси, які ростуть та потребують розширеного функціоналу",
+            "suitable_for_en": "Growing medium businesses needing advanced functionality",
+            "suitable_for_pl": "Rozwijające się średnie firmy potrzebujące zaawansowanej funkcjonalności",
+            "is_active": true,
+            "order": 2,
+            "date_created": "2024-01-15T10:00:00Z",
+            "date_updated": "2024-01-15T10:00:00Z"
+        }
+    },
+    {
+        "model": "pricing.servicepricing",
+        "pk": 3,
+        "fields": {
+            "service_category": 6,
+            "tier": 3,
+            "price_from": 2500.00,
+            "price_to": 5000.00,
+            "timeline_weeks_from": 8,
+            "timeline_weeks_to": 16,
+            "features_included_uk": "Всі стандартні функції\nПерсональний менеджер\n200GB сховища\nВсі інтеграції\nРозширена аналітика\n24/7 підтримка\nКастомні рішення",
+            "features_included_en": "All standard features\nPersonal manager\n200GB storage\nAll integrations\nAdvanced analytics\n24/7 support\nCustom solutions",
+            "features_included_pl": "Wszystkie standardowe funkcje\nOsobisty menedżer\n200GB miejsca\nWszystkie integracje\nZaawansowana analityka\nWsparcie 24/7\nRozwiązania niestandardowe",
+            "complexity_level": "complex",
+            "suitable_for_uk": "Великі компанії та корпорації зі складними вимогами",
+            "suitable_for_en": "Large companies and corporations with complex requirements",
+            "suitable_for_pl": "Duże firmy i korporacje ze złożonymi wymaganiami",
+            "is_active": true,
+            "order": 3,
+            "date_created": "2024-01-15T10:00:00Z",
+            "date_updated": "2024-01-15T10:00:00Z"
+        }
+    }
+]
