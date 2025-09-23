@@ -60,6 +60,9 @@ class ChatSession(models.Model):
     client_email = models.EmailField(blank=True)
     client_name = models.CharField(max_length=100, blank=True)
     
+    # Динамічні метадані сесії (прапори, налаштування)
+    metadata = models.JSONField(default=dict, blank=True)
+    
     # Мета розмови
     detected_intent = models.CharField(
         max_length=50,

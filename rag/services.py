@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from pgvector.django import CosineDistance
 import google.generativeai as genai
 from openai import OpenAI
+from django.utils import timezone
 
 from .models import EmbeddingModel, ChatSession, ChatMessage, RAGAnalytics
 from services.models import ServiceCategory, FAQ
@@ -155,6 +156,18 @@ class EmbeddingService:
             if question: text_parts.append(f"Питання: {question}")
             if answer: text_parts.append(f"Відповідь: {answer}")
         
+        elif isinstance(obj, ServicePricing):
+            # 💰 Витягуємо дані про ціни
+            package_name = getattr(obj, f'package_name_{language}', obj.package_name_en)
+            description = getattr(obj, f'description_{language}', obj.description_en)
+            features = getattr(obj, f'features_{language}', obj.features_en)
+            
+            text_parts.append(f"Тарифний план: {package_name} для послуги {obj.service.title}")
+            text_parts.append(f"Ціна: {obj.price} {obj.currency}")
+            text_parts.append(f"Опис: {description}")
+            if features:
+                text_parts.append(f"Що входить: {', '.join(features)}")
+        
         return '\n'.join(text_parts)
     
     def _extract_title_from_object(self, obj, language: str) -> str:
@@ -173,6 +186,8 @@ class EmbeddingService:
             return 'project'
         elif isinstance(obj, FAQ):
             return 'faq'
+        elif isinstance(obj, ServicePricing):
+            return 'pricing'
         return 'unknown'
 
 
@@ -220,21 +235,57 @@ class VectorSearchService:
         ).order_by('distance')[:limit]
         
         # Форматуємо результати
-        formatted_results = []
-        for result in results:
-            similarity = 1 - float(result.distance)  # Конвертуємо distance назад в similarity
-            
-            formatted_results.append({
-                'object': result.content_object,
-                'content_text': result.content_text,
-                'content_title': result.content_title,
-                'content_category': result.content_category,
-                'similarity': round(similarity, 3),
-                'metadata': result.metadata,
-            })
+        formatted_results = self._serialize_search_results(results)
         
         logger.info(f"Vector search для '{query}': знайдено {len(formatted_results)} результатів")
         return formatted_results
+
+    def _serialize_search_results(self, results: List[EmbeddingModel]) -> List[Dict]:
+        """Серіалізує результати векторного пошуку в JSON-сумісний формат."""
+        serialized_results = []
+        for result in results:
+            obj = result.content_object
+            if not obj:
+                continue
+            
+            data = {
+                'content_text': result.content_text,
+                'content_title': result.content_title,
+                'content_category': result.content_category,
+                'similarity': round(1 - float(result.distance), 3),
+                'metadata': result.metadata,
+                'model_info': {
+                    'app_label': result.content_type.app_label,
+                    'model_name': result.content_type.model,
+                    'pk': obj.pk,
+                }
+            }
+
+            if hasattr(obj, 'get_absolute_url'):
+                try:
+                    data['url'] = obj.get_absolute_url()
+                except Exception:
+                    data['url'] = None
+            
+            if hasattr(obj, 'slug'):
+                data['slug'] = obj.slug
+
+            # Додаємо структуровані поля для прайсингу (ServicePricing)
+            if result.content_type.app_label == 'pricing' and result.content_type.model == 'servicepricing':
+                try:
+                    data['price_from'] = float(getattr(obj, 'price_from', 0) or 0)
+                    data['price_to'] = float(getattr(obj, 'price_to', 0) or 0) if getattr(obj, 'price_to', None) else None
+                    data['currency'] = 'USD'
+                    service_category = getattr(obj, 'service_category', None)
+                    data['service_title'] = getattr(service_category, 'title_en', str(service_category)) if service_category else None
+                    tier = getattr(obj, 'tier', None)
+                    data['package_name'] = getattr(tier, 'display_name_en', str(tier)) if tier else None
+                except Exception:
+                    pass
+
+            serialized_results.append(data)
+        
+        return serialized_results
 
 
 class RAGConsultantService:
@@ -249,6 +300,10 @@ class RAGConsultantService:
         self.gemini_api_key = getattr(settings, 'GEMINI_API_KEY', None)
         if self.gemini_api_key:
             genai.configure(api_key=self.gemini_api_key)
+
+    def _contains_pricing_keywords(self, text: str) -> bool:
+        t = (text or '').lower()
+        return any(w in t for w in ['ціна', 'коштує', 'бюджет', 'price', 'вартість'])
     
     def process_user_query(
         self, 
@@ -263,6 +318,10 @@ class RAGConsultantService:
             session_id=session_id,
             defaults={'detected_intent': 'general'}
         )
+
+        # Дістаємо метадані сесії
+        meta = getattr(session, 'metadata', {}) or {}
+        clar_asked = bool(meta.get('clarification_asked', False))
         
         # Векторний пошук релевантного контенту
         search_results = self.vector_search.search_similar_content(
@@ -273,17 +332,55 @@ class RAGConsultantService:
         
         # Аналізуємо намір користувача
         detected_intent = self._detect_user_intent(query, search_results)
+
+        # Керування pricing-станом через metadata, без глобального "залипання"
+        meta = getattr(session, 'metadata', {}) or {}
+        awaiting = bool(meta.get('awaiting_pricing_details', False))
+        completed = bool(meta.get('pricing_completed', False))
+
+        if self._contains_pricing_keywords(query):
+            detected_intent = 'pricing'
+        elif awaiting and not completed:
+            detected_intent = 'pricing'
+
         session.detected_intent = detected_intent
         session.total_messages += 1
-        session.save()
         
-        # Генеруємо відповідь на основі знайденого контенту
+        # Визначаємо, чи це фоллоуап (після першого питання асистента)
+        recent_msgs = list(session.messages.order_by('-created_at')[:4])
+        is_followup = any(m.role == 'assistant' for m in recent_msgs)
+
+        # Жорстко обмежуємо уточнення одним заходом для pricing
+        if detected_intent == 'pricing':
+            allow_ask = (not clar_asked) and (not is_followup)
+        else:
+            allow_ask = False
+
+        # Генеруємо відповідь
         response = self._generate_rag_response(
             query=query,
             search_results=search_results,
             language=language,
-            intent=detected_intent
+            intent=detected_intent,
+            chat_history=session.messages.order_by('-created_at')[:4],
+            is_followup=is_followup,
+            allow_ask=allow_ask
         )
+
+        # Якщо ми щойно задали уточнення для прайсингу — відмічаємо в метаданих
+        if detected_intent == 'pricing' and allow_ask:
+            meta['clarification_asked'] = True
+        
+        # Оновлюємо metadata стан для pricing (одноразове уточнення → очікуємо; коли ціни готові → завершуємо)
+        resp = response
+        if detected_intent == 'pricing' and allow_ask:
+            meta['awaiting_pricing_details'] = True
+        if detected_intent == 'pricing' and bool(resp.get('prices_ready')):
+            meta['pricing_completed'] = True
+            meta['awaiting_pricing_details'] = False
+
+        session.metadata = meta
+        session.save()
         
         # Зберігаємо повідомлення
         ChatMessage.objects.create(
@@ -306,6 +403,8 @@ class RAGConsultantService:
             'intent': detected_intent,
             'sources': search_results,
             'suggestions': response.get('suggestions', []),
+            'actions': response.get('actions', []),
+            'prices_ready': response.get('prices_ready', False),
             'session_id': session_id
         }
     
@@ -330,7 +429,10 @@ class RAGConsultantService:
         query: str, 
         search_results: List[Dict],
         language: str,
-        intent: str
+        intent: str,
+        chat_history: List[ChatMessage],
+        is_followup: bool,
+        allow_ask: bool
     ) -> Dict:
         """Генерує відповідь на основі RAG контексту"""
         
@@ -348,20 +450,45 @@ class RAGConsultantService:
         
         context = "\n---\n".join(context_parts)
         
-        # Промпт для Gemini
-        system_prompt = self._get_system_prompt(language, intent)
+        # Формуємо історію чату для промпта
+        history_text = ""
+        if chat_history:
+            history_lines = []
+            for msg in reversed(chat_history):
+                role = "Користувач" if msg.role == 'user' else "Асистент"
+                history_lines.append(f"{role}: {msg.content}")
+            history_text = "\n".join(history_lines)
+
+        # Правило: жорсткий короткий флоу для pricing
+        pricing_flow_mode = (intent == 'pricing')
+
+        system_prompt = self._get_system_prompt(
+            language,
+            intent,
+            is_first_message=(not history_text),
+            is_followup=is_followup
+        )
+
+        if intent == 'pricing' and not is_followup:
+            if allow_ask:
+                system_prompt += "\nВажливо: це єдина серія уточнень у всій сесії."
+            else:
+                system_prompt += "\nНе став ніяких уточнень, одразу переходь до оцінок."
+        
         user_prompt = f"""
-Контекст з бази знань:
+Попередня розмова:
+{history_text}
+
+Контекст:
 {context}
 
 Запит користувача: {query}
 
-Дай відповідь українською мовою на основі наданого контексту. Будь конкретною та корисною.
+Дай відповідь українською мовою на основі наданого контексту та попередньої розмови.
 """
         
         try:
-            # Генеруємо відповідь через Gemini
-            model = genai.GenerativeModel('gemini-pro')
+            model = genai.GenerativeModel('gemini-1.5-pro-latest')
             response = model.generate_content(
                 f"{system_prompt}\n\n{user_prompt}",
                 generation_config=genai.types.GenerationConfig(
@@ -371,41 +498,114 @@ class RAGConsultantService:
             )
             
             ai_response = response.text
+
+            prices_ready = False
+            # Якщо pricing і це фоллоуап — додаємо/підсилюємо ціни (без додаткових питань)
+            if pricing_flow_mode and is_followup:
+                pricing_lines = []
+                for r in search_results:
+                    if r.get('content_category') == 'pricing':
+                        price = r.get('price')
+                        currency = r.get('currency', '')
+                        pkg = r.get('package_name') or r.get('content_title')
+                        service_title = r.get('service_title')
+                        if price is not None and pkg:
+                            line = f"- {pkg}: {price} {currency}".strip()
+                            if service_title:
+                                line = f"{line} ({service_title})"
+                            pricing_lines.append(line)
+                pricing_lines = list(dict.fromkeys(pricing_lines))[:5]
+                if pricing_lines:
+                    prices_ready = True
+                    if 'Ціни' not in ai_response:
+                        ai_response = ai_response.strip() + "\n\nЦіни (орієнтовно):\n" + "\n".join(pricing_lines)
+
+            # Одноразова згадка GDPR у першій відповіді в сесії
+            is_first_assistant_reply = True
+            if chat_history:
+                for m in chat_history:
+                    if m.role == 'assistant':
+                        is_first_assistant_reply = False
+                        break
+            if is_first_assistant_reply:
+                ai_response = ai_response.strip() + "\n\nЦе гарантує конфіденційність та відповідність стандартам GDPR."
+
+            # Дії (CTA)
+            actions = []
+            consult_url = self.rag_settings.get('CONSULTATION_URL') or self.rag_settings.get('CONSULTATION_CALENDAR_URL')
+            if consult_url:
+                actions.append({
+                    'type': 'link',
+                    'text': 'Записатися на консультацію',
+                    'url': consult_url,
+                    'style': 'secondary',
+                    'persistent': True
+                })
+            if intent == 'pricing' and prices_ready:
+                actions.append({
+                    'type': 'button',
+                    'text': 'Отримати детальний підрахунок в PDF',
+                    'action': 'start_pdf_quote_flow',
+                    'style': 'primary'
+                })
             
-            # Додаємо персоналізовані пропозиції
             suggestions = self._generate_suggestions(intent, search_results, language)
             
             return {
                 'content': ai_response,
                 'suggestions': suggestions,
-                'context_used': len(search_results)
+                'context_used': len(search_results),
+                'prices_ready': prices_ready,
+                'actions': actions
             }
             
         except Exception as e:
             logger.error(f"Помилка генерації RAG відповіді: {e}")
             return self._generate_fallback_response(query, language, intent)
     
-    def _get_system_prompt(self, language: str, intent: str) -> str:
+    def _get_system_prompt(self, language: str, intent: str, is_first_message: bool, is_followup: bool) -> str:
         """Повертає системний промпт залежно від наміру"""
         
         consultant_name = self.rag_settings.get('CONSULTANT_NAME', 'Юлія')
         
+        # 🚀 Динамічна інструкція для представлення
+        intro_instruction = f"Представся як {consultant_name}, досвідчена IT консультантка компанії LazySoft, і привітайся." if is_first_message else ""
+ 
+        # Правила для короткого флоу ціноутворення
+        pricing_flow = ""
+        if intent == 'pricing':
+            if not is_followup:
+                pricing_flow = (
+                    "Після привітання задай ОДИН раз максимально повний перелік уточнень для оцінки, "
+                    "у форматі нумерованого списку (1., 2., 3.), не більше 5 пунктів. "
+                    "Не публікуй ціни у цьому повідомленні."
+                )
+            else:
+                pricing_flow = (
+                    "Це фоллоуап: не став додаткових питань. Дай ціни одразу, використай наявні прайси; "
+                    "якщо бракує даних, зроби короткі припущення (в дужках) і наведи діапазони."
+                )
+        
         base_prompt = f"""
-Ти - {consultant_name}, досвідчена IT консультантка компанії LazySoft. 
+{intro_instruction}
 Ти допомагаєш клієнтам з технічними рішеннями та бізнес-автоматизацією.
 
 Твоя поведінка:
-- Відповідай професійно, але дружелюбно
-- Використовуй конкретні факти з контексту
-- Пропонуй практичні рішення
-- Завжди згадуй релевантні проєкти або сервіси
+- Відповідай професійно, але дружелюбно. Не представляйся, якщо це не перше повідомлення.
+- Використовуй конкретні факти з контексту та попередньої розмови.
+- Пропонуй практичні рішення.
+- Завжди згадуй релевантні проєкти або сервіси.
+- Не згадуй походження інформації та не пиши фрази на кшталт "з нашої бази знань".
+- Якщо запит потребує уточнень, задай їх як нумерований список (1., 2., 3.), але тільки 1 раз, після давай ціни
+- Не використовуй Markdown-розмітку (без **, без заголовків, без списків Markdown).
+{pricing_flow}
 """
         
         intent_prompts = {
             'pricing': f"""
 {base_prompt}
 Фокус на ціни: Коли говориш про ціни, завжди:
-1. Уточнюй деталі проєкту перед називанням цін
+1. Уточнюй деталі проєкту перед називанням цін один раз
 2. Пропонуй конкретні пакети (базовий/стандарт/преміум)
 3. Згадуй приклади схожих проєктів
 4. Пропонуй безкоштовну консультацію або прорахунок
@@ -442,9 +642,7 @@ class RAGConsultantService:
         
         if intent == 'pricing':
             suggestions = [
-                "🧮 Отримати детальний прорахунок",
-                "📅 Записатися на безкоштовну консультацію",
-                "📋 Переглянути схожі проєкти",
+                "📅 Записатися на консультацію"
             ]
         elif intent == 'consultation':
             suggestions = [
@@ -452,28 +650,8 @@ class RAGConsultantService:
                 "📝 Підготувати список питань",
                 "💼 Розповісти про ваш бізнес",
             ]
-        elif intent == 'services':
-            # Пропонуємо супутні сервіси
-            if search_results:
-                categories = set(r.get('content_category') for r in search_results)
-                if 'service' in categories:
-                    suggestions.extend([
-                        "🔍 Дізнатися більше про цей сервіс",
-                        "💰 Переглянути пакети та ціни",
-                        "📞 Обговорити ваші потреби",
-                    ])
-        elif intent == 'portfolio':
-            suggestions = [
-                "📊 Переглянути детальний кейс",
-                "💡 Обговорити схоже рішення",
-                "📈 Дізнатися про результати",
-            ]
-        else:
-            suggestions = [
-                "❓ Поставити уточнювальне питання",
-                "📞 Зв'язатися з консультантом",
-                "🏠 Повернутися на головну",
-            ]
+        
+         
         
         return suggestions
     

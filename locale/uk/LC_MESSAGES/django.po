@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Lazysoft\n"
@@ -17,8 +18,18 @@ msgid "Cookies & Privacy"
 msgstr "Cookies та Конфіденційність"
 
 #: core/templates/components/cookie_consent.html:14
-msgid "\n        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n      "
-msgstr "\n        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n      "
+msgid ""
+"\n"
+"        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n"
+"        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n"
+"        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n"
+"      "
+msgstr ""
+"\n"
+"        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n"
+"        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n"
+"        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n"
+"      "
 
 #: core/templates/components/cookie_consent.html:22
 msgid "Прийняти"
@@ -43,8 +54,12 @@ msgstr "Немає доступних пов'язаних послуг"
 msgid "Need Custom Project?"
 msgstr "Потрібен індивідуальний проєкт?"
 
-msgid "Let's create something unique for your business. From automation to custom solutions."
-msgstr "Давайте створимо щось унікальне для вашого бізнесу. Від автоматизації до індивідуальних рішень."
+msgid ""
+"Let's create something unique for your business. From automation to custom "
+"solutions."
+msgstr ""
+"Давайте створимо щось унікальне для вашого бізнесу. Від автоматизації до "
+"індивідуальних рішень."
 
 msgid "Custom Project Development"
 msgstr "Розробка індивідуального проєкту"
@@ -157,8 +172,11 @@ msgstr "Відео про нас"
 msgid "Ready to Automate?"
 msgstr "Готові автоматизувати?"
 
-msgid "Let's discuss how we can help transform your business with smart automation."
-msgstr "Обговоримо, як ми можемо допомогти трансформувати ваш бізнес за допомогою розумної автоматизації."
+msgid ""
+"Let's discuss how we can help transform your business with smart automation."
+msgstr ""
+"Обговоримо, як ми можемо допомогти трансформувати ваш бізнес за допомогою "
+"розумної автоматизації."
 
 msgid "Get Started"
 msgstr "Розпочати"
@@ -269,7 +287,8 @@ msgid "No news yet in this category"
 msgstr "Поки що немає новин в цій категорії"
 
 msgid "Fresh tech insights are coming soon. Check back later!"
-msgstr "Свіжі технологічні інсайти з'являться незабаром. Повертайтеся пізніше!"
+msgstr ""
+"Свіжі технологічні інсайти з'являться незабаром. Повертайтеся пізніше!"
 
 msgid "View all news"
 msgstr "Переглянути всі новини"
@@ -303,3 +322,99 @@ msgstr "Всі новини"
 
 msgid "🤖 AI Ефективність в Дії"
 msgstr "🤖 AI Ефективність в Дії"
+
+msgid "сьогодні"
+msgstr "сьогодні"
+
+msgid "Born to automate. Fired for it."
+msgstr "Народжені автоматизувати. Звільнені за це."
+
+msgid ""
+"The story of how laziness became a philosophy, a tech stack, and an "
+"efficient business model. Discover Lazysoft — where automation meets "
+"rebellion."
+msgstr ""
+"Історія про те, як лінь стала філософією, стеком технологій та ефективною "
+"бізнес-моделлю. Відкрийте Lazysoft — де автоматизація зустрічається з "
+"бунтом."
+
+msgid "Share this page"
+msgstr "Поділитися цією сторінкою"
+
+msgid "Help others discover this solution"
+msgstr "Допоможіть іншим відкрити це рішення"
+
+msgid "Share on Facebook"
+msgstr "Поділитися у Facebook"
+
+msgid "Share on Instagram"
+msgstr "Поділитися в Instagram"
+
+msgid "Share on LinkedIn"
+msgstr "Поділитися в LinkedIn"
+
+msgid "Share on X"
+msgstr "Поділитися у X"
+
+msgid "Share on Reddit"
+msgstr "Поділитися на Reddit"
+
+msgid "Share on Threads"
+msgstr "Поділитися в Threads"
+
+msgid "Share on Telegram"
+msgstr "Поділитися в Telegram"
+
+msgid "Services"
+msgstr "Послуги"
+
+msgid "All Services"
+msgstr "Усі послуги"
+
+msgid "AI Chatbots"
+msgstr "AI чат-боти"
+
+msgid "Business Automation"
+msgstr "Автоматизація бізнесу"
+
+msgid "Web Development"
+msgstr "Веброзробка"
+
+msgid "API Integrations"
+msgstr "API інтеграції"
+
+msgid "Company"
+msgstr "Компанія"
+
+msgid "Tech News"
+msgstr "Техновісті"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contact"
+msgstr "Контакти"
+
+msgid "Languages"
+msgstr "Мови"
+
+msgid "Start Free Consultation"
+msgstr "Почати безкоштовну консультацію"
+
+msgid "Home"
+msgstr "Головна"
+
+msgid "Projects"
+msgstr "Проєкти"
+
+msgid "Services"
+msgstr "Послуги"
+
+msgid "About"
+msgstr "Про нас"
+
+msgid "News"
+msgstr "Новини"
+
+msgid "Contact"
+msgstr "Контакти"

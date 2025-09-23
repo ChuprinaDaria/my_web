@@ -34,8 +34,33 @@ class EnhancedRAGConsultant:
         
         if self.rag_available:
             try:
-                # Використовуємо повноцінний RAG
+                # Метадата сесії для керування станом pricing
+                meta = getattr(chat_session, 'metadata', {}) or {}
+                awaiting = bool(meta.get('awaiting_pricing_details', False))
+                completed = bool(meta.get('pricing_completed', False))
+
+                # Використовуємо повноцінний RAG (усю режисуру робить services.py)
                 result = self._generate_rag_response(user_message, chat_session)
+
+                # Якщо намір не pricing — просто додамо консультаційні кнопки
+                if result.get('intent') != 'pricing':
+                    result.setdefault('actions', [])
+                    result['actions'].extend([
+                        {
+                            'type': 'button',
+                            'text': '📅 Записатися на консультацію (60 хв)',
+                            'action': 'open_calendly',
+                            'style': 'secondary',
+                            'url': 'https://calendly.com/dchuprina-lazysoft/free-consultation-1h'
+                        },
+                        {
+                            'type': 'button',
+                            'text': '📅 Записатися на консультацію (30 хв)',
+                            'action': 'open_calendly',
+                            'style': 'secondary',
+                            'url': 'https://calendly.com/dchuprina-lazysoft/30min'
+                        }
+                    ])
                 
                 processing_time = time.time() - start_time
                 
@@ -45,6 +70,8 @@ class EnhancedRAGConsultant:
                     'sources': result.get('sources', []),
                     'suggestions': result.get('suggestions', []),
                     'actions': result.get('actions', []),
+                    'prices': result.get('prices', []),
+                    'prices_ready': result.get('prices_ready', False),
                     'processing_time': processing_time,
                     'method': 'rag',
                     'tokens_used': len(result['response'].split()),
@@ -88,7 +115,13 @@ class EnhancedRAGConsultant:
         session_id = str(chat_session.session_id)
         
         # Отримуємо мову (можна додати логіку визначення)
-        language = 'uk'  # TODO: визначати з контексту або налаштувань
+        language = 'uk'
+        try:
+            lang_msg = chat_session.messages.filter(role='system', content__startswith='language:').order_by('created_at').last()
+            if lang_msg and ':' in lang_msg.content:
+                language = lang_msg.content.split(':', 1)[1].strip() or 'uk'
+        except Exception:
+            pass
         
         # Викликаємо RAG консультант
         result = self.rag_consultant.process_user_query(
@@ -97,9 +130,8 @@ class EnhancedRAGConsultant:
             language=language
         )
         
-        # Додаємо спеціальні дії для pricing
-        if result['intent'] == 'pricing':
-            result['actions'] = self._generate_pricing_actions(result.get('sources', []))
+        # Додаємо спеціальні дії для pricing (централізовано в RAGConsultantService)
+        # Нічого не робимо тут, щоб уникнути дублювання логіки
         
         return result
     
@@ -108,15 +140,23 @@ class EnhancedRAGConsultant:
         actions = [
             {
                 'type': 'button',
-                'text': '🧮 Отримати прорахунок',
+                'text': '🧮 Отримати прорахунок у PDF',
                 'action': 'request_quote',
                 'style': 'primary'
             },
             {
                 'type': 'button',
-                'text': '📅 Консультація',
-                'action': 'schedule_consultation', 
-                'style': 'secondary'
+                'text': '📅 Записатися на консультацію (60 хв)',
+                'action': 'open_calendly',
+                'style': 'secondary',
+                'url': 'https://calendly.com/dchuprina-lazysoft/free-consultation-1h'
+            },
+            {
+                'type': 'button',
+                'text': '📅 Записатися на консультацію (30 хв)',
+                'action': 'open_calendly',
+                'style': 'secondary',
+                'url': 'https://calendly.com/dchuprina-lazysoft/30min'
             }
         ]
         

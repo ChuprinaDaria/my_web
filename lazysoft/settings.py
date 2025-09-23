@@ -148,7 +148,7 @@ ROOT_URLCONF = 'lazysoft.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -205,6 +205,7 @@ RAG_SETTINGS = {
         'projects.Project', 
         'services.FAQ',
         'rag.KnowledgeSource',
+        'pricing.ServicePricing', # 💰 Додано
     ],
     
     # Мови для індексації
@@ -214,6 +215,8 @@ RAG_SETTINGS = {
     'CONSULTANT_NAME': 'Юлія',
     'CONSULTANT_PERSONALITY': 'Дружелюбна IT експертка, яка допомагає з технічними рішеннями',
     'DEFAULT_LANGUAGE': 'uk',
+    'CONSULTATION_CALENDAR_URL': 'https://calendar.google.com/',
+    'CONSULTATION_URL': 'https://calendar.google.com/'
 }
 
 # Celery для асинхронної обробки embeddings (опціонально)

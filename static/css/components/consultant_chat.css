@@ -1,3 +1,100 @@
+/* МОБІЛЬНІ ФІКСИ - додано в кінці файлу */
+@media (max-width: 768px) {
+  /* ФІКСИМО МОДАЛЬНЕ ВІКНО НА МОБІЛЬНИХ */
+  .consultant-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    height: 100vh;
+    height: 100dvh; /* dynamic viewport для iOS */
+    padding: 0;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  
+  .consultant-modal .modal-content {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    margin: 0;
+    border: none;
+    overflow: hidden;
+  }
+  
+  /* ФІКСИМО ЧАТ ПЛОЩИНУ */
+  .chat-messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 15px;
+    /* Залишаємо місце для input + клавіатура */
+    padding-bottom: 80px;
+  }
+  
+  /* ФІКСИМО INPUT ОБЛАСТЬ */
+  .chat-input {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 15px;
+    background: #1a1a1a;
+    border-top: 1px solid #333;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+  }
+  
+  .chat-form {
+    gap: 10px;
+  }
+  
+  .chat-form input {
+    font-size: 16px; /* ВАЖЛИВО - запобігає зуму на iOS */
+    padding: 12px 15px;
+    border-radius: 20px;
+  }
+  
+  .chat-form button {
+    padding: 12px 15px;
+    border-radius: 20px;
+    min-width: 60px;
+    font-size: 18px;
+  }
+  
+  /* СКОРОЧУЄМО HEADER */
+  .modal-header {
+    padding: 10px 15px;
+    flex-shrink: 0;
+  }
+  
+  .modal-title {
+    font-size: 16px;
+  }
+}
+
+/* СПЕЦІАЛЬНО ДЛЯ ДУЖЕ МАЛЕНЬКИХ ЕКРАНІВ */
+@media (max-width: 480px) {
+  .message-text {
+    padding: 12px 16px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .message-content {
+    max-width: 90%;
+  }
+  
+  /* RAG елементи компактніше */
+  .rag-action-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    margin: 2px 3px;
+  }
+  
+  .suggestion-btn {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+}
 /* Consultant Page Styles */
 .consultant-page {
   min-height: 100vh;
@@ -31,15 +128,18 @@
     z-index: 10000;
 }
 
-.modal-content {
+.consultant-modal .modal-content {
     background: #1a1a1a;
     border: 1px solid #9eff00;
     border-radius: 15px;
     width: 90%;
-    max-width: 500px;
-    max-height: 80vh;
+    max-width: 900px;
+    height: 85vh;
+    max-height: 850px;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Важливо, щоб внутрішній скрол працював коректно */
 }
 
 .modal-header {
@@ -76,10 +176,12 @@
 }
 
 .chat-messages {
-    flex: 1;
+    flex: 1 1 0; /* Це змусить блок зайняти весь доступний простір */
     padding: 20px;
-    overflow-y: auto;
-    max-height: 400px;
+    overflow-y: auto; /* Додаємо скрол тільки для цього блоку */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .chat-input {
@@ -313,11 +415,21 @@
 
 .message-content {
   flex: 1;
-  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .message.user .message-content {
   text-align: right;
+  align-items: flex-end;
+}
+
+.message.assistant .message-content {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .message-text {
@@ -778,9 +890,12 @@
   border: 1px solid #9eff00;
   border-radius: 15px;
   width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-width: 900px; /* Було 500px - збільшуємо */
+  max-height: 85vh; /* Було 80vh - трохи більше */
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
 .quote-modal .modal-header {
@@ -903,4 +1018,42 @@
   .modal-actions button {
     width: 100%;
   }
+}
+
+/* Overrides for modal chat layout */
+.consultant-modal .chat-messages {
+  min-height: 0;
+  max-height: none;
+  margin-bottom: 0;
+  flex: 1 1 auto;
+}
+
+.consultant-modal .chat-input {
+  margin-top: 0;
+}
+
+/* Десктоп версія модалки */
+@media (min-width: 1024px) {
+    .consultant-modal .modal-content {
+        width: 80%;
+        max-width: 1000px;
+        height: 90vh;
+        max-height: 90vh;
+    }
+    
+    .chat-messages {
+        padding: 25px;
+    }
+}
+
+/* Suggestions layout under assistant text */
+.rag-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+}
+.rag-suggestions .suggestion-btn {
+  display: inline-flex;
+  align-items: center;
 }

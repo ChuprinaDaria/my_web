@@ -286,3 +286,40 @@ class ContactSubmission(models.Model):
     
     def __str__(self):
         return f"Contact from {self.name} - {self.subject}"
+
+
+class CompanyInfo(models.Model):
+    """Дані компанії для офіційних документів"""
+    
+    # Базова інформація 
+    company_name = models.CharField(max_length=255, default="LAZYSOFT")
+    website = models.URLField(default="lazysoft.dev")
+    
+    # Лого
+    logo = models.ImageField(upload_to="company/logos/", blank=True, null=True, help_text="Лого компанії для документів")
+    
+    # Юридична адреса
+    address_line1 = models.CharField(max_length=255, default="Edwarda Dembowskiego 98/1")
+    city = models.CharField(max_length=100, default="Wrocław") 
+    postal_code = models.CharField(max_length=20, default="51-669")
+    country = models.CharField(max_length=100, default="Poland")
+    
+    # Контакти
+    email = models.EmailField(default="dchuprina@lazysoft.pl")
+    phone = models.CharField(max_length=50, default="+48 727 842 737")
+    
+    # Юридичні дані
+    tax_id = models.CharField(max_length=50, blank=True, help_text="NIP/Tax ID")
+    
+    # Підпис
+    authorized_person = models.CharField(max_length=255, default="Daria Chuprina")
+    
+    # Статус
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        verbose_name = "Company Information"
+        verbose_name_plural = "Company Information"
+    
+    def __str__(self):
+        return self.company_name

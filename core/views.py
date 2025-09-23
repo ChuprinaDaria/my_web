@@ -101,6 +101,13 @@ def home(request):
                 'tags': tag_names,
             })
     
+    # Hero з адмінки (опціонально)
+    try:
+        from .models import HomeHero
+        hero = HomeHero.objects.filter(is_active=True).order_by('-updated_at').first()
+    except Exception:
+        hero = None
+
     context = {
         'latest_articles': latest_articles,
         'top_news': latest_articles,  # Для сумісності з шаблоном
@@ -108,6 +115,7 @@ def home(request):
         'daily_digest': daily_digest,  # Дайджест новин
         'featured_projects': featured_projects,
         'services': services,
+        'home_hero': hero,
     }
     
     return render(request, 'core/home.html', context)

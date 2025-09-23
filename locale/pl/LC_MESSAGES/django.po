@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Lazysoft\n"
@@ -17,8 +18,14 @@ msgid "Cookies & Privacy"
 msgstr "Pliki cookie i prywatność"
 
 #: core/templates/components/cookie_consent.html:14
-msgid "\n        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n      "
-msgstr "Używamy plików cookie, aby poprawić Twoje doświadczenia na stronie. Kontynuując korzystanie z witryny, zgadzasz się z naszą <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">polityką prywatności</a>."
+msgid ""
+"Ми використовуємо cookies для покращення вашого досвіду на сайті. "
+"Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою <a href=\"{% url "
+"'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>."
+msgstr ""
+"Używamy plików cookie, aby poprawić Twoje doświadczenia na stronie. "
+"Kontynuując korzystanie z witryny, zgadzasz się z naszą <a href=\"{% url "
+"'privacy_policy' %}\" target=\"_blank\">polityką prywatności</a>."
 
 #: core/templates/components/cookie_consent.html:22
 msgid "Прийняти"
@@ -43,8 +50,12 @@ msgstr "Brak dostępnych powiązanych usług"
 msgid "Need Custom Project?"
 msgstr "Potrzebujesz niestandardowego projektu?"
 
-msgid "Let's create something unique for your business. From automation to custom solutions."
-msgstr "Stwórzmy coś wyjątkowego dla Twojego biznesu. Od automatyzacji po niestandardowe rozwiązania."
+msgid ""
+"Let's create something unique for your business. From automation to custom "
+"solutions."
+msgstr ""
+"Stwórzmy coś wyjątkowego dla Twojego biznesu. Od automatyzacji po "
+"niestandardowe rozwiązania."
 
 msgid "Custom Project Development"
 msgstr "Rozwój niestandardowego projektu"
@@ -157,8 +168,11 @@ msgstr "Film o nas"
 msgid "Ready to Automate?"
 msgstr "Gotowi do automatyzacji?"
 
-msgid "Let's discuss how we can help transform your business with smart automation."
-msgstr "Omówmy, jak możemy pomóc przekształcić Twój biznes dzięki inteligentnej automatyzacji."
+msgid ""
+"Let's discuss how we can help transform your business with smart automation."
+msgstr ""
+"Omówmy, jak możemy pomóc przekształcić Twój biznes dzięki inteligentnej "
+"automatyzacji."
 
 msgid "Get Started"
 msgstr "Zacznij"
@@ -218,7 +232,8 @@ msgid "View All Tech News"
 msgstr "Zobacz wszystkie wiadomości techniczne"
 
 msgid "Stay updated with the latest technology trends and insights"
-msgstr "Bądź na bieżąco z najnowszymi trendami technologicznymi i spostrzeżeniami"
+msgstr ""
+"Bądź na bieżąco z najnowszymi trendami technologicznymi i spostrzeżeniami"
 
 msgid "Related Projects"
 msgstr "Powiązane projekty"
@@ -242,7 +257,8 @@ msgid "TECH INSIGHTS by LAZYSOFT"
 msgstr "TECH INSIGHTS od LAZYSOFT"
 
 msgid "Not just news — business insights for European entrepreneurs"
-msgstr "Nie tylko wiadomości — biznesowe wglądy dla europejskich przedsiębiorców"
+msgstr ""
+"Nie tylko wiadomości — biznesowe wglądy dla europejskich przedsiębiorców"
 
 msgid "Search"
 msgstr "Szukaj"
@@ -361,3 +377,93 @@ msgstr "Ostatnia aktualizacja:"
 
 msgid "сьогодні"
 msgstr "dzisiaj"
+
+msgid "Born to automate. Fired for it."
+msgstr "Urodzeni, by automatyzować. Zwolnieni za to."
+
+msgid ""
+"The story of how laziness became a philosophy, a tech stack, and an "
+"efficient business model. Discover Lazysoft — where automation meets "
+"rebellion."
+msgstr ""
+"Historia o tym, jak lenistwo stało się filozofią, stosem technologii i "
+"efektywnym modelem biznesowym. Odkryj Lazysoft — gdzie automatyzacja spotyka"
+" bunt."
+
+msgid "Share this page"
+msgstr "Udostępnij tę stronę"
+
+msgid "Help others discover this solution"
+msgstr "Pomóż innym odkryć to rozwiązanie"
+
+msgid "Share on Facebook"
+msgstr "Udostępnij na Facebooku"
+
+msgid "Share on Instagram"
+msgstr "Udostępnij na Instagramie"
+
+msgid "Share on LinkedIn"
+msgstr "Udostępnij na LinkedIn"
+
+msgid "Share on X"
+msgstr "Udostępnij na X"
+
+msgid "Share on Reddit"
+msgstr "Udostępnij na Reddicie"
+
+msgid "Share on Threads"
+msgstr "Udostępnij w Threads"
+
+msgid "Share on Telegram"
+msgstr "Udostępnij w Telegramie"
+
+msgid "Services"
+msgstr "Usługi"
+
+msgid "All Services"
+msgstr "Wszystkie usługi"
+
+msgid "AI Chatbots"
+msgstr "Czatboty AI"
+
+msgid "Business Automation"
+msgstr "Automatyzacja biznesu"
+
+msgid "Web Development"
+msgstr "Tworzenie stron WWW"
+
+msgid "API Integrations"
+msgstr "Integracje API"
+
+msgid "Company"
+msgstr "Firma"
+
+msgid "Tech News"
+msgstr "Tech News"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contact"
+msgstr "Kontakt"
+
+msgid "Languages"
+msgstr "Języki"
+
+msgid "Start Free Consultation"
+msgstr "Rozpocznij bezpłatną konsultację"
+
+msgid "Home"
+msgstr "Strona główna"
+
+msgid "Projects"
+msgstr "Projekty"
+
+msgid "Services"
+msgstr "Usługi"
+
+msgid "About"
+msgstr "O nas"
+
+msgid "News"
+msgstr "Aktualności"

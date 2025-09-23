@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.http import HttpResponse
 from django.utils import timezone
 import csv
-from .models import Contact, ContactSubmission
+from .models import Contact, ContactSubmission, CompanyInfo
 from .views import sync_submission_to_asana
 
 @admin.register(Contact)
@@ -126,7 +126,6 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
         from django.contrib.auth.models import User
         managers = User.objects.filter(groups__name__in=['CRM Users', 'CRM Managers', 'CRM Admins'])
         if managers.exists():
-            # Простий спосіб - призначити першого менеджера
             manager = managers.first()
             queryset.update(assigned_to=manager)
             self.message_user(request, f"Призначено {queryset.count()} заявок менеджеру {manager.username}")
@@ -199,3 +198,26 @@ class ContactSubmissionAdmin(admin.ModelAdmin):
             )
 
     sync_to_asana.short_description = "Синхронізувати з Asana"
+
+
+@admin.register(CompanyInfo)
+class CompanyInfoAdmin(admin.ModelAdmin):
+    list_display = ['company_name', 'email', 'city', 'is_active']
+    
+    fieldsets = (
+        ('Основні дані', {
+            'fields': ('company_name', 'website', 'logo')
+        }),
+        ('Адреса', {
+            'fields': ('address_line1', 'city', 'postal_code', 'country')
+        }),
+        ('Контакти', {
+            'fields': ('email', 'phone')
+        }),
+        ('Юридичні дані', {
+            'fields': ('tax_id', 'authorized_person')
+        }),
+        ('Статус', {
+            'fields': ('is_active',)
+        })
+    )

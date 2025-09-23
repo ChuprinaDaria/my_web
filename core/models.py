@@ -2,6 +2,41 @@
 from django.db import models
 from django.utils.text import slugify
 
+class HomeHero(models.Model):
+    """Редагований через адмінку герой-блок головної (багатомовний в полях)."""
+    is_active = models.BooleanField(default=True)
+
+    heading_en = models.CharField(max_length=200, blank=True)
+    heading_uk = models.CharField(max_length=200, blank=True)
+    heading_pl = models.CharField(max_length=200, blank=True)
+
+    subheading_en = models.CharField(max_length=300, blank=True)
+    subheading_uk = models.CharField(max_length=300, blank=True)
+    subheading_pl = models.CharField(max_length=300, blank=True)
+
+    description_en = models.TextField(blank=True)
+    description_uk = models.TextField(blank=True)
+    description_pl = models.TextField(blank=True)
+
+    cta_primary_label_en = models.CharField(max_length=120, blank=True)
+    cta_primary_label_uk = models.CharField(max_length=120, blank=True)
+    cta_primary_label_pl = models.CharField(max_length=120, blank=True)
+    cta_primary_url = models.URLField(blank=True, help_text="Якщо пусто – відкриває модальне вікно")
+
+    cta_secondary_label_en = models.CharField(max_length=120, blank=True)
+    cta_secondary_label_uk = models.CharField(max_length=120, blank=True)
+    cta_secondary_label_pl = models.CharField(max_length=120, blank=True)
+    cta_secondary_url = models.URLField(blank=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Home hero"
+        verbose_name_plural = "Home heroes"
+
+    def __str__(self):
+        return self.heading_en or self.heading_uk or self.heading_pl or "Home hero"
+
 class Tag(models.Model):
     """Універсальні теги для всіх сутностей: новини, проєкти, сервіси"""
     

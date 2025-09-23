@@ -182,19 +182,72 @@
   <div class="container">
     <div class="hero-content">
       <h1>Lazysoft</h1>
-      <h2>{% trans "Leading AI Automation & Custom Software Development Company" %}</h2>
-      <p class="description">
-        {% trans "Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency." %}
-      </p>
-      
-      <div class="hero-cta">
-        <a href="#contact" class="cta-primary" onclick="window.ctaModal && window.ctaModal.show('home_hero'); return false;">
-          {% trans "Get Your AI Solution" %}
-        </a>
-        <a href="{% url 'projects' %}" class="cta-secondary">
-          {% trans "View Success Stories" %}
-        </a>
-      </div>
+      {% if home_hero %}
+        {% get_current_language as CURRENT_LANG %}
+        <h2>
+          {% if CURRENT_LANG == 'uk' %}
+            {{ home_hero.subheading_uk|default:home_hero.heading_uk|default:_('Leading AI Automation & Custom Software Development Company') }}
+          {% elif CURRENT_LANG == 'pl' %}
+            {{ home_hero.subheading_pl|default:home_hero.heading_pl|default:_('Leading AI Automation & Custom Software Development Company') }}
+          {% else %}
+            {{ home_hero.subheading_en|default:home_hero.heading_en|default:_('Leading AI Automation & Custom Software Development Company') }}
+          {% endif %}
+        </h2>
+        <p class="description">
+          {% if CURRENT_LANG == 'uk' %}
+            {{ home_hero.description_uk|default:_('Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency.') }}
+          {% elif CURRENT_LANG == 'pl' %}
+            {{ home_hero.description_pl|default:_('Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency.') }}
+          {% else %}
+            {{ home_hero.description_en|default:_('Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency.') }}
+          {% endif %}
+        </p>
+        <div class="hero-cta">
+          {% if home_hero.cta_primary_url %}
+            <a href="{{ home_hero.cta_primary_url }}" class="cta-primary">
+              {% if CURRENT_LANG == 'uk' %}
+                {{ home_hero.cta_primary_label_uk|default:_('Get Your AI Solution') }}
+              {% elif CURRENT_LANG == 'pl' %}
+                {{ home_hero.cta_primary_label_pl|default:_('Get Your AI Solution') }}
+              {% else %}
+                {{ home_hero.cta_primary_label_en|default:_('Get Your AI Solution') }}
+              {% endif %}
+            </a>
+          {% else %}
+            <a href="#contact" class="cta-primary" onclick="window.ctaModal && window.ctaModal.show('home_hero'); return false;">
+              {% if CURRENT_LANG == 'uk' %}
+                {{ home_hero.cta_primary_label_uk|default:_('Get Your AI Solution') }}
+              {% elif CURRENT_LANG == 'pl' %}
+                {{ home_hero.cta_primary_label_pl|default:_('Get Your AI Solution') }}
+              {% else %}
+                {{ home_hero.cta_primary_label_en|default:_('Get Your AI Solution') }}
+              {% endif %}
+            </a>
+          {% endif %}
+          <a href="{% if home_hero.cta_secondary_url %}{{ home_hero.cta_secondary_url }}{% else %}{% url 'projects' %}{% endif %}" class="cta-secondary">
+            {% if CURRENT_LANG == 'uk' %}
+              {{ home_hero.cta_secondary_label_uk|default:_('View Success Stories') }}
+            {% elif CURRENT_LANG == 'pl' %}
+              {{ home_hero.cta_secondary_label_pl|default:_('View Success Stories') }}
+            {% else %}
+              {{ home_hero.cta_secondary_label_en|default:_('View Success Stories') }}
+            {% endif %}
+          </a>
+        </div>
+      {% else %}
+        <h2>{% trans "Leading AI Automation & Custom Software Development Company" %}</h2>
+        <p class="description">
+          {% trans "Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services, data optimization, and advanced e-commerce solutions that drive growth and efficiency." %}
+        </p>
+        <div class="hero-cta">
+          <a href="#contact" class="cta-primary" onclick="window.ctaModal && window.ctaModal.show('home_hero'); return false;">
+            {% trans "Get Your AI Solution" %}
+          </a>
+          <a href="{% url 'projects' %}" class="cta-secondary">
+            {% trans "View Success Stories" %}
+          </a>
+        </div>
+      {% endif %}
     </div>
   </div>
 </section>

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from .models import Tag
+from .models import Tag, HomeHero
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.conf import settings
@@ -34,6 +34,24 @@ class TagAdmin(admin.ModelAdmin):
             'fields': ('description', 'is_active', 'is_featured')
         })
     )
+@admin.register(HomeHero)
+class HomeHeroAdmin(admin.ModelAdmin):
+    list_display = [
+        'heading_en', 'is_active', 'heading_uk', 'heading_pl', 'updated_at'
+    ]
+    list_display_links = ['heading_en']
+    list_editable = ['is_active']
+    fieldsets = (
+        ('Статус', {'fields': ('is_active',)}),
+        ('Заголовок', {'fields': ('heading_uk', 'heading_pl', 'heading_en')}),
+        ('Підзаголовок', {'fields': ('subheading_uk', 'subheading_pl', 'subheading_en')}),
+        ('Опис', {'fields': ('description_uk', 'description_pl', 'description_en')}),
+        ('CTA основна', {'fields': ('cta_primary_label_uk','cta_primary_label_pl','cta_primary_label_en','cta_primary_url')}),
+        ('CTA додаткова', {'fields': ('cta_secondary_label_uk','cta_secondary_label_pl','cta_secondary_label_en','cta_secondary_url')}),
+        ('Службове', {'fields': ('updated_at',)}),
+    )
+    readonly_fields = ['updated_at']
+
 
 def send_2fa_qr(modeladmin, request, queryset):
     sent = 0

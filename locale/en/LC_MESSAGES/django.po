@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Lazysoft\n"
@@ -17,15 +18,21 @@ msgid "Cookies & Privacy"
 msgstr "Cookies & Privacy"
 
 #: core/templates/components/cookie_consent.html:14
-msgid "\n        Ми використовуємо cookies для покращення вашого досвіду на сайті. \n        Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою \n        <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>.\n      "
-msgstr "We use cookies to improve your experience on the site. By continuing to use the site, you agree to our <a href=\"{% url 'privacy_policy' %}\" target=\"_blank\">Privacy Policy</a>."
+msgid ""
+"We use cookies to enhance your experience. By continuing to visit this site "
+"you agree to our <a href=\"{% url 'privacy_policy' %}\" "
+"target=\"_blank\">privacy policy</a>."
+msgstr ""
+"We use cookies to enhance your experience. By continuing to visit this site "
+"you agree to our <a href=\"{% url 'privacy_policy' %}\" "
+"target=\"_blank\">privacy policy</a>."
 
 #: core/templates/components/cookie_consent.html:22
-msgid "Прийняти"
+msgid "Accept"
 msgstr "Accept"
 
 #: core/templates/components/cookie_consent.html:24
-msgid "Відхилити"
+msgid "Decline"
 msgstr "Decline"
 
 msgid "Projects - LazySoft"
@@ -43,8 +50,12 @@ msgstr "No related services available"
 msgid "Need Custom Project?"
 msgstr "Need Custom Project?"
 
-msgid "Let's create something unique for your business. From automation to custom solutions."
-msgstr "Let's create something unique for your business. From automation to custom solutions."
+msgid ""
+"Let's create something unique for your business. From automation to custom "
+"solutions."
+msgstr ""
+"Let's create something unique for your business. From automation to custom "
+"solutions."
 
 msgid "Custom Project Development"
 msgstr "Custom Project Development"
@@ -157,8 +168,10 @@ msgstr "About Us Video"
 msgid "Ready to Automate?"
 msgstr "Ready to Automate?"
 
-msgid "Let's discuss how we can help transform your business with smart automation."
-msgstr "Let's discuss how we can help transform your business with smart automation."
+msgid ""
+"Let's discuss how we can help transform your business with smart automation."
+msgstr ""
+"Let's discuss how we can help transform your business with smart automation."
 
 msgid "Get Started"
 msgstr "Get Started"
@@ -219,6 +232,45 @@ msgstr "View All Tech News"
 
 msgid "Stay updated with the latest technology trends and insights"
 msgstr "Stay updated with the latest technology trends and insights"
+
+msgid "Born to automate. Fired for it."
+msgstr "Born to automate. Fired for it."
+
+msgid ""
+"The story of how laziness became a philosophy, a tech stack, and an "
+"efficient business model. Discover Lazysoft — where automation meets "
+"rebellion."
+msgstr ""
+"The story of how laziness became a philosophy, a tech stack, and an "
+"efficient business model. Discover Lazysoft — where automation meets "
+"rebellion."
+
+msgid "Share this page"
+msgstr "Share this page"
+
+msgid "Help others discover this solution"
+msgstr "Help others discover this solution"
+
+msgid "Share on Facebook"
+msgstr "Share on Facebook"
+
+msgid "Share on Instagram"
+msgstr "Share on Instagram"
+
+msgid "Share on LinkedIn"
+msgstr "Share on LinkedIn"
+
+msgid "Share on X"
+msgstr "Share on X"
+
+msgid "Share on Reddit"
+msgstr "Share on Reddit"
+
+msgid "Share on Threads"
+msgstr "Share on Threads"
+
+msgid "Share on Telegram"
+msgstr "Share on Telegram"
 
 msgid "Related Projects"
 msgstr "Related Projects"
@@ -361,3 +413,57 @@ msgstr "Last updated:"
 
 msgid "сьогодні"
 msgstr "today"
+
+msgid "Services"
+msgstr "Services"
+
+msgid "All Services"
+msgstr "All Services"
+
+msgid "AI Chatbots"
+msgstr "AI Chatbots"
+
+msgid "Business Automation"
+msgstr "Business Automation"
+
+msgid "Web Development"
+msgstr "Web Development"
+
+msgid "API Integrations"
+msgstr "API Integrations"
+
+msgid "Company"
+msgstr "Company"
+
+msgid "Tech News"
+msgstr "Tech News"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contact"
+msgstr "Contact"
+
+msgid "Languages"
+msgstr "Languages"
+
+msgid "Start Free Consultation"
+msgstr "Start Free Consultation"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Projects"
+msgstr "Projects"
+
+msgid "Services"
+msgstr "Services"
+
+msgid "About"
+msgstr "About"
+
+msgid "News"
+msgstr "News"
+
+msgid "Contact"
+msgstr "Contact"

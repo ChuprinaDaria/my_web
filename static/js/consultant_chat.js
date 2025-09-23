@@ -3,6 +3,15 @@ window.openConsultantModal = function() {
     if (modal) {
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
+        // МОБІЛЬНИЙ VIEWPORT ФІКС
+        if (window.innerWidth <= 768) {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            setTimeout(() => {
+                modal.style.height = '100vh';
+                modal.style.height = 'calc(var(--vh, 1vh) * 100)';
+            }, 100);
+        }
         
         if (!window.consultantChat) {
             window.consultantChat = new ConsultantChat();
@@ -36,7 +45,9 @@ class ConsultantChat {
         this.updateWelcomeTime();
         this.startSessionTimer();
         this.addWelcomeMessage();
-        this.initializeSession();
+        this.ensureLanguageSelected().then(() => {
+            this.initializeSession();
+        });
     }
 
     async initializeSession() {
@@ -49,13 +60,16 @@ class ConsultantChat {
                     'X-CSRFToken': this.getCSRFToken()
                 },
                 body: JSON.stringify({
-                    session_id: this.sessionId
+                    session_id: this.sessionId,
+                    language: this.getLanguage()
                 })
             });
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('✅ Сесія ініціалізована:', data.session_id);
+                console.log('✅ Сесія ініціалізована, отримано ID:', data.session_id);
+                this.sessionId = data.session_id;
+                localStorage.setItem('consultant_session_id', this.sessionId);
             }
         } catch (error) {
             console.error('❌ Помилка ініціалізації сесії:', error);
@@ -130,6 +144,58 @@ class ConsultantChat {
         }
     }
 
+    async ensureLanguageSelected() {
+        const stored = this.getLanguage();
+        if (stored) return;
+        this.showLanguageSelector();
+        await new Promise((resolve) => {
+            const handler = (e) => {
+                if (e.detail && e.detail.type === 'lang_selected') {
+                    document.removeEventListener('consultant:event', handler);
+                    resolve();
+                }
+            };
+            document.addEventListener('consultant:event', handler);
+        });
+    }
+
+    showLanguageSelector() {
+        if (document.getElementById('langSelector')) return;
+        const container = document.createElement('div');
+        container.id = 'langSelector';
+        container.className = 'lang-selector';
+        container.innerHTML = `
+            <div class="lang-box">
+                <div class="lang-title">Оберіть мову / Wybierz język / Choose language</div>
+                <div class="lang-actions">
+                    <button data-lang="uk" class="btn-primary">Українська</button>
+                    <button data-lang="pl" class="btn-secondary">Polski</button>
+                    <button data-lang="en" class="btn-secondary">English</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(container);
+        container.addEventListener('click', async (e) => {
+            const lang = e.target && e.target.dataset && e.target.dataset.lang;
+            if (!lang) return;
+            localStorage.setItem('consultant_language', lang);
+            container.remove();
+            try {
+                await fetch(window.consultantApiUrls.startSession, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': this.getCSRFToken() },
+                    body: JSON.stringify({ session_id: this.sessionId, language: lang })
+                });
+            } catch (err) {}
+            const ev = new CustomEvent('consultant:event', { detail: { type: 'lang_selected', lang } });
+            document.dispatchEvent(ev);
+        });
+    }
+
+    getLanguage() {
+        return localStorage.getItem('consultant_language') || 'uk';
+    }
+
     addMessage(sender, content, timestamp = null, ragData = null) {
         const message = {
             id: Date.now() + Math.random(),
@@ -152,16 +218,20 @@ class ConsultantChat {
         const messageElement = document.createElement('div');
         messageElement.className = `message ${message.sender}`;
         
-        let messageHTML = `
-            <div class="message-content">
-                <div class="message-text">${this.escapeHtml(message.content)}</div>
-                <div class="message-time">${this.formatTime(message.timestamp)}</div>
-            </div>
+        let innerHTML = `
+            <div class="message-text">${this.formatMessageText(message.content)}</div>
+            <div class="message-time">${this.formatTime(message.timestamp)}</div>
         `;
 
         if (message.sender === 'assistant' && message.ragData) {
-            messageHTML += this.renderRagInterface(message.ragData);
+            innerHTML += this.renderRagInterface(message.ragData);
         }
+
+        const messageHTML = `
+            <div class="message-content">
+                ${innerHTML}
+            </div>
+        `;
 
         messageElement.innerHTML = messageHTML;
         messagesContainer.appendChild(messageElement);
@@ -170,19 +240,22 @@ class ConsultantChat {
     renderRagInterface(ragData) {
         let ragHTML = '';
 
+        // 📚 Джерела - ВИМКНЕНО
+        /*
         if (ragData.sources && ragData.sources.length > 0) {
             ragHTML += '<div class="rag-sources"><div class="rag-sources-title">📚 Джерела:</div>';
             ragData.sources.forEach((source, index) => {
                 ragHTML += `
                     <div class="rag-source-item">
                         <span class="source-title">${this.escapeHtml(source.content_title || 'Джерело')}</span>
-                        <span class="source-similarity">${Math.round(source.similarity * 100)}% збіг</span>
                     </div>
                 `;
             });
             ragHTML += '</div>';
         }
+        */
 
+        // 💡 Пропозиції
         if (ragData.suggestions && ragData.suggestions.length > 0) {
             ragHTML += '<div class="rag-suggestions"><div class="rag-suggestions-title">💡 Пропозиції:</div>';
             ragData.suggestions.forEach((suggestion) => {
@@ -193,20 +266,33 @@ class ConsultantChat {
             ragHTML += '</div>';
         }
 
+        if (ragData.prices_ready && Array.isArray(ragData.prices) && ragData.prices.length > 0) {
+            ragHTML += '<div class="rag-prices"><div class="rag-prices-title">💰 Орієнтовні пакети:</div><div class="rag-prices-list">';
+            ragData.prices.forEach((p) => {
+                ragHTML += `
+                    <div class="price-card">
+                        <div class="price-title">${this.escapeHtml(p.title || '')}</div>
+                        <div class="price-desc">${this.escapeHtml(p.description || '')}</div>
+                        <div class="price-from">від ${this.escapeHtml(p.price_from || '')} ${this.escapeHtml(p.currency || '')}</div>
+                    </div>
+                `;
+            });
+            ragHTML += '</div></div>';
+        }
+
         if (ragData.actions && ragData.actions.length > 0) {
             ragHTML += '<div class="rag-actions"><div class="rag-actions-title">⚡ Дії:</div>';
-            ragData.actions.forEach((action) => {
-                const btnClass = `rag-action-btn btn-${action.style || 'primary'}`;
-                if (action.type === 'button') {
+            ragData.actions.forEach((act) => {
+                if (act.type === 'button') {
                     ragHTML += `
-                        <button class="${btnClass}" data-action="${action.action}" data-text="${this.escapeHtml(action.text)}">
-                            ${this.escapeHtml(action.text)}
+                        <button class="rag-action-btn ${act.style === 'primary' ? 'btn-primary' : 'btn-secondary'}" data-action="${this.escapeHtml(act.action)}" data-text="${this.escapeHtml(act.text)}" data-url="${this.escapeHtml(act.url || '')}">
+                            ${this.escapeHtml(act.text)}
                         </button>
                     `;
-                } else if (action.type === 'link') {
+                } else if (act.type === 'link' && act.url) {
                     ragHTML += `
-                        <a href="${action.url}" class="${btnClass}" target="_blank">
-                            ${this.escapeHtml(action.text)}
+                        <a href="${this.escapeHtml(act.url)}" target="_blank" class="rag-action-btn btn-link">
+                            ${this.escapeHtml(act.text || 'Посилання')}
                         </a>
                     `;
                 }
@@ -225,11 +311,14 @@ class ConsultantChat {
         
         switch (action) {
             case 'request_quote':
-                this.showQuoteModal(dataset.text);
+                this.showQuoteModal(dataset.text || 'Отримати детальний прорахунок у PDF');
+                break;
+            case 'show_bot_prices':
+                this.addMessage('assistant', 'Ми підготували орієнтовні пакети для чат-ботів. Оберіть, що вам підходить, або натисніть «Отримати прорахунок».');
                 break;
                 
-            case 'schedule_consultation':
-                this.showConsultationModal();
+            case 'open_calendly':
+                this.openCalendly(dataset.url, dataset);
                 break;
                 
             case 'contact_manager':
@@ -239,6 +328,32 @@ class ConsultantChat {
             default:
                 console.log('Невідома дія:', action);
         }
+    }
+
+    openCalendly(baseUrl, dataset) {
+        if (!baseUrl) return;
+        window.open(baseUrl, '_blank');
+    }
+
+    getPrefillName() {
+        try {
+            const form = document.getElementById('quoteForm');
+            const name = form ? form.querySelector('[name="client_name"]').value : '';
+            return name || (window.DJANGO_CONTEXT && window.DJANGO_CONTEXT.userName) || '';
+        } catch (e) { return ''; }
+    }
+
+    getPrefillEmail() {
+        try {
+            const form = document.getElementById('quoteForm');
+            const email = form ? form.querySelector('[name="client_email"]').value : '';
+            return email || (window.DJANGO_CONTEXT && window.DJANGO_CONTEXT.userEmail) || '';
+        } catch (e) { return ''; }
+    }
+
+    getRecentContext() {
+        const lastUser = [...this.messages].reverse().find(m => m.sender === 'user');
+        return lastUser ? lastUser.content : '';
     }
 
     showQuoteModal(context = '') {
@@ -319,7 +434,8 @@ class ConsultantChat {
             client_phone: formData.get('client_phone'),
             client_company: formData.get('client_company'),
             message: formData.get('message'),
-            session_id: this.sessionId
+            session_id: this.sessionId,
+            language: this.getLanguage()
         };
 
         try {
@@ -380,7 +496,8 @@ class ConsultantChat {
                 },
                 body: JSON.stringify({
                     message: message,
-                    session_id: this.sessionId
+                    session_id: this.sessionId,
+                    language: this.getLanguage()
                 })
             });
 
@@ -448,7 +565,9 @@ class ConsultantChat {
     scrollToBottom() {
         const messagesContainer = document.getElementById('messages');
         if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            setTimeout(() => {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 100);
         }
     }
 
@@ -456,6 +575,10 @@ class ConsultantChat {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    formatMessageText(text) {
+        return this.escapeHtml(text).replace(/\n/g, '<br>');
     }
 
     formatTime(timestamp) {

@@ -1,11 +1,14 @@
 # consultant/views.py - оновлена версія з RAG
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.core.mail import EmailMessage
 import json
 import uuid
 import time
@@ -22,6 +25,84 @@ except ImportError:
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+def _get_company_brand_context():
+    try:
+        from contacts.models import CompanyInfo
+        brand = CompanyInfo.objects.filter(is_active=True).first()
+        if brand:
+            return brand
+    except Exception as e:
+        logger.warning(f"CompanyInfo not available: {e}")
+    class Fallback:
+        company_name = "LAZYSOFT"
+        website = "lazysoft.dev"
+        logo = None
+        address_line1 = "Edwarda Dembowskiego 98/1"
+        city = "Wrocław"
+        postal_code = "51-669"
+        country = "Poland"
+        email = "info@lazysoft.pl"
+        phone = "+48 727 842 737"
+        tax_id = ""
+        authorized_person = "Daria Chuprina"
+    return Fallback()
+
+
+def _ensure_items(items):
+    safe_items = []
+    if isinstance(items, list):
+        for it in items:
+            if not isinstance(it, dict):
+                continue
+            safe_items.append({
+                'title': it.get('title', 'Послуга'),
+                'pkg': it.get('pkg', ''),
+                'price': it.get('price', '-'),
+                'currency': it.get('currency', ''),
+                'assumptions': it.get('assumptions', '')
+            })
+    if not safe_items:
+        safe_items = [{
+            'title': 'Послуга',
+            'pkg': '',
+            'price': '-',
+            'currency': '',
+            'assumptions': ''
+        }]
+    return safe_items
+
+
+def _render_proposal_pdf(context):
+    html = render_to_string('quotes/proposal.html', context)
+    pdf_bytes = None
+    try:
+        import importlib
+        weasyprint_module = importlib.import_module('weasyprint')
+        html_renderer = getattr(weasyprint_module, 'HTML', None)
+        if html_renderer:
+            pdf_bytes = html_renderer(string=html, base_url=getattr(settings, 'SITE_URL', None)).write_pdf()
+        else:
+            raise ImportError('weasyprint.HTML not found')
+    except Exception as e:
+        logger.warning(f"WeasyPrint not available or failed, sending HTML instead: {e}")
+    return html, pdf_bytes
+
+
+def _send_proposal_email(to_email, subject, html_body, pdf_bytes=None):
+    email = EmailMessage(
+        subject=subject,
+        body=html_body,
+        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@localhost'),
+        to=[to_email]
+    )
+    email.content_subtype = 'html'
+    if pdf_bytes:
+        email.attach('proposal.pdf', pdf_bytes, 'application/pdf')
+    else:
+        email.attach('proposal.html', html_body.encode('utf-8'), 'text/html')
+    email.send(fail_silently=False)
 
 
 def consultant_chat(request):
@@ -45,6 +126,7 @@ def start_chat_session(request):
     try:
         data = json.loads(request.body)
         session_id = data.get('session_id', str(uuid.uuid4()))
+        language = data.get('language')
         
         # Створюємо або отримуємо сесію
         chat_session, created = ChatSession.objects.get_or_create(
@@ -55,6 +137,9 @@ def start_chat_session(request):
                 'user_agent': request.META.get('HTTP_USER_AGENT', ''),
             }
         )
+        # Зберігаємо вибір мови як системне повідомлення на початку сесії
+        if language and created:
+            Message.objects.create(chat_session=chat_session, role='system', content=f"language:{language}")
         
         # Створюємо аналітику для нової сесії
         if created:
@@ -81,6 +166,7 @@ def send_message(request):
     try:
         data = json.loads(request.body)
         session_id = data.get('session_id')
+        language = data.get('language')
         message_content = data.get('message', '').strip()
         
         if not session_id or not message_content:
@@ -100,6 +186,8 @@ def send_message(request):
         )
         
         # 🚀 НОВА RAG ЛОГІКА - замість простого алгоритму
+        if language:
+            Message.objects.create(chat_session=chat_session, role='system', content=f"language:{language}")
         rag_result = enhanced_consultant.generate_response(message_content, chat_session)
         
         # Зберігаємо відповідь консультанта з RAG метаданими
@@ -120,11 +208,8 @@ def send_message(request):
         analytics.total_tokens_used += rag_result['tokens_used']
         analytics.save()
         
-        # 💰 Логіка для pricing запитів
+        # 💰 Логіка для pricing запитів - ВИДАЛЕНО АВТОМАТИЧНЕ ВІДКРИТТЯ
         additional_data = {}
-        if rag_result['intent'] == 'pricing' and PRICING_AVAILABLE:
-            additional_data['show_quote_form'] = True
-            additional_data['detected_services'] = _extract_services_from_sources(rag_result.get('sources', []))
         
         return JsonResponse({
             'success': True,
@@ -141,7 +226,9 @@ def send_message(request):
                 'sources': rag_result['sources'][:3],  # Топ 3 джерела
                 'suggestions': rag_result['suggestions'],
                 'actions': rag_result['actions'],
-                'method': rag_result['method']
+                'method': rag_result['method'],
+                'prices_ready': rag_result.get('prices_ready', False),
+                'prices': rag_result.get('prices', [])
             },
             **additional_data
         })
@@ -179,6 +266,7 @@ def request_quote_from_chat(request):
     
     try:
         data = json.loads(request.body)
+        language = data.get('language')
         
         # Валідація
         required_fields = ['client_name', 'client_email', 'message']
@@ -199,11 +287,8 @@ def request_quote_from_chat(request):
         # Визначаємо сервіс з контексту чату
         detected_service = None
         if chat_session:
-            # Аналізуємо останні повідомлення для визначення сервісу
             recent_messages = chat_session.messages.filter(role='user').order_by('-created_at')[:3]
             recent_text = ' '.join([msg.content for msg in recent_messages])
-            
-            # Спрощена логіка визначення сервісу
             detected_service = _detect_service_from_text(recent_text)
         
         # Створюємо запит на прорахунок
@@ -220,17 +305,77 @@ def request_quote_from_chat(request):
             status='new'
         )
         
-        # Оновлюємо сесію чату
-        if chat_session:
-            analytics, _ = ChatAnalytics.objects.get_or_create(chat_session=chat_session)
-            # Можна додати поле quote_requested в ChatAnalytics модель
+        # Побудова контексту для PDF
+        brand = _get_company_brand_context()
+
+        # Формуємо items з реального ціноутворення
+        items = []
+        try:
+            from pricing.models import ServicePricing
+            pricing_qs = ServicePricing.objects.filter(is_active=True)
+            if detected_service:
+                pricing_qs = pricing_qs.filter(service_category=detected_service)
+            pricing_qs = pricing_qs.select_related('service_category', 'tier').order_by('tier__order', 'order')
+            for sp in list(pricing_qs[:3]):
+                if getattr(sp, 'price_to', None) and sp.price_to and sp.price_to != sp.price_from:
+                    price_str = f"{int(sp.price_from)}-{int(sp.price_to)}"
+                else:
+                    price_str = f"{int(sp.price_from)}"
+                features = []
+                try:
+                    features = sp.get_features_list(lang='uk')[:3]
+                except Exception:
+                    pass
+                assumptions = "; ".join(features) if features else ''
+                items.append({
+                    'title': getattr(sp.service_category, 'title_uk', str(sp.service_category)),
+                    'pkg': getattr(sp.tier, 'display_name_uk', str(sp.tier)),
+                    'price': price_str,
+                    'currency': 'USD',
+                    'assumptions': assumptions
+                })
+        except Exception as e:
+            logger.warning(f"Не вдалося побудувати items з ServicePricing: {e}")
+
+        if not items:
+            items = _ensure_items(data.get('items', []))
+
+        # Абсолютний URL для логотипа у листі
+        brand_logo_url = None
+        try:
+            site_url = getattr(settings, 'SITE_URL', '')
+            if site_url and getattr(brand, 'logo', None):
+                logo_url = getattr(getattr(brand, 'logo', None), 'url', None)
+                if logo_url:
+                    brand_logo_url = site_url.rstrip('/') + logo_url
+        except Exception:
+            pass
+        ctx = {
+            'brand': brand,
+            'brand_logo_url': brand_logo_url,
+            'issued_at': timezone.now(),
+            'name': data['client_name'],
+            'email': data['client_email'],
+            'company': data.get('client_company', ''),
+            'notes': data.get('message', ''),
+            'items': items
+        }
+        html, pdf_bytes = _render_proposal_pdf(ctx)
+        
+        # Відправляємо на email клієнта
+        _send_proposal_email(
+            to_email=data['client_email'],
+            subject="Комерційна пропозиція",
+            html_body=html,
+            pdf_bytes=pdf_bytes
+        )
         
         # TODO: Відправити в Celery для асинхронної обробки PDF та email
-        # process_quote_request.delay(quote_request.id)
+        # generate_quote_pdf.delay(quote_request.id)
         
         return JsonResponse({
             'success': True,
-            'message': 'Запит отримано! Прорахунок буде відправлений на ваш email протягом 30 хвилин.',
+            'message': 'Запит отримано. Надіслали комерційну пропозицію на ваш email.',
             'quote_id': quote_request.id
         })
         
