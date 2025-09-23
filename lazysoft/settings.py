@@ -1,3 +1,5 @@
+from decouple import config
+
 # Django authentication backends (with axes)
 AUTHENTICATION_BACKENDS = [
     'axes.backends.AxesStandaloneBackend',
@@ -39,6 +41,7 @@ from pathlib import Path
 from decouple import config
 import logging
 import re
+from celery.schedules import crontab
 
 gettext_path = r"C:\Program Files (x86)\GnuWin32\bin"
 if os.path.exists(gettext_path):
@@ -171,7 +174,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='Lazysoft'),
         'USER': config('DB_USER', default='postgres'),
         'PASSWORD': config('DB_PASSWORD', default='password'),
-        'HOST': config('DB_HOST', default='localhost'),
+        'HOST': config('DB_HOST', default='127.0.0.1'),
         'PORT': config('DB_PORT', default='5432'),
     }
 }
@@ -761,3 +764,57 @@ else:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Celery конфігурація для автоматичного навчання
+CELERY_BEAT_SCHEDULE = {
+    # 🌅 Щоранку аналізуємо вчорашні діалоги
+    'daily-conversation-analysis': {
+        'task': 'rag.tasks.analyze_conversations_task',
+        'schedule': crontab(hour=6, minute=0),  # Щодня о 6:00 ранку
+        'kwargs': {
+            'days': 1,  # Аналізуємо за вчора
+            'auto_approve': False  # БЕЗ автосхвалення - тільки виявлення
+        }
+    },
+    
+    # 📊 Щотижня глибший аналіз
+    'weekly-pattern-analysis': {
+        'task': 'rag.tasks.analyze_conversations_task', 
+        'schedule': crontab(day_of_week=1, hour=7, minute=0),  # Понеділок о 7:00
+        'kwargs': {
+            'days': 7,
+            'auto_approve': False
+        }
+    },
+    
+    # 🧹 Щомісяця очищуємо старі відхилені паттерни  
+    'monthly-cleanup': {
+        'task': 'rag.tasks.cleanup_old_patterns',
+        'schedule': crontab(day_of_month=1, hour=2, minute=0),  # 1 числа о 2:00
+        'kwargs': {'days_old': 60}
+    },
+    
+    # 📈 Щодня переіндексуємо схвалені паттерни
+    'daily-reindex-approved': {
+        'task': 'rag.tasks.reindex_approved_patterns',
+        'schedule': crontab(hour=8, minute=30),  # Щодня о 8:30
+    }
+}
+
+# Додаткові налаштування RAG навчання
+RAG_LEARNING_SETTINGS = {
+    # Автоматичний аналіз
+    'AUTO_ANALYSIS_ENABLED': True,
+    'DAILY_ANALYSIS_DAYS': 1,
+    'WEEKLY_ANALYSIS_DAYS': 7,
+    
+    # Критерії якості для паттернів
+    'MIN_FREQUENCY_FOR_QUALITY': 3,
+    'MIN_SUCCESS_RATE_FOR_QUALITY': 0.8,
+    'MIN_MESSAGE_LENGTH': 10,
+    
+    # Нотифікації (опціонально)
+    'NOTIFY_NEW_PATTERNS': True,
+    'ADMIN_EMAIL': 'your-email@domain.com',
+    'SLACK_WEBHOOK': None,  # Webhook для Slack сповіщень
+}

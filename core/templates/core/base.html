@@ -278,6 +278,13 @@
       </div>
     </div>
 
+    <script>
+        window.consultantApiUrls = {
+            startSession: "{% url 'consultant:start_session' %}",
+            sendMessage: "{% url 'consultant:send_message' %}",
+            requestQuote: "{% url 'consultant:request_quote' %}"
+        };
+    </script>
     <script src="{% static 'js/consultant_bubble.js' %}"></script>
     <script src="{% static 'js/consultant_chat.js' %}"></script>
     

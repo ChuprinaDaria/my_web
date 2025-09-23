@@ -605,3 +605,302 @@
     max-width: 90%;
   }
 }
+
+.rag-interface {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(158, 255, 0, 0.2);
+}
+
+.rag-sources {
+  margin-bottom: 15px;
+}
+
+.rag-sources-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9eff00;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rag-source-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(158, 255, 0, 0.1);
+  border: 1px solid rgba(158, 255, 0, 0.2);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.source-title {
+  color: #fff;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.source-similarity {
+  color: #9eff00;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.rag-suggestions {
+  margin-bottom: 15px;
+}
+
+.rag-suggestions-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9eff00;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.suggestion-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(158, 255, 0, 0.3);
+  border-radius: 15px;
+  padding: 8px 15px;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  margin: 4px 6px 4px 0;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.suggestion-btn:hover {
+  background: rgba(158, 255, 0, 0.2);
+  border-color: #9eff00;
+  transform: translateY(-1px);
+}
+
+.rag-actions {
+  margin-bottom: 10px;
+}
+
+.rag-actions-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9eff00;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rag-action-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 4px 6px 4px 0;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #9eff00, #66ff00);
+  color: #000;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(158, 255, 0, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(158, 255, 0, 0.5);
+  color: #9eff00;
+}
+
+.btn-secondary:hover {
+  background: rgba(158, 255, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.btn-info {
+  background: rgba(0, 123, 255, 0.2);
+  border: 1px solid rgba(0, 123, 255, 0.5);
+  color: #7cc7ff;
+}
+
+.btn-info:hover {
+  background: rgba(0, 123, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #b3adad;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.rag-debug {
+  font-size: 10px;
+  color: #666;
+  font-style: italic;
+  margin-top: 10px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+}
+
+.quote-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+}
+
+.quote-modal .modal-content {
+  background: #1a1a1a;
+  border: 1px solid #9eff00;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.quote-modal .modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quote-modal .modal-header h3 {
+  color: #9eff00;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.quote-modal .modal-close {
+  background: none;
+  border: none;
+  color: #b3adad;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+
+.quote-modal .modal-close:hover {
+  color: #ff4444;
+}
+
+.quote-form {
+  padding: 20px;
+}
+
+.quote-form .form-group {
+  margin-bottom: 15px;
+}
+
+.quote-form label {
+  display: block;
+  color: #9eff00;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.quote-form input,
+.quote-form textarea {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(158, 255, 0, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.quote-form input:focus,
+.quote-form textarea:focus {
+  outline: none;
+  border-color: #9eff00;
+  box-shadow: 0 0 10px rgba(158, 255, 0, 0.3);
+}
+
+.quote-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .rag-interface {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  
+  .rag-source-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .source-similarity {
+    align-self: flex-end;
+  }
+  
+  .rag-action-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin: 8px 0;
+  }
+  
+  .quote-modal .modal-content {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+  
+  .modal-actions button {
+    width: 100%;
+  }
+}

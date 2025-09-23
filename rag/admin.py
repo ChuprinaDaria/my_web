@@ -12,6 +12,7 @@ from .models import (
     RAGAnalytics, KnowledgeSource
 )
 from .services import IndexingService
+from .learning import LearningPattern, DialogAnalyzer
 
 
 @admin.register(EmbeddingModel)
@@ -389,3 +390,141 @@ class RAGAnalyticsAdmin(admin.ModelAdmin):
             obj.total_consultations
         )
     conversion_stats.short_description = '📈 Конверсії'
+
+
+@admin.register(LearningPattern)
+class LearningPatternAdmin(admin.ModelAdmin):
+    list_display = (
+        'query_preview',
+        'status_badge', 
+        'frequency',
+        'success_rate_display',
+        'detected_intent',
+        'created_at',
+        'actions_column'
+    )
+    list_filter = (
+        'status',
+        'detected_intent',
+        'response_source',
+        'created_at'
+    )
+    search_fields = ('user_query_pattern', 'best_response', 'keywords')
+    readonly_fields = ('frequency', 'success_rate', 'created_at', 'updated_at')
+    ordering = ['-frequency', '-success_rate', '-created_at']
+    
+    fieldsets = (
+        ("📝 Паттерн запиту", {
+            'fields': (
+                'user_query_pattern',
+                'query_variations',
+                ('detected_intent', 'keywords')
+            )
+        }),
+        ("💬 Найкраща відповідь", {
+            'fields': (
+                'best_response',
+                'response_source'
+            )
+        }),
+        ("📊 Метрики", {
+            'fields': (
+                ('frequency', 'success_rate'),
+                'avg_user_satisfaction',
+                'related_service_categories'
+            ),
+            'classes': ('collapse',)
+        }),
+        ("⚡ Статус", {
+            'fields': (
+                ('status', 'reviewed_by'),
+                ('created_at', 'updated_at')
+            )
+        })
+    )
+    
+    def query_preview(self, obj):
+        return obj.user_query_pattern[:80] + "..." if len(obj.user_query_pattern) > 80 else obj.user_query_pattern
+    query_preview.short_description = '❓ Запит'
+    
+    def status_badge(self, obj):
+        colors = {
+            'detected': '#6c757d',
+            'pending_review': '#ffc107',
+            'approved': '#28a745', 
+            'indexed': '#007bff',
+            'rejected': '#dc3545'
+        }
+        color = colors.get(obj.status, '#6c757d')
+        
+        return format_html(
+            '<span style="background: {}; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">{}</span>',
+            color, obj.get_status_display()
+        )
+    status_badge.short_description = '📊 Статус'
+    
+    def success_rate_display(self, obj):
+        if obj.success_rate > 0.8:
+            color = '#28a745'  # зелений
+            icon = '🟢'
+        elif obj.success_rate > 0.5:
+            color = '#ffc107'  # жовтий  
+            icon = '🟡'
+        else:
+            color = '#dc3545'  # червоний
+            icon = '🔴'
+        
+        return format_html(
+            '{} <span style="color: {}; font-weight: bold;">{:.1%}</span>',
+            icon, color, obj.success_rate
+        )
+    success_rate_display.short_description = '📈 Успішність'
+    
+    def actions_column(self, obj):
+        actions = []
+        
+        if obj.status == 'pending_review':
+            actions.append(
+                f'<a href="#" onclick="approvePattern({obj.pk})" style="color: #28a745; margin-right: 10px;">✅ Схвалити</a>'
+            )
+            actions.append(
+                f'<a href="#" onclick="rejectPattern({obj.pk})" style="color: #dc3545;">❌ Відхилити</a>'
+            )
+        elif obj.status == 'approved':
+            actions.append(
+                f'<a href="#" onclick="indexPattern({obj.pk})" style="color: #007bff;">📚 Індексувати</a>'
+            )
+        
+        return mark_safe(' | '.join(actions)) if actions else '-'
+    actions_column.short_description = '⚡ Дії'
+    
+    actions = ['approve_selected', 'reject_selected', 'analyze_conversations']
+    
+    def approve_selected(self, request, queryset):
+        """Схвалює обрані паттерни"""
+        analyzer = DialogAnalyzer()
+        
+        pending_patterns = queryset.filter(status='pending_review')
+        analyzer.approve_patterns_for_indexing([p.id for p in pending_patterns])
+        
+        count = pending_patterns.count()
+        messages.success(request, f"Схвалено та індексовано {count} паттернів")
+    approve_selected.short_description = "✅ Схвалити та індексувати обрані"
+    
+    def reject_selected(self, request, queryset):
+        """Відхиляє обрані паттерни"""
+        count = queryset.update(status='rejected')
+        messages.success(request, f"Відхилено {count} паттернів")
+    reject_selected.short_description = "❌ Відхилити обрані"
+    
+    def analyze_conversations(self, request, queryset):
+        """Запускає аналіз діалогів"""
+        analyzer = DialogAnalyzer()
+        patterns_found = analyzer.analyze_recent_conversations(days=7)
+        
+        messages.success(request, f"Аналіз завершено! Знайдено {patterns_found} нових паттернів")
+    analyze_conversations.short_description = "🔍 Аналізувати діалоги"
+
+
+    class Media:
+        js = ('admin/js/learning_admin.js',)

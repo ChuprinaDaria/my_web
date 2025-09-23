@@ -1,3 +1,4 @@
+# consultant/views.py - оновлена версія з RAG
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -8,10 +9,19 @@ from django.db.models import Q
 import json
 import uuid
 import time
-import random
+
 from .models import ChatSession, Message, ConsultantProfile, KnowledgeBase, ChatAnalytics
-from rag.services import RAGConsultantService
-rag_service = RAGConsultantService()
+from .rag_integration import enhanced_consultant
+
+# Імпортуємо pricing моделі якщо доступні
+try:
+    from pricing.models import QuoteRequest
+    PRICING_AVAILABLE = True
+except ImportError:
+    PRICING_AVAILABLE = False
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 def consultant_chat(request):
@@ -57,6 +67,7 @@ def start_chat_session(request):
         })
     
     except Exception as e:
+        logger.error(f"Помилка start_chat_session: {e}")
         return JsonResponse({
             'success': False,
             'error': str(e)
@@ -66,7 +77,7 @@ def start_chat_session(request):
 @csrf_exempt
 @require_http_methods(["POST"])
 def send_message(request):
-    """Відправити повідомлення консультанту"""
+    """Відправити повідомлення консультанту - ОНОВЛЕНО З RAG"""
     try:
         data = json.loads(request.body)
         session_id = data.get('session_id')
@@ -88,37 +99,32 @@ def send_message(request):
             content=message_content
         )
         
-        # Оновлюємо аналітику
-        analytics, _ = ChatAnalytics.objects.get_or_create(chat_session=chat_session)
-        analytics.user_messages += 1
-        analytics.total_messages += 1
-        analytics.save()
+        # 🚀 НОВА RAG ЛОГІКА - замість простого алгоритму
+        rag_result = enhanced_consultant.generate_response(message_content, chat_session)
         
-        # Генеруємо відповідь консультанта
-        start_time = time.time()
-        rag_result = rag_service.process_user_query(
-            query=message_content,
-            session_id=chat_session.session_id,
-            language='uk'
-        )
-        assistant_response = rag_result['response']
-        processing_time = time.time() - start_time
-        
-        # Зберігаємо відповідь консультанта
+        # Зберігаємо відповідь консультанта з RAG метаданими
         assistant_message = Message.objects.create(
             chat_session=chat_session,
             role='assistant',
-            content=assistant_response,
+            content=rag_result['content'],
             is_processed=True,
-            processing_time=processing_time,
-            tokens_used=len(assistant_response.split())  # Приблизна кількість токенів
+            processing_time=rag_result['processing_time'],
+            tokens_used=rag_result['tokens_used']
         )
         
         # Оновлюємо аналітику
+        analytics, _ = ChatAnalytics.objects.get_or_create(chat_session=chat_session)
+        analytics.user_messages += 1
         analytics.assistant_messages += 1
-        analytics.total_messages += 1
-        analytics.total_tokens_used += assistant_message.tokens_used or 0
+        analytics.total_messages += 2
+        analytics.total_tokens_used += rag_result['tokens_used']
         analytics.save()
+        
+        # 💰 Логіка для pricing запитів
+        additional_data = {}
+        if rag_result['intent'] == 'pricing' and PRICING_AVAILABLE:
+            additional_data['show_quote_form'] = True
+            additional_data['detected_services'] = _extract_services_from_sources(rag_result.get('sources', []))
         
         return JsonResponse({
             'success': True,
@@ -127,17 +133,151 @@ def send_message(request):
                 'role': assistant_message.role,
                 'content': assistant_message.content,
                 'created_at': assistant_message.created_at.isoformat(),
-                'processing_time': processing_time
-            }
+                'processing_time': rag_result['processing_time']
+            },
+            # 🚀 Додаткові RAG дані
+            'rag_data': {
+                'intent': rag_result['intent'],
+                'sources': rag_result['sources'][:3],  # Топ 3 джерела
+                'suggestions': rag_result['suggestions'],
+                'actions': rag_result['actions'],
+                'method': rag_result['method']
+            },
+            **additional_data
         })
     
     except Exception as e:
+        logger.error(f"Помилка send_message: {e}")
         return JsonResponse({
             'success': False,
             'error': str(e)
         }, status=500)
 
 
+def _extract_services_from_sources(sources):
+    """Витягує сервіси з RAG джерел"""
+    services = []
+    for source in sources:
+        if source.get('content_category') == 'service':
+            obj = source.get('object')
+            if obj:
+                services.append({
+                    'slug': getattr(obj, 'slug', None),
+                    'title': source.get('content_title', str(obj)),
+                    'similarity': source.get('similarity', 0)
+                })
+    return services
+
+
+# 💰 НОВІ API для pricing інтеграції
+@csrf_exempt
+@require_http_methods(["POST"])
+def request_quote_from_chat(request):
+    """Запит прорахунку з чату"""
+    if not PRICING_AVAILABLE:
+        return JsonResponse({'error': 'Pricing система недоступна'}, status=400)
+    
+    try:
+        data = json.loads(request.body)
+        
+        # Валідація
+        required_fields = ['client_name', 'client_email', 'message']
+        for field in required_fields:
+            if not data.get(field):
+                return JsonResponse({'error': f'Поле {field} обов\'язкове'}, status=400)
+        
+        session_id = data.get('session_id')
+        chat_session = None
+        
+        # Шукаємо сесію для контексту
+        if session_id:
+            try:
+                chat_session = ChatSession.objects.get(id=session_id)
+            except ChatSession.DoesNotExist:
+                pass
+        
+        # Визначаємо сервіс з контексту чату
+        detected_service = None
+        if chat_session:
+            # Аналізуємо останні повідомлення для визначення сервісу
+            recent_messages = chat_session.messages.filter(role='user').order_by('-created_at')[:3]
+            recent_text = ' '.join([msg.content for msg in recent_messages])
+            
+            # Спрощена логіка визначення сервісу
+            detected_service = _detect_service_from_text(recent_text)
+        
+        # Створюємо запит на прорахунок
+        quote_request = QuoteRequest.objects.create(
+            client_name=data['client_name'],
+            client_email=data['client_email'],
+            client_phone=data.get('client_phone', ''),
+            client_company=data.get('client_company', ''),
+            original_query=data['message'],
+            service_category=detected_service,
+            session_id=str(session_id) if session_id else None,
+            ip_address=_get_client_ip(request),
+            user_agent=request.META.get('HTTP_USER_AGENT', ''),
+            status='new'
+        )
+        
+        # Оновлюємо сесію чату
+        if chat_session:
+            analytics, _ = ChatAnalytics.objects.get_or_create(chat_session=chat_session)
+            # Можна додати поле quote_requested в ChatAnalytics модель
+        
+        # TODO: Відправити в Celery для асинхронної обробки PDF та email
+        # process_quote_request.delay(quote_request.id)
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Запит отримано! Прорахунок буде відправлений на ваш email протягом 30 хвилин.',
+            'quote_id': quote_request.id
+        })
+        
+    except Exception as e:
+        logger.error(f"Помилка request_quote_from_chat: {e}")
+        return JsonResponse({'error': 'Помилка обробки запиту'}, status=500)
+
+
+def _detect_service_from_text(text):
+    """Спрощене визначення сервісу з тексту"""
+    try:
+        from services.models import ServiceCategory
+        
+        text_lower = text.lower()
+        
+        # Ключові слова для різних сервісів
+        service_keywords = {
+            'web-development': ['сайт', 'вебсайт', 'інтернет-магазин', 'landing', 'веб'],
+            'mobile-app': ['додаток', 'мобільний', 'app', 'ios', 'android'],
+            'ai-automation': ['автоматизація', 'ai', 'штучний інтелект', 'бот'],
+            'design': ['дизайн', 'графіка', 'логотип', 'брендинг'],
+        }
+        
+        for service_slug, keywords in service_keywords.items():
+            if any(keyword in text_lower for keyword in keywords):
+                try:
+                    return ServiceCategory.objects.get(slug=service_slug)
+                except ServiceCategory.DoesNotExist:
+                    continue
+                    
+    except ImportError:
+        pass
+    
+    return None
+
+
+def _get_client_ip(request):
+    """Отримує IP клієнта"""
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
+# Існуючі методи залишаються без змін
 def get_chat_history(request, session_id):
     """Отримати історію чату"""
     try:
@@ -164,51 +304,6 @@ def get_chat_history(request, session_id):
             'success': False,
             'error': str(e)
         }, status=500)
-
-
-def generate_consultant_response(user_message, chat_session):
-    """Генерує відповідь консультанта (заглушка для RAG)"""
-    consultant = ConsultantProfile.objects.filter(is_active=True).first()
-    
-    # Простий RAG-подібний алгоритм
-    knowledge_items = KnowledgeBase.objects.filter(is_active=True).order_by('-priority')
-    
-    # Пошук релевантних знань
-    relevant_knowledge = []
-    user_words = user_message.lower().split()
-    
-    for item in knowledge_items:
-        item_words = (item.title + ' ' + item.content).lower().split()
-        if any(word in item_words for word in user_words):
-            relevant_knowledge.append(item)
-    
-    # Базові відповіді
-    responses = [
-        f"Дякую за ваше питання! {user_message} - це цікава тема.",
-        "Я розумію ваш запит. Дозвольте мені допомогти вам з цим.",
-        "Це важливе питання. Ось що я можу вам запропонувати:",
-        "Відмінно! Давайте розглянемо це детальніше.",
-    ]
-    
-    # Формуємо відповідь
-    response = random.choice(responses)
-    
-    if relevant_knowledge:
-        response += f"\n\nЗгідно з моєю базою знань:\n"
-        for item in relevant_knowledge[:2]:  # Максимум 2 релевантні статті
-            response += f"• {item.title}: {item.content[:200]}...\n"
-    
-    # Додаємо загальні поради
-    general_advice = [
-        "Якщо у вас є додаткові питання, не соромтесь запитати!",
-        "Можу допомогти з більш детальним поясненням.",
-        "Чи є щось конкретне, що вас цікавить?",
-        "Готовий продовжити нашу розмову!",
-    ]
-    
-    response += f"\n\n{random.choice(general_advice)}"
-    
-    return response
 
 
 @csrf_exempt

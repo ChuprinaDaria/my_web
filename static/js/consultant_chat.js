@@ -1,28 +1,14 @@
-// Глобальна функція - ПЕРШОЮ!
 window.openConsultantModal = function() {
-    console.log('openConsultantModal called from:', window.location.pathname);
     const modal = document.getElementById('consultantModal');
-    console.log('Modal element found:', modal);
-    
     if (modal) {
-        console.log('Opening modal...');
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
-        // Записуємо сторінку відкриття
-        const currentPage = window.location.pathname;
-        localStorage.setItem('consultant_opened_from', currentPage);
-        console.log('Чат відкрито з:', currentPage);
-        
-        // Ініціалізуємо чат
         if (!window.consultantChat) {
-            console.log('Initializing consultant chat...');
             window.consultantChat = new ConsultantChat();
         }
-        console.log('Modal opened successfully!');
     } else {
-        console.error('Modal element not found! Available elements with id:', 
-            Array.from(document.querySelectorAll('[id]')).map(el => el.id));
+        console.error('Modal element not found!');
     }
 };
 
@@ -40,6 +26,7 @@ class ConsultantChat {
         this.isTyping = false;
         this.sessionId = this.getOrCreateSessionId();
         this.sessionStartTime = Date.now();
+        this.currentQuoteData = null;
         this.init();
     }
 
@@ -49,15 +36,49 @@ class ConsultantChat {
         this.updateWelcomeTime();
         this.startSessionTimer();
         this.addWelcomeMessage();
+        this.initializeSession();
+    }
+
+    async initializeSession() {
+        
+        try {
+            const response = await fetch(window.consultantApiUrls.startSession, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify({
+                    session_id: this.sessionId
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Сесія ініціалізована:', data.session_id);
+            }
+        } catch (error) {
+            console.error('❌ Помилка ініціалізації сесії:', error);
+        }
     }
 
     bindEvents() {
         const sendButton = document.getElementById('sendButton');
         const messageInput = document.getElementById('messageInput');
-        const quickQuestions = document.querySelectorAll('.quick-question');
+        const chatForm = document.getElementById('chatForm');
+
+        if (chatForm) {
+            chatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.sendMessage();
+            });
+        }
 
         if (sendButton) {
-            sendButton.addEventListener('click', () => this.sendMessage());
+            sendButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.sendMessage();
+            });
         }
 
         if (messageInput) {
@@ -69,11 +90,16 @@ class ConsultantChat {
             });
         }
 
-        quickQuestions.forEach(question => {
-            question.addEventListener('click', () => {
-                const text = question.textContent.trim();
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('quick-question')) {
+                const text = e.target.textContent.trim();
                 this.sendQuickQuestion(text);
-            });
+            }
+            
+            if (e.target.classList.contains('rag-action-btn')) {
+                const action = e.target.dataset.action;
+                this.handleRagAction(action, e.target.dataset);
+            }
         });
     }
 
@@ -100,16 +126,17 @@ class ConsultantChat {
 
     addWelcomeMessage() {
         if (this.messages.length === 0) {
-            this.addMessage('assistant', 'Привіт! Я ваш RAG консультант. Як можу допомогти?');
+            this.addMessage('assistant', '👋 Привіт! Я ваш RAG консультант з ШІ. Готовий допомогти з будь-якими питаннями!');
         }
     }
 
-    addMessage(sender, content, timestamp = null) {
+    addMessage(sender, content, timestamp = null, ragData = null) {
         const message = {
             id: Date.now() + Math.random(),
             sender,
             content,
-            timestamp: timestamp || new Date().toISOString()
+            timestamp: timestamp || new Date().toISOString(),
+            ragData
         };
         
         this.messages.push(message);
@@ -124,14 +151,205 @@ class ConsultantChat {
 
         const messageElement = document.createElement('div');
         messageElement.className = `message ${message.sender}`;
-        messageElement.innerHTML = `
+        
+        let messageHTML = `
             <div class="message-content">
                 <div class="message-text">${this.escapeHtml(message.content)}</div>
                 <div class="message-time">${this.formatTime(message.timestamp)}</div>
             </div>
         `;
 
+        if (message.sender === 'assistant' && message.ragData) {
+            messageHTML += this.renderRagInterface(message.ragData);
+        }
+
+        messageElement.innerHTML = messageHTML;
         messagesContainer.appendChild(messageElement);
+    }
+
+    renderRagInterface(ragData) {
+        let ragHTML = '';
+
+        if (ragData.sources && ragData.sources.length > 0) {
+            ragHTML += '<div class="rag-sources"><div class="rag-sources-title">📚 Джерела:</div>';
+            ragData.sources.forEach((source, index) => {
+                ragHTML += `
+                    <div class="rag-source-item">
+                        <span class="source-title">${this.escapeHtml(source.content_title || 'Джерело')}</span>
+                        <span class="source-similarity">${Math.round(source.similarity * 100)}% збіг</span>
+                    </div>
+                `;
+            });
+            ragHTML += '</div>';
+        }
+
+        if (ragData.suggestions && ragData.suggestions.length > 0) {
+            ragHTML += '<div class="rag-suggestions"><div class="rag-suggestions-title">💡 Пропозиції:</div>';
+            ragData.suggestions.forEach((suggestion) => {
+                ragHTML += `
+                    <button class="suggestion-btn quick-question">${this.escapeHtml(suggestion)}</button>
+                `;
+            });
+            ragHTML += '</div>';
+        }
+
+        if (ragData.actions && ragData.actions.length > 0) {
+            ragHTML += '<div class="rag-actions"><div class="rag-actions-title">⚡ Дії:</div>';
+            ragData.actions.forEach((action) => {
+                const btnClass = `rag-action-btn btn-${action.style || 'primary'}`;
+                if (action.type === 'button') {
+                    ragHTML += `
+                        <button class="${btnClass}" data-action="${action.action}" data-text="${this.escapeHtml(action.text)}">
+                            ${this.escapeHtml(action.text)}
+                        </button>
+                    `;
+                } else if (action.type === 'link') {
+                    ragHTML += `
+                        <a href="${action.url}" class="${btnClass}" target="_blank">
+                            ${this.escapeHtml(action.text)}
+                        </a>
+                    `;
+                }
+            });
+            ragHTML += '</div>';
+        }
+
+        if (ragData.method && window.location.hostname === 'localhost') {
+            ragHTML += `<div class="rag-debug">🔍 Метод: ${ragData.method} | Намір: ${ragData.intent}</div>`;
+        }
+
+        return ragHTML ? `<div class="rag-interface">${ragHTML}</div>` : '';
+    }
+
+    handleRagAction(action, dataset) {
+        
+        switch (action) {
+            case 'request_quote':
+                this.showQuoteModal(dataset.text);
+                break;
+                
+            case 'schedule_consultation':
+                this.showConsultationModal();
+                break;
+                
+            case 'contact_manager':
+                this.contactManager();
+                break;
+                
+            default:
+                console.log('Невідома дія:', action);
+        }
+    }
+
+    showQuoteModal(context = '') {
+        
+        if (!document.getElementById('quoteModal')) {
+            this.createQuoteModal();
+        }
+
+        const modal = document.getElementById('quoteModal');
+        const messageField = document.getElementById('quoteMessage');
+        
+        if (messageField && context) {
+            messageField.value = `Контекст з чату: ${context}\n\nДодаткова інформація про проєкт:`;
+        }
+        
+        modal.style.display = 'flex';
+    }
+
+    createQuoteModal() {
+        
+        const modalHTML = `
+            <div id="quoteModal" class="quote-modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>🧮 Отримати прорахунок</h3>
+                        <button class="modal-close" onclick="closeQuoteModal()">×</button>
+                    </div>
+                    <form id="quoteForm" class="quote-form">
+                        <div class="form-group">
+                            <label for="quoteName">Ваше ім'я *</label>
+                            <input type="text" id="quoteName" name="client_name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quoteEmail">Email *</label>
+                            <input type="email" id="quoteEmail" name="client_email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quotePhone">Телефон</label>
+                            <input type="tel" id="quotePhone" name="client_phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="quoteCompany">Компанія</label>
+                            <input type="text" id="quoteCompany" name="client_company">
+                        </div>
+                        <div class="form-group">
+                            <label for="quoteMessage">Опишіть ваш проєкт *</label>
+                            <textarea id="quoteMessage" name="message" rows="4" required></textarea>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" onclick="closeQuoteModal()" class="btn-secondary">
+                                Скасувати
+                            </button>
+                            <button type="submit" class="btn-primary">
+                                📧 Отримати прорахунок
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        document.getElementById('quoteForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.submitQuoteRequest();
+        });
+    }
+
+    async submitQuoteRequest() {
+        
+        const form = document.getElementById('quoteForm');
+        const formData = new FormData(form);
+        
+        const data = {
+            client_name: formData.get('client_name'),
+            client_email: formData.get('client_email'),
+            client_phone: formData.get('client_phone'),
+            client_company: formData.get('client_company'),
+            message: formData.get('message'),
+            session_id: this.sessionId
+        };
+
+        try {
+            const response = await fetch(window.consultantApiUrls.requestQuote, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken()
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                
+                closeQuoteModal();
+                
+                this.addMessage('assistant', `✅ ${result.message}`);
+                
+                form.reset();
+                
+            } else {
+                const error = await response.json();
+                alert(`Помилка: ${error.error || 'Невідома помилка'}`);
+            }
+            
+        } catch (error) {
+            console.error('Помилка відправки запиту:', error);
+            alert('Помилка з\'єднання. Спробуйте пізніше.');
+        }
     }
 
     renderMessages() {
@@ -148,15 +366,13 @@ class ConsultantChat {
         
         if (!message) return;
 
-        // Додаємо повідомлення користувача
         this.addMessage('user', message);
         messageInput.value = '';
 
-        // Показуємо індикатор набору
         this.showTypingIndicator();
 
         try {
-            const response = await fetch('/consultant/api/send-message/', {
+            const response = await fetch(window.consultantApiUrls.sendMessage, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -174,11 +390,15 @@ class ConsultantChat {
 
             const data = await response.json();
             
-            // Приховуємо індикатор набору
             this.hideTypingIndicator();
             
-            // Додаємо відповідь консультанта
-            this.addMessage('assistant', data.response);
+            this.addMessage('assistant', data.message.content, null, data.rag_data);
+
+            if (data.show_quote_form) {
+                setTimeout(() => {
+                    this.showQuoteModal('Автоматично визначений запит на прорахунок');
+                }, 1000);
+            }
 
         } catch (error) {
             console.error('Error sending message:', error);
@@ -187,22 +407,22 @@ class ConsultantChat {
         }
     }
 
-    async sendQuickQuestion(question) {
+    sendQuickQuestion(text) {
         const messageInput = document.getElementById('messageInput');
-        messageInput.value = question;
-        await this.sendMessage();
+        if (messageInput) {
+            messageInput.value = text;
+            this.sendMessage();
+        }
     }
 
     showTypingIndicator() {
         if (this.isTyping) return;
-        
         this.isTyping = true;
-        const messagesContainer = document.getElementById('messages');
-        if (!messagesContainer) return;
 
+        const messagesContainer = document.getElementById('messages');
         const typingElement = document.createElement('div');
-        typingElement.className = 'message assistant typing';
-        typingElement.id = 'typing-indicator';
+        typingElement.className = 'message assistant typing-indicator';
+        typingElement.id = 'typingIndicator';
         typingElement.innerHTML = `
             <div class="message-content">
                 <div class="typing-dots">
@@ -212,16 +432,16 @@ class ConsultantChat {
                 </div>
             </div>
         `;
-
+        
         messagesContainer.appendChild(typingElement);
         this.scrollToBottom();
     }
 
     hideTypingIndicator() {
         this.isTyping = false;
-        const typingElement = document.getElementById('typing-indicator');
-        if (typingElement) {
-            typingElement.remove();
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
         }
     }
 
@@ -239,122 +459,48 @@ class ConsultantChat {
     }
 
     formatTime(timestamp) {
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString('uk-UA', { 
-            hour: '2-digit', 
-            minute: '2-digit' 
+        return new Date(timestamp).toLocaleTimeString('uk-UA', {
+            hour: '2-digit',
+            minute: '2-digit'
         });
     }
 
-    getCSRFToken() {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-        return csrfToken ? csrfToken.value : '';
-    }
-
-    clearChat() {
-        this.messages = [];
-        this.renderMessages();
-        this.saveSession();
-        this.addWelcomeMessage();
-    }
-
-    exportChat() {
-        const chatData = {
-            sessionId: this.sessionId,
-            messages: this.messages,
-            exportDate: new Date().toISOString()
-        };
-
-        const blob = new Blob([JSON.stringify(chatData, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `consultant_chat_${this.sessionId}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
-
     updateWelcomeTime() {
-        const welcomeTime = document.getElementById('welcomeTime');
-        if (welcomeTime) {
-            welcomeTime.textContent = new Date().toLocaleTimeString('uk-UA', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+        const welcomeTimeElement = document.getElementById('welcomeTime');
+        if (welcomeTimeElement) {
+            welcomeTimeElement.textContent = new Date().toLocaleTimeString('uk-UA', {
+                hour: '2-digit',
+                minute: '2-digit'
             });
         }
     }
 
     startSessionTimer() {
+        const sessionTimeElement = document.getElementById('sessionTime');
+        if (!sessionTimeElement) return;
+
         setInterval(() => {
             const elapsed = Math.floor((Date.now() - this.sessionStartTime) / 1000);
             const minutes = Math.floor(elapsed / 60);
             const seconds = elapsed % 60;
-            const sessionTimeEl = document.getElementById('sessionTime');
-            if (sessionTimeEl) {
-                sessionTimeEl.textContent = 
-                    minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
-            }
+            sessionTimeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }, 1000);
     }
 
-    minimizeChat() {
-        const modal = document.getElementById('consultantModal');
-        if (modal) {
-            modal.classList.add('minimized');
-            modal.innerHTML = `
-                <div class="minimized-chat" onclick="this.parentElement.classList.remove('minimized'); window.consultantChat.restoreChat()">
-                    <span>💬 RAG Chat</span>
-                </div>
-            `;
-        }
-    }
-
-    restoreChat() {
-        // Відновити повну модалку
-        window.location.reload(); // Простий спосіб
+    getCSRFToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
+               document.querySelector('meta[name="csrf-token"]')?.content ||
+               '';
     }
 }
 
-// Modal functions
-function openConsultantModal() {
-    const modal = document.getElementById('consultantModal');
-    if (modal) {
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        // Initialize chat if not already done
-        if (!window.consultantChat) {
-            window.consultantChat = new ConsultantChat();
-        }
-    }
-}
-
-function closeConsultantModal() {
-    const modal = document.getElementById('consultantModal');
+window.closeQuoteModal = function() {
+    const modal = document.getElementById('quoteModal');
     if (modal) {
         modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
     }
-}
+};
 
-// Ініціалізація при завантаженні сторінки
 document.addEventListener('DOMContentLoaded', function() {
-    // Ініціалізуємо чат тільки якщо є відповідні елементи на сторінці
-    if (document.getElementById('messages') || document.getElementById('consultantModal')) {
-        window.consultantChat = new ConsultantChat();
-    }
+    console.log('🤖 RAG Consultant готовий!');
 });
-
-// Функції для кнопок
-function clearChat() {
-    if (window.consultantChat) {
-        window.consultantChat.clearChat();
-    }
-}
-
-function exportChat() {
-    if (window.consultantChat) {
-        window.consultantChat.exportChat();
-    }
-}
