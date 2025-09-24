@@ -4,11 +4,11 @@
     {% for service in services %}
       <article class="service-card clickable" data-href="/{{ CURRENT_LANG }}/services/{{ service.slug }}/">
         {% if service.main_image %}
-          <div class="service-icon">
+          <div class="service-icon service-icon--cover">
             <img src="{{ service.main_image }}" alt="{{ service.title }}" loading="lazy">
           </div>
         {% elif service.icon %}
-          <div class="service-icon">
+          <div class="service-icon service-icon--badge">
             <img src="{{ service.icon }}" alt="{{ service.title }}" loading="lazy">
           </div>
         {% endif %}

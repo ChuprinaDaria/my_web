@@ -463,6 +463,14 @@ msgstr "Śledź nas"
 msgid "Other news"
 msgstr "Inne wiadomości"
 
+# Buttons
+msgid "Надіслати повідомлення"
+msgstr "Wyślij wiadomość"
+
+# Ukrainian originals used as msgid in templates
+msgid "Слідкуйте за нами"
+msgstr "Śledź nas"
+
 # =====================
 # Additional UI Strings
 # =====================

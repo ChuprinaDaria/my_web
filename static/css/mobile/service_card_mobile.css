@@ -112,7 +112,7 @@
     transition: all 0.1s ease;
   }
   
-  .service-icon {
+  .service-icon--cover {
     width: calc(100% - var(--spacing-2xl)); /* Ще більші відступи з боків */
     height: 140px; /* Значно зменшена висота */
     order: 1;
@@ -127,7 +127,7 @@
     overflow: hidden;
   }
   
-  .service-icon img {
+  .service-icon--cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -268,13 +268,13 @@
     height: 12px;
   }
   
-  .service-icon {
+  .service-icon--cover {
     width: calc(100% - var(--spacing-xl)); /* Ще більші відступи */
     height: 120px; /* Ще менше на маленьких екранах */
     margin: var(--spacing-md) auto var(--spacing-lg) auto; /* Ще більші відступи */
   }
   
-  .service-icon img {
+  .service-icon--cover img {
     width: 100%;
     height: 100%;
     object-fit: cover;

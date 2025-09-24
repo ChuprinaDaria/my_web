@@ -411,6 +411,10 @@ msgstr "Слідкуйте за нами"
 msgid "Other news"
 msgstr "Інші новини"
 
+# Buttons
+msgid "Надіслати повідомлення"
+msgstr "Надіслати повідомлення"
+
 # =====================
 # Additional UI Strings
 # =====================

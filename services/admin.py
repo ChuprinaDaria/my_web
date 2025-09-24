@@ -71,7 +71,7 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
         ("Full Description", {"fields": ("description_en","description_uk","description_pl")}),
         ("For Whom", {"fields": ("target_audience_en","target_audience_uk","target_audience_pl")}),
         ("Business Value", {"fields": ("value_proposition_en","value_proposition_uk","value_proposition_pl")}),
-        ("Media", {"fields": ("video_url","video_file","gallery_image_1","gallery_image_2","gallery_image_3","gallery_image_4")}),
+        ("Media", {"fields": ("icon","main_image","video_url","video_file","gallery_image_1","gallery_image_2","gallery_image_3","gallery_image_4")}),
         ("SEO", {"fields": ("seo_title_en","seo_title_uk","seo_title_pl","seo_description_en","seo_description_uk","seo_description_pl")}),
     )
 

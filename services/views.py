@@ -211,6 +211,7 @@ def service_detail(request, slug):
         "video_url": service_category.video_url,
         "video_file": service_category.video_file.url if service_category.video_file else None,
         "gallery": gallery,
+        "main_image": service_category.main_image,
         "priority_emoji": service_category.get_priority_emoji(),
         "is_featured": service_category.is_featured,
         "icon": service_category.icon.url if service_category.icon else None,

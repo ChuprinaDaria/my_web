@@ -33,6 +33,10 @@
   </script>
 {% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/sections/service_detail.css' %}">
+{% endblock %}
+
 {% block content %}
 <article class="service-detail-container">
   
@@ -50,11 +54,6 @@
           {% if service.short %}
             {{ service.short|safe|striptags|truncatewords:35 }}
           {% else %}
-           {% if service.main_image %}
-             <div class="service-hero-icon">
-               <img src="{{ service.main_image.url }}" alt="{{ service.title }}" />
-             </div>
-           {% endif %}
             {{ service.long_description|safe|striptags|truncatewords:25 }}
           {% endif %}
         </p>
@@ -94,47 +93,15 @@
     </div>
   </section>
 
-  {% if service.gallery_image_1 or service.gallery_image_2 or service.gallery_image_3 or service.gallery_image_4 %}
-    <section class="project-featured-image">
-      <div class="container">
-        <div class="service-gallery-grid">
-          {% if service.gallery_image_1 %}
-            <div class="gallery-item" onclick="openLightbox('{{ service.gallery_image_1.url }}')">
-              <img src="{{ service.gallery_image_1.url }}" alt="Service Gallery 1" loading="lazy">
-              <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
-              </div>
-            </div>
-          {% endif %}
-          {% if service.gallery_image_2 %}
-            <div class="gallery-item" onclick="openLightbox('{{ service.gallery_image_2.url }}')">
-              <img src="{{ service.gallery_image_2.url }}" alt="Service Gallery 2" loading="lazy">
-              <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
-              </div>
-            </div>
-          {% endif %}
-          {% if service.gallery_image_3 %}
-            <div class="gallery-item" onclick="openLightbox('{{ service.gallery_image_3.url }}')">
-              <img src="{{ service.gallery_image_3.url }}" alt="Service Gallery 3" loading="lazy">
-              <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
-              </div>
-            </div>
-          {% endif %}
-          {% if service.gallery_image_4 %}
-            <div class="gallery-item" onclick="openLightbox('{{ service.gallery_image_4.url }}')">
-              <img src="{{ service.gallery_image_4.url }}" alt="Service Gallery 4" loading="lazy">
-              <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
-              </div>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    </section>
+  {% if service.main_image %}
+  <section class="project-featured-image">
+    <div class="container">
+      <img src="{{ service.main_image.url }}" alt="{{ service.title }}" loading="lazy">
+    </div>
+  </section>
   {% endif %}
 
+  
   <section class="project-main-content">
     <div class="container">
       <div class="content-grid">
@@ -318,6 +285,24 @@
         </div>
     </div>
   </section>
+
+
+  {% if service.gallery %}
+    <section class="project-featured-image">
+      <div class="container">
+        <div class="service-gallery-grid">
+          {% for image in service.gallery %}
+            <div class="gallery-item" onclick="openLightbox('{{ image.url }}')">
+              <img src="{{ image.url }}" alt="Service Gallery {{ forloop.counter }}" loading="lazy">
+              <div class="gallery-overlay">
+                <i data-lucide="zoom-in"></i>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
 
   
 
