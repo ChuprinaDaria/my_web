@@ -1,1 +1,161 @@
-class ProjectsAccordion {constructor(containerSelector='.projects-accordion-container') {this.container=document.querySelector(containerSelector);if (!this.container) return;this.track=this.container.querySelector('.projects-accordion-track');this.prevBtn=this.container.querySelector('.nav-prev');this.nextBtn=this.container.querySelector('.nav-next');this.items=this.track ? this.track.querySelectorAll('.project-accordion-item') : [];this.currentIndex=0;this.itemHeight=this.getItemHeight();this.visibleItems=this.getVisibleItems();this.totalItems=this.items.length;this.maxIndex=Math.max(0,this.totalItems-this.visibleItems);this.autoPlay=true;this.autoPlayInterval=4000;this.autoPlayTimer=null;this.init();}getItemHeight() {if (window.innerWidth<=480) return 120;if (window.innerWidth<=768) return 140;return 200;}getVisibleItems() {if (window.innerWidth<=480) return 2;if (window.innerWidth<=768) return 2;return 3;}init() {if (!this.track||!this.prevBtn||!this.nextBtn) return;this.prevBtn.addEventListener('click',()=>this.prev());this.nextBtn.addEventListener('click',()=>this.next());window.addEventListener('resize',()=>this.handleResize());this.addTouchEvents();this.container.addEventListener('mouseenter',()=>this.stopAutoPlay());this.container.addEventListener('mouseleave',()=>this.startAutoPlay());this.updateAccordion();this.startAutoPlay();console.log('🎠 Projects Accordion ініціалізовано:',{totalItems: this.totalItems,visibleItems: this.visibleItems,itemHeight: this.itemHeight });}prev() {if (this.currentIndex>0) {this.currentIndex--;this.updateAccordion();this.resetAutoPlay();}}next() {if (this.currentIndex<this.maxIndex) {this.currentIndex++;this.updateAccordion();this.resetAutoPlay();}}goTo(index) {this.currentIndex=Math.max(0,Math.min(index,this.maxIndex));this.updateAccordion();this.resetAutoPlay();}updateAccordion() {if (!this.track) return;this.track.style.transform=`translateY(-${this.currentIndex*this.itemHeight}px)`;this.prevBtn.disabled=this.currentIndex===0;this.nextBtn.disabled=this.currentIndex>=this.maxIndex;this.items.forEach((item,index)=>{const isVisible=index>=this.currentIndex&&index<this.currentIndex+this.visibleItems;item.classList.toggle('visible',isVisible);});}handleResize() {const newItemHeight=this.getItemHeight();const newVisibleItems=this.getVisibleItems();if (newItemHeight!==this.itemHeight||newVisibleItems!==this.visibleItems) {this.itemHeight=newItemHeight;this.visibleItems=newVisibleItems;this.maxIndex=Math.max(0,this.totalItems-this.visibleItems);if (this.currentIndex>this.maxIndex) {this.currentIndex=this.maxIndex;}this.updateAccordion();}}addTouchEvents() {let startY=0;let startTime=0;this.track.addEventListener('touchstart',(e)=>{startY=e.touches[0].clientY;startTime=Date.now();this.stopAutoPlay();});this.track.addEventListener('touchend',(e)=>{const endY=e.changedTouches[0].clientY;const endTime=Date.now();const deltaY=startY-endY;const deltaTime=endTime-startTime;if (Math.abs(deltaY)>50&&deltaTime<300) {if (deltaY>0) {this.next();}else {this.prev();}}this.startAutoPlay();});}startAutoPlay() {if (!this.autoPlay) return;this.stopAutoPlay();this.autoPlayTimer=setInterval(()=>{if (this.currentIndex>=this.maxIndex) {this.currentIndex=0;}else {this.currentIndex++;}this.updateAccordion();},this.autoPlayInterval);}stopAutoPlay() {if (this.autoPlayTimer) {clearInterval(this.autoPlayTimer);this.autoPlayTimer=null;}}resetAutoPlay() {this.stopAutoPlay();this.startAutoPlay();}destroy() {this.stopAutoPlay();}}document.addEventListener('DOMContentLoaded',function() {if (typeof lucide!=='undefined') {lucide.createIcons();}window.projectsAccordion=new ProjectsAccordion();console.log('🚀 Projects page initialized');});function scrollToContact(projectInfo) {const contactSection=document.getElementById('contact');if (contactSection) {contactSection.scrollIntoView({behavior: 'smooth',block: 'start' });setTimeout(()=>{const messageField=document.querySelector('#contact textarea,#contact input[name="message"]');if (messageField&&projectInfo) {const currentLang=document.documentElement.lang||'uk';const messages={'uk': `Привіт!Мене зацікавили проєкти з категорії "${projectInfo}". Хочу обговорити можливості співпраці.`,'en': `Hi!I'm interested in projects from "${projectInfo}" category. I'd like to discuss collaboration opportunities.`,'pl': `Cześć!Interesują mnie projekty z kategorii "${projectInfo}". Chciałbym omówić możliwości współpracy.` };messageField.value=messages[currentLang]||messages['uk'];messageField.focus();}},1000);}}
+class ProjectsAccordion {
+  constructor(containerSelector = '.projects-accordion-container') {
+    this.container = document.querySelector(containerSelector);
+    if (!this.container) return;
+    this.track = this.container.querySelector('.projects-accordion-track');
+    this.prevBtn = this.container.querySelector('.nav-prev');
+    this.nextBtn = this.container.querySelector('.nav-next');
+    this.items = this.track ? this.track.querySelectorAll('.project-accordion-item') : [];
+    this.currentIndex = 0;
+    this.itemHeight = this.getItemHeight();
+    this.visibleItems = this.getVisibleItems();
+    this.totalItems = this.items.length;
+    this.maxIndex = Math.max(0, this.totalItems - this.visibleItems);
+    this.autoPlay = true;
+    this.autoPlayInterval = 4000;
+    this.autoPlayTimer = null;
+    this.init();
+  }
+  getItemHeight() {
+    if (window.innerWidth <= 480) return 120;
+    if (window.innerWidth <= 768) return 140;
+    return 200;
+  }
+  getVisibleItems() {
+    if (window.innerWidth <= 480) return 2;
+    if (window.innerWidth <= 768) return 2;
+    return 3;
+  }
+  init() {
+    if (!this.track || !this.prevBtn || !this.nextBtn) return;
+    this.prevBtn.addEventListener('click', () => this.prev());
+    this.nextBtn.addEventListener('click', () => this.next());
+    window.addEventListener('resize', () => this.handleResize());
+    this.addTouchEvents();
+    this.container.addEventListener('mouseenter', () => this.stopAutoPlay());
+    this.container.addEventListener('mouseleave', () => this.startAutoPlay());
+    this.updateAccordion();
+    this.startAutoPlay();
+    
+  }
+  prev() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.updateAccordion();
+      this.resetAutoPlay();
+    }
+  }
+  next() {
+    if (this.currentIndex < this.maxIndex) {
+      this.currentIndex++;
+      this.updateAccordion();
+      this.resetAutoPlay();
+    }
+  }
+  goTo(index) {
+    this.currentIndex = Math.max(0, Math.min(index, this.maxIndex));
+    this.updateAccordion();
+    this.resetAutoPlay();
+  }
+  updateAccordion() {
+    if (!this.track) return;
+    this.track.style.transform = `translateY(-${this.currentIndex*this.itemHeight}px)`;
+    this.prevBtn.disabled = this.currentIndex === 0;
+    this.nextBtn.disabled = this.currentIndex >= this.maxIndex;
+    this.items.forEach((item, index) => {
+      const isVisible = index >= this.currentIndex && index < this.currentIndex + this.visibleItems;
+      item.classList.toggle('visible', isVisible);
+    });
+  }
+  handleResize() {
+    const newItemHeight = this.getItemHeight();
+    const newVisibleItems = this.getVisibleItems();
+    if (newItemHeight !== this.itemHeight || newVisibleItems !== this.visibleItems) {
+      this.itemHeight = newItemHeight;
+      this.visibleItems = newVisibleItems;
+      this.maxIndex = Math.max(0, this.totalItems - this.visibleItems);
+      if (this.currentIndex > this.maxIndex) {
+        this.currentIndex = this.maxIndex;
+      }
+      this.updateAccordion();
+    }
+  }
+  addTouchEvents() {
+    let startY = 0;
+    let startTime = 0;
+    this.track.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      startTime = Date.now();
+      this.stopAutoPlay();
+    });
+    this.track.addEventListener('touchend', (e) => {
+      const endY = e.changedTouches[0].clientY;
+      const endTime = Date.now();
+      const deltaY = startY - endY;
+      const deltaTime = endTime - startTime;
+      if (Math.abs(deltaY) > 50 && deltaTime < 300) {
+        if (deltaY > 0) {
+          this.next();
+        } else {
+          this.prev();
+        }
+      }
+      this.startAutoPlay();
+    });
+  }
+  startAutoPlay() {
+    if (!this.autoPlay) return;
+    this.stopAutoPlay();
+    this.autoPlayTimer = setInterval(() => {
+      if (this.currentIndex >= this.maxIndex) {
+        this.currentIndex = 0;
+      } else {
+        this.currentIndex++;
+      }
+      this.updateAccordion();
+    }, this.autoPlayInterval);
+  }
+  stopAutoPlay() {
+    if (this.autoPlayTimer) {
+      clearInterval(this.autoPlayTimer);
+      this.autoPlayTimer = null;
+    }
+  }
+  resetAutoPlay() {
+    this.stopAutoPlay();
+    this.startAutoPlay();
+  }
+  destroy() {
+    this.stopAutoPlay();
+  }
+}
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+  window.projectsAccordion = new ProjectsAccordion();
+  
+});
+
+function scrollToContact(projectInfo) {
+  const contactSection = document.getElementById('contact');
+  if (contactSection) {
+    contactSection.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+    setTimeout(() => {
+      const messageField = document.querySelector('#contact textarea,#contact input[name="message"]');
+      if (messageField && projectInfo) {
+        const currentLang = document.documentElement.lang || 'uk';
+        const messages = {
+          'uk': `Привіт!Мене зацікавили проєкти з категорії "${projectInfo}". Хочу обговорити можливості співпраці.`,
+          'en': `Hi!I'm interested in projects from "${projectInfo}" category. I'd like to discuss collaboration opportunities.`,
+          'pl': `Cześć!Interesują mnie projekty z kategorii "${projectInfo}". Chciałbym omówić możliwości współpracy.`
+        };
+        messageField.value = messages[currentLang] || messages['uk'];
+        messageField.focus();
+      }
+    }, 1000);
+  }
+}

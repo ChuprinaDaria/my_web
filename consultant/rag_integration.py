@@ -62,6 +62,21 @@ class EnhancedRAGConsultant:
                         }
                     ])
                 
+                # Гарантія наявності кнопки прорахунку при текстових ознаках цін
+                content_text = (result.get('response') or '')
+                text_lower = content_text.lower()
+                has_textual_price = any(k in text_lower for k in ['орієнтовн', 'вартіст', 'price', 'usd']) or ('$' in content_text)
+                final_prices_ready = bool(result.get('prices_ready')) or has_textual_price
+                final_actions = list(result.get('actions', []) or [])
+                has_quote_btn = any((a.get('type') == 'button' and a.get('action') == 'request_quote') for a in final_actions)
+                if final_prices_ready and not has_quote_btn:
+                    final_actions.append({
+                        'type': 'button',
+                        'text': '🧮 Отримати детальний прорахунок у PDF',
+                        'action': 'request_quote',
+                        'style': 'primary'
+                    })
+
                 processing_time = time.time() - start_time
                 
                 return {
@@ -69,9 +84,9 @@ class EnhancedRAGConsultant:
                     'intent': result.get('intent', 'general'),
                     'sources': result.get('sources', []),
                     'suggestions': result.get('suggestions', []),
-                    'actions': result.get('actions', []),
+                    'actions': final_actions,
                     'prices': result.get('prices', []),
-                    'prices_ready': result.get('prices_ready', False),
+                    'prices_ready': final_prices_ready,
                     'processing_time': processing_time,
                     'method': 'rag',
                     'tokens_used': len(result['response'].split()),

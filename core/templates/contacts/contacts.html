@@ -10,10 +10,8 @@
 {% block extra_meta %}
   <link rel="canonical" href="https://lazysoft.dev{% url 'contacts:contact_page' %}" />
   
-  <!-- CSS для контактної форми -->
   <link rel="stylesheet" href="{% static 'css/sections/contact_form.css' %}" />
   
-  <!-- Schema.org для контактів -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -51,13 +49,11 @@
 
    
 
-  <!-- Hero секція -->
   <section class="contacts-hero">
     <div class="container">
       
      
 
-      <!-- Заголовок та опис -->
       <div class="hero-content">
         <h1>
           {{ contact_info.get_title|default:_("Контакти") }}
@@ -69,7 +65,6 @@
         </div>
         {% endif %}
         
-        <!-- Швидкі контакти -->
         <div class="quick-contacts">
           <a href="mailto:{{ contact_info.email }}" class="quick-contact-item">
             <i data-lucide="mail" class="contact-icon"></i>
@@ -91,15 +86,11 @@
   </section>
 
 
-<!-- Додай це ПІСЛЯ </section> Hero секції в contacts.html -->
 
-<!-- 📸 Hero Photo Section - використовуємо існуючі CSS класи -->
 {% if contact_info.hero_photo %}
 <section class="contacts-hero-photo">
   <div class="container">
-    <!-- Використовуємо card стилі для обгортки -->
     <div class="card card-lg card-horizontal card-hover-lift card-shimmer">
-      <!-- Використовуємо card-image клас -->
       <div class="card-image hero-photo-container">
         <img src="{{ contact_info.hero_photo.url }}" 
              alt="{% trans 'Lazysoft офіс' %}" 
@@ -107,7 +98,6 @@
              loading="lazy">
       </div>
       
-      <!-- Використовуємо card-content для тексту -->
       <div class="card-content hero-photo-content">
         <h3>
           {{ contact_info.get_hero_title }}
@@ -117,7 +107,6 @@
           {{ contact_info.get_hero_description }}
         </p>
         
-        <!-- Використовуємо card-actions для кнопок -->
         <div class="card-actions">
           {% if contact_info.google_maps_url %}
           <a href="{{ contact_info.google_maps_url }}" target="_blank" class="btn-secondary">
@@ -139,12 +128,10 @@
 
 
 
-  <!-- Основний контент -->
   <section class="contacts-main">
     <div class="container">
       <div class="contacts-grid">
         
-        <!-- Ліва частина - Форма -->
         <div class="contact-form-section">
           <div class="form-container">
             <h3>
@@ -211,15 +198,12 @@
               </button>
             </form>
             
-            <!-- Повідомлення про статус -->
             <div id="formMessage" class="form-message" style="display: none;"></div>
           </div>
         </div>
         
-        <!-- Права частина - Інформація -->
         <div class="contact-info-section">
           
-          <!-- Контактна інформація -->
           <div class="info-block">
             <h4>
               {% trans "Контактна інформація" %}
@@ -259,7 +243,6 @@
             </div>
           </div>
           
-          <!-- Адреса офісу -->
           {% if contact_info.get_address_line_1 %}
           <div class="info-block">
             <h4>
@@ -296,7 +279,6 @@
           </div>
           {% endif %}
           
-          <!-- Соціальні мережі -->
           <div class="info-block">
             <h4>
               {% trans "Слідкуйте за нами" %}
@@ -331,7 +313,6 @@
     </div>
   </section>
 
-  <!-- Перелінковка з іншими сторінками -->
   {% include 'includes/related_work_section.html' %}
 
 </main>
@@ -366,38 +347,31 @@
 }
 </script>
 
-<!-- JavaScript для обробки форм -->
 <script src="{% static 'js/contact_forms.js' %}"></script>
 
-<!-- Універсальна CTA модалка -->
 <script src="{% static 'js/universal_cta_modal.js' %}"></script>
 
 <script>
-// 🌐 Django i18n контекст для JS
 const DJANGO_CONTEXT = {
   csrfToken: '{{ csrf_token }}',
   submitUrl: '{% url "contacts:submit_form" %}',
   currentLang: '{{ LANGUAGE_CODE }}',
   
-  // 📝 Переклади для JS
   messages: {
     sending: '{% trans "Надсилаємо..." %}',
     success: '{% trans "Дякуємо! Ваше повідомлення надіслано. Ми зв\'яжемося з вами найближчим часом." %}',
     error: '{% trans "Виникла помилка при відправці" %}',
     networkError: '{% trans "Виникла помилка мережі. Спробуйте ще раз." %}',
     
-    // Модалка переклади
     modalTitle: '{% trans "Thank you!" %}',
     modalDetails: '{% trans "We will contact you soon" %}',
     
-    // CTA модалка переклади
     ctaTitle: '{% trans "Free Consultation" %}',
     ctaDescription: '{% trans "Get expert consultation from our specialists" %}',
     ctaPrimaryBtn: '{% trans "Contact Now" %}',
     ctaSecondaryBtn: '{% trans "Later" %}',
     ctaFooter: '{% trans "100% free • No obligations • Quick response" %}',
     
-    // Автозаповнення для subject
     subjects: {
       service_ai: '{% trans "Питання щодо AI послуг" %}',
       project_inquiry: '{% trans "Запит щодо співпраці" %}'
@@ -405,18 +379,15 @@ const DJANGO_CONTEXT = {
   }
 };
 
-// 🔄 Ініціалізуємо Lucide іконки після завантаження
 document.addEventListener('DOMContentLoaded', function() {
-  // Ініціалізуємо іконки
   if (typeof initLucideIcons === 'function') {
     initLucideIcons();
   } else if (typeof lucide !== 'undefined') {
     lucide.createIcons();
-    console.log('🎨 Lucide icons initialized directly');
+    
   }
 });
 
-// 🏃‍♀️ Smooth scroll для внутрішніх посилань
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {
     e.preventDefault();
@@ -430,42 +401,21 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// 🎯 Тестування CTA модалки (можна видалити в продакшені)
-document.addEventListener('DOMContentLoaded', function() {
-  // Додаємо кнопку для тестування CTA модалки
-  const testButton = document.createElement('button');
-  testButton.textContent = '🎯 Test CTA Modal';
-  testButton.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    background: #66ff00;
-    color: #000;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(102, 255, 0, 0.3);
-  `;
-  
-  testButton.addEventListener('click', function() {
-    if (window.ctaModal) {
-      window.ctaModal.show('test_button', 'Тестова CTA модалка');
-    } else {
-      console.error('CTA Modal not initialized');
-    }
-  });
-  
-  document.body.appendChild(testButton);
-  
-  // Автоматичне показування CTA модалки через 10 секунд (тільки для тестування)
-  setTimeout(() => {
-    if (window.ctaModal) {
-      window.ctaModal.show('auto_timer', 'Автоматична CTA модалка');
-    }
-  }, 10000);
-});
+
+
+
+
+
+
+
+
+
+
+
+
+window.toggleMenu = toggleMenu;
+window.scrollToContact = scrollToContact;
+window.switchLanguage = switchLanguage;
+
 </script>
 {% endblock %}

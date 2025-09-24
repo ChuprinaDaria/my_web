@@ -2,12 +2,11 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- SEO BLOCKS -->
 {% block title %}{{ service.seo_title|default:service.title }} | Lazysoft{% endblock %}
 {% block meta_description %}{{ service.seo_description|default:service.short|striptags|truncatewords:25 }}{% endblock %}
 {% block og_title %}{{ service.title|striptags }}{% endblock %}
 {% block og_description %}{{ service.short|striptags|truncatewords:30 }}{% endblock %}
-{% block og_image %}{% if service.icon %}https://lazysoft.dev{{ service.icon.url }}{% else %}https://lazysoft.dev{% static 'images/services-og.jpg' %}{% endif %}{% endblock %}
+{% block og_image %}{% if service.main_image %}https://lazysoft.dev{{ service.main_image.url }}{% else %}https://lazysoft.dev{% static 'images/services-og.jpg' %}{% endif %}{% endblock %}
 
 {% block extra_meta %}
   <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/" />
@@ -16,7 +15,6 @@
   <link rel="alternate" href="https://lazysoft.dev/uk/services/{{ service.slug }}/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.dev/pl/services/{{ service.slug }}/" hreflang="pl">
   
-  <!-- Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -29,45 +27,22 @@
       "url": "https://lazysoft.dev"
     },
     "areaServed": "Worldwide",
-    {% if service.icon %}"image": "https://lazysoft.dev{{ service.icon.url }}",{% endif %}
+    {% if service.main_image %}"image": "https://lazysoft.dev{{ service.main_image.url }}",{% endif %}
     "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
   }
   </script>
 {% endblock %}
 
-<!-- CONTENT -->
 {% block content %}
 <article class="service-detail-container">
   
-  <!-- 🎯 Hero Section - використовуємо структуру з project_detail -->
   <section class="service-hero-section">
     <div class="container">
       <div class="hero-content">
         
-        <!-- 🏷️ Service Tags Header - НОВА система тегів -->
-        {% if service.tags.all %}
-          <div class="service-tags-header">
-            {% for tag in service.tags.all|slice:":4" %}
-              <a href="/{{ CURRENT_LANG }}/services/tag/{{ tag.slug }}/" 
-                 class="service-tag-pill"
-                 {% if tag.color %}style="border-color: {{ tag.color }}; color: {{ tag.color }};"{% endif %}>
-                {% if tag.icon %}{{ tag.icon }}{% else %}🏷️{% endif %}
-                {% if CURRENT_LANG == 'uk' and tag.name_uk %}{{ tag.name_uk }}
-                {% elif CURRENT_LANG == 'pl' and tag.name_pl %}{{ tag.name_pl }}
-                {% else %}{{ tag.name_en }}{% endif %}
-              </a>
-            {% endfor %}
-          </div>
-        {% endif %}
+        
 
-        <!-- Service Icon + Title -->
-        <div class="service-hero-header">
-          {% if service.icon %}
-            <div class="service-hero-icon">
-              <img src="{{ service.icon.url }}" alt="{{ service.title }}" />
-            </div>
-          {% endif %}
-        </div>
+        
 
         <h1>{{ service.title|safe }}</h1>
         
@@ -75,11 +50,15 @@
           {% if service.short %}
             {{ service.short|safe|striptags|truncatewords:35 }}
           {% else %}
+           {% if service.main_image %}
+             <div class="service-hero-icon">
+               <img src="{{ service.main_image.url }}" alt="{{ service.title }}" />
+             </div>
+           {% endif %}
             {{ service.long_description|safe|striptags|truncatewords:25 }}
           {% endif %}
         </p>
 
-        <!-- 📊 Service Meta - як в project_detail -->
         <div class="project-meta">
           {% if service.is_featured %}
             <div class="meta-item">
@@ -101,7 +80,6 @@
           {% endif %}
         </div>
 
-        <!-- 🚀 Hero Actions -->
         <div class="project-hero-actions">
           <button class="hero-cta-button primary" onclick="window.ctaModal && window.ctaModal.show('service_hero', 'Послуга: {{ service.title|escapejs }}');">
             <i data-lucide="zap"></i>
@@ -116,7 +94,6 @@
     </div>
   </section>
 
-  <!-- 🖼️ Service Gallery - якщо є зображення -->
   {% if service.gallery_image_1 or service.gallery_image_2 or service.gallery_image_3 or service.gallery_image_4 %}
     <section class="project-featured-image">
       <div class="container">
@@ -158,15 +135,12 @@
     </section>
   {% endif %}
 
-  <!-- 📋 Main Content Layout -->
   <section class="project-main-content">
     <div class="container">
       <div class="content-grid">
         
-        <!-- 📄 Main Content Column -->
         <div class="main-content-column">
           
-          <!-- Service Description -->
           <div class="content-section">
             <div class="content-section-header">
               <div class="section-icon">
@@ -179,7 +153,6 @@
             </div>
           </div>
 
-          <!-- Target Audience -->
           {% if service.audience %}
           <div class="content-section">
             <div class="content-section-header">
@@ -194,7 +167,38 @@
           </div>
           {% endif %}
 
-          <!-- Value Proposition -->
+          {% if cross_promotion_content %}
+          <div class="sidebar-section">
+            <h3>
+              <i data-lucide="sparkles"></i>
+              {% trans "You Might Also Like" %}
+            </h3>
+            <div class="related-content-list">
+              {% for item in cross_promotion_content|slice:":3" %}
+                <a href="{{ item.url }}" class="related-item">
+                  {% if item.image %}
+                    <div class="related-image">
+                      <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy">
+                    </div>
+                  {% endif %}
+                  <div class="related-content">
+                    <h4>{{ item.title|safe|truncatewords:10 }}</h4>
+                    <div class="related-meta">
+                      <span class="related-category">
+                        {% if item.type == 'article' %}{% trans "Article" %}
+                        {% elif item.type == 'project' %}{% trans "Project" %}
+                        {% else %}{% trans "Service" %}{% endif %}
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          
+
           {% if service.value %}
           <div class="content-section">
             <div class="content-section-header">
@@ -209,7 +213,6 @@
           </div>
           {% endif %}
 
-          <!-- Pricing Information -->
           {% if service.pricing %}
           <div class="content-section">
             <div class="content-section-header">
@@ -226,10 +229,8 @@
 
         </div>
 
-        <!-- 📊 Sidebar -->
         <div class="project-sidebar">
           
-          <!-- 🎯 Quick Contact CTA -->
           <div class="sidebar-section cta-sidebar">
             <h3>
               <i data-lucide="message-circle"></i>
@@ -244,7 +245,6 @@
             </button>
           </div>
 
-          <!-- 📊 Service Info -->
           <div class="sidebar-section">
             <h3>
               <i data-lucide="info"></i>
@@ -281,31 +281,8 @@
             </div>
           </div>
 
-          <!-- 🏷️ Service Tags -->
-          {% if service.tags.all %}
-          <div class="sidebar-section">
-            <h3>
-              <i data-lucide="tag"></i>
-              {% trans "Service Tags" %}
-            </h3>
-            <div class="project-tags">
-              {% for tag in service.tags.all %}
-                <a href="/{{ CURRENT_LANG }}/services/tag/{{ tag.slug }}/" 
-                   class="tag-chip"
-                   {% if tag.color %}style="--tag-color: {{ tag.color }};"{% endif %}>
-                  {% if tag.icon %}<span class="tag-icon">{{ tag.icon }}</span>{% endif %}
-                  <span class="tag-name">
-                    {% if CURRENT_LANG == 'uk' and tag.name_uk %}{{ tag.name_uk }}
-                    {% elif CURRENT_LANG == 'pl' and tag.name_pl %}{{ tag.name_pl }}
-                    {% else %}{{ tag.name_en }}{% endif %}
-                  </span>
-                </a>
-              {% endfor %}
-            </div>
-          </div>
-          {% endif %}
+          
 
-          <!-- 🔗 Related Articles - НОВА крос-промоція -->
           {% if related_articles %}
           <div class="sidebar-section">
             <h3>
@@ -338,62 +315,12 @@
           {% endif %}
 
         </div>
-        
-      </div>
+        </div>
     </div>
   </section>
 
-  <!-- 🚀 Related Projects - НОВА крос-промоція -->
-  {% if related_projects %}
-  <section class="related-projects-section">
-    <div class="container">
-      <header class="related-header">
-        <h2>
-          <i data-lucide="rocket"></i>
-          {% trans "Related Projects" %}
-        </h2>
-        <p>{% trans "See how we've successfully implemented this service for other clients" %}</p>
-      </header>
-      
-      <div class="related-projects-grid">
-        {% for project in related_projects %}
-          <div class="related-project-card clickable" data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/">
-            {% if project.featured_image %}
-              <div class="project-image">
-                <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" loading="lazy">
-                <div class="image-overlay-gradient"></div>
-              </div>
-            {% endif %}
-            <div class="project-content">
-              <h3>{{ project.title|safe }}</h3>
-              <p class="project-description">{{ project.short_description|safe|striptags|truncatewords:15 }}</p>
-              
-              <!-- Project Badges -->
-              {% if project.all_badges %}
-                <div class="project-badges">
-                  {% for badge in project.all_badges|slice:":2" %}
-                    <span class="project-badge" 
-                          {% if badge.color %}style="background-color: {{ badge.color }}20; border-color: {{ badge.color }}50;"{% endif %}>
-                      {% if badge.icon %}{{ badge.icon }}{% endif %}
-                      {{ badge.text }}
-                    </span>
-                  {% endfor %}
-                </div>
-              {% endif %}
-              
-              <div class="project-cta">
-                <span>{% trans "View Project" %}</span>
-                <i data-lucide="arrow-right"></i>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-  {% endif %}
+  
 
-  <!-- 🎥 Video Section -->
   {% if service.video_url or service.video_file %}
     <section class="project-video-section">
       <div class="container">
@@ -414,46 +341,10 @@
     </section>
   {% endif %}
 
-  <!-- 🔗 Cross-Promotion Content - НОВА функціональність -->
-  {% if cross_promotion_content %}
-  <section class="related-services-section">
-    <div class="container">
-      <header class="related-header">
-        <h2>{% trans "You Might Also Like" %}</h2>
-        <p>{% trans "Discover related services, projects, and insights" %}</p>
-      </header>
-      
-      <div class="cross-promotion-grid">
-        {% for item in cross_promotion_content %}
-          <div class="cross-promotion-item {{ item.type }}-item">
-            <a href="{{ item.url }}" class="cross-promotion-link">
-              {% if item.image %}
-                <div class="cross-promotion-image">
-                  <img src="{{ item.image }}" alt="{{ item.title }}" loading="lazy">
-                </div>
-              {% endif %}
-              <div class="cross-promotion-content">
-                <div class="cross-promotion-type">
-                  {% if item.type == 'article' %}📰 {% trans "Article" %}
-                  {% elif item.type == 'project' %}🚀 {% trans "Project" %}
-                  {% elif item.type == 'service' %}🛠️ {% trans "Service" %}
-                  {% endif %}
-                </div>
-                <h3>{{ item.title|safe }}</h3>
-                <p class="cross-promotion-summary">{{ item.summary|safe }}</p>
-              </div>
-            </a>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-  {% endif %}
+  
 
-  <!-- 📤 Social Share -->
   {% include 'includes/social_share.html' with share_title=service.title %}
 
-  <!-- 📞 Contact CTA -->
   <section class="project-contact-cta">
     <div class="container">
       <div class="contact-cta-card glass card">
@@ -481,7 +372,6 @@
 
 </article>
 
-<!-- 🔍 Lightbox Modal -->
 <div id="lightbox" class="lightbox" onclick="closeLightbox()">
   <div class="lightbox-content">
     <img id="lightbox-image" src="" alt="">
@@ -495,7 +385,6 @@
 
 {% block extra_scripts %}
 <script>
-// 🔍 Lightbox functionality
 function openLightbox(imageSrc) {
   const lightbox = document.getElementById('lightbox');
   const lightboxImage = document.getElementById('lightbox-image');
@@ -510,12 +399,9 @@ function closeLightbox() {
   document.body.style.overflow = 'auto';
 }
 
-// 📞 Scroll to contact
 function scrollToContact(serviceTitle) {
-  // Scroll to contact form (assuming it's on the same page or redirect)
   window.location.href = `/${document.body.getAttribute('data-current-lang') || 'uk'}/#contact`;
   
-  // Pre-fill message if contact form exists
   setTimeout(() => {
     const messageField = document.querySelector('textarea[name="message"], input[name="message"]');
     if (messageField && serviceTitle) {
@@ -532,20 +418,15 @@ function scrollToContact(serviceTitle) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Initialize Lucide icons
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
 
-  // Set tag colors dynamically
   document.querySelectorAll('.service-tag-pill[style*="border-color"], .tag-chip[style*="--tag-color"]').forEach(function(tag) {
-    // Colors are already set in the template via style attributes
   });
 
-  // Clickable cards functionality
   document.querySelectorAll('.clickable').forEach(function (card) {
     card.addEventListener('click', function (e) {
-      // Don't trigger if clicking on a link or button
       if (e.target.closest('a, button')) return;
       
       const href = card.getAttribute('data-href');
@@ -553,7 +434,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Enhanced expandable content (if needed later)
   const expandTriggers = document.querySelectorAll('.expand-trigger');
   expandTriggers.forEach(trigger => {
     trigger.addEventListener('click', function() {
@@ -568,7 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// ⌨️ Keyboard navigation for lightbox
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeLightbox();

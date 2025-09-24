@@ -3,7 +3,6 @@ window.openConsultantModal = function() {
     if (modal) {
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        // МОБІЛЬНИЙ VIEWPORT ФІКС
         if (window.innerWidth <= 768) {
             const vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -17,7 +16,7 @@ window.openConsultantModal = function() {
             window.consultantChat = new ConsultantChat();
         }
     } else {
-        console.error('Modal element not found!');
+        
     }
 };
 
@@ -67,12 +66,12 @@ class ConsultantChat {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('✅ Сесія ініціалізована, отримано ID:', data.session_id);
+                
                 this.sessionId = data.session_id;
                 localStorage.setItem('consultant_session_id', this.sessionId);
             }
         } catch (error) {
-            console.error('❌ Помилка ініціалізації сесії:', error);
+            
         }
     }
 
@@ -240,22 +239,8 @@ class ConsultantChat {
     renderRagInterface(ragData) {
         let ragHTML = '';
 
-        // 📚 Джерела - ВИМКНЕНО
-        /*
-        if (ragData.sources && ragData.sources.length > 0) {
-            ragHTML += '<div class="rag-sources"><div class="rag-sources-title">📚 Джерела:</div>';
-            ragData.sources.forEach((source, index) => {
-                ragHTML += `
-                    <div class="rag-source-item">
-                        <span class="source-title">${this.escapeHtml(source.content_title || 'Джерело')}</span>
-                    </div>
-                `;
-            });
-            ragHTML += '</div>';
-        }
-        */
-
-        // 💡 Пропозиції
+        
+        
         if (ragData.suggestions && ragData.suggestions.length > 0) {
             ragHTML += '<div class="rag-suggestions"><div class="rag-suggestions-title">💡 Пропозиції:</div>';
             ragData.suggestions.forEach((suggestion) => {
@@ -326,7 +311,7 @@ class ConsultantChat {
                 break;
                 
             default:
-                console.log('Невідома дія:', action);
+                
         }
     }
 
@@ -463,7 +448,7 @@ class ConsultantChat {
             }
             
         } catch (error) {
-            console.error('Помилка відправки запиту:', error);
+            
             alert('Помилка з\'єднання. Спробуйте пізніше.');
         }
     }
@@ -518,7 +503,7 @@ class ConsultantChat {
             }
 
         } catch (error) {
-            console.error('Error sending message:', error);
+            
             this.hideTypingIndicator();
             this.addMessage('assistant', 'Вибачте, виникла помилка з\'єднання. Спробуйте ще раз.');
         }
@@ -625,5 +610,5 @@ window.closeQuoteModal = function() {
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🤖 RAG Consultant готовий!');
+    
 });

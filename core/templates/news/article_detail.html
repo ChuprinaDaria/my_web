@@ -11,17 +11,14 @@
 {% endblock %}
 {% block content %}
 <article class="news-detail-page">
-  <!-- Герой секція -->
   <section class="news-hero hero compact">
     <div class="container">
       <div class="hero-content">
         
-        <!-- Заголовок -->
         <h1 class="article-title">
           {{ article_title|safe }}
         </h1>
 
-        <!-- Категорія та мета інфо (під H1) -->
         <div class="article-meta">
           <span class="category-badge">
             {{ article.category.icon }} 
@@ -35,7 +32,6 @@
           {% endif %}
         </div>
 
-        <!-- Мета інформація -->
         <div class="article-info">
           <time datetime="{{ article.published_at|date:'c' }}" class="publish-date">
             📅 {{ article.published_at|date:'j F Y' }}
@@ -52,7 +48,6 @@
     </div>
   </section>
 
-  <!-- AI зображення -->
   {% if article.ai_image_url %}
     <section class="article-image">
       <div class="container">
@@ -66,15 +61,12 @@
     </section>
   {% endif %}
 
-  <!-- Основний контент -->
   <section class="article-content">
     <div class="container">
       <div class="content-layout">
         
-        <!-- Основна колонка -->
         <div class="main-content">
           
-          <!-- Короткий опис -->
           <div class="article-summary card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
             <div class="card-header">
               <div class="card-icon">💡</div>
@@ -87,7 +79,6 @@
             </div>
           </div>
 
-          <!-- Бізнес інсайт -->
           <div class="business-insight card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
             <div class="card-header">
               <div class="card-icon">🎯</div>
@@ -100,7 +91,6 @@
             </div>
           </div>
 
-          <!-- Цікавинки (якщо є) -->
           {% if article_interesting_facts %}
             <div class="interesting-facts card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
               <div class="card-header">
@@ -117,7 +107,6 @@
             </div>
           {% endif %}
 
-          <!-- Бізнес можливості (якщо є) -->
           {% if article_business_opportunities %}
             <div class="business-opportunities card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
               <div class="card-header">
@@ -134,7 +123,6 @@
             </div>
           {% endif %}
 
-          <!-- LAZYSOFT рекомендації -->
           {% if article_lazysoft_recommendations %}
             <div class="lazysoft-recommendations card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
               <div class="card-header">
@@ -152,7 +140,6 @@
           {% endif %}
         </div>
 
-        <!-- Sidebar Column -->
         <aside class="news-sidebar">
           {% include 'includes/news_sidebar.html' %}
         </aside>
@@ -161,7 +148,6 @@
   </section>
 
 
-  <!-- Навігація -->
   <section class="article-navigation">
     <div class="container">
       <div class="nav-links">
@@ -174,10 +160,8 @@
 
 </article>
 
-  <!-- RELATED WORK SECTION -->
   {% include 'includes/related_work_section.html' %}
 
-  <!-- Соціальні мережі -->
   {% include 'includes/social_share.html' %}
 
 

@@ -2,7 +2,6 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-{# ---------- SEO / META ---------- #}
 {% block title %}Executive Dashboard — Lazysoft{% endblock %}
 
 {% block meta_tags %}
@@ -13,7 +12,6 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://lazysoft.dev{{ request.path }}">
   <link rel="canonical" href="https://lazysoft.dev{{ request.path }}" />
-  {# Twitter #}
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Executive Dashboard — Lazysoft">
   <meta name="twitter:description" content="Realtime KPIs: content, AI efficiency, engagement, ROI, system health.">
@@ -21,7 +19,6 @@
 {% endblock %}
 
 {% block extra_meta %}
-  {# hreflang — якщо сторінка локалізована #}
   <link rel="alternate" href="https://lazysoft.dev/dashboard/" hreflang="en" />
   <link rel="alternate" href="https://lazysoft.dev/uk/dashboard/" hreflang="uk" />
   <link rel="alternate" href="https://lazysoft.dev/pl/dashboard/" hreflang="pl" />
@@ -29,7 +26,6 @@
 
 {% block extra_head %}
   <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-  {# JSON-LD #}
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -61,7 +57,6 @@
     <a class="btn btn--ghost" href="?period={{ period }}&export=json">📄 Export JSON</a>
 
     <div class="share">
-      {# Соц. шарінги #}
       {% with page_url=request.build_absolute_uri title_str=title|urlencode %}
         <a class="share__link" target="_blank" rel="noopener" href="https://www.linkedin.com/shareArticle?mini=true&url={{ page_url }}&title={{ title_str }}">in</a>
         <a class="share__link" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url={{ page_url }}&text={{ title_str }}">X</a>
@@ -150,7 +145,6 @@
 
 {% block extra_scripts %}
   <script>
-    // авто-оновлення раз на 5 хв
     setTimeout(() => window.location.reload(), 300000);
   </script>
 {% endblock %}

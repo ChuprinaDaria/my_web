@@ -4,22 +4,18 @@
 
 {% block body_class %}services-list{% endblock %}
 
-<!-- SEO TITLE - використовуємо Django i18n -->
 {% block title %}
   {{ seo_title|default:"{% trans 'Lazysoft Services — AI Automation, Custom Chatbots & Software Development' %}" }}
 {% endblock %}
 
-<!-- META DESCRIPTION - використовуємо Django i18n -->
 {% block meta_description %}
   {{ seo_description|default:"{% trans 'Comprehensive AI automation services: custom chatbot development, business process automation, web development, and seamless integrations. Transform your business with Lazysoft.' %}" }}
 {% endblock %}
 
-<!-- KEYWORDS - використовуємо Django i18n -->
 {% block meta_keywords %}
   {% trans "AI automation services, chatbot development, software development, business automation, web development, integrations, Telegram bots, WhatsApp bots, Lazysoft services" %}
 {% endblock %}
 
-<!-- OPEN GRAPH - використовуємо Django i18n -->
 {% block og_title %}
   {% trans "Lazysoft Services — AI Automation & Development" %}
 {% endblock %}
@@ -31,7 +27,6 @@
 {% block og_image %}{% static 'images/services-og.jpg' %}{% endblock %}
 {% block og_type %}website{% endblock %}
 
-<!-- TWITTER CARD - використовуємо Django i18n -->
 {% block twitter_title %}
   {% trans "AI Automation Services — Lazysoft" %}
 {% endblock %}
@@ -42,7 +37,6 @@
 
 {% block twitter_image %}{% static 'images/services-twitter-card.jpg' %}{% endblock %}
 
-<!-- ДОДАТКОВІ СОЦМЕРЕЖІ - використовуємо Django i18n -->
 {% block instagram_title %}
   {% trans "AI Automation Services — Lazysoft" %}
 {% endblock %}
@@ -67,14 +61,11 @@
   {% trans "Professional AI solutions for business" %}
 {% endblock %}
 
-<!-- CANONICAL & ДОДАТКОВІ META -->
 {% block extra_meta %}
   {{ block.super }}
   
-  <!-- Canonical URL -->
   <link rel="canonical" href="https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/" />
   
-  <!-- Додаткові structured data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -121,7 +112,6 @@
   }
   </script>
 
-  <!-- FAQ Schema (якщо є FAQ) -->
   {% if faqs %}
   <script type="application/ld+json">
   {
@@ -144,16 +134,13 @@
   {% endif %}
 {% endblock %}
 
-<!-- BREADCRUMBS -->
 {% block breadcrumbs %}
   {% include 'includes/breadcrumbs.html' %}
 {% endblock %}
 
-<!-- CONTENT START -->
 {% block content %}
 <main class="services-page">
 
-<!-- HERO SECTION -->
 <section class="hero services-hero">
   <div class="container">
     <div class="hero-content">
@@ -167,7 +154,6 @@
         {% else %}{% trans "Transform your business with cutting-edge AI solutions: chatbots, process automation, web development, and seamless integrations." %}{% endif %}
       </p>
       
-      <!-- CTA Buttons -->
       <div class="hero-cta">
         <a href="#services-categories" class="cta-primary">
           {% trans "Explore Services" %}
@@ -180,7 +166,6 @@
   </div>
 </section>
 
-<!-- TECH STACK PREVIEW -->
 {% if features %}
 <section class="tech-stack-section">
   <div class="container">
@@ -196,7 +181,6 @@
   </div>
 </section>
 {% else %}
-<!-- Fallback tech stack -->
 <section class="tech-stack-section">
   <div class="container">
     <h2>{% trans "Technologies We Master" %}</h2>
@@ -228,17 +212,13 @@
 {% endif %}
 
 
-<!-- SERVICES GRID -->
 <section id="services-categories" class="services-categories">
   <div class="container">
     <h2>{% trans "Our Services" %}</h2>
     
-    <!-- Services Layout with Sidebar -->
     <div class="services-layout">
-      <!-- Services Grid -->
       {% include 'includes/services_grid.html' %}
       
-      <!-- Services Sidebar -->
       {% include 'includes/services_sidebar_standalone.html' %}
     </div>
   </div>
@@ -283,14 +263,11 @@
 
 {% endif %}
 
-<!-- RELATED WORK SECTION -->
 {% include 'includes/related_work_section.html' %}
 
 
- <!-- Projects News Section -->
  {% include "includes/projects_news_section.html" %}
 
- <!-- News Section -->
  
      {% include "includes/daily_digest.html" %}
    
@@ -302,9 +279,7 @@
 {% block extra_scripts %}
   <script src="{% static 'js/services_sidebar.js' %}"></script>
   
-  <!-- Google Analytics tracking -->
   <script>
-    <!-- Google Analytics tracking -->
     if (typeof gtag !== 'undefined') {
       gtag('config', 'GA_TRACKING_ID', {
         page_title: '{% trans "Services" %}',
@@ -317,18 +292,14 @@
     }
   </script>
 
-  <!-- Enhanced clickable cards functionality -->
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Initialize Lucide icons first
       if (typeof lucide !== 'undefined') {
         lucide.createIcons();
       }
       
-      // Enhanced clickable cards
       document.querySelectorAll('.clickable').forEach(function (card) {
         card.addEventListener('click', function (e) {
-          // Prevent navigation if clicking on nested interactive elements
           if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.tagName === 'SUMMARY') {
             return;
           }
@@ -339,7 +310,6 @@
           }
         });
         
-        // Add hover effect
         card.addEventListener('mouseenter', function () {
           this.style.transform = 'translateY(-4px) scale(1.02)';
         });
@@ -349,24 +319,20 @@
         });
       });
       
-      // FAQ toggle animation with Lucide icons
       document.querySelectorAll('.faq-item').forEach(function (item) {
         const summary = item.querySelector('.faq-question');
         const icon = summary.querySelector('.faq-icon');
         
         item.addEventListener('toggle', function () {
           if (item.open) {
-            // Change to minus icon when open
             icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/></svg>';
             icon.style.transform = 'rotate(0deg)';
           } else {
-            // Change to plus icon when closed
             icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>';
             icon.style.transform = 'rotate(0deg)';
           }
         });
         
-        // Set initial plus icon
         if (icon && !item.open) {
           icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>';
         }

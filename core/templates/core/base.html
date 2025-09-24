@@ -7,7 +7,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
     
-    <!-- Preload критичних ресурсів -->
     <link rel="preload" href="{% static 'images/about-preview-optimized.jpg' %}" as="image" type="image/jpeg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,12 +77,10 @@
       <meta name="msapplication-navbutton-color" content="#66ff00">
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
       
-      <!-- Google Site Verification -->
       {% if GOOGLE_SITE_VERIFICATION %}
         <meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}" />
       {% endif %}
       
-      <!-- Bing/Yahoo Verification -->
       {% if BING_SITE_VERIFICATION %}
         <meta name="msvalidate.01" content="{{ BING_SITE_VERIFICATION }}" />
       {% endif %}
@@ -95,7 +92,7 @@
         <link rel="canonical" href="{{ SITE_URL }}{{ request.get_full_path }}" />
       {% endif %}
     {% endblock %}
-
+    
     {% block extra_meta %}
       <link rel="alternate" hreflang="en" href="{{ SITE_URL }}/en{{ request.resolver_match.route }}" />
       <link rel="alternate" hreflang="uk" href="{{ SITE_URL }}/uk{{ request.resolver_match.route }}" />
@@ -160,13 +157,10 @@
       </script>
     {% endblock %}
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- Main CSS -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}?v=1.1" />
     
-    <!-- Additional CSS files not included in main.css -->
     <link rel="stylesheet" href="{% static 'css/components/consultant_chat.css' %}">
     <link rel="stylesheet" href="{% static 'css/components/modern_services_carousel.css' %}">
     <link rel="stylesheet" href="{% static 'css/components/ai_metrics_widget.css' %}">
@@ -183,7 +177,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'site.webmanifest' %}">
     
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     {% if GOOGLE_ANALYTICS_ID %}
       <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
       <script>
@@ -248,10 +241,8 @@
 
     {% include 'components/cookie_consent.html' %}
 
-    <!-- Critical JavaScript - Load immediately -->
     <script src="{% static 'js/script.js' %}"></script>
     
-    <!-- Non-critical JavaScript - Load asynchronously -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <script src="{% static 'js/modern_projects_carousel.js' %}"></script>
     <script src="{% static 'js/simple_services.js' %}"></script>
@@ -289,7 +280,6 @@
     <script src="{% static 'js/consultant_chat.js' %}"></script>
     
     <script>
-      // Django контекст для JavaScript
       window.DJANGO_CONTEXT = {
         csrfToken: "{{ csrf_token }}",
         currentLanguage: "{{ CURRENT_LANG }}",
@@ -309,9 +299,9 @@
       function initLucideIcons() {
         if (typeof lucide !== 'undefined') {
           lucide.createIcons();
-          console.log('🎨 Lucide icons initialized');
+          
         } else {
-          console.warn('Lucide not loaded yet');
+          
         }
       }
 
@@ -333,16 +323,12 @@
       });
     </script>
 
-    <!-- Контактна модалка -->
     {% include 'partials/contact_modal.html' %}
     
-    <!-- Скрипти для форм -->
     <script src="{% static 'js/contact_forms.js' %}"></script>
     
-    <!-- Універсальна CTA модалка -->
     <script src="{% static 'js/universal_cta_modal.js' %}"></script>
     
-    <!-- Обробник кліків для карток -->
     <script src="{% static 'js/clickable_handler.js' %}"></script>
 
     <script src="{% static 'js/cookie_consent.js' %}"></script>

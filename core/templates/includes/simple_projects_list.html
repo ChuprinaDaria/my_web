@@ -1,7 +1,6 @@
 {% load i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- ✅ MODERN FEATURED PROJECTS (WITH ACCORDION) -->
 <div class="section-header">
   <h2>
     {% trans "Our Projects" %}
@@ -11,12 +10,10 @@
   {% endif %}
 </div>
 
-<!-- Сучасний список проєктів з акордеоном -->
 <div class="projects-simple-list" role="list">
       {% for project in featured_projects|slice:":10" %}
         <article class="project-simple-item" role="article" data-project-id="{{ project.slug }}">
 
-          <!-- Зображення проєкту -->
           <div class="project-media">
             {% if project.featured_image %}
               <img src="{{ project.featured_image.url }}"
@@ -29,9 +26,7 @@
             {% endif %}
           </div>
 
-          <!-- Основний контент -->
           <div class="project-content">
-            <!-- Тригер акордеону -->
             <button class="project-trigger" type="button"
                     aria-expanded="false"
                     aria-controls="project-desc-{{ forloop.counter }}">
@@ -52,7 +47,6 @@
               </p>
             </button>
 
-            <!-- Розгорнутий опис (акордеон) -->
             <div id="project-desc-{{ forloop.counter }}" class="project-description-accordion" hidden>
               <div>
                 {% if CURRENT_LANG == 'uk' and project.description_uk %}{{ project.description_uk|safe }}
@@ -60,7 +54,6 @@
                 {% else %}{{ project.description_en|safe }}{% endif %}
               </div>
               
-              <!-- Дії проєкту -->
               <div class="project-actions">
                 <a class="btn-primary" href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/">
                   <i data-lucide="arrow-right"></i>
@@ -76,7 +69,6 @@
             </div>
           </div>
 
-          <!-- Декоративний glow ефект -->
           <div class="project-glow-border" aria-hidden="true"></div>
         </article>
       {% empty %}

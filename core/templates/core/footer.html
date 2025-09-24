@@ -4,7 +4,6 @@
 <footer class="footer">
   <div class="container">
     
-    <!-- CTA SECTION -->
     <div class="footer-cta">
       <h3>
         {% if CURRENT_LANG == 'uk' %}Готові автоматизувати свій бізнес?
@@ -13,7 +12,7 @@
       </h3>
       <p>
         {% if CURRENT_LANG == 'uk' %}Отримайте безкоштовну консультацію та дізнайтеся, як ШІ може трансформувати ваш бізнес.
-        {% elif CURRENT_LANG == 'pl' %}Uzyskaj bezpłatną konsultację i dowiedz się, jak AI może przekształcić Twój biznes.
+        {% elif CURRENT_LANG == 'pl' %}Uzyskaj bezpłatną консультацію і дізнайтеся, як AI може перетворити Twój biznes.
         {% else %}Get a free consultation and discover how AI can transform your business.{% endif %}
       </p>
       <button class="footer-cta-button" onclick="window.ctaModal && window.ctaModal.show('footer_cta');">
@@ -22,7 +21,6 @@
       </button>
     </div>
 
-    <!-- FOOTER CONTENT -->
     <div class="footer-content">
       
       <div class="footer-section">
@@ -30,7 +28,7 @@
         <p class="contact-info">
           <i data-lucide="building-2"></i>
           {% if CURRENT_LANG == 'uk' %}Провідна компанія з ШІ автоматизації
-          {% elif CURRENT_LANG == 'pl' %}Wiodąca firma automatyzacji AI
+          {% elif CURRENT_LANG == 'pl' %}Wiodąca фірма автоматизації AI
           {% else %}Leading AI Automation Company{% endif %}
         </p>
         <p class="contact-info">
@@ -75,7 +73,6 @@
         </div>
       </div>
 
-      <!-- SERVICES -->
       <div class="footer-section">
         <h3>{% trans "Services" %}</h3>
         <ul class="footer-links">
@@ -87,7 +84,6 @@
         </ul>
       </div>
 
-      <!-- COMPANY -->
       <div class="footer-section">
         <h3>{% trans "Company" %}</h3>
         <ul class="footer-links">
@@ -99,7 +95,6 @@
         </ul>
       </div>
 
-      <!-- LANGUAGES -->
       <div class="footer-section">
         <h3>{% trans "Languages" %}</h3>
         <div class="footer-lang-selector">
@@ -181,7 +176,7 @@
       <div class="footer-copyright">
         <p>&copy; {{ "now"|date:"Y" }} Lazysoft. 
           {% if CURRENT_LANG == 'uk' %}Всі права захищені.
-          {% elif CURRENT_LANG == 'pl' %}Wszelkie prawa zastrzeżone.
+          {% elif CURRENT_LANG == 'pl' %}Wszelkie права zastrzeżone.
           {% else %}All rights reserved.{% endif %}
         </p>
       </div>

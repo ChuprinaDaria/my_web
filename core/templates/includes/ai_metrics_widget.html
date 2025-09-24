@@ -1,17 +1,13 @@
 {% load static i18n %}
-<!-- 🤖 AI METRICS WIDGET -->
 <section class="ai-metrics-widget">
     
-    <!-- 📊 ЗАГОЛОВОК -->
     <div class="widget-header">
         <h2>{% trans "🤖 AI Ефективність в Дії" %}</h2>
         <p>{% trans "Реальні результати автоматизації для вашого бізнесу" %}</p>
     </div>
 
-    <!-- 📈 СІТКА МЕТРИК -->
     <div class="metrics-grid">
         
-        <!-- Заощаджено коштів -->
         <div class="metric-card roi">
             <h3>{% trans "Заощаджено коштів" %}</h3>
             <p class="metric-value live" id="roiValue">
@@ -20,7 +16,6 @@
             <p class="metric-description">{% trans "Економія від автоматизації за період" %}</p>
         </div>
 
-        <!-- AI Model -->
         <div class="metric-card ai-model">
             <h3>{% trans "Модель AI" %}</h3>
             <div class="metric-value live ai-model-container" id="aiModelValue">
@@ -34,7 +29,6 @@
             <p class="metric-description">{% trans "Основна модель для обробки" %}</p>
         </div>
 
-        <!-- Time Saved -->
         <div class="metric-card time">
             <h3>{% trans "Зекономлено Часу" %}</h3>
             <p class="metric-value live" id="timeValue">
@@ -43,7 +37,6 @@
             <p class="metric-description">{% trans "Автоматизація робочих процесів" %}</p>
         </div>
 
-        <!-- AI Content -->
         <div class="metric-card content">
             <h3>{% trans "AI Контент" %}</h3>
             <p class="metric-value live" id="contentValue">
@@ -52,7 +45,6 @@
             <p class="metric-description">{% trans "Згенеровано AI статей цього місяця" %}</p>
         </div>
 
-        <!-- Process Efficiency -->
         <div class="metric-card efficiency">
             <h3>{% trans "Зростання Ефективності" %}</h3>
             <p class="metric-value live">
@@ -61,7 +53,6 @@
             <p class="metric-description">{% trans "Покращення продуктивності процесів" %}</p>
         </div>
 
-        <!-- AI Spend -->
         <div class="metric-card ai-spend">
             <h3>{% trans "Витрати на AI" %}</h3>
             <p class="metric-value live" id="aiCostValue">
@@ -70,7 +61,6 @@
             <p class="metric-description">{% trans "Витрачено на AI моделі за період" %}</p>
         </div>
 
-        <!-- AI Time -->
         <div class="metric-card ai-time">
             <h3>{% trans "Час AI обробки" %}</h3>
             <p class="metric-value live" id="aiTimeValue">
@@ -82,22 +72,18 @@
 
     </div>
 
-    <!-- 🎯 CALL TO ACTION -->
     <div class="metrics-cta">
         <a href="{% url 'contacts:contact_page' %}" class="cta-button" onclick="window.ctaModal && window.ctaModal.show('ai_metrics_widget'); return false;">
             <span>{% trans "Замовити Консультацію" %}</span>
         </a>
     </div>
 
-    <!-- ⏰ ОСТАННЯ ОНОВЛЕННЯ -->
     <div class="last-updated">
         {% trans "Останнє оновлення:" %} <span id="lastUpdated">{% trans "сьогодні, 14:30" %}</span>
     </div>
 </section>
 
-<!-- 📡 AJAX SCRIPT -->
 <script>
-// 🌍 WIDGET CONFIGURATION
 const WIDGET_CONFIG = {
     language: '{{ LANGUAGE_CODE }}',
     translations: {
@@ -110,7 +96,6 @@ const WIDGET_CONFIG = {
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    // 🕒 ОНОВЛЕННЯ ЧАСУ
     function updateTimestamp() {
         const now = new Date();
         const timeStr = now.toLocaleTimeString(WIDGET_CONFIG.language, { 
@@ -121,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `${WIDGET_CONFIG.translations.today}, ${timeStr}`;
     }
 
-    // 📡 АВТООНОВЛЕННЯ ДАНИХ
     async function updateMetrics() {
         try {
             const response = await fetch('/dashboard/public-api/?period=month');
@@ -132,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateTimestamp();
             }
         } catch (error) {
-            // Silent fail
         }
     }
 

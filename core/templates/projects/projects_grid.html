@@ -1,24 +1,20 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 📋 All Projects Grid Section -->
 <section class="all-projects-section">
   <div class="container">
     
-    <!-- Section Header -->
         <div class="section-header">
           <h2>
             {% trans "All Projects" %}
           </h2>
         </div>
 
-    <!-- Projects Grid -->
     <div class="projects-grid">
       {% for project in all_projects %}
         <article class="project-card glass card" 
                  onclick="location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/'">
           
-          <!-- Project Image -->
           {% if project.featured_image %}
             <div class="project-image">
               <img src="{{ project.featured_image.url }}" 
@@ -28,7 +24,6 @@
             </div>
           {% endif %}
 
-          <!-- Project Tags -->
           <div class="project-tags">
             {% if project.is_ai_powered %}
               <span class="project-tag ai-powered">🤖 AI</span>
@@ -44,7 +39,6 @@
             {% endif %}
           </div>
 
-          <!-- Project Content -->
           <div class="project-content">
               <h3>
                 {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}
@@ -58,7 +52,6 @@
               {% else %}{{ project.short_description_en|striptags|truncatewords:20 }}{% endif %}
             </p>
             
-            <!-- Project Metrics -->
             <div class="project-metrics">
               {% if project.development_duration_weeks %}
                 <span class="metric-item">
@@ -71,7 +64,6 @@
               {% endif %}
             </div>
             
-            <!-- Project Actions -->
             <div class="project-actions">
               <button class="btn-primary" onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
                 {% trans "View Case" %}

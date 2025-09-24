@@ -367,6 +367,30 @@ class RAGConsultantService:
             allow_ask=allow_ask
         )
 
+        # Гарантія показу кнопки прорахунку при текстових ознаках цін
+        try:
+            resp_text = (response.get('content') or '').lower()
+            has_textual_price = any(
+                key in resp_text for key in ['орієнтовн', 'вартіст', 'price', 'usd', '$']
+            )
+            if has_textual_price and not response.get('prices_ready', False):
+                response['prices_ready'] = True
+            if response.get('prices_ready'):
+                actions = list(response.get('actions', []))
+                has_quote_btn = any(
+                    (a.get('type') == 'button' and a.get('action') == 'request_quote') for a in actions
+                )
+                if not has_quote_btn:
+                    actions.append({
+                        'type': 'button',
+                        'text': '🧮 Отримати детальний прорахунок у PDF',
+                        'action': 'request_quote',
+                        'style': 'primary'
+                    })
+                response['actions'] = actions
+        except Exception:
+            pass
+
         # Якщо ми щойно задали уточнення для прайсингу — відмічаємо в метаданих
         if detected_intent == 'pricing' and allow_ask:
             meta['clarification_asked'] = True
@@ -500,17 +524,34 @@ class RAGConsultantService:
             ai_response = response.text
 
             prices_ready = False
+            prices = []
             # Якщо pricing і це фоллоуап — додаємо/підсилюємо ціни (без додаткових питань)
             if pricing_flow_mode and is_followup:
                 pricing_lines = []
                 for r in search_results:
                     if r.get('content_category') == 'pricing':
-                        price = r.get('price')
+                        price_from = r.get('price_from')
+                        price_to = r.get('price_to')
                         currency = r.get('currency', '')
                         pkg = r.get('package_name') or r.get('content_title')
                         service_title = r.get('service_title')
-                        if price is not None and pkg:
-                            line = f"- {pkg}: {price} {currency}".strip()
+                        price_str = None
+                        if price_from is not None and price_to is not None:
+                            price_str = f"{price_from}-{price_to} {currency}".strip()
+                        elif price_from is not None:
+                            price_str = f"від {price_from} {currency}".strip()
+                        elif price_to is not None:
+                            price_str = f"до {price_to} {currency}".strip()
+                        if (price_from is not None or price_to is not None) and pkg:
+                            prices.append({
+                                'title': f"{pkg}{f' ({service_title})' if service_title else ''}",
+                                'description': '',
+                                'price_from': price_from if price_from is not None else '',
+                                'price_to': price_to if price_to is not None else '',
+                                'currency': currency
+                            })
+                        if price_str and pkg:
+                            line = f"- {pkg}: {price_str}"
                             if service_title:
                                 line = f"{line} ({service_title})"
                             pricing_lines.append(line)
@@ -519,6 +560,12 @@ class RAGConsultantService:
                     prices_ready = True
                     if 'Ціни' not in ai_response:
                         ai_response = ai_response.strip() + "\n\nЦіни (орієнтовно):\n" + "\n".join(pricing_lines)
+
+            # Резервне визначення наявності базових цін за текстом відповіді
+            if not prices_ready:
+                resp_lower = (ai_response or '').lower()
+                if ('орієнтовн' in resp_lower) or ('$' in ai_response) or ('usd' in resp_lower) or ('вартіст' in resp_lower) or ('price' in resp_lower):
+                    prices_ready = True
 
             # Одноразова згадка GDPR у першій відповіді в сесії
             is_first_assistant_reply = True
@@ -541,11 +588,11 @@ class RAGConsultantService:
                     'style': 'secondary',
                     'persistent': True
                 })
-            if intent == 'pricing' and prices_ready:
+            if prices_ready:
                 actions.append({
                     'type': 'button',
-                    'text': 'Отримати детальний підрахунок в PDF',
-                    'action': 'start_pdf_quote_flow',
+                    'text': '🧮 Отримати детальний прорахунок у PDF',
+                    'action': 'request_quote',
                     'style': 'primary'
                 })
             
@@ -556,7 +603,8 @@ class RAGConsultantService:
                 'suggestions': suggestions,
                 'context_used': len(search_results),
                 'prices_ready': prices_ready,
-                'actions': actions
+                'actions': actions,
+                'prices': prices
             }
             
         except Exception as e:
@@ -577,12 +625,12 @@ class RAGConsultantService:
             if not is_followup:
                 pricing_flow = (
                     "Після привітання задай ОДИН раз максимально повний перелік уточнень для оцінки, "
-                    "у форматі нумерованого списку (1., 2., 3.), не більше 5 пунктів. "
+                    "у форматі нумерованого списку (1., 2., 3., 4.,5.), не більше 5 пунктів. "
                     "Не публікуй ціни у цьому повідомленні."
                 )
             else:
                 pricing_flow = (
-                    "Це фоллоуап: не став додаткових питань. Дай ціни одразу, використай наявні прайси; "
+                    "Це фоллоуап: не став додаткових питань. Дай ціни одразу після уточнень, використай наявні прайси; "
                     "якщо бракує даних, зроби короткі припущення (в дужках) і наведи діапазони."
                 )
         
@@ -596,8 +644,10 @@ class RAGConsultantService:
 - Пропонуй практичні рішення.
 - Завжди згадуй релевантні проєкти або сервіси.
 - Не згадуй походження інформації та не пиши фрази на кшталт "з нашої бази знань".
-- Якщо запит потребує уточнень, задай їх як нумерований список (1., 2., 3.), але тільки 1 раз, після давай ціни
+- Якщо запит потребує уточнень, задай їх як нумерований список (1., 2., 3., 4., 5.), але тільки 1 раз, після давай ціни
 - Не використовуй Markdown-розмітку (без **, без заголовків, без списків Markdown).
+- Пропонуй записатися на безкоштовну консультацію або прорахунок
+- Якщо в тебе немає відповіді на питання, скажи що ти нажаль не компенетна і запропонуй записатися на консультацію
 {pricing_flow}
 """
         

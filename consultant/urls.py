@@ -17,4 +17,5 @@ urlpatterns = [
     
     # 💰 Нові endpoints для pricing
     path('api/request-quote/', views.request_quote_from_chat, name='request_quote'),
+    path('api/track-consultation-click/', views.track_consultation_click, name='track_consultation_click'),
 ]

@@ -1,7 +1,3 @@
-/* ===============================================
-   🫧 CONSULTANT BUBBLE - JavaScript функціональність
-   =============================================== */
-
 class ConsultantBubble {
   constructor() {
     this.bubble = null;
@@ -10,32 +6,30 @@ class ConsultantBubble {
   }
 
   init() {
-    console.log('ConsultantBubble: Initializing...');
-    // Чекаємо поки DOM завантажиться
+    
     if (document.readyState === 'loading') {
-      console.log('ConsultantBubble: DOM still loading, waiting for DOMContentLoaded');
+      
       document.addEventListener('DOMContentLoaded', () => this.setupBubble());
     } else {
-      console.log('ConsultantBubble: DOM already loaded, setting up bubble');
+      
       this.setupBubble();
     }
   }
 
   setupBubble() {
-    console.log('ConsultantBubble: Setting up bubble...');
-    // Створюємо HTML структуру пузирика
+    
     this.createBubbleHTML();
     
-    // Додаємо обробники подій
+    
     this.addEventListeners();
     
-    // Ініціалізуємо анімації
+    
     this.initAnimations();
-    console.log('ConsultantBubble: Setup complete');
+    
   }
 
   createBubbleHTML() {
-    console.log('ConsultantBubble: Creating HTML...');
+    
     const bubbleHTML = `
       <div class="consultant-bubble-container" id="consultant-bubble">
         <div class="pulse-ring"></div>
@@ -53,35 +47,34 @@ class ConsultantBubble {
       </div>
     `;
     
-    // Додаємо до body
+    
     document.body.insertAdjacentHTML('beforeend', bubbleHTML);
     this.bubble = document.getElementById('consultant-bubble');
-    console.log('ConsultantBubble: HTML created, bubble element:', this.bubble);
+    
   }
 
   addEventListeners() {
     if (!this.bubble) {
-      console.error('ConsultantBubble: bubble element not found');
+      
       return;
     }
 
     const bubbleElement = this.bubble.querySelector('.consultant-bubble');
     
     if (!bubbleElement) {
-      console.error('ConsultantBubble: bubble element not found inside container');
+      
       return;
     }
     
-    console.log('ConsultantBubble: Adding event listeners');
     
-    // Клік по пузирику
+    
     bubbleElement.addEventListener('click', (e) => {
       e.preventDefault();
-      console.log('ConsultantBubble: Clicked!');
+      
       this.openConsultant();
     });
 
-    // Hover ефекти
+    
     bubbleElement.addEventListener('mouseenter', () => {
       this.onHoverEnter();
     });
@@ -90,16 +83,16 @@ class ConsultantBubble {
       this.onHoverLeave();
     });
 
-    // Показуємо/ховаємо при скролі
+    
     let lastScrollTop = 0;
     window.addEventListener('scroll', () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       
       if (scrollTop > lastScrollTop && scrollTop > 100) {
-        // Скрол вниз - ховаємо
+        
         this.hideBubble();
       } else {
-        // Скрол вгору - показуємо
+        
         this.showBubble();
       }
       
@@ -108,7 +101,7 @@ class ConsultantBubble {
   }
 
   initAnimations() {
-    // Додаємо додаткові анімації при завантаженні
+    
     if (this.bubble) {
       this.bubble.style.opacity = '0';
       this.bubble.style.transform = 'scale(0.5)';
@@ -156,21 +149,20 @@ class ConsultantBubble {
   }
 
   openConsultant() {
-    console.log('Opening consultant from:', window.location.pathname);
-    console.log('openConsultantModal function available:', typeof window.openConsultantModal);
     
-    // Просто викликаємо глобальну функцію
+    
+    
     if (window.openConsultantModal) {
-      console.log('Calling openConsultantModal...');
+      
       window.openConsultantModal();
     } else {
-      console.error('openConsultantModal function not found!');
-      console.log('Available window functions:', Object.keys(window).filter(key => key.includes('consultant')));
+      
+      
     }
   }
 
   showConsultantModal() {
-    // Створюємо модальне вікно у стилі project detail
+    
     const modal = document.createElement('div');
     modal.className = 'consultant-modal';
     modal.style.cssText = `
@@ -204,7 +196,7 @@ class ConsultantBubble {
     `;
 
     modalContent.innerHTML = `
-      <!-- Header -->
+      
       <div class="consultant-modal-header" style="
         padding: 40px 40px 20px 40px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -260,7 +252,7 @@ class ConsultantBubble {
             line-height: 1.6;
           ">Штучний інтелект для консультацій та допомоги</p>
           
-          <!-- Tags -->
+          
           <div class="consultant-tags" style="
             display: flex;
             justify-content: center;
@@ -299,7 +291,7 @@ class ConsultantBubble {
         </div>
       </div>
 
-      <!-- Content -->
+      
       <div class="consultant-modal-body" style="padding: 40px;">
         <div class="consultant-bio" style="
           background: rgba(255, 255, 255, 0.05);
@@ -429,7 +421,7 @@ class ConsultantBubble {
           </div>
         </div>
 
-        <!-- Actions -->
+        
         <div class="consultant-actions" style="
           display: flex;
           gap: 20px;
@@ -476,7 +468,7 @@ class ConsultantBubble {
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
 
-    // Обробники кнопок
+    
     modal.querySelector('#start-chat').addEventListener('click', () => {
       this.startChat();
       document.body.removeChild(modal);
@@ -490,14 +482,14 @@ class ConsultantBubble {
       document.body.removeChild(modal);
     });
 
-    // Закриваємо по кліку поза модалкою
+    
     modal.addEventListener('click', (e) => {
       if (e.target === modal) {
         document.body.removeChild(modal);
       }
     });
 
-    // Hover ефекти для кнопок
+    
     const startChatBtn = modal.querySelector('#start-chat');
     const learnMoreBtn = modal.querySelector('#learn-more');
     const closeBtn = modal.querySelector('#close-modal');
@@ -536,7 +528,7 @@ class ConsultantBubble {
       closeBtn.style.transform = 'scale(1)';
     });
 
-    // Анімація появи
+    
     modal.style.opacity = '0';
     modalContent.style.transform = 'scale(0.8) translateY(50px)';
     
@@ -558,16 +550,16 @@ class ConsultantBubble {
   }
 
   startChat() {
-    // Відкриваємо модальне вікно чату
+    
     if (typeof openConsultantModal === 'function') {
       openConsultantModal();
     } else {
-      // Fallback to new tab if modal function not available
+      
       window.open('/consultant/', '_blank');
     }
   }
 
-  // Публічні методи для зовнішнього використання
+  
   toggle() {
     if (this.isVisible) {
       this.hideBubble();
@@ -584,17 +576,15 @@ class ConsultantBubble {
   }
 }
 
-// Ініціалізуємо пузирик після завантаження DOM
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('ConsultantBubble: DOM loaded, initializing bubble on:', window.location.pathname);
+  
   const consultantBubble = new ConsultantBubble();
   
-  // Експортуємо для глобального використання
+  
   window.ConsultantBubble = ConsultantBubble;
   window.consultantBubble = consultantBubble;
-  console.log('ConsultantBubble: Initialization complete on:', window.location.pathname);
   
-  // Перевіряємо, чи створився пузирик
+  
   const bubbleElement = document.getElementById('consultant-bubble');
-  console.log('Bubble element created:', bubbleElement);
+  
 });

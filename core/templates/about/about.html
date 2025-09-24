@@ -8,7 +8,6 @@
 {% block title %}{{ page_title }} | Lazysoft{% endblock %}
 {% block meta_description %}{{ page_description }}{% endblock %}
 
-<!-- Додати OG теги -->
 {% block extra_head %}
   <meta property="og:title" content="{{ page_title }} | Lazysoft">
   <meta property="og:description" content="{{ page_description }}">
@@ -25,7 +24,6 @@
     
    
 
-    <!-- Hero Section -->
     <h1 class="page-title">
       {% get_current_language as LANGUAGE_CODE %}
       {% if LANGUAGE_CODE == 'en' %}{{ about.title_en }}
@@ -39,7 +37,6 @@
       {% else %}{{ about.subtitle_pl }}{% endif %}
     </p>
 
-    <!-- Main Content -->
     <div class="about-content">
       <div class="content-section">
         <h2>{% trans "Our Story" %}</h2>
@@ -63,7 +60,6 @@
       </div>
     </div>
 
-    <!-- Gallery Section (як в проєктах) -->
     {% if about.gallery_image_1 or about.gallery_image_2 or about.gallery_image_3 %}
       <section class="about-gallery-section">
         <div class="gallery-header">
@@ -99,7 +95,6 @@
       </section>
     {% endif %}
 
-    <!-- Video Section -->
     {% if about.video_url or about.video_file %}
       <section class="about-video-section">
         <div class="video-header">
@@ -118,7 +113,6 @@
       </section>
     {% endif %}
 
-    <!-- CTA Section -->
     <div class="about-cta">
       <h2>{% trans "Ready to Automate?" %}</h2>
       <p>{% trans "Let's discuss how we can help transform your business with smart automation." %}</p>
@@ -131,7 +125,6 @@
   </div>
 </section>
 
-<!-- Lightbox -->
 <div id="lightbox" class="lightbox" onclick="closeLightbox()">
   <div class="lightbox-content">
     <span class="lightbox-close">&times;</span>

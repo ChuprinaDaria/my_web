@@ -1,10 +1,8 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 📊 Project Sidebar -->
 <aside class="project-sidebar">
   
-  <!-- Project Tags -->
   {% if project_tags %}
     <div class="sidebar-section glass card">
       <h3>
@@ -22,7 +20,6 @@
     </div>
   {% endif %}
 
-  <!-- Technologies -->
   {% if project.technologies_used %}
     <div class="sidebar-section glass card">
       <h3>
@@ -37,7 +34,6 @@
     </div>
   {% endif %}
 
-  <!-- Project Info -->
   <div class="sidebar-section glass card">
     <h3>
       <i data-lucide="info"></i>
@@ -75,7 +71,6 @@
     </div>
   </div>
 
-  <!-- Client Review -->
   {% if project.review and project.review.is_active %}
     <div class="sidebar-section glass card">
       <h3>
@@ -108,7 +103,6 @@
     </div>
   {% endif %}
 
-  <!-- Related Articles -->
   {% if related_articles %}
     <div class="sidebar-section glass card">
       <h3>
@@ -136,7 +130,6 @@
     </div>
   {% endif %}
 
-  <!-- Related Services -->
   {% if related_services %}
     <div class="sidebar-section glass card">
       <h3>
@@ -159,7 +152,6 @@
     </div>
   {% endif %}
 
-  <!-- CTA Sidebar -->
   <div class="sidebar-section glass card cta-sidebar">
     <h3>
       <i data-lucide="sparkles"></i>
@@ -179,7 +171,6 @@
 </aside>
 
 <script>
-// Apply dynamic colors to tag chips
 document.addEventListener('DOMContentLoaded', function() {
   const tagChips = document.querySelectorAll('.tag-chip[data-color]');
   tagChips.forEach(chip => {

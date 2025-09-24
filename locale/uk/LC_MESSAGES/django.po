@@ -395,8 +395,160 @@ msgstr "FAQ"
 msgid "Contact"
 msgstr "Контакти"
 
+# Services list hero CTA
+msgid "Explore Services"
+msgstr "Переглянути послуги"
+
+msgid "Get Free Consultation"
+msgstr "Отримати безкоштовну консультацію"
+
 msgid "Languages"
 msgstr "Мови"
+
+msgid "Follow us"
+msgstr "Слідкуйте за нами"
+
+msgid "Other news"
+msgstr "Інші новини"
+
+# =====================
+# Additional UI Strings
+# =====================
+msgid "Technologies We Master"
+msgstr "Технології, якими ми володіємо"
+
+msgid "Frequently Asked Questions"
+msgstr "Поширені запитання"
+
+msgid "View All FAQ"
+msgstr "Переглянути всі FAQ"
+
+msgid "Get to know our work"
+msgstr "Познайомтеся з нашими роботами"
+
+msgid "See what we've created for our clients"
+msgstr "Подивіться, що ми створили для наших клієнтів"
+
+msgid "Learn how we can help your business"
+msgstr "Дізнайтеся, як ми можемо допомогти вашому бізнесу"
+
+msgid "Learn our story and approach"
+msgstr "Дізнайтеся нашу історію та підхід"
+
+msgid "Get This Service"
+msgstr "Замовити цю послугу"
+
+msgid "Quick Contact"
+msgstr "Швидкий контакт"
+
+msgid "Ready to implement this service? Let's discuss your specific needs and create a custom solution."
+msgstr "Готові впровадити цю послугу? Обговорімо ваші потреби та створімо індивідуальне рішення."
+
+msgid "Start Discussion"
+msgstr "Почати обговорення"
+
+msgid "Service Details"
+msgstr "Деталі послуги"
+
+msgid "Priority"
+msgstr "Пріоритет"
+
+msgid "Top Service"
+msgstr "Топ послуга"
+
+msgid "Available Since"
+msgstr "Доступна з"
+
+msgid "Service Overview"
+msgstr "Огляд послуги"
+
+msgid "Target Audience"
+msgstr "Цільова аудиторія"
+
+msgid "You Might Also Like"
+msgstr "Вам також може сподобатися"
+
+msgid "Business Value"
+msgstr "Цінність для бізнесу"
+
+msgid "Pricing"
+msgstr "Вартість"
+
+msgid "Service Demonstration"
+msgstr "Демонстрація послуги"
+
+msgid "Ready to Get Started?"
+msgstr "Готові почати?"
+
+msgid "Let's discuss how this service can transform your business. Get a free consultation and custom solution proposal."
+msgstr "Обговорімо, як ця послуга може трансформувати ваш бізнес. Отримайте безкоштовну консультацію та індивідуальну пропозицію."
+
+msgid "Live Demo"
+msgstr "Живе демо"
+
+msgid "Get Similar Project"
+msgstr "Отримати подібний проєкт"
+
+msgid "Client Request"
+msgstr "Запит клієнта"
+
+msgid "Technologies"
+msgstr "Технології"
+
+msgid "Read more details"
+msgstr "Читати деталі"
+
+msgid "Project Info"
+msgstr "Інформація про проєкт"
+
+msgid "Implementation"
+msgstr "Впровадження"
+
+msgid "Challenges & Solutions"
+msgstr "Виклики та рішення"
+
+msgid "Results & Impact"
+msgstr "Результати та вплив"
+
+msgid "Lessons Learned"
+msgstr "Уроки"
+
+msgid "Open Service"
+msgstr "Відкрити послугу"
+
+msgid "Want Similar?"
+msgstr "Хочете подібне?"
+
+msgid "Let's discuss how we can create something similar for your business."
+msgstr "Обговорімо, як ми можемо створити щось подібне для вашого бізнесу."
+
+msgid "TECH INSIGHTS od LAZYSOFT"
+msgstr "TECH INSIGHTS від LAZYSOFT"
+
+msgid "Related services"
+msgstr "Пов'язані послуги"
+
+# Ukrainian originals also mapped (for safety if used as msgid)
+msgid "Напишіть нам"
+msgstr "Напишіть нам"
+
+msgid "Контактна інформація"
+msgstr "Контактна інформація"
+
+msgid "Доступність"
+msgstr "Доступність"
+
+msgid "Доступно по всьому світу"
+msgstr "Доступно по всьому світу"
+
+msgid "Подивитись на карті"
+msgstr "Подивитись на карті"
+
+msgid "Адреса офісу"
+msgstr "Адреса офісу"
+
+msgid "Подивитись на Google Maps"
+msgstr "Подивитись на Google Maps"
 
 msgid "Start Free Consultation"
 msgstr "Почати безкоштовну консультацію"
@@ -404,11 +556,9 @@ msgstr "Почати безкоштовну консультацію"
 msgid "Home"
 msgstr "Головна"
 
-msgid "Projects"
-msgstr "Проєкти"
 
-msgid "Services"
-msgstr "Послуги"
+
+
 
 msgid "About"
 msgstr "Про нас"
@@ -416,5 +566,4 @@ msgstr "Про нас"
 msgid "News"
 msgstr "Новини"
 
-msgid "Contact"
-msgstr "Контакти"
+

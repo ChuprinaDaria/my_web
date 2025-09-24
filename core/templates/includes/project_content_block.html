@@ -1,7 +1,6 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 📝 Reusable Content Block -->
 <div class="content-section glass card">
   <header class="content-section-header">
     <div class="section-icon">{{ icon|default:"📝" }}</div>
@@ -14,7 +13,6 @@
     {% else %}{{ content_en|safe }}{% endif %}
   </div>
   
-  <!-- Extended content if available -->
   {% if extended_content_uk or extended_content_en or extended_content_pl %}
     <details class="content-expandable">
       <summary class="expand-trigger">

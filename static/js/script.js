@@ -1,7 +1,4 @@
-// 🚀 LAZYSOFT - Main JavaScript File
-
 document.addEventListener("DOMContentLoaded", () => {
-  // 🎨 Добавляем CSS правила прямо через JavaScript
   const style = document.createElement('style');
   style.textContent = `
     [data-lang]:not(.js-active) {
@@ -24,21 +21,21 @@ document.addEventListener("DOMContentLoaded", () => {
       display: inline !important;
     }
     
-    /* Плавный переход для переключения языков */
+    
     [data-lang] {
       transition: opacity 0.2s ease-in-out;
     }
     
-    /* Предотвращаем прыжки страницы */
+    
     .hero-content {
       min-height: 80px;
     }
   `;
   document.head.appendChild(style);
   
-  // 🌐 Определение текущего языка из URL
+  
   const urlPath = window.location.pathname;
-  let currentLang = 'en'; // по умолчанию
+  let currentLang = 'en'; 
   
   if (urlPath.startsWith('/uk/') || urlPath === '/uk') {
     currentLang = 'uk';
@@ -48,10 +45,10 @@ document.addEventListener("DOMContentLoaded", () => {
     currentLang = 'en';
   }
   
-  // 🔄 Переключение языковых элементов
+  
   switchLanguage(currentLang);
   
-  // 🎯 Обработчики для языковых ссылок
+  
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const href = btn.getAttribute('href');
@@ -65,28 +62,23 @@ document.addEventListener("DOMContentLoaded", () => {
         newLang = 'en';
       }
       
-      // Предварительное переключение для плавности
+      
       switchLanguage(newLang);
     });
   });
 
-  // 🍔 Инициализация мобильного меню
+  
   initMobileMenu();
   
-  // 🖱️ Кликабельные карточки теперь обрабатываются через делегированный клик в base.html
   
-  // Додаткова ініціалізація через 1 секунду (на випадок динамічного контенту)
-  // setTimeout(() => {
-  //   initClickableCards();
-  // }, 1000);
+  
 });
 
-// 🌐 Функция переключения языка
 function switchLanguage(currentLang) {
-  // Плавное переключение элементов
+  
   document.querySelectorAll("[data-lang]").forEach(el => {
     if (el.dataset.lang === currentLang) {
-      // Показываем элемент
+      
       el.style.opacity = '0';
       
       setTimeout(() => {
@@ -103,14 +95,14 @@ function switchLanguage(currentLang) {
           el.classList.add('active', 'js-active');
         }
         
-        // Плавное появление
+        
         setTimeout(() => {
           el.style.opacity = '1';
         }, 10);
       }, 50);
       
     } else {
-      // Плавно скрываем элемент
+      
       el.style.opacity = '0';
       
       setTimeout(() => {
@@ -121,7 +113,7 @@ function switchLanguage(currentLang) {
     }
   });
   
-  // Обновляем активную кнопку языка
+  
   document.querySelectorAll('.lang-btn').forEach(btn => {
     const href = btn.getAttribute('href');
     let btnLang = 'en';
@@ -142,7 +134,6 @@ function switchLanguage(currentLang) {
   });
 }
 
-// 🍔 Функция для мобильного меню
 function toggleMenu() {
   const burger = document.querySelector('.burger');
   const navLinks = document.querySelector('.nav-links');
@@ -153,7 +144,6 @@ function toggleMenu() {
   }
 }
 
-// 🍔 Инициализация мобильного меню
 function initMobileMenu() {
   const burger = document.querySelector('.burger');
   const navLinks = document.querySelector('.nav-links');
@@ -161,7 +151,7 @@ function initMobileMenu() {
   
   if (!burger || !navLinks || !navbar) return;
   
-  // Закриваємо при кліку поза навігацією
+  
   document.addEventListener('click', function(event) {
     if (!navbar.contains(event.target)) {
       burger.classList.remove('active');
@@ -169,7 +159,7 @@ function initMobileMenu() {
     }
   });
   
-  // Закриваємо при кліку на посилання в мобільному меню
+  
   navLinks.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', function() {
       burger.classList.remove('active');
@@ -177,7 +167,7 @@ function initMobileMenu() {
     });
   });
   
-  // Закриваємо при зміні розміру екрана
+  
   window.addEventListener('resize', function() {
     if (window.innerWidth > 768) {
       burger.classList.remove('active');
@@ -186,9 +176,6 @@ function initMobileMenu() {
   });
 }
 
-// 🖱️ Кликабельные карточки теперь обрабатываются через делегированный клик в base.html
-
-// 📞 Функция прокрутки к контакт форме
 function scrollToContact(serviceTitle) {
   if (event) {
     event.stopPropagation();
@@ -204,7 +191,7 @@ function scrollToContact(serviceTitle) {
       block: 'start'
     });
     
-    // Заповнюємо форму
+    
     setTimeout(() => {
       const messageField = document.querySelector('textarea[name="message"]');
       if (messageField && serviceTitle) {
@@ -219,12 +206,11 @@ function scrollToContact(serviceTitle) {
       }
     }, 1000);
   } else {
-    // Fallback - перехід на сторінку контактів
+    
     window.location.href = `/${document.documentElement.lang || 'uk'}/#contact`;
   }
 }
 
-// 🎯 Плавное появление элементов при скроле
 function initScrollAnimations() {
   const observerOptions = {
     threshold: 0.1,
@@ -239,13 +225,12 @@ function initScrollAnimations() {
     });
   }, observerOptions);
 
-  // Наблюдаем за секциями
+  
   document.querySelectorAll('.section, .project-card, .news-card').forEach(el => {
     observer.observe(el);
   });
 }
 
-// 🖱️ Smooth scroll для внутренних ссылок
 function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -261,7 +246,6 @@ function initSmoothScroll() {
   });
 }
 
-// 🎨 Parallax эффект для фоновых элементов
 function initParallax() {
   const shapes = document.querySelectorAll('.bg-shape');
   
@@ -276,12 +260,10 @@ function initParallax() {
   });
 }
 
-// 📱 Определение устройства
 function isMobileDevice() {
   return window.innerWidth <= 768;
 }
 
-// 🎯 Lazy loading для изображений
 function initLazyLoading() {
   const images = document.querySelectorAll('img[data-src]');
   
@@ -299,7 +281,6 @@ function initLazyLoading() {
   images.forEach(img => imageObserver.observe(img));
 }
 
-// 🔄 Инициализация всех функций
 function initAll() {
   if ('IntersectionObserver' in window) {
     initScrollAnimations();
@@ -308,34 +289,31 @@ function initAll() {
   
   initSmoothScroll();
   
-  // Parallax только для десктопа
+  
   if (!isMobileDevice()) {
     initParallax();
   }
 }
 
-// 🚀 Запуск всех функций после загрузки
 window.addEventListener('load', initAll);
 
-// 📱 Перезапуск при изменении размера окна
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
-    // Перезапускаем только необходимые функции
+    
     if (isMobileDevice()) {
-      // Отключаем параллакс на мобильном
+      
       document.querySelectorAll('.bg-shape').forEach(shape => {
         shape.style.transform = '';
       });
     } else {
-      // Включаем параллакс на десктопе
+      
       initParallax();
     }
   }, 250);
 });
 
-// 🎯 Экспорт функций для глобального использования
 window.toggleMenu = toggleMenu;
 window.scrollToContact = scrollToContact;
 window.switchLanguage = switchLanguage;

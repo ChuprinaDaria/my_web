@@ -1,19 +1,16 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 🎯 Project Hero Section -->
 <section class="project-hero-section">
   <div class="container">
     <div class="hero-content">
      
-      <!-- Project Title -->
       <h1>
         {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|safe }}
         {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|safe }}
         {% else %}{{ project.title_en|safe }}{% endif %}
       </h1>
 
-      <!-- Project Subtitle -->
       {% if project.short_description_uk or project.short_description_en or project.short_description_pl %}
         <div>
           {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:30 }}
@@ -22,7 +19,6 @@
         </div>
       {% endif %}
 
-      <!-- Project Meta -->
       <div class="project-meta">
         <div class="meta-item">
           <i data-lucide="calendar" class="meta-icon"></i>
@@ -46,7 +42,6 @@
         {% endif %}
       </div>
 
-      <!-- Hero Actions -->
       <div class="project-hero-actions">
         {% if project.project_url %}
           <a href="{{ project.project_url }}" target="_blank" class="btn-primary">

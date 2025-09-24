@@ -49,7 +49,6 @@
     </div>
 
     <script>
-        // Matrix rain effect
         function createMatrixRain() {
             const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
             const matrixBg = document.querySelector('.matrix-bg');
@@ -63,7 +62,6 @@
                 char.style.animationDelay = Math.random() * 2 + 's';
                 matrixBg.appendChild(char);
                 
-                // Remove element after animation
                 setTimeout(() => {
                     if (char.parentNode) {
                         char.parentNode.removeChild(char);
@@ -72,11 +70,9 @@
             }
         }
         
-        // Start matrix rain
         createMatrixRain();
         setInterval(createMatrixRain, 2000);
         
-        // Console Easter Egg
         console.log(`
 🖕 Linus sez: Nice try opening DevTools, amateur!
         
@@ -94,9 +90,8 @@
         Try actually learning to code first. 🤓
         `);
         
-        // Keyboard konami code easter egg
         let konamiCode = [];
-        const correctCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // ↑↑↓↓←→←→BA
+        const correctCode = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; 
         
         document.addEventListener('keydown', function(e) {
             konamiCode.push(e.keyCode);

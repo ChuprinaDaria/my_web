@@ -1,8 +1,6 @@
 {% load i18n %}
-<!-- 📰 News Sidebar -->
 <aside class="news-sidebar">
 
-  <!-- Search Form -->
   <div class="sidebar-section glass card">
     <h3>
       <i data-lucide="search"></i>
@@ -18,7 +16,6 @@
     </form>
   </div>
 
-  <!-- Related Services (moved up under Search) -->
   {% if related_services %}
     <div class="sidebar-section glass card">
       <h3>
@@ -45,7 +42,6 @@
     </div>
   {% endif %}
 
-  <!-- Categories Navigation -->
   <div class="sidebar-section glass card">
     <h3>
       <i data-lucide="folder"></i>
@@ -68,7 +64,6 @@
     </div>
   </div>
 
-  <!-- Other News (Non-Top 10) -->
   {% if other_news %}
     <div class="sidebar-section glass card">
       <h3>
@@ -91,7 +86,6 @@
     </div>
   {% endif %}
 
-  <!-- Tech Tags -->
   <div class="sidebar-section glass card">
     <h3>
       <i data-lucide="hash"></i>
@@ -109,7 +103,6 @@
     </div>
   </div>
 
-  <!-- Related Services -->
   {% if related_services %}
     <div class="sidebar-section glass card">
       <h3>

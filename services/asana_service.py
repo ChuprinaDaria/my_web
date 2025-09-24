@@ -80,6 +80,75 @@ class AsanaService:
         except Exception as e:
             logger.error(f"Unexpected error creating Asana task: {e}")
             return None
+
+    def create_quote_task(self, quote_request) -> Optional[str]:
+        try:
+            task_name = f"Запит прорахунку: {getattr(quote_request, 'client_name', 'Клієнт')}"
+            details = []
+            details.append(f"• Ім'я: {getattr(quote_request, 'client_name', '')}")
+            details.append(f"• Email: {getattr(quote_request, 'client_email', '')}")
+            details.append(f"• Телефон: {getattr(quote_request, 'client_phone', '')}")
+            details.append(f"• Компанія: {getattr(quote_request, 'client_company', '')}")
+            details.append("")
+            details.append("📝 Запит:")
+            details.append(getattr(quote_request, 'original_query', ''))
+            details.append("")
+            details.append("📊 Мета-дані:")
+            details.append(f"• Session ID: {getattr(quote_request, 'session_id', '')}")
+            details.append(f"• IP: {getattr(quote_request, 'ip_address', '')}")
+            details.append(f"• User Agent: {getattr(quote_request, 'user_agent', '')[:200]}")
+            task_description = "\n".join(details)
+
+            task_data = {
+                "data": {
+                    "name": task_name,
+                    "notes": task_description,
+                    "projects": [self.project_id],
+                    "workspace": self.workspace_id,
+                    "due_on": (__import__('datetime').date.today() + __import__('datetime').timedelta(days=3)).isoformat(),
+                }
+            }
+
+            response = requests.post(
+                f'{self.base_url}/tasks',
+                headers=self.headers,
+                json=task_data,
+                timeout=10
+            )
+
+            if response.status_code == 201:
+                return response.json()['data']['gid']
+            else:
+                logger.error(f"Asana API error (quote): {response.status_code} - {response.text}")
+                return None
+        except Exception as e:
+            logger.error(f"Error creating Asana quote task: {e}")
+            return None
+
+    def create_generic_task(self, name: str, notes: str, due_days: int = 3) -> Optional[str]:
+        try:
+            task_data = {
+                "data": {
+                    "name": name,
+                    "notes": notes,
+                    "projects": [self.project_id],
+                    "workspace": self.workspace_id,
+                    "due_on": (__import__('datetime').date.today() + __import__('datetime').timedelta(days=due_days)).isoformat(),
+                }
+            }
+            response = requests.post(
+                f"{self.base_url}/tasks",
+                headers=self.headers,
+                json=task_data,
+                timeout=10
+            )
+            if response.status_code == 201:
+                return response.json()['data']['gid']
+            logger.error(f"Asana API error (generic): {response.status_code} - {response.text}")
+            return None
+        except Exception as e:
+            logger.error(f"Error creating generic Asana task: {e}")
+            return None
     
     def update_task_status(self, task_id: str, status: str) -> bool:
         """

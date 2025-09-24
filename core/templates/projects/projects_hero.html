@@ -1,19 +1,16 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 🎯 Projects Hero Section -->
 <section class="projects-hero-section">
   <div class="container">
     <div class="hero-content">
       
-      <!-- Hero Title -->
       <h1>
         {% if CURRENT_LANG == 'uk' and overview_title_uk %}{{ overview_title_uk|safe }}
         {% elif CURRENT_LANG == 'pl' and overview_title_pl %}{{ overview_title_pl|safe }}
         {% else %}{{ overview_title_en|safe }}{% endif %}
       </h1>
 
-      <!-- Hero Description -->
       {% if overview_description_uk or overview_description_en or overview_description_pl %}
         <div>
           {% if CURRENT_LANG == 'uk' and overview_description_uk %}{{ overview_description_uk|safe }}
@@ -22,7 +19,6 @@
         </div>
       {% endif %}
 
-      <!-- Projects Stats -->
       <div class="projects-stats">
         <div class="stat-item">
           <span class="stat-number">{{ total_projects|default:"4" }}+</span>

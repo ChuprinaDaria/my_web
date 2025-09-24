@@ -1,32 +1,21 @@
-/**
- * Contact Forms Handler
- * Обробляє відправку форм контактів та показує модалки
- */
-
-// Глобальні змінні
 let isSubmitting = false;
 
-// Ініціалізація при завантаженні сторінки
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📋 Contact forms initialized');
     
-    // Ініціалізуємо обробники форм
     initializeFormHandlers();
 });
 
 function initializeFormHandlers() {
-    // Обробник для основної форми контактів
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', handleFormSubmit);
-        console.log('✅ Main contact form handler attached');
+        
     }
     
-    // Обробник для модальної форми консультації
     const consultationForm = document.getElementById('quickConsultationForm');
     if (consultationForm) {
         consultationForm.addEventListener('submit', handleFormSubmit);
-        console.log('✅ Consultation modal form handler attached');
+        
     }
 }
 
@@ -34,30 +23,25 @@ async function handleFormSubmit(event) {
     event.preventDefault();
     
     if (isSubmitting) {
-        console.log('⚠️ Form is already being submitted');
+        
         return;
     }
     
     const form = event.target;
     const submitButton = form.querySelector('button[type="submit"]');
     
-    console.log('📤 Form submission started:', form.id);
-    console.log('📱 User agent:', navigator.userAgent);
-    console.log('📱 Is mobile:', /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
     
-    // Показуємо стан завантаження
+    
+    
     setLoadingState(submitButton, true);
     isSubmitting = true;
     
     try {
-        // Збираємо дані форми
         const formData = new FormData(form);
         
-        // Перевіряємо CSRF token
         const csrfToken = formData.get('csrfmiddlewaretoken');
-        console.log('🔐 CSRF token:', csrfToken ? 'Present' : 'Missing');
         
-        // Додаємо дані трекінгу CTA
+        
         const ctaData = getCTATrackingData();
         if (ctaData.cta_source) {
             formData.append('cta_source', ctaData.cta_source);
@@ -69,7 +53,7 @@ async function handleFormSubmit(event) {
             formData.append('session_id', ctaData.session_id);
         }
         
-        console.log('📋 Form data keys:', Array.from(formData.keys()));
+        
         
         const response = await fetch(form.action, {
             method: 'POST',
@@ -77,39 +61,35 @@ async function handleFormSubmit(event) {
             headers: {
                 'X-CSRFToken': formData.get('csrfmiddlewaretoken')
             },
-            // Додаткові налаштування для мобільних пристроїв
+            
+            
             cache: 'no-cache',
             credentials: 'same-origin'
         });
         
         const result = await response.json();
-        console.log('📦 Response data:', result);
+        
         
         if (result.success) {
-            console.log('✅ Success response received:', result);
-            // Показуємо success модалку
+            
             showSuccessModal(result.message);
             form.reset();
             
-            // Закриваємо швидку модалку якщо вона відкрита
+            
             if (form.id === 'quickConsultationForm') {
                 closeConsultationModal();
             }
             
         } else {
-            console.log('❌ Error response received:', result);
+            
             showErrorMessage(form, result.error || 'Виникла помилка при відправленні форми');
         }
         
     } catch (error) {
-        console.error('❌ Form submission error:', error);
-        console.error('❌ Error details:', {
-            name: error.name,
-            message: error.message,
-            stack: error.stack
-        });
         
-        // Різні повідомлення для різних типів помилок
+        
+        
+        
         let errorMessage = 'Помилка з\'єднання. Спробуйте ще раз.';
         if (error.name === 'TypeError' && error.message.includes('fetch')) {
             errorMessage = 'Проблема з мережею. Перевірте підключення до інтернету.';
@@ -119,7 +99,7 @@ async function handleFormSubmit(event) {
         
         showErrorMessage(form, errorMessage);
     } finally {
-        // Прибираємо стан завантаження
+        
         setLoadingState(submitButton, false);
         isSubmitting = false;
     }
@@ -143,13 +123,13 @@ function setLoadingState(button, isLoading) {
 }
 
 function showErrorMessage(form, message) {
-    // Видаляємо попередні повідомлення про помилки
+    
     const existingError = form.querySelector('.error-message');
     if (existingError) {
         existingError.remove();
     }
     
-    // Створюємо нове повідомлення про помилку
+    
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
     errorDiv.style.cssText = `
@@ -164,10 +144,10 @@ function showErrorMessage(form, message) {
     `;
     errorDiv.textContent = message;
     
-    // Додаємо повідомлення до форми
+    
     form.appendChild(errorDiv);
     
-    // Автоматично прибираємо через 5 секунд
+    
     setTimeout(() => {
         if (errorDiv.parentNode) {
             errorDiv.remove();
@@ -176,20 +156,20 @@ function showErrorMessage(form, message) {
 }
 
 function showSuccessModal(message) {
-    // Видаляємо попередні модалки
+    
     const existingModal = document.querySelector('.success-notification-modal');
     if (existingModal) {
         existingModal.remove();
     }
     
-    // Отримуємо переклади з Django контексту
+    
     const translations = {
         thankYou: window.DJANGO_CONTEXT?.thankYou || 'Дякуємо!',
         successMessage: window.DJANGO_CONTEXT?.successMessage || 'Ваше повідомлення надіслано. Ми зв\'яжемося з вами найближчим часом.',
         understood: window.DJANGO_CONTEXT?.understood || 'Зрозуміло'
     };
     
-    // Створюємо модалку успіху
+    
     const modal = document.createElement('div');
     modal.className = 'success-notification-modal';
     modal.style.cssText = `
@@ -264,22 +244,21 @@ function showSuccessModal(message) {
                 font-size: 1.1rem;
                 font-weight: 600;
                 cursor: pointer;
-                transition: all 0.3s ease;
                 box-shadow: 0 4px 15px rgba(102, 255, 0, 0.3);
             ">${translations.understood}</button>
         </div>
     `;
     
-    // Додаємо до DOM
+    
     document.body.appendChild(modal);
     
-    // Анімація появи
+    
     setTimeout(() => {
         modal.style.opacity = '1';
         modal.querySelector('.success-modal-content').style.transform = 'scale(1)';
     }, 10);
     
-    // Автоматично закриваємо через 5 секунд
+    
     setTimeout(() => {
         closeSuccessModal();
     }, 5000);
@@ -297,7 +276,6 @@ function closeSuccessModal() {
     }
 }
 
-// Функції для модалки консультації
 function showConsultationModal() {
     const modal = document.getElementById('consultationModal');
     
@@ -305,15 +283,15 @@ function showConsultationModal() {
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
-        // Перевіряємо чи прив'язаний обробник до форми в модалці
+        
         const consultationForm = document.getElementById('quickConsultationForm');
         if (consultationForm && !consultationForm.hasAttribute('data-handler-attached')) {
             consultationForm.addEventListener('submit', handleFormSubmit);
             consultationForm.setAttribute('data-handler-attached', 'true');
-            console.log('✅ Consultation modal form handler attached dynamically');
+            
         }
         
-        // Анімація появи
+        
         setTimeout(() => {
             modal.classList.add('show');
         }, 10);
@@ -323,7 +301,7 @@ function showConsultationModal() {
 function closeConsultationModal() {
     const modal = document.getElementById('consultationModal');
     if (modal) {
-        // Анімація зникнення
+        
         modal.classList.remove('show');
         
         setTimeout(() => {
@@ -333,7 +311,6 @@ function closeConsultationModal() {
     }
 }
 
-// Функції для трекінгу CTA
 function getCTATrackingData() {
     return {
         cta_source: localStorage.getItem('last_cta_source') || '',
@@ -351,7 +328,6 @@ function getSessionId() {
     return sessionId;
 }
 
-// Глобальні функції для виклику з HTML
 window.showConsultationModal = showConsultationModal;
 window.closeConsultationModal = closeConsultationModal;
 window.closeSuccessModal = closeSuccessModal;

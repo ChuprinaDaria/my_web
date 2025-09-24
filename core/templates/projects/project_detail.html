@@ -42,10 +42,8 @@
 {% block content %}
 <article class="project-detail-container">
   
-  <!-- 🎯 Hero Section -->
   {% include 'includes/project_hero.html' with project=project %}
 
-  <!-- 🖼️ Featured Image -->
   {% if project.featured_image %}
     <section class="project-featured-image">
       <div class="container">
@@ -60,43 +58,34 @@
     </section>
   {% endif %}
 
-  <!-- 📋 Main Content Layout -->
   <section class="project-main-content">
     <div class="container">
       <div class="content-grid">
         
-        <!-- 📝 Main Content Column -->
         <div class="main-content-column">
           
-          <!-- Client Request -->
           {% include 'includes/project_content_block.html' with icon="💡" title=_("Client Request") content_en=project.client_request_en content_uk=project.client_request_uk content_pl=project.client_request_pl extended_content_en=project.client_request_extended_en extended_content_uk=project.client_request_extended_uk extended_content_pl=project.client_request_extended_pl %}
 
-          <!-- Implementation -->
           {% include 'includes/project_content_block.html' with icon="⚙️" title=_("Implementation") content_en=project.implementation_en content_uk=project.implementation_uk content_pl=project.implementation_pl extended_content_en=project.implementation_extended_en extended_content_uk=project.implementation_extended_uk extended_content_pl=project.implementation_extended_pl %}
 
-          <!-- Challenges & Solutions -->
           {% if project.challenges_and_solutions_uk or project.challenges_and_solutions_en %}
             {% include 'includes/project_content_block.html' with icon="🧩" title=_("Challenges & Solutions") content_en=project.challenges_and_solutions_en content_uk=project.challenges_and_solutions_uk content_pl=project.challenges_and_solutions_pl %}
           {% endif %}
 
-          <!-- Results -->
           {% include 'includes/project_content_block.html' with icon="📈" title=_("Results & Impact") content_en=project.results_en content_uk=project.results_uk content_pl=project.results_pl extended_content_en=project.results_extended_en extended_content_uk=project.results_extended_uk extended_content_pl=project.results_extended_pl %}
 
-          <!-- Lessons Learned -->
           {% if project.lessons_learned_uk or project.lessons_learned_en %}
             {% include 'includes/project_content_block.html' with icon="🎓" title=_("Lessons Learned") content_en=project.lessons_learned_en content_uk=project.lessons_learned_uk content_pl=project.lessons_learned_pl %}
           {% endif %}
 
         </div>
 
-        <!-- 📊 Sidebar -->
         {% include 'includes/project_sidebar.html' with project=project %}
         
       </div>
     </div>
   </section>
 
-  <!-- 🖼️ Project Gallery -->
   {% if project.gallery_image_1 or project.gallery_image_2 or project.gallery_image_3 %}
     <section class="project-gallery-section">
       <div class="container">
@@ -135,7 +124,6 @@
     </section>
   {% endif %}
 
-  <!-- 🎥 Video Section -->
   {% if project.video_url or project.video_file %}
     <section class="project-video-section">
       <div class="container">
@@ -158,7 +146,6 @@
 
   {% include 'includes/social_share.html' %}
 
-  <!-- 📞 Contact CTA -->
   <section class="project-contact-cta">
     <div class="container">
       <div class="contact-cta-card glass card">
@@ -186,7 +173,6 @@
 
 </article>
 
-<!-- 🔍 Lightbox Modal -->
 <div id="lightbox" class="lightbox" onclick="closeLightbox()">
   <div class="lightbox-content">
     <img id="lightbox-image" src="" alt="">
@@ -220,7 +206,6 @@
 </script>
 
 <script>
-// 🔍 Lightbox functionality
 function openLightbox(imageSrc) {
   const lightbox = document.getElementById('lightbox');
   const lightboxImage = document.getElementById('lightbox-image');
@@ -235,12 +220,9 @@ function closeLightbox() {
   document.body.style.overflow = 'auto';
 }
 
-// 📞 Scroll to contact
 function scrollToContact(projectTitle) {
-  // Scroll to contact form (assuming it's on the same page or redirect)
   window.location.href = `/${document.body.getAttribute('data-current-lang') || 'en'}/#contact`;
   
-  // Pre-fill message if contact form exists
   setTimeout(() => {
     const messageField = document.querySelector('textarea[name="message"], input[name="message"]');
     if (messageField && projectTitle) {
@@ -250,7 +232,6 @@ function scrollToContact(projectTitle) {
   }, 1000);
 }
 
-// 🎨 Enhanced expandable content
 document.addEventListener('DOMContentLoaded', function() {
   const expandTriggers = document.querySelectorAll('.expand-trigger');
   expandTriggers.forEach(trigger => {
@@ -265,13 +246,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // Initialize Lucide icons
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
 });
 
-// ⌨️ Keyboard navigation for lightbox
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeLightbox();

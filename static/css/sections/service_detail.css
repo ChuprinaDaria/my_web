@@ -4,4 +4,30 @@
 /* Minimal include: import original if present */
 /* The detailed styles remain in servise_detail.css; keep this file as alias */
 
+/* Spacing between breadcrumbs and hero (services) */
+.service-detail-container {
+  padding-top: 150px;
+}
+.service-detail-container .service-hero-section {
+  margin-top: 20px;
+}
+
+@media (max-width: 1024px) {
+  .service-detail-container {
+    padding-top: 16px;
+  }
+  .service-detail-container .service-hero-section {
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .service-detail-container {
+    padding-top: 80px;
+  }
+  .service-detail-container .service-hero-section {
+    margin-top: 12px;
+  }
+}
+
 

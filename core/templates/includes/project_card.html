@@ -12,7 +12,6 @@
 
     
 
-  <!-- Project Image -->
   {% if project.featured_image %}
     <div class="project-image">
       <img src="{{ project.featured_image.url }}" 
@@ -22,7 +21,6 @@
     </div>
   {% endif %}
 
-  <!-- Main Content -->
   <div class="project-content">
     <h3>
       {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|safe }}
@@ -30,7 +28,6 @@
       {% else %}{{ project.title_en|safe }}{% endif %}
     </h3>
     
-    <!-- Client Request -->
     <div class="client-request">
       <span class="request-label">{% trans "Client request:" %}</span>
       <div class="request-text">
@@ -40,7 +37,6 @@
       </div>
     </div>
     
-    <!-- Project Result -->
     <div class="project-result">
       <span class="result-label">{% trans "What we did:" %}</span>
       <div class="result-text">
@@ -50,7 +46,6 @@
       </div>
     </div>
     
-    <!-- Metrics -->
     <div class="project-metrics">
       {% if project.client_time_saved_hours %}
         <span class="metric-item">
@@ -65,7 +60,6 @@
       {% endif %}
     </div>
     
-    <!-- CTA Section -->
     <div class="project-cta">
       <button class="cta-button" 
               data-project-title="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}"

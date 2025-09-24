@@ -1,7 +1,6 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 🧭 Universal Breadcrumbs -->
 <section class="breadcrumbs-section">
   <div class="container">
     <nav class="breadcrumbs" aria-label="{% trans 'Breadcrumb navigation' %}">
@@ -32,7 +31,6 @@
             {% if not forloop.last %}<li class="breadcrumb-separator">→</li>{% endif %}
           {% endfor %}
         {% else %}
-          <!-- Fallback breadcrumbs based on current page -->
           {% if 'projects' in request.path %}
             <li class="breadcrumb-item">
               <a href="{% url 'projects' %}" class="breadcrumb-link">

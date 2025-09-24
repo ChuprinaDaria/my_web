@@ -14,6 +14,8 @@ import uuid
 import time
 
 from .models import ChatSession, Message, ConsultantProfile, KnowledgeBase, ChatAnalytics
+from services.asana_service import asana_service
+from news.services.telegram import _tg_request
 from .rag_integration import enhanced_consultant
 
 # Імпортуємо pricing моделі якщо доступні
@@ -48,6 +50,45 @@ def _get_company_brand_context():
         tax_id = ""
         authorized_person = "Daria Chuprina"
     return Fallback()
+# Трек кліку на консультацію: створюємо таск в Asana і надсилаємо в Telegram
+@csrf_exempt
+@require_http_methods(["POST"])
+def track_consultation_click(request):
+    try:
+        data = json.loads(request.body)
+        session_id = data.get('session_id')
+        name = data.get('name', '')
+        email = data.get('email', '')
+        url = data.get('url', '')
+
+        notes = (
+            f"Клік на консультацію з чату\n\n"
+            f"Session: {session_id}\n"
+            f"Ім'я: {name}\nEmail: {email}\nURL: {url}"
+        )
+        try:
+            if asana_service:
+                asana_service.create_generic_task("Клік на консультацію (чат)", notes, due_days=2)
+        except Exception as e:
+            logger.error(f"Asana error (consultation click): {e}")
+
+        try:
+            admin_chat_id = getattr(settings, 'TELEGRAM_ADMIN_CHAT_ID', None)
+            if admin_chat_id:
+                data = {
+                    "chat_id": admin_chat_id,
+                    "text": f"📅 Клік на консультацію з чату\n{notes}",
+                    "parse_mode": "HTML",
+                    "disable_web_page_preview": False,
+                }
+                _tg_request("sendMessage", data)
+        except Exception as e:
+            logger.error(f"Telegram error (consultation click): {e}")
+
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
 
 
 def _ensure_items(items):
@@ -369,6 +410,53 @@ def request_quote_from_chat(request):
             html_body=html,
             pdf_bytes=pdf_bytes
         )
+        # Оновлюємо статус запиту
+        try:
+            quote_request.email_sent = True
+            quote_request.pdf_generated = bool(pdf_bytes)
+            quote_request.status = 'quoted'
+            quote_request.save(update_fields=['email_sent', 'pdf_generated', 'status'])
+        except Exception:
+            pass
+
+        # Фоново: створити таск в Asana і сповістити в Telegram
+        try:
+            import threading
+            def background():
+                try:
+                    if asana_service:
+                        task_id = asana_service.create_quote_task(quote_request)
+                        if task_id:
+                            try:
+                                quote_request.asana_task_id = task_id
+                                quote_request.save(update_fields=['asana_task_id'])
+                            except Exception:
+                                pass
+                except Exception as e:
+                    logger.error(f"Asana error for quote: {e}")
+                try:
+                    msg = (
+                        f"📨 НОВИЙ ЗАПИТ НА ПРОРАХУНОК\n\n"
+                        f"👤 {quote_request.client_name} | {quote_request.client_email}\n"
+                        f"🏢 {quote_request.client_company or '—'} | 📞 {quote_request.client_phone or '—'}\n\n"
+                        f"📝 {quote_request.original_query[:500]}{'...' if len(quote_request.original_query) > 500 else ''}"
+                    )
+                    admin_chat_id = getattr(settings, 'TELEGRAM_ADMIN_CHAT_ID', None)
+                    if admin_chat_id:
+                        data = {
+                            "chat_id": admin_chat_id,
+                            "text": msg,
+                            "parse_mode": "HTML",
+                            "disable_web_page_preview": False,
+                        }
+                        _tg_request("sendMessage", data)
+                except Exception as e:
+                    logger.error(f"Telegram error for quote: {e}")
+            t = threading.Thread(target=background)
+            t.daemon = True
+            t.start()
+        except Exception:
+            pass
         
         # TODO: Відправити в Celery для асинхронної обробки PDF та email
         # generate_quote_pdf.delay(quote_request.id)

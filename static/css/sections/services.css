@@ -143,7 +143,7 @@
 
 /* 📋 SERVICES CATEGORIES - контейнер для категорій */
 .services-categories {
-  padding: var(--spacing-4xl) 0;
+  padding: var(--spacing-xs) 0;
 }
 
 .services-categories .container {
@@ -216,9 +216,8 @@
 /* 📱 Зменшені відступи для всіх секцій на мобільних */
 @media (max-width: 768px) {
   .services-hero,
-  .tech-stack-section,
-  .services-categories{
-    padding: var(--spacing-xl) 0; /* Зменшено з var(--spacing-4xl) */
+  .tech-stack-section{
+    padding: var(--spacing-xs) 0; /* Зменшено з var(--spacing-4xl) */
   }
 }
 
@@ -424,7 +423,7 @@
   .services-categories,
   .faq-preview,
   .contact {
-    padding: var(--spacing-3xl) 0;
+    padding: var(--spacing-xs) 0;
   }
   
   .tech-stack-section .section-title,

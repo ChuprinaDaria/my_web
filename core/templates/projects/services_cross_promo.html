@@ -1,11 +1,9 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-<!-- 💼 Services Cross-Promo Section -->
 <section class="related-services-cross-promo">
   <div class="container">
     
-    <!-- Section Header -->
         <div class="section-header">
           <h2>
             {% trans "Our Services" %}
@@ -15,7 +13,6 @@
           </p>
         </div>
 
-    <!-- Services Grid -->
     <div class="services-promo-grid">
       {% for service in related_services|slice:":6" %}
         <article class="service-promo-card glass card" 
@@ -57,7 +54,6 @@
       {% endfor %}
     </div>
     
-    <!-- View All Services -->
     <div class="section-footer">
       <a href="/{{ CURRENT_LANG }}/services/" class="view-all-services btn-secondary">
         {% trans "View All Services" %}

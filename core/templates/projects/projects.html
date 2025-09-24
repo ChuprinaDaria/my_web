@@ -6,20 +6,17 @@
 {% block meta_description %}{{ seo_description|default:"{% trans 'Discover our portfolio of automation and AI projects' %}" }}{% endblock %}
 
 {% block extra_meta %}
-  <!-- Canonical + hreflang -->
   <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/projects/" />
   <link rel="alternate" href="https://lazysoft.dev/en/projects/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.dev/uk/projects/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.dev/pl/projects/" hreflang="pl">
   
-  <!-- OG Tags -->
   <meta property="og:title" content="{{ seo_title|default:'{% trans "Projects - LazySoft" %}' }}">
   <meta property="og:description" content="{{ seo_description|default:'{% trans "Discover our portfolio of automation and AI projects" %}' }}">
   <meta property="og:image" content="{{ og_image|default:'https://lazysoft.dev/static/images/projects-og.jpg' }}">
   <meta property="og:url" content="https://lazysoft.dev/{{ CURRENT_LANG }}/projects/">
   <meta property="og:type" content="website">
   
-  <!-- Social Media -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ seo_title|default:'{% trans "Projects - LazySoft" %}' }}">
   <meta name="twitter:description" content="{{ seo_description|default:'{% trans "Discover our portfolio of automation and AI projects" %}' }}">
@@ -29,20 +26,16 @@
 {% block content %}
 <main class="projects-page">
 
-  <!-- Hero Section -->
   {% include 'projects/projects_hero.html' %}
 
-  <!-- Featured Projects with Sidebar -->
   <section class="featured-projects-section">
     <div class="container">
       <div class="projects-layout">
         
-        <!-- Featured Projects -->
         <div class="projects-main">
           {% include "includes/simple_projects_list.html" %}
         </div>
         
-        <!-- Projects Sidebar -->
         <aside class="projects-sidebar">
           {% include 'projects/projects_sidebar.html' %}
         </aside>
@@ -51,20 +44,17 @@
     </div>
   </section>
 
-  <!-- All Projects section removed - only showing 6 random projects in Featured section -->
+  
 
-  <!-- Services Cross-Promo -->
   {% include 'projects/services_cross_promo.html' %}
 
-  <!-- Projects News Section -->
   {% include "includes/projects_news_section.html" %}
 
-  <!-- News Section -->
   
+    
       {% include "includes/daily_digest.html" %}
     
-
-<!-- Social Sharing -->
+    
 {% include 'includes/social_share.html' %}
 
 

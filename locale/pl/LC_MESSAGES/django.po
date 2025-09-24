@@ -447,8 +447,160 @@ msgstr "FAQ"
 msgid "Contact"
 msgstr "Kontakt"
 
+# Services list hero CTA
+msgid "Explore Services"
+msgstr "Przeglądaj usługi"
+
+msgid "Get Free Consultation"
+msgstr "Uzyskaj bezpłatną konsultację"
+
 msgid "Languages"
 msgstr "Języki"
+
+msgid "Follow us"
+msgstr "Śledź nas"
+
+msgid "Other news"
+msgstr "Inne wiadomości"
+
+# =====================
+# Additional UI Strings
+# =====================
+msgid "Technologies We Master"
+msgstr "Technologie, które opanowaliśmy"
+
+msgid "Frequently Asked Questions"
+msgstr "Najczęściej zadawane pytania"
+
+msgid "View All FAQ"
+msgstr "Zobacz wszystkie FAQ"
+
+msgid "Get to know our work"
+msgstr "Poznaj nasze realizacje"
+
+msgid "See what we've created for our clients"
+msgstr "Zobacz, co stworzyliśmy dla naszych klientów"
+
+msgid "Learn how we can help your business"
+msgstr "Dowiedz się, jak możemy pomóc Twojej firmie"
+
+msgid "Learn our story and approach"
+msgstr "Poznaj naszą historię i podejście"
+
+msgid "Get This Service"
+msgstr "Zamów tę usługę"
+
+msgid "Quick Contact"
+msgstr "Szybki kontakt"
+
+msgid "Ready to implement this service? Let's discuss your specific needs and create a custom solution."
+msgstr "Gotowi wdrożyć tę usługę? Omówmy Twoje potrzeby i stwórzmy spersonalizowane rozwiązanie."
+
+msgid "Start Discussion"
+msgstr "Rozpocznij rozmowę"
+
+msgid "Service Details"
+msgstr "Szczegóły usługi"
+
+msgid "Priority"
+msgstr "Priorytet"
+
+msgid "Top Service"
+msgstr "Usługa premium"
+
+msgid "Available Since"
+msgstr "Dostępna od"
+
+msgid "Service Overview"
+msgstr "Przegląd usługi"
+
+msgid "Target Audience"
+msgstr "Grupa docelowa"
+
+msgid "You Might Also Like"
+msgstr "Może Ci się spodobać"
+
+msgid "Business Value"
+msgstr "Wartość biznesowa"
+
+msgid "Pricing"
+msgstr "Cennik"
+
+msgid "Service Demonstration"
+msgstr "Prezentacja usługi"
+
+msgid "Ready to Get Started?"
+msgstr "Gotowy, aby zacząć?"
+
+msgid "Let's discuss how this service can transform your business. Get a free consultation and custom solution proposal."
+msgstr "Porozmawiajmy, jak ta usługa może zmienić Twój biznes. Otrzymaj bezpłatną konsultację i spersonalizowaną ofertę."
+
+msgid "Live Demo"
+msgstr "Demo na żywo"
+
+msgid "Get Similar Project"
+msgstr "Zamów podobny projekt"
+
+msgid "Client Request"
+msgstr "Zapytanie klienta"
+
+msgid "Technologies"
+msgstr "Technologie"
+
+msgid "Read more details"
+msgstr "Czytaj więcej szczegółów"
+
+msgid "Project Info"
+msgstr "Informacje o projekcie"
+
+msgid "Implementation"
+msgstr "Wdrożenie"
+
+msgid "Challenges & Solutions"
+msgstr "Wyzwania i rozwiązania"
+
+msgid "Results & Impact"
+msgstr "Rezultaty i wpływ"
+
+msgid "Lessons Learned"
+msgstr "Wnioski"
+
+msgid "Open Service"
+msgstr "Otwórz usługę"
+
+msgid "Want Similar?"
+msgstr "Chcesz coś podobnego?"
+
+msgid "Let's discuss how we can create something similar for your business."
+msgstr "Porozmawiajmy, jak możemy stworzyć coś podobnego dla Twojej firmy."
+
+msgid "TECH INSIGHTS od LAZYSOFT"
+msgstr "TECH INSIGHTS od LAZYSOFT"
+
+msgid "Related services"
+msgstr "Powiązane usługi"
+
+# Ukrainian originals used as msgid in templates
+msgid "Напишіть нам"
+msgstr "Napisz do nas"
+
+msgid "Контактна інформація"
+msgstr "Informacje kontaktowe"
+
+msgid "Доступність"
+msgstr "Dostępność"
+
+msgid "Доступно по всьому світу"
+msgstr "Dostępne na całym świecie"
+
+msgid "Подивитись на карті"
+msgstr "Zobacz na mapie"
+
+msgid "Адреса офісу"
+msgstr "Adres biura"
+
+msgid "Подивитись на Google Maps"
+msgstr "Zobacz w Google Maps"
 
 msgid "Start Free Consultation"
 msgstr "Rozpocznij bezpłatną konsultację"
@@ -456,11 +608,8 @@ msgstr "Rozpocznij bezpłatną konsultację"
 msgid "Home"
 msgstr "Strona główna"
 
-msgid "Projects"
-msgstr "Projekty"
 
-msgid "Services"
-msgstr "Usługi"
+
 
 msgid "About"
 msgstr "O nas"
