@@ -632,6 +632,122 @@
   font-weight: 600;
 }
 
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Language selector styles */
+.lang-selector {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lang-box {
+  background: #1a1a1a;
+  border: 2px solid #9eff00;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(158, 255, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lang-title {
+  font-size: 1.4rem;
+  color: #9eff00;
+  margin-bottom: 30px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.lang-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lang-actions button {
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 140px;
+}
+
+.lang-actions .btn-primary {
+  background: linear-gradient(135deg, #9eff00, #66ff00);
+  color: #000;
+}
+
+.lang-actions .btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(158, 255, 0, 0.5);
+}
+
+.lang-actions .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(158, 255, 0, 0.5);
+  color: #9eff00;
+}
+
+.lang-actions .btn-secondary:hover {
+  background: rgba(158, 255, 0, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(158, 255, 0, 0.3);
+}
+
+@media (max-width: 480px) {
+  .lang-box {
+    padding: 30px 20px;
+  }
+  
+  .lang-title {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+  }
+  
+  .lang-actions {
+    flex-direction: column;
+  }
+  
+  .lang-actions button {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+}
+
 .chat-actions {
   display: flex;
   gap: 15px;
@@ -890,8 +1006,8 @@
   border: 1px solid #9eff00;
   border-radius: 15px;
   width: 90%;
-  max-width: 900px; /* Було 500px - збільшуємо */
-  max-height: 85vh; /* Було 80vh - трохи більше */
+  max-width: 550px; /* Зменшено для кращого вигляду */
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
@@ -928,6 +1044,7 @@
 
 .quote-form {
   padding: 20px;
+  overflow-y: auto; /* Дозволяє скролити форму */
 }
 
 .quote-form .form-group {
@@ -1013,6 +1130,7 @@
   
   .modal-actions {
     flex-direction: column;
+    gap: 12px;
   }
   
   .modal-actions button {

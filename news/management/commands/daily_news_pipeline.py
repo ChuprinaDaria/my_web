@@ -317,39 +317,14 @@ class Command(BaseCommand):
     def _auto_publish_articles(self, result):
         """Автоматично публікує оброблені статті"""
         if result.articles_published > 0:
-            self.stdout.write(f'\n📢 Автопублікація {result.articles_published} статей...')
-            
-            # Автоматична публікація в Telegram через Celery
+            self.stdout.write(f'\n📢 Автопублікація: ставимо в чергу 1 повідомлення в Telegram...')
             try:
-                from news.tasks import auto_publish_recent_articles
-                
-                # Створюємо завдання для публікації
-                task = auto_publish_recent_articles.delay('uk', 3)
+                from news.tasks import post_top_news_to_telegram_task
+                task = post_top_news_to_telegram_task.delay()
                 self.stdout.write(f'   📢 Створено Celery завдання: {task.id}')
                 self.stdout.write(f'   ✅ Завдання публікації в Telegram поставлено в чергу')
-                
             except Exception as e:
                 self.stdout.write(f'   ❌ Помилка створення завдання публікації: {e}')
-                
-                # Fallback - пряма публікація
-                try:
-                    recent_articles = ProcessedArticle.objects.filter(
-                        status='published',
-                        published_at__date=result.date
-                    ).order_by('-priority', '-published_at')[:3]
-                    
-                    posted_count = 0
-                    for article in recent_articles:
-                        try:
-                            call_command('post_telegram', uuid=str(article.uuid), lang='uk')
-                            posted_count += 1
-                        except Exception as e:
-                            self.stdout.write(f'   ⚠️ Помилка постингу: {e}')
-                    
-                    self.stdout.write(f'   ✅ Опубліковано в Telegram (fallback): {posted_count} статей')
-                    
-                except Exception as e:
-                    self.stdout.write(f'   ❌ Помилка fallback публікації: {e}')
 
     def _show_post_pipeline_stats(self, date):
         """Показує статистику після пайплайна"""

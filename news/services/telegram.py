@@ -79,7 +79,23 @@ def _looks_public_image_url(url: str) -> bool:
     
     return False
 
-# ---------- API ----------
+# ---------- CLASS-BASED API ----------
+
+class TelegramService:
+    def post_to_telegram(self, message: str, photo_url: str = None, language: str = "uk", reply_markup=None, unpin=True):
+        """
+        Main method to send a post. It decides whether to send a photo or just text.
+        """
+        if photo_url and _looks_public_image_url(photo_url):
+            return tg_send_photo(photo_url, message, language, reply_markup, unpin)
+        else:
+            return tg_send_message(message, language, reply_markup, unpin)
+
+    def send_security_alert(self, ip_address, attack_type, details):
+        """Sends a security alert to the admin chat."""
+        return send_security_alert(ip_address, attack_type, details)
+
+# ---------- FUNCTION-BASED API (Legacy) ----------
 
 def tg_send_message(text: str, language: str = "uk", reply_markup=None, unpin=True) -> str:
     chat_id = _get_chat_id(language)

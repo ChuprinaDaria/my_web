@@ -571,3 +571,11 @@ msgid "News"
 msgstr "Новини"
 
 
+
+#: core/templates/services/service_detail.html
+msgid "Service Gallery"
+msgstr "Галерея послуги"
+
+#: core/templates/services/service_detail.html
+msgid "Visual examples of our work"
+msgstr "Візуальні приклади наших робіт"

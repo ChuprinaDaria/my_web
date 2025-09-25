@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'django_select2',
     'django_extensions',
     'axes',
+    'django_celery_beat',
         
     # 🔐 2FA Security
     'django_otp',
@@ -224,13 +225,21 @@ RAG_SETTINGS = {
 }
 
 # Celery для асинхронної обробки embeddings (опціонально)
-if os.getenv('REDIS_URL'):
-    CELERY_BROKER_URL = os.getenv('REDIS_URL')
-    CELERY_RESULT_BACKEND = os.getenv('REDIS_URL')
-    CELERY_TASK_ROUTES = {
-        'rag.tasks.generate_embedding': {'queue': 'embeddings'},
-        'rag.tasks.reindex_knowledge_base': {'queue': 'maintenance'},
-    }
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Europe/Warsaw'
+
+CELERY_TASK_ROUTES = {
+    'news.process_single_article': {'queue': 'news_processing'},
+    'news.process_rss_source': {'queue': 'news_parsing'},
+    'news.run_all_rss_sources_processing': {'queue': 'news_parsing'},
+    'news.post_top_news_to_telegram': {'queue': 'social'},
+    'news.run_full_daily_pipeline': {'queue': 'news_parsing'},
+    'rag.*': {'queue': 'rag'},
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -379,15 +388,6 @@ GOOGLE_SITE_VERIFICATION = config('GOOGLE_SITE_VERIFICATION', default=None)
 BING_SITE_VERIFICATION = config('BING_SITE_VERIFICATION', default=None)
 YAHOO_SITE_VERIFICATION = config('YAHOO_SITE_VERIFICATION', default=None)
 DISABLE_GOOGLE_INDEXING = config('DISABLE_GOOGLE_INDEXING', default=False, cast=bool)
-
-# === 🔄 CELERY (для асинхронних завдань) ===
-# Поки що закоментовано - увімкнеш коли будеш готова
-# CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379')
-# CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://localhost:6379')
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
-# CELERY_TIMEZONE = 'Europe/Warsaw'
 
 # === 💾 CACHING (опціонально) ===
 # Поки що використовуємо локальний кеш
@@ -784,9 +784,22 @@ ADMIN_JWT_COOKIE_SAMESITE = 'Lax'
 
 # Celery конфігурація для автоматичного навчання
 CELERY_BEAT_SCHEDULE = {
+    
+    
+    # 📰 Щогодини (з 8 до 23) публікуємо топ-новину в Telegram
+    'hourly-telegram-post': {
+        'task': 'news.post_top_news_to_telegram',
+        'schedule': crontab(hour='8-23', minute=0),
+    },
+
+    'daily-full-news-pipeline': {
+        'task': 'news.run_full_daily_pipeline',
+        'schedule': crontab(hour=18, minute=10),
+    },
+
     # 🌅 Щоранку аналізуємо вчорашні діалоги
     'daily-conversation-analysis': {
-        'task': 'rag.tasks.analyze_conversations_task',
+        'task': 'rag.analyze_conversations',
         'schedule': crontab(hour=6, minute=0),  # Щодня о 6:00 ранку
         'kwargs': {
             'days': 1,  # Аналізуємо за вчора
@@ -796,7 +809,7 @@ CELERY_BEAT_SCHEDULE = {
     
     # 📊 Щотижня глибший аналіз
     'weekly-pattern-analysis': {
-        'task': 'rag.tasks.analyze_conversations_task', 
+        'task': 'rag.analyze_conversations', 
         'schedule': crontab(day_of_week=1, hour=7, minute=0),  # Понеділок о 7:00
         'kwargs': {
             'days': 7,
@@ -806,14 +819,14 @@ CELERY_BEAT_SCHEDULE = {
     
     # 🧹 Щомісяця очищуємо старі відхилені паттерни  
     'monthly-cleanup': {
-        'task': 'rag.tasks.cleanup_old_patterns',
+        'task': 'rag.cleanup_old_patterns',
         'schedule': crontab(day_of_month=1, hour=2, minute=0),  # 1 числа о 2:00
         'kwargs': {'days_old': 60}
     },
     
     # 📈 Щодня переіндексуємо схвалені паттерни
     'daily-reindex-approved': {
-        'task': 'rag.tasks.reindex_approved_patterns',
+        'task': 'rag.reindex_approved_patterns',
         'schedule': crontab(hour=8, minute=30),  # Щодня о 8:30
     }
 }

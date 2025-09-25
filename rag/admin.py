@@ -70,7 +70,8 @@ class EmbeddingModelAdmin(admin.ModelAdmin):
     
     def content_title_short(self, obj):
         """Скорочений заголовок"""
-        return obj.content_title[:50] + "..." if len(obj.content_title) > 50 else obj.content_title
+        title = obj.content_title or ""
+        return (title[:50] + "...") if len(title) > 50 else title
     content_title_short.short_description = '📝 Заголовок'
     content_title_short.admin_order_field = 'content_title'
     
@@ -82,23 +83,24 @@ class EmbeddingModelAdmin(admin.ModelAdmin):
             'faq': '#ffc107',        # жовтий
             'manual': '#6c757d'      # сірий
         }
-        category = obj.content_category
+        category = (obj.content_category or '').strip()
         color = colors.get(category, '#6c757d')
         
         return format_html(
             '<span style="background: {}; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold;">{}</span>',
-            color, category.upper()
+            color, category.upper() if category else '-'
         )
     content_type_badge.short_description = '🗂️ Тип'
     
     def language_badge(self, obj):
         """Бейдж мови"""
         colors = {'uk': '#0057B7', 'en': '#00A300', 'pl': '#DC143C'}  # Кольори прапорів
-        color = colors.get(obj.language, '#6c757d')
+        lang = (obj.language or '').lower()
+        color = colors.get(lang, '#6c757d')
         
         return format_html(
             '<span style="background: {}; color: white; padding: 2px 6px; border-radius: 8px; font-size: 10px; font-weight: bold;">{}</span>',
-            color, obj.language.upper()
+            color, (lang.upper() if lang else '-')
         )
     language_badge.short_description = '🌍 Мова'
     

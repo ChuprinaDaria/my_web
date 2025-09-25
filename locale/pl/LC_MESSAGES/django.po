@@ -624,3 +624,11 @@ msgstr "O nas"
 
 msgid "News"
 msgstr "Aktualności"
+
+#: core/templates/services/service_detail.html
+msgid "Service Gallery"
+msgstr "Galeria usługi"
+
+#: core/templates/services/service_detail.html
+msgid "Visual examples of our work"
+msgstr "Wizualne przykłady naszej pracy"

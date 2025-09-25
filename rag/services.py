@@ -576,7 +576,7 @@ class RAGConsultantService:
         
         # Привітання мають найвищий пріоритет
         if any(word in query_lower for word in ['привіт', 'вітаю', 'доброго дня', 'добрий день', 
-                                                  'добрий вечір', 'доброго ранку', 'hello', 'hi', 
+                                                  'доброго ранку', 'hello', 'hi', 
                                                   'hey', 'здрастуйте']) and len(query_lower) < 30:
             return 'greeting'
         # Ключові слова для кожного наміру
@@ -703,8 +703,6 @@ class RAGConsultantService:
 {context}
 
 Запит користувача: {query}
-
-Дай відповідь українською мовою на основі наданого контексту та попередньої розмови.
 """
         
         try:
@@ -812,29 +810,12 @@ class RAGConsultantService:
         
         consultant_name = self.rag_settings.get('CONSULTANT_NAME', 'Юлія')
         
-        # 🚀 Динамічна інструкція для представлення
-        intro_instruction = f"Представся як {consultant_name}, досвідчена IT консультантка компанії LazySoft, і привітайся." if is_first_message else ""
- 
-        # Правила для короткого флоу ціноутворення
-        pricing_flow = ""
-        if intent == 'pricing':
-            if not is_followup:
-                pricing_flow = (
-                    "Після привітання задай ОДИН раз максимально повний перелік уточнень для оцінки, "
-                    "у форматі нумерованого списку (1., 2., 3., 4.,5.), не більше 5 пунктів. "
-                    "Не публікуй ціни у цьому повідомленні."
-                )
-            else:
-                pricing_flow = (
-                    "Це фоллоуап: не став додаткових питань. Дай ціни одразу після уточнень, використай наявні прайси; "
-                    "якщо бракує даних, зроби короткі припущення (в дужках) і наведи діапазони."
-                )
-        
-        base_prompt = f"""
-{intro_instruction}
-Ти допомагаєш клієнтам з технічними рішеннями та бізнес-автоматизацією.
-
-Твоя поведінка:
+        # Визначаємо мову для інструкцій
+        lang_instructions = {
+            'uk': {
+                'intro': f"Представся як {consultant_name}, досвідчена IT консультантка компанії LazySoft, і привітайся.",
+                'language': "Відповідай українською мовою.",
+                'behavior': """Твоя поведінка:
 - Відповідай професійно, але дружелюбно. Не представляйся, якщо це не перше повідомлення.
 - Використовуй конкретні факти з контексту та попередньої розмови.
 - Пропонуй практичні рішення.
@@ -843,19 +824,66 @@ class RAGConsultantService:
 - Якщо запит потребує уточнень, задай їх як нумерований список (1., 2., 3., 4., 5.), але тільки 1 раз, після давай ціни
 - Не використовуй Markdown-розмітку (без **, без заголовків, без списків Markdown).
 - Пропонуй записатися на безкоштовну консультацію або прорахунок коли це доречно
-- Якщо в тебе немає відповіді на питання, скажи що ти нажаль не компенетна і запропонуй записатися на консультацію
+- Якщо в тебе немає відповіді на питання, скажи що ти нажаль не компенетна і запропонуй записатися на консультацію""",
+                'pricing_ask': "Після привітання задай ОДИН раз максимально повний перелік уточнень для оцінки, у форматі нумерованого списку (1., 2., 3., 4., 5.), не більше 5 пунктів. Не публікуй ціни у цьому повідомленні.",
+                'pricing_followup': "Це фоллоуап: не став додаткових питань. Дай ціни одразу після уточнень, використай наявні прайси; якщо бракує даних, зроби короткі припущення (в дужках) і наведи діапазони."
+            },
+            'pl': {
+                'intro': f"Przedstaw się jako {consultant_name}, doświadczona konsultantka IT w firmie LazySoft, i przywitaj się.",
+                'language': "Odpowiadaj po polsku.",
+                'behavior': """Twoje zachowanie:
+- Odpowiadaj profesjonalnie, ale przyjaźnie. Nie przedstawiaj się, jeśli to nie pierwsza wiadomość.
+- Używaj konkretnych faktów z kontekstu i poprzedniej rozmowy.
+- Proponuj praktyczne rozwiązania.
+- Wspominaj o odpowiednich projektach lub usługach TYLKO jeśli użytkownik o nie pyta lub jest to stosowne w kontekście.
+- Nie wspominaj o pochodzeniu informacji i nie pisz fraz typu "z naszej bazy wiedzy".
+- Jeśli zapytanie wymaga wyjaśnień, zadaj je jako listę numerowaną (1., 2., 3., 4., 5.), ale tylko RAZ, potem podaj ceny
+- Nie używaj formatowania Markdown (bez **, bez nagłówków, bez list Markdown).
+- Proponuj umówienie się na bezpłatną konsultację lub wycenę, gdy to stosowne
+- Jeśli nie masz odpowiedzi na pytanie, powiedz że niestety nie jesteś kompetentna i zaproponuj konsultację""",
+                'pricing_ask': "Po przywitaniu zadaj JEDEN raz maksymalnie pełną listę pytań do wyceny, w formacie listy numerowanej (1., 2., 3., 4., 5.), nie więcej niż 5 punktów. Nie publikuj cen w tej wiadomości.",
+                'pricing_followup': "To follow-up: nie zadawaj dodatkowych pytań. Podaj ceny od razu po wyjaśnieniach, użyj dostępnych cenników; jeśli brakuje danych, zrób krótkie założenia (w nawiasach) i podaj zakresy."
+            },
+            'en': {
+                'intro': f"Introduce yourself as {consultant_name}, an experienced IT consultant at LazySoft, and say hello.",
+                'language': "Respond in English.",
+                'behavior': """Your behavior:
+- Respond professionally but friendly. Don't introduce yourself if it's not the first message.
+- Use specific facts from context and previous conversation.
+- Offer practical solutions.
+- Mention relevant projects or services ONLY if the user asks about them or it's appropriate in context.
+- Don't mention the source of information and don't write phrases like "from our knowledge base".
+- If the request needs clarification, ask them as a numbered list (1., 2., 3., 4., 5.), but only ONCE, then give prices
+- Don't use Markdown formatting (no **, no headers, no Markdown lists).
+- Offer to schedule a free consultation or quote when appropriate
+- If you don't have an answer to a question, say you're unfortunately not competent and offer a consultation""",
+                'pricing_ask': "After greeting, ask ONCE a maximally complete list of clarifications for pricing, in numbered list format (1., 2., 3., 4., 5.), no more than 5 points. Don't publish prices in this message.",
+                'pricing_followup': "This is a follow-up: don't ask additional questions. Give prices immediately after clarifications, use available price lists; if data is missing, make brief assumptions (in parentheses) and provide ranges."
+            }
+        }
+        
+        lang_data = lang_instructions.get(language, lang_instructions['uk'])
+        intro_instruction = lang_data['intro'] if is_first_message else ""
+ 
+        # Правила для короткого флоу ціноутворення
+        pricing_flow = ""
+        if intent == 'pricing':
+            if not is_followup:
+                pricing_flow = lang_data['pricing_ask']
+            else:
+                pricing_flow = lang_data['pricing_followup']
+        
+        base_prompt = f"""
+{intro_instruction}
+{lang_data['language']}
+{lang_data['behavior']}
 {pricing_flow}
 """
         
         intent_prompts = {
             'greeting': f"""
 {base_prompt}
-При привітанні:
-1. Привітайся дружелюбно та професійно
-2. Коротко розкажи про LazySoft як IT компанію (1-2 речення)
-3. Запитай, чим можеш допомогти або що цікавить користувача
-4. НЕ згадуй конкретні сервіси або ціни, якщо користувач не питав
-5. НЕ нав'язуй інформацію про послуги
+{self._get_greeting_instructions(language)}
 """,
             'pricing': f"""
 {base_prompt}
@@ -895,28 +923,97 @@ class RAGConsultantService:
     def _generate_suggestions(self, intent: str, search_results: List[Dict], language: str) -> List[str]:
         """Генерує персоналізовані пропозиції"""
         
-        suggestions = []
-        
-        if intent == 'greeting':
-            suggestions = [
-                "💼 Які послуги ми надаємо?",
-                "💰 Дізнатися про ціни", 
+        suggestions_by_lang = {
+            'uk': {
+                'greeting': [
+                    "💼 Які послуги ми надаємо?",
+                    "💰 Дізнатися про ціни", 
                 "📅 Записатися на консультацію"
-            ]
-        elif intent == 'pricing':
-            suggestions = [
-                "📅 Записатися на консультацію"
-            ]
-        elif intent == 'consultation':
-            suggestions = [
+                ],
+                'pricing': [
+                    "📅 Записатися на консультацію"
+                ],
+                'consultation': [
                 "📅 Обрати зручний час для зустрічі",
                 "📝 Підготувати список питань",
                 "💼 Розповісти про ваш бізнес",
-            ]
+                ],
+                'default': [
+                    "💬 Уточнити питання",
+                    "📞 Зв'язатися з консультантом",
+                    "📋 Переглянути наші сервіси",
+                ]
+            },
+            'pl': {
+                'greeting': [
+                    "💼 Jakie usługi oferujemy?",
+                    "💰 Dowiedz się o cenach",
+                    "📅 Umów konsultację"
+                ],
+                'pricing': [
+                    "📅 Umów konsultację"
+                ],
+                'consultation': [
+                    "📅 Wybierz dogodny termin spotkania",
+                    "📝 Przygotuj listę pytań",
+                    "💼 Opowiedz o swoim biznesie",
+                ],
+                'default': [
+                    "💬 Doprecyzuj pytanie",
+                    "📞 Skontaktuj się z konsultantem",
+                    "📋 Zobacz nasze usługi",
+                ]
+            },
+            'en': {
+                'greeting': [
+                    "💼 What services do we offer?",
+                    "💰 Learn about pricing",
+                    "📅 Schedule a consultation"
+                ],
+                'pricing': [
+                    "📅 Schedule a consultation"
+                ],
+                'consultation': [
+                    "📅 Choose a convenient meeting time",
+                    "📝 Prepare your questions",
+                    "💼 Tell us about your business",
+                ],
+                'default': [
+                    "💬 Clarify the question",
+                    "📞 Contact a consultant",
+                    "📋 View our services",
+                ]
+            }
+        }
         
-         
+        lang_suggestions = suggestions_by_lang.get(language, suggestions_by_lang['uk'])
+        suggestions = lang_suggestions.get(intent, lang_suggestions.get('default', []))
         
         return suggestions
+    
+    def _get_greeting_instructions(self, language: str) -> str:
+        """Повертає інструкції для привітання залежно від мови"""
+        greeting_instructions = {
+            'uk': """При привітанні:
+1. Привітайся дружелюбно та професійно
+2. Коротко розкажи про LazySoft як IT компанію (1-2 речення)
+3. Запитай, чим можеш допомогти або що цікавить користувача
+4. НЕ згадуй конкретні сервіси або ціни, якщо користувач не питав
+5. НЕ нав'язуй інформацію про послуги""",
+            'pl': """Przy powitaniu:
+1. Przywitaj się przyjaźnie i profesjonalnie
+2. Krótko opowiedz o LazySoft jako firmie IT (1-2 zdania)
+3. Zapytaj, w czym możesz pomóc lub co interesuje użytkownika
+4. NIE wspominaj o konkretnych usługach lub cenach, jeśli użytkownik nie pytał
+5. NIE narzucaj informacji o usługach""",
+            'en': """When greeting:
+1. Greet friendly and professionally
+2. Briefly tell about LazySoft as an IT company (1-2 sentences)
+3. Ask how you can help or what interests the user
+4. DON'T mention specific services or prices if the user didn't ask
+5. DON'T impose information about services"""
+        }
+        return greeting_instructions.get(language, greeting_instructions['uk'])
     
     def _generate_fallback_response(self, query: str, language: str, intent: str) -> Dict:
         """Генерує відповідь коли не знайдено релевантного контенту"""
@@ -928,6 +1025,20 @@ class RAGConsultantService:
                 'consultation': "Я буду рада обговорити ваше питання на консультації. Коли вам буде зручно зустрітися?",
                 'services': "Розкажіть більше про те, що вас цікавить, і я зможу запропонувати найкраще рішення.",
                 'general': "Цікаве питання! Щоб дати максимально корисну відповідь, уточніть, будь ласка, деталі."
+            },
+            'pl': {
+                'greeting': "Cześć! Jestem Julia, konsultantka IT w LazySoft. Pomagamy biznesowi w automatyzacji i rozwoju rozwiązań technicznych. W czym mogę pomóc?",
+                'pricing': "Aby podać dokładną cenę, potrzebuję więcej szczegółów o Twoim projekcie. Proszę, opowiedz, co dokładnie Cię interesuje?",
+                'consultation': "Z przyjemnością omówię Twoje pytanie na konsultacji. Kiedy będzie Ci wygodnie się spotkać?",
+                'services': "Opowiedz więcej o tym, co Cię interesuje, a zaproponuję najlepsze rozwiązanie.",
+                'general': "Ciekawe pytanie! Aby dać najbardziej pomocną odpowiedź, proszę o więcej szczegółów."
+            },
+            'en': {
+                'greeting': "Hello! I'm Julia, an IT consultant at LazySoft. We help businesses with automation and technical solution development. How can I help you?",
+                'pricing': "To give an accurate price, I need more details about your project. Please tell me what exactly interests you?",
+                'consultation': "I'll be happy to discuss your question in a consultation. When would be convenient for you to meet?",
+                'services': "Tell me more about what interests you, and I can offer the best solution.",
+                'general': "Interesting question! To give the most helpful answer, please provide more details."
             }
         }
         

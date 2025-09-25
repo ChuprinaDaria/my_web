@@ -2,21 +2,21 @@ window.openConsultantModal = function() {
     const modal = document.getElementById('consultantModal');
     if (modal) {
         modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-        if (window.innerWidth <= 768) {
+        document.body.classList.add('modal-open'); // Використовуємо клас
+        
+        // Mobile viewport height fix
+        const setVh = () => {
             const vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
-            setTimeout(() => {
-                modal.style.height = '100vh';
-                modal.style.height = 'calc(var(--vh, 1vh) * 100)';
-            }, 100);
-        }
-        
+        };
+        setVh();
+        window.addEventListener('resize', setVh);
+
         if (!window.consultantChat) {
             window.consultantChat = new ConsultantChat();
         }
-    } else {
-        
+        // Запускаємо сесію і скролимо вниз
+        window.consultantChat.startOrResumeSession();
     }
 };
 
@@ -24,7 +24,7 @@ window.closeConsultantModal = function() {
     const modal = document.getElementById('consultantModal');
     if (modal) {
         modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
+        document.body.classList.remove('modal-open'); // Прибираємо клас
     }
 };
 
@@ -139,23 +139,33 @@ class ConsultantChat {
 
     addWelcomeMessage() {
         if (this.messages.length === 0) {
-            this.addMessage('assistant', '👋 Привіт! Я ваш RAG консультант з ШІ. Готовий допомогти з будь-якими питаннями!');
+            const lang = this.getLanguage();
+            const welcomeMessages = {
+                'uk': '👋 Привіт! Я ваш RAG консультант з ШІ. Готовий допомогти з будь-якими питаннями!',
+                'pl': '👋 Cześć! Jestem Twoim konsultantem RAG AI. Gotowy pomóc w każdej sprawie!',
+                'en': '👋 Hello! I am your RAG AI consultant. Ready to help with any questions!'
+            };
+            const message = welcomeMessages[lang] || welcomeMessages['uk'];
+            this.addMessage('assistant', message);
         }
     }
 
     async ensureLanguageSelected() {
         const stored = this.getLanguage();
-        if (stored) return;
-        this.showLanguageSelector();
-        await new Promise((resolve) => {
-            const handler = (e) => {
-                if (e.detail && e.detail.type === 'lang_selected') {
-                    document.removeEventListener('consultant:event', handler);
-                    resolve();
-                }
-            };
-            document.addEventListener('consultant:event', handler);
-        });
+        // Завжди показуємо селектор мови при першому відкритті (якщо мова не була вибрана)
+        if (!stored || stored === 'auto') {
+            this.showLanguageSelector();
+            await new Promise((resolve) => {
+                const handler = (e) => {
+                    if (e.detail && e.detail.type === 'lang_selected') {
+                        document.removeEventListener('consultant:event', handler);
+                        resolve();
+                    }
+                };
+                document.addEventListener('consultant:event', handler);
+            });
+        }
+        return this.getLanguage();
     }
 
     showLanguageSelector() {
@@ -165,11 +175,11 @@ class ConsultantChat {
         container.className = 'lang-selector';
         container.innerHTML = `
             <div class="lang-box">
-                <div class="lang-title">Оберіть мову / Wybierz język / Choose language</div>
+                <div class="lang-title">🌐 Оберіть мову / Wybierz język / Choose language</div>
                 <div class="lang-actions">
-                    <button data-lang="uk" class="btn-primary">Українська</button>
-                    <button data-lang="pl" class="btn-secondary">Polski</button>
-                    <button data-lang="en" class="btn-secondary">English</button>
+                    <button data-lang="uk" class="btn-primary">🇺🇦 Українська</button>
+                    <button data-lang="pl" class="btn-secondary">🇵🇱 Polski</button>
+                    <button data-lang="en" class="btn-secondary">🇬🇧 English</button>
                 </div>
             </div>
         `;
@@ -179,6 +189,12 @@ class ConsultantChat {
             if (!lang) return;
             localStorage.setItem('consultant_language', lang);
             container.remove();
+            
+            // Оновлюємо привітальне повідомлення новою мовою
+            this.messages = [];
+            this.addWelcomeMessage();
+            this.renderMessages();
+            
             try {
                 await fetch(window.consultantApiUrls.startSession, {
                     method: 'POST',
@@ -192,7 +208,26 @@ class ConsultantChat {
     }
 
     getLanguage() {
-        return localStorage.getItem('consultant_language') || 'uk';
+        // Спочатку перевіряємо localStorage
+        const stored = localStorage.getItem('consultant_language');
+        if (stored && stored !== 'auto') {
+            return stored;
+        }
+        
+        // Якщо немає збереженої мови, намагаємося визначити з URL або браузера
+        const pathLang = window.location.pathname.split('/')[1];
+        if (['uk', 'pl', 'en'].includes(pathLang)) {
+            return pathLang;
+        }
+        
+        // Визначаємо з браузера
+        const browserLang = navigator.language.toLowerCase();
+        if (browserLang.startsWith('pl')) return 'pl';
+        if (browserLang.startsWith('en')) return 'en';
+        if (browserLang.startsWith('uk') || browserLang.startsWith('ru')) return 'uk';
+        
+        // За замовчуванням українська
+        return 'uk';
     }
 
     addMessage(sender, content, timestamp = null, ragData = null) {
@@ -234,6 +269,7 @@ class ConsultantChat {
 
         messageElement.innerHTML = messageHTML;
         messagesContainer.appendChild(messageElement);
+        this.scrollToBottom(); // Додаємо скрол тут
     }
 
     renderRagInterface(ragData) {
@@ -459,6 +495,7 @@ class ConsultantChat {
 
         messagesContainer.innerHTML = '';
         this.messages.forEach(message => this.renderMessage(message));
+        this.scrollToBottom(); // І тут після повного рендеру
     }
 
     async sendMessage() {
@@ -469,6 +506,7 @@ class ConsultantChat {
 
         this.addMessage('user', message);
         messageInput.value = '';
+        this.scrollToBottom(); // І тут після відправки
 
         this.showTypingIndicator();
 
@@ -495,6 +533,7 @@ class ConsultantChat {
             this.hideTypingIndicator();
             
             this.addMessage('assistant', data.message.content, null, data.rag_data);
+            this.scrollToBottom(); // І тут після отримання відповіді
 
             if (data.show_quote_form) {
                 setTimeout(() => {
@@ -551,7 +590,10 @@ class ConsultantChat {
         const messagesContainer = document.getElementById('messages');
         if (messagesContainer) {
             setTimeout(() => {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                messagesContainer.scrollTo({
+                    top: messagesContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
             }, 100);
         }
     }
@@ -599,6 +641,10 @@ class ConsultantChat {
         return document.querySelector('[name=csrfmiddlewaretoken]')?.value ||
                document.querySelector('meta[name="csrf-token"]')?.content ||
                '';
+    }
+
+    startOrResumeSession() {
+        this.scrollToBottom();
     }
 }
 
