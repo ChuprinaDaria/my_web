@@ -83,7 +83,7 @@ class NewsCategory(models.Model):
     cta_button_text_pl = models.CharField(_('Текст кнопки (PL)'), max_length=100, blank=True)
     cta_button_text_uk = models.CharField(_('Текст кнопки (UK)'), max_length=100, blank=True)
     
-    cta_link = models.URLField(_('Посилання CTA'), blank=True)
+    cta_service = models.ForeignKey('services.ServiceCategory', on_delete=models.SET_NULL, null=True, blank=True, related_name='news_cta_categories')
 
     def get_cta_button_text(self, language='uk'):
         """Текст CTA кнопки для конкретної мови"""
@@ -114,6 +114,12 @@ class NewsCategory(models.Model):
     def get_cta_title(self, language='uk'):
         """Отримати CTA заголовок для конкретної мови"""
         return getattr(self, f'cta_title_{language}', self.cta_title_uk)
+
+    def get_cta_url(self, language='uk'):
+        if self.cta_service:
+            with override(language):
+                return reverse('services:service_detail', kwargs={'slug': self.cta_service.slug})
+        return ''
 
 
 class RawArticle(models.Model):

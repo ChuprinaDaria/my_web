@@ -435,11 +435,18 @@ def request_quote_from_chat(request):
                 except Exception as e:
                     logger.error(f"Asana error for quote: {e}")
                 try:
+                    asana_task_id_local = None
+                    try:
+                        asana_task_id_local = task_id if 'task_id' in locals() and task_id else getattr(quote_request, 'asana_task_id', None)
+                    except Exception:
+                        asana_task_id_local = getattr(quote_request, 'asana_task_id', None)
+                    asana_link = f"https://app.asana.com/0/0/{asana_task_id_local}" if asana_task_id_local else "Не створено"
                     msg = (
                         f"📨 НОВИЙ ЗАПИТ НА ПРОРАХУНОК\n\n"
                         f"👤 {quote_request.client_name} | {quote_request.client_email}\n"
                         f"🏢 {quote_request.client_company or '—'} | 📞 {quote_request.client_phone or '—'}\n\n"
-                        f"📝 {quote_request.original_query[:500]}{'...' if len(quote_request.original_query) > 500 else ''}"
+                        f"📝 {quote_request.original_query[:500]}{'...' if len(quote_request.original_query) > 500 else ''}\n\n"
+                        f"🔗 Asana таск: <a href=\"{asana_link}\">Перейти до таска</a>"
                     )
                     admin_chat_id = getattr(settings, 'TELEGRAM_ADMIN_CHAT_ID', None)
                     if admin_chat_id:

@@ -119,6 +119,7 @@ SITE_ID = 2
 
 # SINGLE MIDDLEWARE DEFINITION
 MIDDLEWARE = [
+    'core.middleware.error_pages.ErrorPagesMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # For i18n
@@ -130,6 +131,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'core.middleware.RequireOTPForAdminMiddleware',
+    'core.middleware.security.AdminJWTMiddleware',
     'core.middleware.cookie_consent.CookieConsentMiddleware',
     # 🖕 LINUS SECURITY SYSTEM™ - Захищаємо від хакерів! (ТИМЧАСОВО ВИМКНЕНО)
      'core.middleware.security.LinusSecurityMiddleware',
@@ -205,7 +207,9 @@ RAG_SETTINGS = {
         'projects.Project', 
         'services.FAQ',
         'rag.KnowledgeSource',
-        'pricing.ServicePricing', # 💰 Додано
+        'pricing.ServicePricing',
+        'contacts.Contact',
+        'about.About',
     ],
     
     # Мови для індексації
@@ -751,6 +755,8 @@ OTP_EMAIL_SUBJECT = 'LAZYSOFT Admin - 2FA Code'
 # Статичні токени для резервного доступу
 OTP_STATIC_THROTTLE_FACTOR = 2
 
+CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
+
 # === 🌐 HTTPS / Security Headers ===
 if DEBUG:
     SESSION_COOKIE_SECURE = False
@@ -767,6 +773,14 @@ else:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# === 🔐 ADMIN JWT SETTINGS ===
+ADMIN_JWT_SECRET = config('ADMIN_JWT_SECRET', default=SECRET_KEY)
+ADMIN_JWT_ALG = 'HS256'
+ADMIN_JWT_TTL_MIN = 30
+ADMIN_JWT_COOKIE_NAME = 'admin_jwt'
+ADMIN_JWT_COOKIE_SECURE = not DEBUG
+ADMIN_JWT_COOKIE_SAMESITE = 'Lax'
 
 # Celery конфігурація для автоматичного навчання
 CELERY_BEAT_SCHEDULE = {

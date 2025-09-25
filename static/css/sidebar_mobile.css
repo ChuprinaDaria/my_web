@@ -74,8 +74,8 @@
     gap: var(--spacing-sm);
   }
   
-  .service-icon,
-  .project-icon {
+  .related-services-list .service-icon,
+  .related-projects-list .project-icon {
     width: 36px;
     height: 36px;
   }
@@ -180,8 +180,8 @@
     transform: translateY(-1px);
   }
   
-  .service-icon,
-  .project-icon {
+  .related-services-list .service-icon,
+  .related-projects-list .project-icon {
     width: 36px;
     height: 36px;
   }
@@ -397,6 +397,39 @@
   }
 }
 
+@media (max-width: 768px) {
+  .news-sidebar .categories-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .news-sidebar .category-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 6px 8px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    font-size: 0.78rem;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .news-sidebar .category-item i {
+    display: none;
+  }
+
+  .news-sidebar .category-item small {
+    margin-left: auto;
+    font-size: 0.68rem;
+    opacity: 0.8;
+  }
+}
+
 @media (max-width: 480px) {
   .related-projects-list {
     text-align: center !important;
@@ -433,8 +466,8 @@
 }
 
 /* Додаткові стилі для service-icon зображень */
-.service-icon img,
-.project-icon img {
+.related-services-list .service-icon img,
+.related-projects-list .project-icon img {
   border-radius: var(--radius-sm);
   object-fit: cover;
   max-width: 36px;

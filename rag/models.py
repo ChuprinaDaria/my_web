@@ -67,6 +67,7 @@ class ChatSession(models.Model):
     detected_intent = models.CharField(
         max_length=50,
         choices=[
+            ('greeting', 'Привітання'),
             ('pricing', 'Питання про ціни'),
             ('services', 'Інфо про сервіси'),
             ('portfolio', 'Перегляд проєктів'),

@@ -155,23 +155,96 @@ class EmbeddingService:
             
             if question: text_parts.append(f"Питання: {question}")
             if answer: text_parts.append(f"Відповідь: {answer}")
+        elif obj.__class__.__name__ == 'Contact':
+            # Контактна сторінка (contacts.Contact)
+            title = getattr(obj, f'title_{language}', getattr(obj, 'title_en', 'Contact'))
+            description = getattr(obj, f'description_{language}', getattr(obj, 'description_en', '')) or ''
+            address = getattr(obj, f'address_line_1_{language}', getattr(obj, 'address_line_1_en', ''))
+            city = getattr(obj, 'city', '')
+            country = getattr(obj, f'country_{language}', getattr(obj, 'country_en', ''))
+            email = getattr(obj, 'email', '')
+            phone = getattr(obj, 'phone', '')
+            if title: text_parts.append(f"Сторінка: {title}")
+            if description: text_parts.append(description)
+            text_parts.append(f"Email: {email} | Телефон: {phone}")
+            if address or city or country:
+                text_parts.append(f"Адреса: {address}, {city}, {country}".strip(', '))
+        elif obj.__class__.__name__ == 'About':
+            # Сторінка About (about.About)
+            title = getattr(obj, f'title_{language}', getattr(obj, 'title_en', 'About'))
+            mission = getattr(obj, f'mission_{language}', getattr(obj, 'mission_en', '')) or ''
+            story = getattr(obj, f'story_{language}', getattr(obj, 'story_en', '')) or ''
+            services = getattr(obj, f'services_{language}', getattr(obj, 'services_en', '')) or ''
+            if title: text_parts.append(f"Сторінка: {title}")
+            if mission: text_parts.append(f"Місія: {mission}")
+            if story: text_parts.append(f"Історія: {story}")
+            if services: text_parts.append(f"Що робимо: {services}")
         
         elif isinstance(obj, ServicePricing):
-            # 💰 Витягуємо дані про ціни
-            package_name = getattr(obj, f'package_name_{language}', obj.package_name_en)
-            description = getattr(obj, f'description_{language}', obj.description_en)
-            features = getattr(obj, f'features_{language}', obj.features_en)
-            
-            text_parts.append(f"Тарифний план: {package_name} для послуги {obj.service.title}")
-            text_parts.append(f"Ціна: {obj.price} {obj.currency}")
-            text_parts.append(f"Опис: {description}")
-            if features:
-                text_parts.append(f"Що входить: {', '.join(features)}")
+            # 💰 Витягуємо дані про ціни з реальної моделі pricing.ServicePricing
+            service_category = getattr(obj, 'service_category', None)
+            category_title = ''
+            if service_category:
+                category_title = getattr(service_category, f'title_{language}', getattr(service_category, 'title_en', str(service_category)))
+
+            tier = getattr(obj, 'tier', None)
+            tier_name = ''
+            if tier:
+                tier_name = getattr(tier, f'display_name_{language}', getattr(tier, 'display_name_en', str(tier)))
+
+            price_from = getattr(obj, 'price_from', None)
+            price_to = getattr(obj, 'price_to', None)
+            timeline_from = getattr(obj, 'timeline_weeks_from', None)
+            timeline_to = getattr(obj, 'timeline_weeks_to', None)
+
+            features_text = getattr(obj, f'features_included_{language}', getattr(obj, 'features_included_en', '')) or ''
+
+            if category_title or tier_name:
+                text_parts.append(f"Сервіс: {category_title} — пакет: {tier_name}".strip())
+
+            # Опис ціни
+            if price_from is not None and price_to:
+                text_parts.append(f"Діапазон ціни: ${int(price_from):,} - ${int(price_to):,}")
+            elif price_from is not None:
+                text_parts.append(f"Ціна від: ${int(price_from):,}")
+            elif price_to is not None:
+                text_parts.append(f"Ціна до: ${int(price_to):,}")
+
+            # Термін виконання
+            if timeline_from and timeline_to:
+                text_parts.append(f"Термін: {timeline_from}-{timeline_to} тижнів")
+            elif timeline_from:
+                text_parts.append(f"Термін: {timeline_from} тижнів")
+
+            # Що входить
+            if features_text:
+                # беремо перші 10 рядків, щоб не перевищувати ліміт
+                lines = [line.strip() for line in features_text.split('\n') if line.strip()]
+                if lines:
+                    text_parts.append("Що входить: " + "; ".join(lines[:10]))
         
         return '\n'.join(text_parts)
     
     def _extract_title_from_object(self, obj, language: str) -> str:
         """Витягує заголовок об'єкта"""
+        if obj.__class__.__name__ == 'Contact':
+            return getattr(obj, f'title_{language}', getattr(obj, 'title_en', 'Contact'))
+        if obj.__class__.__name__ == 'About':
+            return getattr(obj, f'title_{language}', getattr(obj, 'title_en', 'About'))
+        if isinstance(obj, ServicePricing):
+            # Заголовок для ціни: Назва пакета + сервіс
+            service_category = getattr(obj, 'service_category', None)
+            category_title = ''
+            if service_category:
+                category_title = getattr(service_category, f'title_{language}', getattr(service_category, 'title_en', str(service_category)))
+            tier = getattr(obj, 'tier', None)
+            tier_name = ''
+            if tier:
+                tier_name = getattr(tier, f'display_name_{language}', getattr(tier, 'display_name_en', str(tier)))
+            title = tier_name or 'Pricing'
+            if category_title:
+                title = f"{title} ({category_title})"
+            return title
         if hasattr(obj, f'title_{language}'):
             return getattr(obj, f'title_{language}') or getattr(obj, 'title_en', str(obj))
         elif hasattr(obj, f'question_{language}'):  # FAQ
@@ -188,6 +261,10 @@ class EmbeddingService:
             return 'faq'
         elif isinstance(obj, ServicePricing):
             return 'pricing'
+        elif obj.__class__.__name__ == 'Contact':
+            return 'contact'
+        elif obj.__class__.__name__ == 'About':
+            return 'about'
         return 'unknown'
 
 
@@ -204,7 +281,8 @@ class VectorSearchService:
         language: str = 'uk',
         limit: int = None,
         category: str = None,
-        threshold: float = None
+        threshold: float = None,
+        diversify: bool = True
     ) -> List[Dict]:
         """Шукає схожий контент за допомогою векторного пошуку"""
         
@@ -228,17 +306,75 @@ class VectorSearchService:
             queryset = queryset.filter(content_category=category)
         
         # Векторний пошук з cosine distance
+        # Для диверсифікації беремо більше результатів
+        fetch_limit = limit * 3 if diversify else limit
         results = queryset.annotate(
             distance=CosineDistance('embedding', query_embedding)
         ).filter(
             distance__lt=(1 - threshold)  # Cosine distance: менше = схожіше
-        ).order_by('distance')[:limit]
+        ).order_by('distance')[:fetch_limit]
         
         # Форматуємо результати
         formatted_results = self._serialize_search_results(results)
         
+        # Диверсифікуємо результати якщо потрібно
+        if diversify and len(formatted_results) > limit:
+            formatted_results = self._diversify_results(formatted_results, limit)
+        
         logger.info(f"Vector search для '{query}': знайдено {len(formatted_results)} результатів")
         return formatted_results
+        
+    def _diversify_results(self, results: List[Dict], limit: int) -> List[Dict]:
+        """Диверсифікує результати пошуку для уникнення домінування одного сервісу"""
+        diversified = []
+        seen_services = {}
+        max_per_service = 2  # Максимум 2 результати з одного сервісу
+        
+        # Спершу додаємо по 1 результату з кожного унікального сервісу
+        for result in results:
+            # Визначаємо сервіс з тексту або metadata
+            service_key = None
+            if 'service_title' in result and result['service_title']:
+                service_key = result['service_title']
+            elif 'content_title' in result:
+                # Витягуємо назву сервісу з заголовку
+                title = result['content_title']
+                if 'Чат-боти' in title or 'Chatbot' in title or 'Chat bot' in title:
+                    service_key = 'chatbot'
+                elif 'CRM' in title:
+                    service_key = 'crm'
+                elif 'ETL' in title or 'Автоматизація даних' in title:
+                    service_key = 'etl'
+                elif 'Лендінг' in title or 'Landing' in title:
+                    service_key = 'landing'
+                elif 'SEO' in title:
+                    service_key = 'seo'
+                else:
+                    service_key = result.get('content_category', 'other')
+            else:
+                service_key = result.get('content_category', 'other')
+            
+            # Рахуємо кількість результатів для цього сервісу
+            if service_key not in seen_services:
+                seen_services[service_key] = 0
+            
+            # Додаємо якщо не перевищено ліміт для сервісу
+            if seen_services[service_key] < max_per_service:
+                diversified.append(result)
+                seen_services[service_key] += 1
+                
+                if len(diversified) >= limit:
+                    break
+        
+        # Якщо недостатньо результатів, додаємо решту найкращих
+        if len(diversified) < limit:
+            for result in results:
+                if result not in diversified:
+                    diversified.append(result)
+                    if len(diversified) >= limit:
+                        break
+        
+        return diversified[:limit]
 
     def _serialize_search_results(self, results: List[EmbeddingModel]) -> List[Dict]:
         """Серіалізує результати векторного пошуку в JSON-сумісний формат."""
@@ -324,10 +460,12 @@ class RAGConsultantService:
         clar_asked = bool(meta.get('clarification_asked', False))
         
         # Векторний пошук релевантного контенту
+        # Для питань про сервіси збираємо більше результатів
+        search_limit = 15 if 'сервіс' in query.lower() or 'послуг' in query.lower() else 5
         search_results = self.vector_search.search_similar_content(
             query=query,
             language=language,
-            limit=5
+            limit=search_limit
         )
         
         # Аналізуємо намір користувача
@@ -436,13 +574,20 @@ class RAGConsultantService:
         """Визначає намір користувача"""
         query_lower = query.lower()
         
+        # Привітання мають найвищий пріоритет
+        if any(word in query_lower for word in ['привіт', 'вітаю', 'доброго дня', 'добрий день', 
+                                                  'добрий вечір', 'доброго ранку', 'hello', 'hi', 
+                                                  'hey', 'здрастуйте']) and len(query_lower) < 30:
+            return 'greeting'
         # Ключові слова для кожного наміру
-        if any(word in query_lower for word in ['ціна', 'скільки', 'коштує', 'бюджет', 'price']):
+        elif any(word in query_lower for word in ['ціна', 'скільки', 'коштує', 'бюджет', 'price', 'вартість']):
             return 'pricing'
         elif any(word in query_lower for word in ['консультація', 'зустріч', 'поговорити', 'consultation']):
             return 'consultation'
         elif any(word in query_lower for word in ['проєкт', 'портфоліо', 'кейс', 'приклад', 'project']):
             return 'portfolio'
+        elif any(word in query_lower for word in ['сервіс', 'послуг', 'пропонуєте', 'робите', 'займаєтесь']):
+            return 'services'
         elif search_results and search_results[0]['content_category'] == 'service':
             return 'services'
         else:
@@ -465,8 +610,59 @@ class RAGConsultantService:
         
         # Будуємо контекст з найкращих результатів
         context_parts = []
-        for result in search_results[:3]:  # Топ 3 результати
-            context_parts.append(f"""
+        
+        # Для питань про сервіси збираємо всі унікальні сервіси
+        if intent == 'services':
+            seen_services = set()
+            service_contexts = []
+            service_from_pricing = {}
+            other_contexts = []
+            
+            for result in search_results:
+                if result['content_category'] == 'service':
+                    service_title = result['content_title']
+                    if service_title not in seen_services:
+                        seen_services.add(service_title)
+                        service_contexts.append(f"""
+Сервіс: {result['content_title']}
+Контент: {result['content_text'][:500]}
+""")
+                elif result['content_category'] == 'pricing':
+                    # Витягуємо інформацію про сервіси з pricing
+                    service_title = result.get('service_title', '')
+                    if service_title and service_title not in service_from_pricing:
+                        service_from_pricing[service_title] = []
+                    if service_title:
+                        service_from_pricing[service_title].append({
+                            'package': result.get('package_name', ''),
+                            'price_from': result.get('price_from', ''),
+                            'price_to': result.get('price_to', ''),
+                            'text': result['content_text'][:200]
+                        })
+                elif len(other_contexts) < 2:  # Додаємо максимум 2 інших результати
+                    other_contexts.append(f"""
+Джерело: {result['content_title']} (тип: {result['content_category']})
+Контент: {result['content_text'][:300]}
+""")
+            
+            # Додаємо сервіси знайдені в pricing якщо їх немає в service
+            for service_name, pricing_info in service_from_pricing.items():
+                if service_name not in seen_services:
+                    seen_services.add(service_name)
+                    # Беремо перший pricing запис для опису
+                    info = pricing_info[0]
+                    service_contexts.append(f"""
+Сервіс: {service_name}
+Опис: {info['text']}
+Пакети: {', '.join(p['package'] for p in pricing_info[:3] if p['package'])}
+""")
+            
+            # Об'єднуємо контексти, пріоритет сервісам
+            context_parts = service_contexts[:7] + other_contexts
+        else:
+            # Для інших намірів використовуємо топ результати
+            for result in search_results[:3]:
+                context_parts.append(f"""
 Джерело: {result['content_title']} (схожість: {result['similarity']})
 Тип: {result['content_category']}
 Контент: {result['content_text'][:800]}
@@ -642,16 +838,25 @@ class RAGConsultantService:
 - Відповідай професійно, але дружелюбно. Не представляйся, якщо це не перше повідомлення.
 - Використовуй конкретні факти з контексту та попередньої розмови.
 - Пропонуй практичні рішення.
-- Завжди згадуй релевантні проєкти або сервіси.
+- Згадуй релевантні проєкти або сервіси ТІЛЬКИ якщо користувач питає про них або це доречно в контексті.
 - Не згадуй походження інформації та не пиши фрази на кшталт "з нашої бази знань".
 - Якщо запит потребує уточнень, задай їх як нумерований список (1., 2., 3., 4., 5.), але тільки 1 раз, після давай ціни
 - Не використовуй Markdown-розмітку (без **, без заголовків, без списків Markdown).
-- Пропонуй записатися на безкоштовну консультацію або прорахунок
+- Пропонуй записатися на безкоштовну консультацію або прорахунок коли це доречно
 - Якщо в тебе немає відповіді на питання, скажи що ти нажаль не компенетна і запропонуй записатися на консультацію
 {pricing_flow}
 """
         
         intent_prompts = {
+            'greeting': f"""
+{base_prompt}
+При привітанні:
+1. Привітайся дружелюбно та професійно
+2. Коротко розкажи про LazySoft як IT компанію (1-2 речення)
+3. Запитай, чим можеш допомогти або що цікавить користувача
+4. НЕ згадуй конкретні сервіси або ціни, якщо користувач не питав
+5. НЕ нав'язуй інформацію про послуги
+""",
             'pricing': f"""
 {base_prompt}
 Фокус на ціни: Коли говориш про ціни, завжди:
@@ -669,10 +874,12 @@ class RAGConsultantService:
 """,
             'services': f"""
 {base_prompt}
-Фокус на сервіси:
-1. Детально розповідай про можливості
-2. Наводь конкретні приклади використання  
-3. Пропонуй супутні послуги
+Фокус на сервіси - ВАЖЛИВО:
+1. Обов'язково перерахуй ВСІ основні послуги компанії, які згадані в контексті
+2. Дай короткий опис кожної послуги (2-3 речення)
+3. НЕ фокусуйся тільки на одній послузі, навіть якщо про неї більше інформації
+4. Якщо в контексті згадуються: чат-боти, CRM, лендінги, автоматизація даних (ETL) - згадай їх всі
+5. Наприкінці запропонуй обговорити деталі на консультації
 """,
             'portfolio': f"""
 {base_prompt}
@@ -690,7 +897,13 @@ class RAGConsultantService:
         
         suggestions = []
         
-        if intent == 'pricing':
+        if intent == 'greeting':
+            suggestions = [
+                "💼 Які послуги ми надаємо?",
+                "💰 Дізнатися про ціни", 
+                "📅 Записатися на консультацію"
+            ]
+        elif intent == 'pricing':
             suggestions = [
                 "📅 Записатися на консультацію"
             ]
@@ -710,6 +923,7 @@ class RAGConsultantService:
         
         fallback_responses = {
             'uk': {
+                'greeting': "Привіт! Я Юлія, IT консультантка LazySoft. Ми допомагаємо бізнесу з автоматизацією та розробкою технічних рішень. Чим можу допомогти?",
                 'pricing': "Щоб дати точну ціну, мені потрібно більше деталей про ваш проєкт. Розкажіть, будь ласка, що саме вас цікавить?",
                 'consultation': "Я буду рада обговорити ваше питання на консультації. Коли вам буде зручно зустрітися?",
                 'services': "Розкажіть більше про те, що вас цікавить, і я зможу запропонувати найкраще рішення.",

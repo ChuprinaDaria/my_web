@@ -3,6 +3,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.db.models import Sum, Count
+from django.utils.translation import override
 
 from .models import (
     RSSSource, 
@@ -175,6 +176,42 @@ class SimpleRSSAdmin(admin.ModelAdmin):
 class SimpleCategoryAdmin(admin.ModelAdmin):
     list_display = ['name_uk', 'is_active']
     list_editable = ['is_active']
+    autocomplete_fields = ['cta_service']
+    fieldsets = (
+        ('Основне', {
+            'fields': ('slug', 'is_active', 'order')
+        }),
+        ('Назви', {
+            'fields': ('name_uk', 'name_pl', 'name_en')
+        }),
+        ('Описи', {
+            'fields': ('description_uk', 'description_pl', 'description_en')
+        }),
+        ('CTA', {
+            'fields': (
+                'cta_title_uk','cta_title_pl','cta_title_en',
+                'cta_description_uk','cta_description_pl','cta_description_en',
+                'cta_service','cta_url_preview'
+            )
+        }),
+    )
+    readonly_fields = ['cta_url_preview']
+
+    def cta_url_preview(self, obj):
+        if not obj or not getattr(obj, 'cta_service', None):
+            return "—"
+        parts = []
+        try:
+            with override('uk'):
+                parts.append(f"UK: <code>{obj.get_cta_url('uk')}</code>")
+            with override('pl'):
+                parts.append(f"PL: <code>{obj.get_cta_url('pl')}</code>")
+            with override('en'):
+                parts.append(f"EN: <code>{obj.get_cta_url('en')}</code>")
+        except Exception:
+            return obj.get_cta_url() or "—"
+        return format_html('<br>'.join(parts))
+    cta_url_preview.short_description = "CTA URL (uk/pl/en)"
 
 
 # === СИРІ СТАТТІ (ТІЛЬКИ ЧИТАННЯ) ===

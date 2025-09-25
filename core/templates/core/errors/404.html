@@ -1,0 +1,19 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}404 — {% trans "Page not found" %}{% endblock %}
+
+{% block content %}
+<main>
+    <section class="py-16 text-center">
+        <div class="container max-w-3xl mx-auto">
+            <h1 class="text-4xl font-bold mb-4">404 — {% trans "Page not found" %}</h1>
+            <p class="mb-8">{% trans "Sorry, the page you are looking for does not exist or has been moved." %}</p>
+            <a href="{% url 'core:home' %}" class="inline-block px-6 py-3 bg-green-500 text-black font-bold rounded-full">
+                {% trans "Go to homepage" %}
+            </a>
+        </div>
+    </section>
+</main>
+{% endblock %}

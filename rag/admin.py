@@ -4,8 +4,8 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import redirect
 from django.contrib import messages
+from django import forms
 
 from .models import (
     EmbeddingModel, ChatSession, ChatMessage, 
@@ -102,7 +102,7 @@ class EmbeddingModelAdmin(admin.ModelAdmin):
         )
     language_badge.short_description = '🌍 Мова'
     
-    actions = ['reindex_selected']
+    actions = ['reindex_selected', 'run_index_knowledge']
     
     def reindex_selected(self, request, queryset):
         """Переіндексує обрані об'єкти"""
@@ -119,6 +119,44 @@ class EmbeddingModelAdmin(admin.ModelAdmin):
         
         messages.success(request, f"Переіндексовано {count} об'єктів")
     reindex_selected.short_description = "🔄 Переіндексувати обрані"
+
+    def run_index_knowledge(self, request, queryset):
+        if request.method != 'POST' or request.POST.get('action') != 'run_index_knowledge':
+            messages.error(request, "Невірний виклик дії. Будь ласка, запустіть через action-меню.")
+            return
+        service = IndexingService()
+        total_indexed = 0
+        deleted_count = 0
+        reindex = bool(request.POST.get('reindex')) if 'reindex' in request.POST else False
+        cleanup = bool(request.POST.get('cleanup')) if 'cleanup' in request.POST else False
+        model_path = (request.POST.get('model') or '').strip() if 'model' in request.POST else ''
+
+        try:
+            if model_path:
+                app_label, model_name = model_path.split('.')
+                ct = ContentType.objects.get(app_label=app_label, model=model_name.lower())
+                model_cls = ct.model_class()
+                languages = getattr(service, 'rag_settings', {}).get('SUPPORTED_LANGUAGES', ['uk'])
+                queryset = model_cls.objects.filter(is_active=True) if hasattr(model_cls, 'is_active') else model_cls.objects.all()
+                for obj in queryset:
+                    for lang in languages:
+                        service.embedding_service.create_embedding_for_object(obj, lang)
+                        total_indexed += 1
+                messages.success(request, f"Проіндексовано {total_indexed} записів для {model_path}")
+            else:
+                total_indexed = service.index_all_content()
+                messages.success(request, f"Проіндексовано {total_indexed} записів")
+        except Exception as e:
+            messages.error(request, f"Помилка індексації: {e}")
+
+        if cleanup:
+            try:
+                deleted_count = service.cleanup_orphaned_embeddings()
+                messages.info(request, f"Видалено {deleted_count} застарілих embeddings")
+            except Exception as e:
+                messages.error(request, f"Помилка очищення embeddings: {e}")
+
+    run_index_knowledge.short_description = "⚙️ Запустити індексацію знань…"
 
 
 @admin.register(ChatSession) 

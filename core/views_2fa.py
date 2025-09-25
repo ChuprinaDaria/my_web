@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
+from django.conf import settings
+import jwt
+import time
 from django.views.generic import View
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_totp.models import TOTPDevice
@@ -54,6 +57,15 @@ class TwoFactorLoginView(View):
                 backend = request.session.get('2fa_backend') or 'django.contrib.auth.backends.ModelBackend'
                 login(request, user, backend=backend)
                 try:
+                    payload = {
+                        'uid': user.id,
+                        'is_staff': True,
+                        'exp': int(time.time()) + int(getattr(settings, 'ADMIN_JWT_TTL_MIN', 30)) * 60
+                    }
+                    token = jwt.encode(payload, getattr(settings, 'ADMIN_JWT_SECRET', settings.SECRET_KEY), algorithm=getattr(settings, 'ADMIN_JWT_ALG', 'HS256'))
+                except Exception:
+                    token = None
+                try:
                     del request.session['2fa_user_id']
                 except KeyError:
                     pass
@@ -61,7 +73,17 @@ class TwoFactorLoginView(View):
                     del request.session['2fa_backend']
                 except KeyError:
                     pass
-                return redirect(next_url or '/control/')
+                resp = redirect(next_url or '/control/')
+                if token:
+                    resp.set_cookie(
+                        getattr(settings, 'ADMIN_JWT_COOKIE_NAME', 'admin_jwt'),
+                        token,
+                        max_age=int(getattr(settings, 'ADMIN_JWT_TTL_MIN', 30)) * 60,
+                        secure=bool(getattr(settings, 'ADMIN_JWT_COOKIE_SECURE', not settings.DEBUG)),
+                        httponly=True,
+                        samesite=getattr(settings, 'ADMIN_JWT_COOKIE_SAMESITE', 'Lax')
+                    )
+                return resp
             messages.error(request, 'Невірний 2FA токен')
             return render(request, self.template_name, {'show_token_form': True, 'next': next_url})
 
@@ -89,10 +111,29 @@ class TwoFactorLoginView(View):
                 backend = getattr(user, 'backend', 'django.contrib.auth.backends.ModelBackend')
                 login(request, user, backend=backend)
                 try:
+                    payload = {
+                        'uid': user.id,
+                        'is_staff': True,
+                        'exp': int(time.time()) + int(getattr(settings, 'ADMIN_JWT_TTL_MIN', 30)) * 60
+                    }
+                    token = jwt.encode(payload, getattr(settings, 'ADMIN_JWT_SECRET', settings.SECRET_KEY), algorithm=getattr(settings, 'ADMIN_JWT_ALG', 'HS256'))
+                except Exception:
+                    token = None
+                try:
                     del request.session['2fa_user_id']
                 except KeyError:
                     pass
-                return redirect(next_url or '/control/')
+                resp = redirect(next_url or '/control/')
+                if token:
+                    resp.set_cookie(
+                        getattr(settings, 'ADMIN_JWT_COOKIE_NAME', 'admin_jwt'),
+                        token,
+                        max_age=int(getattr(settings, 'ADMIN_JWT_TTL_MIN', 30)) * 60,
+                        secure=bool(getattr(settings, 'ADMIN_JWT_COOKIE_SECURE', not settings.DEBUG)),
+                        httponly=True,
+                        samesite=getattr(settings, 'ADMIN_JWT_COOKIE_SAMESITE', 'Lax')
+                    )
+                return resp
             else:
                 messages.error(request, 'Невірний 2FA токен')
                 return render(request, self.template_name, {'show_token_form': True, 'next': next_url})

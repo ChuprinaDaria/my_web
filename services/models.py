@@ -115,6 +115,18 @@ class ServiceCategory(models.Model):
         m = {1:'⚪',2:'🔵',3:'🟡',4:'🟠',5:'🔴'}
         return m.get(self.priority,'🔵')
 
+    def get_gallery_images(self):
+        images = []
+        if self.gallery_image_1:
+            images.append(self.gallery_image_1)
+        if self.gallery_image_2:
+            images.append(self.gallery_image_2)
+        if self.gallery_image_3:
+            images.append(self.gallery_image_3)
+        if self.gallery_image_4:
+            images.append(self.gallery_image_4)
+        return images
+
 
 class Service(models.Model):
     slug = models.SlugField(max_length=255, unique=True)

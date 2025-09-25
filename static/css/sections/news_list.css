@@ -6,6 +6,34 @@
 .news-main-section {
   padding: 60px 0;
 }
+/* 🧭 CATEGORY HERO (icon + title) */
+.category-hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.category-emoji {
+  font-size: 4rem;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .category-hero {
+    gap: 12px;
+  }
+  .category-emoji {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-emoji {
+    font-size: 2rem;
+  }
+}
 
 .news-layout {
   display: grid;

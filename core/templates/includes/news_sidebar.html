@@ -86,47 +86,8 @@
     </div>
   {% endif %}
 
-  <div class="sidebar-section glass card">
-    <h3>
-      <i data-lucide="hash"></i>
-      {% trans "Tech tags" %}
-    </h3>
-    <div class="tech-tags">
-      <span class="tech-tag">AI & ML</span>
-      <span class="tech-tag">Blockchain</span>
-      <span class="tech-tag">Cloud</span>
-      <span class="tech-tag">Cybersecurity</span>
-      <span class="tech-tag">Fintech</span>
-      <span class="tech-tag">IoT</span>
-      <span class="tech-tag">Startups</span>
-      <span class="tech-tag">Automation</span>
-    </div>
-  </div>
+  
 
-  {% if related_services %}
-    <div class="sidebar-section glass card">
-      <h3>
-        <i data-lucide="grid-3x3"></i>
-        {% trans "Related services" %}
-      </h3>
-      <div class="related-services-list">
-        {% for service in related_services %}
-          <a href="{{ service.url }}" class="service-item">
-            <div class="service-icon">
-              {% if service.icon %}
-                <img src="{{ service.icon.url|default:service.icon }}" alt="{{ service.title|default:service.slug }}" loading="lazy">
-              {% else %}
-                <span>⚡</span>
-              {% endif %}
-            </div>
-            <div class="service-info">
-              <span class="service-name">{{ service.title|default:service.slug }}</span>
-              <small class="service-description">{{ service.short|default:''|truncatewords:8 }}</small>
-            </div>
-          </a>
-        {% endfor %}
-      </div>
-    </div>
-  {% endif %}
+  
 
 </aside>

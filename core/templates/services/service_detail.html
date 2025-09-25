@@ -287,11 +287,15 @@
   </section>
 
 
-  {% if service.gallery %}
-    <section class="project-featured-image">
+  {% if service.get_gallery_images %}
+    <section class="project-gallery-section">
       <div class="container">
-        <div class="service-gallery-grid">
-          {% for image in service.gallery %}
+        <header class="gallery-header">
+          <h2>{% trans "Service Gallery" %}</h2>
+          <p>{% trans "Visual examples of our work" %}</p>
+        </header>
+        <div class="gallery-grid">
+          {% for image in service.get_gallery_images %}
             <div class="gallery-item" onclick="openLightbox('{{ image.url }}')">
               <img src="{{ image.url }}" alt="Service Gallery {{ forloop.counter }}" loading="lazy">
               <div class="gallery-overlay">

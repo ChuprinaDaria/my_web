@@ -2,7 +2,7 @@ import time
 import logging
 from typing import Dict, List
 from django.conf import settings
-from .models import ChatSession, ConsultantProfile, KnowledgeBase
+from .models import ChatSession, ConsultantProfile
 
 # Імпортуємо мої RAG сервіси
 try:
@@ -24,8 +24,7 @@ class EnhancedRAGConsultant:
             self.rag_consultant = RAGConsultantService()
             self.vector_search = VectorSearchService()
         
-        # Fallback до існуючої KnowledgeBase
-        self.fallback_enabled = True
+        # Фолбек відключено: використовуємо тільки RAG
     
     def generate_response(self, user_message: str, chat_session: ChatSession) -> Dict:
         """Генерує відповідь через RAG або fallback"""
@@ -94,23 +93,19 @@ class EnhancedRAGConsultant:
                 
             except Exception as e:
                 logger.error(f"RAG помилка: {e}")
-                # Fallback до простого алгоритму
-        
-        # Простий fallback алгоритм 
-        if self.fallback_enabled:
-            result = self._generate_fallback_response(user_message, chat_session)
-            processing_time = time.time() - start_time
-            
-            return {
-                'content': result,
-                'intent': 'general',
-                'sources': [],
-                'suggestions': [],
-                'actions': [],
-                'processing_time': processing_time,
-                'method': 'fallback',
-                'tokens_used': len(result.split()),
-            }
+                # Без фолбеку: віддаємо стандартну відповідь про недоступність
+                result_text = "Вибачте, зараз я не можу обробити ваш запит. Спробуйте пізніше."
+                processing_time = time.time() - start_time
+                return {
+                    'content': result_text,
+                    'intent': 'error',
+                    'sources': [],
+                    'suggestions': [],
+                    'actions': [],
+                    'processing_time': processing_time,
+                    'method': 'error',
+                    'tokens_used': len(result_text.split()),
+                }
         
         return {
             'content': "Вибачте, зараз я не можу обробити ваш запит. Спробуйте пізніше.",
@@ -190,50 +185,7 @@ class EnhancedRAGConsultant:
         
         return actions
     
-    def _generate_fallback_response(self, user_message: str, chat_session: ChatSession) -> str:
-        """Fallback до простого алгоритму (існуючий код)"""
-        
-        import random
-        
-        # Використовуємо існуючу KnowledgeBase
-        knowledge_items = KnowledgeBase.objects.filter(is_active=True).order_by('-priority')
-        
-        # Пошук релевантних знань (простий)
-        relevant_knowledge = []
-        user_words = user_message.lower().split()
-        
-        for item in knowledge_items:
-            item_words = (item.title + ' ' + item.content).lower().split()
-            if any(word in item_words for word in user_words):
-                relevant_knowledge.append(item)
-        
-        # Базові відповіді
-        responses = [
-            f"Дякую за ваше питання! Це цікава тема.",
-            "Я розумію ваш запит. Дозвольте мені допомогти вам з цим.",
-            "Це важливе питання. Ось що я можу вам запропонувати:",
-            "Відмінно! Давайте розглянемо це детальніше.",
-        ]
-        
-        # Формуємо відповідь
-        response = random.choice(responses)
-        
-        if relevant_knowledge:
-            response += f"\n\nЗгідно з моєю базою знань:\n"
-            for item in relevant_knowledge[:2]:
-                response += f"• {item.title}: {item.content[:200]}...\n"
-        
-        # Додаємо загальні поради
-        general_advice = [
-            "Якщо у вас є додаткові питання, не соромтеся запитати!",
-            "Можу допомогти з більш детальним поясненням.", 
-            "Чи є щось конкретне, що вас цікавить?",
-            "Готовий продовжити нашу розмову!",
-        ]
-        
-        response += f"\n\n{random.choice(general_advice)}"
-        
-        return response
+    # Фолбек вимкнено; додаткової логіки тут немає
     
     def detect_intent(self, user_message: str) -> str:
         """Визначає намір користувача (спрощена версія)"""
