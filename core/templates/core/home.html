@@ -64,116 +64,7 @@
   <meta name="apple-itunes-app" content="app-id=lazysoft-app">
   <meta name="google-play-app" content="app-id=com.lazysoft.app">
   
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Lazysoft",
-    "description": "{% if CURRENT_LANG == 'uk' %}Провідна компанія з ШІ автоматизації та розробки програмного забезпечення{% elif CURRENT_LANG == 'pl' %}Wiodąca firma automatyzacji AI i rozwoju oprogramowania{% else %}Leading AI automation and custom software development company{% endif %}",
-    "url": "https://lazysoft.dev",
-    "logo": "https://lazysoft.dev{% static 'images/lazysoft-logo.png' %}",
-    "image": "https://lazysoft.dev{% static 'images/lazysoft-home-og.jpg' %}",
-    "founder": {
-      "@type": "Person",
-      "name": "Daria Chuprina",
-      "jobTitle": "Founder & Full-Stack Developer"
-    },
-    "foundingDate": "2024",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "{% if CURRENT_LANG == 'uk' %}Польща{% elif CURRENT_LANG == 'pl' %}Polska{% else %}Poland{% endif %}",
-      "addressCountry": "PL"
-    },
-    "contactPoint": [
-      {
-        "@type": "ContactPoint",
-        "contactType": "customer service",
-        "availableLanguage": ["English", "Ukrainian", "Polish"],
-        "url": "https://lazysoft.dev#contact"
-      }
-    ],
-    "sameAs": [
-      "https://t.me/Lazysoft_news",
-      "https://linkedin.com/company/lazysoft",
-      "https://github.com/lazysoft"
-    ],
-    "areaServed": ["Worldwide", "Europe", "North America"],
-    "serviceType": [
-      "AI Automation",
-      "Custom Software Development", 
-      "Chatbot Development",
-      "Business Process Automation",
-      "Web Development"
-    ]
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Lazysoft",
-    "url": "https://lazysoft.dev",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://lazysoft.dev/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    },
-    "mainEntity": {
-      "@type": "Organization",
-      "@id": "https://lazysoft.dev#organization"
-    }
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "{% if CURRENT_LANG == 'uk' %}Головна{% elif CURRENT_LANG == 'pl' %}Strona główna{% else %}Home{% endif %}",
-        "item": "https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
-      }
-    ]
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "AI Automation Services",
-    "description": "{% if CURRENT_LANG == 'uk' %}Комплексні послуги ШІ автоматизації{% elif CURRENT_LANG == 'pl' %}Kompleksowe usługi automatyzacji AI{% else %}Comprehensive AI automation services{% endif %}",
-    "provider": {
-      "@type": "Organization",
-      "@id": "https://lazysoft.dev#organization"
-    },
-    "areaServed": "Worldwide",
-    "audience": {
-      "@type": "BusinessAudience",
-      "audienceType": "Small and Medium Businesses, Enterprises"
-    }
-  }
-  </script>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": "https://lazysoft.dev/",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": "https://lazysoft.dev/search?q={search_term_string}"
-      },
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
+  <!-- Schema.org is now handled by the centralized include -->
 {% endblock %}
 
 {% block content %}
@@ -318,8 +209,8 @@
                   {% elif CURRENT_LANG == 'pl' and article.category.name_pl %}{{ article.category.name_pl }}
                   {% else %}{{ article.category.name_en }}{% endif %}
                 </span>
-                {% if article.priority >= 4 %}
-                  <span class="chip priority-high">🏆 TOP</span>
+                {% if article.is_top_article and article.article_rank and article.get_word_count > 500 %}
+                  <span class="chip priority-high">🏆 TOP {{ article.article_rank }}</span>
                 {% elif article.priority >= 3 %}
                   <span class="chip priority-high">🔥 HOT</span>
                 {% endif %}
@@ -332,9 +223,15 @@
               </h3>
 
               <p>
-                {% if CURRENT_LANG == 'uk' and article.business_insight_uk %}{{ article.business_insight_uk|safe|truncatewords:25 }}
-                {% elif CURRENT_LANG == 'pl' and article.business_insight_pl %}{{ article.business_insight_pl|safe|truncatewords:25 }}
-                {% else %}{{ article.business_insight_en|safe|truncatewords:25 }}{% endif %}
+                {% if article.is_top_article and article.full_content_parsed %}
+                  {% if CURRENT_LANG == 'uk' and article.full_content_uk %}{{ article.full_content_uk|safe|truncatewords:30 }}
+                  {% elif CURRENT_LANG == 'pl' and article.full_content_pl %}{{ article.full_content_pl|safe|truncatewords:30 }}
+                  {% else %}{{ article.full_content_en|safe|truncatewords:30 }}{% endif %}
+                {% else %}
+                  {% if CURRENT_LANG == 'uk' and article.business_insight_uk %}{{ article.business_insight_uk|safe|truncatewords:25 }}
+                  {% elif CURRENT_LANG == 'pl' and article.business_insight_pl %}{{ article.business_insight_pl|safe|truncatewords:25 }}
+                  {% else %}{{ article.business_insight_en|safe|truncatewords:25 }}{% endif %}
+                {% endif %}
               </p>
 
               <div class="news-card-meta">

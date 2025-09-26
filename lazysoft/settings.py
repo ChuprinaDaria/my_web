@@ -184,45 +184,50 @@ DATABASES = {
 
 # RAG налаштування
 RAG_SETTINGS = {
-    # Embedding модель
-    'EMBEDDING_MODEL': 'gemini',  # або 'openai'
-    'GEMINI_EMBEDDING_MODEL': 'models/embedding-001',
-    'OPENAI_EMBEDDING_MODEL': 'text-embedding-3-small',
-    
-    # Розміри векторів
-    'GEMINI_EMBEDDING_DIMENSIONS': 768,
-    'OPENAI_EMBEDDING_DIMENSIONS': 1536,
-    
-    # Vector search параметри
-    'SIMILARITY_THRESHOLD': 0.7,  # Мінімальна схожість для релевантності
-    'MAX_SEARCH_RESULTS': 10,     # Максимум результатів пошуку
-    'MAX_CONTEXT_LENGTH': 4000,   # Максимум токенів для контексту
-    
-    # RAG поведінка
-    'AUTO_GENERATE_EMBEDDINGS': True,  # Автоматично генерувати для нового контенту
-    'REINDEX_INTERVAL_HOURS': 24,      # Переіндексація кожні 24 год
-    
-    # Що індексувати
-    'INDEXABLE_MODELS': [
-        'services.ServiceCategory',
-        'projects.Project', 
-        'services.FAQ',
-        'rag.KnowledgeSource',
-        'pricing.ServicePricing',
-        'contacts.Contact',
-        'about.About',
+    "PROVIDER": "openai",  # активний провайдер: "gemini" або "openai"
+
+    "EMBEDDING_MODELS": {
+        "gemini": {
+            "name": "models/embedding-001",
+            "dim": 768,
+        },
+        "openai": {
+            "name": "text-embedding-3-small",
+            "dim": 1536,
+        },
+    },
+
+    # Основні параметри пошуку
+    "SIMILARITY_THRESHOLD": 0.2,   # мінімальна схожість для релевантності
+    "MAX_SEARCH_RESULTS": 10,      # максимум результатів
+    "MAX_CONTEXT_LENGTH": 4000,    # токенів у контексті
+
+    # Поведінка RAG
+    "AUTO_GENERATE_EMBEDDINGS": False,  # автоматичне створення ембеддингів
+    "REINDEX_INTERVAL_HOURS": 24,       # переіндексація кожні 24 год
+
+    # Моделі для індексації
+    "INDEXABLE_MODELS": [
+        "services.ServiceCategory",
+        "projects.Project",
+        "services.FAQ",
+        "rag.KnowledgeSource",
+        "pricing.ServicePricing",
+        "contacts.Contact",
+        "about.About",
     ],
-    
-    # Мови для індексації
-    'SUPPORTED_LANGUAGES': ['uk', 'en', 'pl'],
-    
-    # Консультант налаштування  
-    'CONSULTANT_NAME': 'Юлія',
-    'CONSULTANT_PERSONALITY': 'Дружелюбна IT експертка, яка допомагає з технічними рішеннями',
-    'DEFAULT_LANGUAGE': 'uk',
-    'CONSULTATION_CALENDAR_URL': 'https://calendar.google.com/',
-    'CONSULTATION_URL': 'https://calendar.google.com/'
+
+    # Мовна підтримка
+    "SUPPORTED_LANGUAGES": ["uk", "en", "pl"],
+
+    # Налаштування консультанта
+    "CONSULTANT_NAME": "Юлія",
+    "CONSULTANT_PERSONALITY": "Дружелюбна IT-експертка, яка допомагає з технічними рішеннями",
+    "DEFAULT_LANGUAGE": "uk",
+    "CONSULTATION_CALENDAR_URL": "https://calendar.google.com/",
+    "CONSULTATION_URL": "https://calendar.google.com/",
 }
+
 
 # Celery для асинхронної обробки embeddings (опціонально)
 CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
@@ -348,6 +353,10 @@ AI_PREFERRED_MODEL = config('AI_PREFERRED_MODEL', default='gemini')
 AI_BACKUP_MODEL = config('AI_BACKUP_MODEL', default='openai')
 AI_MAX_TOKENS = config('AI_MAX_TOKENS', default=2000, cast=int)
 AI_TEMPERATURE = config('AI_TEMPERATURE', default=0.7, cast=float)
+# Конкретні моделі
+AI_GEMINI_GENERATIVE_MODEL = config('AI_GEMINI_GENERATIVE_MODEL', default='gemini-1.5-flash')
+AI_OPENAI_GENERATIVE_MODEL = config('AI_OPENAI_GENERATIVE_MODEL', default='gpt-4o')
+AI_OPENAI_GENERATIVE_MODEL_FALLBACK = config('AI_OPENAI_GENERATIVE_MODEL_FALLBACK', default='gpt-4o-mini')
 
 # === 📱 SOCIAL MEDIA API ===
 # Telegram

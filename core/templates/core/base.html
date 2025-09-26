@@ -76,6 +76,7 @@
       <meta name="theme-color" content="#66ff00">
       <meta name="msapplication-navbutton-color" content="#66ff00">
       <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      <meta name="msvalidate.01" content="C94618D4BF83DE6C922EC9EE140282FE" />
       
       {% if GOOGLE_SITE_VERIFICATION %}
         <meta name="google-site-verification" content="{{ GOOGLE_SITE_VERIFICATION }}" />
@@ -104,57 +105,9 @@
       <meta name="application-name" content="Lazysoft">
       <meta name="mobile-web-app-capable" content="yes">
       
-      <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Lazysoft",
-        "url": "{{ SITE_URL }}",
-        "logo": "{{ SITE_URL }}{% static 'images/logo.png' %}",
-        "description": "{% trans 'Automation and development solutions' %}",
-        "sameAs": [
-          "https://t.me/Lazysoft_news",
-          "https://linkedin.com/company/lazysoft",
-          "https://twitter.com/lazysoft_dev"
-        ],
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "contactType": "customer service",
-          "availableLanguage": ["English", "Ukrainian", "Polish"],
-          "url": "{{ SITE_URL }}#contact"
-        },
-        "founder": {
-          "@type": "Person",
-          "name": "Daria Chuprina",
-          "jobTitle": "Founder & Full-Stack Developer",
-          "url": "https://linkedin.com/in/daria-chuprina"
-        },
-        "foundingDate": "2024",
-        "address": {
-          "@type": "PostalAddress",
-          "addressCountry": "PL"
-        }
-      }
-      </script>
-      
-      <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Lazysoft",
-        "url": "{{ SITE_URL }}",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "{{ SITE_URL }}/search?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        },
-        "mainEntity": {
-          "@type": "Organization",
-          "@id": "{{ SITE_URL }}#organization"
-        },
-        "inLanguage": ["en", "uk", "pl"]
-      }
-      </script>
+      <!-- Schema.org structured data -->
+      {% include 'core/includes/schema_org.html' %}
+      {% include 'core/includes/google_analytics.html' %}
     {% endblock %}
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">

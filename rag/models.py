@@ -5,7 +5,11 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from pgvector.django import VectorField
 from django.utils import timezone
 import json
+from rag.utils import get_active_embedding_conf # Імпортуємо утиліту
 
+# Отримуємо активну конфігурацію embeddings
+ACTIVE_EMBEDDING_CONF = get_active_embedding_conf()
+EMBEDDING_DIMENSIONS = ACTIVE_EMBEDDING_CONF["dim"]
 
 class EmbeddingModel(models.Model):
     """Модель для зберігання векторних представлень контенту"""
@@ -15,8 +19,8 @@ class EmbeddingModel(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     
-    # Векторне представлення (1536 dimensions для OpenAI ada-002, 768 для Gemini)
-    embedding = VectorField(dimensions=768)  # Gemini text-embedding-004
+    # Векторне представлення (розмірність з налаштувань)
+    embedding = VectorField(dimensions=EMBEDDING_DIMENSIONS)  # Динамічна розмірність
     
     # Метадані для кращого пошуку
     content_text = models.TextField(help_text="Текст, з якого згенерований embedding")

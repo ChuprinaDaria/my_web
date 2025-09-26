@@ -94,7 +94,7 @@ def post_top_news_to_telegram_task():
         message = (
             f"🔥 *{article_to_post.get_title('uk')}*\n\n"
             f"{article_to_post.get_summary('uk')}\n\n"
-            f"🔗 [Читати далі]({article_to_post.get_full_url()})"
+            f"🔗 [Читати далі]({article_to_post.get_absolute_url('uk')})"
         )
         
         external_id = telegram_service.post_to_telegram(message, photo_url=article_to_post.ai_image_url)

@@ -94,11 +94,12 @@ class AINewsProcessor:
         
         # Налаштування AI
         self.preferred_model = getattr(settings, 'AI_PREFERRED_MODEL', 'gemini')  # 'openai' або 'gemini'
-        self.backup_model = 'gemini' if self.preferred_model == 'openai' else 'openai'
+        self.backup_model = getattr(settings, 'AI_BACKUP_MODEL', 'openai')
         
         # Ініціалізація AI клієнтів
         self.openai_client = None
         self.gemini_model = None
+        self.gemini_embedding_model = None # Додаємо для ембеддінгів
         
         self._init_ai_clients()
         
@@ -119,12 +120,15 @@ class AINewsProcessor:
         api_key = getattr(settings, "OPENAI_API_KEY", "")
 
         try:
-            self.openai_client = OpenAI(
-                api_key=api_key,
-                organization=org,
-                project=proj,
-            )
-            self.logger.info("OpenAI клієнт ініціалізовано (org=%s, project=%s)", org or "-", proj or "-")
+            if api_key and OPENAI_AVAILABLE:
+                self.openai_client = OpenAI(
+                    api_key=api_key,
+                    organization=org,
+                    project=proj,
+                )
+                self.logger.info("OpenAI клієнт ініціалізовано (org=%s, project=%s)", org or "-", proj or "-")
+            else:
+                self.logger.warning("OpenAI API ключ не встановлено або бібліотека не доступна.")
         except Exception as e:
             self.openai_client = None
             self.logger.error("OpenAI клієнт не ініціалізувався: %s", e)
@@ -133,10 +137,12 @@ class AINewsProcessor:
         if GEMINI_AVAILABLE and self.gemini_api_key:
             try:
                 genai.configure(api_key=self.gemini_api_key)
-                self.gemini_model = genai.GenerativeModel('gemini-1.5-flash')
+                self.gemini_model = genai.GenerativeModel(getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash'))
                 self.logger.info(" Gemini клієнт ініціалізований")
             except Exception as e:
                 self.logger.error(f"❌ Помилка ініціалізації Gemini: {e}")
+        else:
+            self.logger.warning("Gemini API ключ не встановлено або бібліотека не доступна.")
 
     def _safe_get_value(self, obj, key, default=""):
         """
@@ -150,20 +156,24 @@ class AINewsProcessor:
         return val if val is not None else default
 
     def _call_ai_model(self, prompt: str, max_tokens: int = 1000) -> str:
-        """Універсальний виклик AI з фолбеком: Gemini → GPT."""
+        """Універсальний виклик AI з фолбеком: Preferred → Backup → Exception."""
         self.logger.info(f"[AI] Викликаємо {self.preferred_model} модель...")
+
+        # Завантажуємо налаштування температури з settings.py
+        temperature = getattr(settings, 'AI_TEMPERATURE', 0.7)
+        max_output_tokens = getattr(settings, 'AI_MAX_TOKENS', 2000)
 
         # 1) Основна модель
         try:
             if self.preferred_model == "gemini" and self.gemini_model:
-                self.logger.info("[AI] Використовуємо Gemini...")
-                resp = self._call_gemini(prompt, max_tokens)
+                self.logger.info(f"[AI] Використовуємо Gemini ({getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')})...")
+                resp = self._call_gemini(prompt, max_output_tokens, temperature)
                 self.logger.info(f"[AI] Gemini відповів: {len(resp)} символів")
                 return resp
 
             if self.preferred_model == "openai" and self.openai_client:
-                self.logger.info("[AI] Використовуємо OpenAI...")
-                resp = self._call_openai(prompt, max_tokens)
+                self.logger.info(f"[AI] Використовуємо OpenAI ({getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')})...")
+                resp = self._call_openai(prompt, max_output_tokens, temperature)
                 self.logger.info(f"[AI] OpenAI відповів: {len(resp)} символів")
                 return resp
 
@@ -171,83 +181,93 @@ class AINewsProcessor:
             msg = str(e)
             self.logger.warning(f"[WARNING] Основна модель ({self.preferred_model}) недоступна: {msg}")
 
-            # Якщо це ліміт Gemini (429) — одразу перемикаємось на GPT
-            if self.preferred_model == "gemini" and ("429" in msg or "quota" in msg.lower()):
-                self.logger.warning("[WARNING] Gemini quota exceeded — switching to GPT-4.1")
-                try:
-                    return self._call_openai(prompt, max_tokens)
-                except Exception as oe:
-                    self.logger.error(f"❌ Фолбек на OpenAI теж впав: {oe}")
-
         # 2) Резервна модель (якщо налаштована)
-        try:
-            if getattr(self, "backup_model", None) == "openai" and self.openai_client:
-                return self._call_openai(prompt, max_tokens)
-            if getattr(self, "backup_model", None) == "gemini" and self.gemini_model:
-                return self._call_gemini(prompt, max_tokens)
-        except Exception as e:
-            self.logger.error(f"❌ Резервна модель ({getattr(self, 'backup_model', None)}) недоступна: {e}")
+        if self.backup_model:
+            self.logger.info(f"[AI] Спробуємо резервну модель ({self.backup_model})...")
+            try:
+                if self.backup_model == "openai" and self.openai_client:
+                    self.logger.info(f"[AI] Використовуємо OpenAI Fallback ({getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')})...")
+                    return self._call_openai(prompt, max_output_tokens, temperature, is_fallback=True)
+                if self.backup_model == "gemini" and self.gemini_model:
+                    self.logger.info(f"[AI] Використовуємо Gemini Fallback ({getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')})...")
+                    return self._call_gemini(prompt, max_output_tokens, temperature)
+            except Exception as e:
+                self.logger.error(f"❌ Резервна модель ({self.backup_model}) теж недоступна: {e}")
 
         raise Exception("❌ Жодна AI модель недоступна")
 
 
-    def _call_openai(self, prompt: str, max_tokens: int) -> str:
+    def _call_openai(self, prompt: str, max_tokens: int, temperature: float, is_fallback: bool = False) -> str:
         """Виклик OpenAI GPT (оновлена модель)."""
-        # вибери свою дефолтну модель; 4o-mini дешевша, 4.1 – розумніша
-        model = getattr(self, "openai_text_model", None) or "gpt-4.1"
+        model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')
+        if is_fallback:
+            model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')
+        
+        self.logger.info(f"[OPENAI] Відправляємо запит до моделі {model_name} довжиною {len(prompt)} символів...")
         try:
             resp = self.openai_client.chat.completions.create(
-                model=model,
+                model=model_name,
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=max_tokens,
-                temperature=0.7,
+                temperature=temperature,
             )
+            self.logger.info(f"[OPENAI] Успішна відповідь від {model_name}: {len(resp.choices[0].message.content)} символів")
             return resp.choices[0].message.content
         except Exception as e:
-            # якщо раптом 429 у OpenAI — можна ще раз спробувати на дешевшій моделі
-            msg = str(e)
-            if "429" in msg or "rate" in msg.lower():
-                self.logger.warning("[WARNING] OpenAI rate limit — fallback to gpt-4o-mini")
-                resp = self.openai_client.chat.completions.create(
-                    model="gpt-4o-mini",
-                    messages=[{"role": "user", "content": prompt}],
-                    max_tokens=max_tokens,
-                    temperature=0.7,
-                )
-                return resp.choices[0].message.content
+            self.logger.error(f"[OPENAI] Помилка від {model_name}: {e}")
             raise
 
 
-    def _call_gemini(self, prompt: str, max_tokens: int) -> str:
+    def _call_gemini(self, prompt: str, max_tokens: int, temperature: float) -> str:
         """Виклик Google Gemini з чітким логуванням помилок."""
-        self.logger.info(f"[GEMINI] Відправляємо запит довжиною {len(prompt)} символів...")
+        model_name = getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')
+        self.logger.info(f"[GEMINI] Відправляємо запит до моделі {model_name} довжиною {len(prompt)} символів...")
         try:
             response = self.gemini_model.generate_content(
                 prompt,
                 generation_config=genai.types.GenerationConfig(
                     max_output_tokens=max_tokens,
-                    temperature=0.7,
+                    temperature=temperature,
                 ),
             )
             if not getattr(response, "text", None):
                 raise Exception("Gemini повернув пустий response.text")
-            self.logger.info(f"[GEMINI] Успішна відповідь: {len(response.text)} символів")
+            self.logger.info(f"[GEMINI] Успішна відповідь від {model_name}: {len(response.text)} символів")
             return response.text
         except Exception as e:
-            self.logger.error(f"[GEMINI] Помилка: {e}")
-            # Проброс виключення нагору — там спіймаємо 429 і перемкнемось на GPT
+            self.logger.error(f"[GEMINI] Помилка від {model_name}: {e}")
             raise
 
 
     def _calculate_cost(self, prompt: str, response: str) -> float:
         """Обчислює приблизну вартість AI запиту"""
-        if self.preferred_model == 'openai':
-            input_tokens = len(prompt.split()) * 1.3  # Приблизно
-            output_tokens = len(response.split()) * 1.3
-            cost = (input_tokens * 0.0015 + output_tokens * 0.002) / 1000
+        model_used = "openai" if self.openai_client else "gemini"
+        if model_used == 'openai':
+            # Для OpenAI використовуємо токенізовану вартість (приблизно)
+            input_tokens = len(prompt.split()) / 0.75  # Приблизно, щоб врахувати різницю в токенізації
+            output_tokens = len(response.split()) / 0.75
+            
+            # Вартість залежить від моделі, але для простоти візьмемо середню
+            # Ціни OpenAI можуть бути дуже різними, тому це приблизно
+            # gpt-4o: input 5$/M, output 15$/M
+            # gpt-4o-mini: input 0.15$/M, output 0.6$/M
+            
+            model_name = self.preferred_model
+            if self.preferred_model == 'openai':
+                model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')
+            if self.backup_model == 'openai' and not self.openai_client:
+                model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')
+
+            if 'gpt-4o-mini' in model_name:
+                cost = (input_tokens * 0.15 + output_tokens * 0.6) / 1_000_000
+            elif 'gpt-4o' in model_name:
+                cost = (input_tokens * 5 + output_tokens * 15) / 1_000_000
+            else: # Дефолт, якщо модель не впізнана
+                cost = (input_tokens * 1 + output_tokens * 2) / 1_000_000 # Дуже приблизно
         else:  # Gemini
+            # Gemini ціни: input 0.125$/M, output 0.375$/M (для flash)
             tokens = (len(prompt) + len(response)) / 4  # Приблизно
-            cost = tokens * 0.00025 / 1000
+            cost = (tokens * 0.125 + tokens * 0.375) / 1_000_000
         
         return round(cost, 6)
     

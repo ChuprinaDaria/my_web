@@ -140,11 +140,11 @@ class EnhancedAIAnalyzer(AINewsProcessor):
         
         # Промпт для генерації інсайтів
         insights_prompt = f"""
-        As LAZYSOFT automation agency expert, analyze this tech article for {market.upper()} small-medium business market.
+        As LAZYSOFT automation agency expert, create a comprehensive Business Impact analysis for {market.upper()} small-medium business market.
 
         ARTICLE:
         Title: {raw_article.title}
-        Content: {content[:1500]}
+        Content: {content[:2000]}
         Source: {raw_article.source.name}
 
         LAZYSOFT CONTEXT:
@@ -155,38 +155,40 @@ class EnhancedAIAnalyzer(AINewsProcessor):
 
         OUTPUT in {language.upper()} language as JSON:
         {{
-            "main_insight": "2-3 sentences about why this matters for {market} SMB",
+            "main_insight": "Detailed 2000-3000 character Business Impact analysis covering: 1) Key technological trends and business impact, 2) Specific automation and optimization opportunities, 3) Practical implementation steps for SMB, 4) ROI assessment and potential savings, 5) Risks and mitigation strategies, 6) Competitive advantages and growth opportunities. Focus on practical automation solutions with concrete examples and numbers.",
             "practical_applications": [
-                "specific use case 1",
-                "specific use case 2", 
-                "specific use case 3"
+                "specific automation use case 1 with potential savings",
+                "specific optimization use case 2 with implementation timeline", 
+                "specific integration use case 3 with ROI projection"
             ],
-            "lazysoft_perspective": "How we at LAZYSOFT see this trend/technology fitting into SMB automation strategy",
+            "lazysoft_perspective": "How we at LAZYSOFT see this trend/technology fitting into SMB automation strategy with specific service offerings and implementation approach",
             "implementation_steps": [
-                "step 1: assess current state",
-                "step 2: plan implementation",
-                "step 3: execute and measure"
+                "step 1: comprehensive assessment of current state and pain points",
+                "step 2: detailed planning with timeline and resource allocation",
+                "step 3: phased execution with monitoring and optimization",
+                "step 4: measurement and continuous improvement"
             ],
-            "roi_estimate": "Potential savings/benefits with timeframe",
+            "roi_estimate": "Detailed ROI analysis with specific numbers: potential savings, implementation costs, payback period, and long-term benefits",
             "key_takeaways": [
-                "takeaway 1",
-                "takeaway 2",
-                "takeaway 3"
+                "strategic takeaway 1 with business impact",
+                "technical takeaway 2 with implementation guidance",
+                "financial takeaway 3 with cost-benefit analysis"
             ],
             "interesting_facts": [
-                "surprising fact 1",
-                "industry insight 2"
+                "industry statistic 1 with source",
+                "market trend 2 with implications",
+                "technology advancement 3 with business relevance"
             ],
-            "business_opportunity": "Specific opportunity for {market} businesses",
-            "lazysoft_recommendation": "Our specific recommendation as automation experts"
+            "business_opportunity": "Specific market opportunity for {market} businesses with competitive analysis and market positioning",
+            "lazysoft_recommendation": "Our specific recommendation as automation experts with service roadmap and implementation strategy"
         }}
 
-        Respond ONLY with JSON in {language} language.
+        Respond ONLY with JSON in {language} language. Ensure main_insight is 2000-3000 characters.
         """
         
         try:
             # Викликаємо AI
-            ai_response = self._call_ai_model(insights_prompt, max_tokens=1200)
+            ai_response = self._call_ai_model(insights_prompt, max_tokens=2000)
             
             # Парсимо відповідь
             insights_data = self._parse_insights_response(ai_response, language)

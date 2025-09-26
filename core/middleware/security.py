@@ -122,8 +122,9 @@ class AdminJWTMiddleware:
 
     def __call__(self, request):
         path = request.path or ''
-        is_logout = path.endswith('/logout/') or path == '/control/logout/' or path == '/admin/logout/'
-        if path.startswith('/control/') and not path.startswith('/control/login') and not path.startswith('/control/2fa/') and not is_logout:
+        normalized_path = self._strip_language_prefix(path)
+        is_logout = path.endswith('/logout/') or normalized_path == '/control/logout/' or normalized_path == '/admin/logout/'
+        if normalized_path.startswith('/control/') and not normalized_path.startswith('/control/login') and not normalized_path.startswith('/control/2fa/') and not is_logout:
             token = request.COOKIES.get(getattr(settings, 'ADMIN_JWT_COOKIE_NAME', 'admin_jwt'))
             if not token:
                 return redirect('admin_2fa_login')
@@ -146,6 +147,14 @@ class AdminJWTMiddleware:
         if is_logout:
             response.delete_cookie(getattr(settings, 'ADMIN_JWT_COOKIE_NAME', 'admin_jwt'))
         return response
+    
+    def _strip_language_prefix(self, path):
+        languages = [code for code, _ in getattr(settings, 'LANGUAGES', [])]
+        for code in languages:
+            prefix = f'/{code}/'
+            if path.startswith(prefix):
+                return '/' + path[len(prefix):]
+        return path
     
     def get_client_ip(self, request):
         """Отримуємо реальний IP клієнта"""

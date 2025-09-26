@@ -20,15 +20,40 @@ def home(request):
     from projects.models import Project
     from services.models import ServiceCategory
     
-    # Отримуємо останні новини
+    # Отримуємо топ-5 новин з повним контентом (тільки ті, що оброблені через пайплайн)
     latest_articles = ProcessedArticle.objects.filter(
-        status='published'
-    ).order_by('-published_at')[:3]
+        status='published',
+        is_top_article=True,
+        top_selection_date=timezone.now().date(),
+        raw_article__has_full_content=True  # Тільки з повним контентом через FiveFilters
+    ).order_by('article_rank')[:5]
     
-    # Отримуємо дайджест (додаткові новини після топ-3)
-    daily_digest = ProcessedArticle.objects.filter(
-        status='published'
-    ).order_by('-published_at')[3:13]  # Наступні 10 статей після топ-3
+    # Отримуємо дайджест (решта новин без повного контенту)
+    # Спочатку шукаємо в DailyDigest, якщо немає - то в ProcessedArticle
+    from news.models import DailyDigest
+    try:
+        today_digest = DailyDigest.objects.filter(
+            date=timezone.now().date(),
+            is_published=True
+        ).first()
+        
+        if today_digest:
+            # Якщо є дайджест, отримуємо статті з нього
+            daily_digest = ProcessedArticle.objects.filter(
+                status='published',
+                is_top_article=False
+            ).order_by('-published_at')[:10]
+        else:
+            # Якщо немає дайджесту, показуємо решту статей
+            daily_digest = ProcessedArticle.objects.filter(
+                status='published',
+                is_top_article=False
+            ).order_by('-published_at')[:10]
+    except Exception:
+        daily_digest = ProcessedArticle.objects.filter(
+            status='published',
+            is_top_article=False
+        ).order_by('-published_at')[:10]
     
     # Отримуємо проєкти
     featured_projects = Project.objects.filter(

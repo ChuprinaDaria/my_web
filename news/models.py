@@ -145,6 +145,10 @@ class RawArticle(models.Model):
     # Хеш для детекції дублікатів
     content_hash = models.CharField(_('Хеш контенту'), max_length=64, db_index=True)
     
+    # Флаг повного контенту через FiveFilters
+    has_full_content = models.BooleanField(_('Має повний контент'), default=False,
+                                         help_text='Чи спарсено повний контент через FiveFilters')
+    
     class Meta:
         verbose_name = _('Сира стаття')
         verbose_name_plural = _('Сирі статті')
@@ -846,7 +850,17 @@ class ProcessedArticle(models.Model):
         """Повертає контент для відображення (повний для топ, короткий для звичайних)"""
         if self.is_top_article and self.get_full_content(language):
             return self.get_full_content(language)
-        return self.get_business_insight(language)
+        elif self.is_top_article:
+            # Якщо топ-стаття, але немає повного контенту, використовуємо summary
+            return getattr(self, f'summary_{language}', '')
+        return self.get_business_insight(language) or getattr(self, f'summary_{language}', '')
+    
+    def get_word_count(self, language='uk'):
+        """Повертає кількість слів у контенті для конкретної мови"""
+        content = self.get_content_for_display(language)
+        if not content:
+            return 0
+        return len(content.split())
     
     @classmethod
     def get_top_articles(cls, date=None, limit=5):
@@ -1153,16 +1167,17 @@ class ROIAnalytics(models.Model):
         return (
             self.content_manager_cost_saved + 
             self.smm_specialist_cost_saved + 
-            self.copywriter_cost_saved - 
-            self.ai_api_costs
+            self.copywriter_cost_saved
         )
     
     @property
     def roi_percentage(self):
         """ROI у відсотках - ВИПРАВЛЕНО"""
-        if self.ai_api_costs > 0:
-            return ((self.total_cost_savings - self.ai_api_costs) / self.ai_api_costs) * 100
-        return 0
+        cost = float(self.ai_api_costs or 0)
+        if cost <= 0:
+            cost = 1.0
+        roi = (float(self.net_savings) / cost) * 100
+        return max(-100.0, min(roi, 500.0))
     
     @classmethod
     def calculate_daily_metrics(cls, date=None):
@@ -1234,7 +1249,7 @@ class ROIAnalytics(models.Model):
                 'smm_specialist_cost_saved': round(smm_cost, 2),
                 'copywriter_cost_saved': round(copywriter_cost, 2),
                 'ai_api_costs': round(ai_cost, 2),
-                'net_savings': round(total_savings - total_daily_cost, 2),
+                'net_savings': round(max(-1000, min(total_savings - total_daily_cost, 5000)), 2),
                 'articles_processed': articles_count,
                 'translations_made': translations_made,
                 'social_posts_generated': social_posts_generated,

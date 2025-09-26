@@ -69,11 +69,9 @@
                     {{ article.category.get_name }}
                   </span>
                   
-                  {% if article.is_top_article %}
-                    <span class="top-chip">🏆 TOP</span>
-                  {% endif %}
-                  
-                  {% if article.priority >= 3 %}
+                  {% if article.is_top_article and article.article_rank and article.get_word_count > 500 %}
+                    <span class="top-chip">🏆 TOP {{ article.article_rank }}</span>
+                  {% elif article.priority >= 3 %}
                     <span class="hot-chip">🔥 HOT</span>
                   {% endif %}
                 </div>

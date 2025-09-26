@@ -95,17 +95,11 @@ class Command(BaseCommand):
             path = article.get_absolute_url(lang)
         url = f"{SITE_URL}{path}"
 
-        # Формуємо caption без додаткового сирого URL — ти вже маєш кнопку.
-        title_part = f"📰 <b>{escape(clamp(title, 140))}</b>\n\n" if title else ""
+        # Формуємо caption з правильним форматуванням
+        title_part = f"🔥 *{escape(clamp(title, 140))}*\n\n" if title else ""
         summary_part = f"{escape(clamp(summary, 400))}\n\n" if summary else ""
-        insight_part = f"💡 <b>Insight:</b> {escape(clamp(insight_text, 250))}\n\n" if insight_text else ""
-        if takeaways_text:
-            safe_takeaways = "\n".join(escape(line) for line in clamp(takeaways_text, 220).splitlines())
-            takeaways_part = f"📌 <b>Key takeaways:</b>\n{safe_takeaways}\n\n"
-        else:
-            takeaways_part = ""
-        footer = "— <i>Lazysoft AI News</i>"
-        caption = f"{title_part}{summary_part}{insight_part}{takeaways_part}{footer}"
+        footer = "— Lazysoft AI News"
+        caption = f"{title_part}{summary_part}{footer}"
 
         # Кнопка (посилання тільки в кнопці)
         button = {"inline_keyboard": [[{"text": "📖 Читати далі", "url": url}]]}

@@ -92,25 +92,51 @@ class SmartNewsPipeline:
                 date=date, 
                 limit=self.top_articles_limit
             )
-            
+ 
             if not top_articles:
                 logger.warning(f"⚠️ Немає статей для обробки за {date}")
                 return self._create_empty_result(date, time.time() - start_time)
-            
+ 
             logger.info(f"✅ Вибрано {len(top_articles)} топ статей")
-            
+ 
+            if not dry_run:
+                ProcessedArticle.objects.filter(top_selection_date=date).update(
+                    is_top_article=False,
+                    article_rank=None
+                )
+
             # === КРОК 2: Обробка кожної топ статті ===
             processed_articles = []
-            
+ 
             for i, (raw_article, relevance_analysis) in enumerate(top_articles, 1):
                 logger.info(f"📄 Обробка статті {i}/{len(top_articles)}: {raw_article.title[:50]}...")
-                
+ 
                 try:
                     processed_article = self._process_single_article(
                         raw_article, relevance_analysis, dry_run
                     )
-                    
+ 
                     if processed_article:
+                        if not dry_run:
+                            # Встановлюємо пріоритет на основі релевантності
+                            try:
+                                score = getattr(relevance_analysis, "relevance_score", None)
+                                if score is None and isinstance(relevance_analysis, dict):
+                                    score = relevance_analysis.get("relevance_score")
+                                if isinstance(score, (int, float)):
+                                    priority = max(3, min(5, int(score // 2)))
+                                else:
+                                    priority = 4  # Високий пріоритет для топ-статей
+                            except Exception:
+                                priority = 4  # Високий пріоритет за замовчанням
+                            
+                            processed_article.is_top_article = True
+                            processed_article.article_rank = i
+                            processed_article.top_selection_date = date
+                            processed_article.priority = priority
+                            processed_article.save(update_fields=['is_top_article', 'article_rank', 'top_selection_date', 'priority'])
+                            logger.info(f"📢 Статтю {i} позначено як топ-{i} з пріоритетом {priority}")
+
                         processed_articles.append(processed_article)
                         articles_published += 1
                         logger.info(f"✅ Стаття {i} оброблена успішно")
@@ -134,7 +160,7 @@ class SmartNewsPipeline:
                     logger.error(f"❌ Помилка дайджесту: {e}")
             
             # === КРОК 4: Оновлення ROI метрик ===
-            if not dry_run:
+            if not dry_run and processed_articles:
                 logger.info("📊 Крок 4: Розрахунок ROI метрик...")
                 try:
                     roi_calculated = self._update_roi_metrics(date, len(processed_articles))
@@ -148,7 +174,10 @@ class SmartNewsPipeline:
             if not dry_run and processed_articles:
                 logger.info("🏠 Крок 5: Оновлення віджетів головної...")
                 try:
-                    self._update_homepage_widgets(processed_articles)
+                    top_articles_for_widget = [a for a in processed_articles if getattr(a, 'is_top_article', False)]
+                    if top_articles_for_widget:
+                        logger.info("📢 На головну піде %d топ-статей", min(5, len(top_articles_for_widget)))
+                    self._update_homepage_widgets(top_articles_for_widget[:5])
                     logger.info("✅ Віджети оновлено")
                 except Exception as e:
                     errors.append(f"Помилка оновлення віджетів: {str(e)}")
@@ -195,18 +224,24 @@ class SmartNewsPipeline:
             )
 
     def _process_single_article(self, raw_article: RawArticle, relevance_analysis, dry_run: bool = False) -> Optional[ProcessedArticle]:
-        """Обробляє одну статтю через спрощений пайплайн (RSS only → insights → AI → publish)."""
+        """Обробляє одну статтю через повний пайплайн (FiveFilters → insights → AI → publish)."""
         try:
-            # 1) Беремо лише RSS-контент (без повного парсингу)
-            logger.info("📰 Використовуємо RSS контент без фул-парсингу...")
-            full_content = (raw_article.content or raw_article.summary or "").strip()
-            if full_content:
-                logger.info(f"✅ RSS контент: {len(full_content)} символів")
+            # 1) Збагачуємо повним контентом через FiveFilters (тільки для топ-статей)
+            logger.info("🔍 Збагачення повним контентом через FiveFilters...")
+            full_content = self.ai_processor._enhance_with_fivefilters(raw_article)
+            if full_content and len(full_content) > 1000:
+                logger.info(f"✅ Full-text отримано: {len(full_content)} символів")
+                # Позначаємо, що стаття має повний контент
+                raw_article.has_full_content = True
+                raw_article.save(update_fields=['has_full_content'])
             else:
-                logger.warning("⚠️ RSS порожній; створюємо інсайти на основі заголовка/метаданих.")
+                logger.warning("⚠️ Full-text короткий або недоступний; використовуємо RSS контент")
+                full_content = (raw_article.content or raw_article.summary or "").strip()
+                raw_article.has_full_content = False
+                raw_article.save(update_fields=['has_full_content'])
 
-            # 2) Розширені інсайти LAZYSOFT з RSS
-            logger.info("🤖 Створення LAZYSOFT інсайтів з RSS...")
+            # 2) Розширені інсайти LAZYSOFT з повним контентом
+            logger.info("🤖 Створення LAZYSOFT інсайтів з повним контентом...")
             enhanced_insights = self.enhanced_analyzer.analyze_full_article_with_insights(
                 raw_article, full_content
             )
@@ -222,8 +257,18 @@ class SmartNewsPipeline:
             if not dry_run:
                 self._enrich_processed_article(processed_article, enhanced_insights, relevance_analysis)
 
-                # 5) Публікуємо статтю (встановлюємо статус, пріоритет, дату)
-                #    Пріоритет розраховуємо безпечним способом, навіть якщо структура зміниться.
+                # 5) Заповнюємо повний контент для топ-статей
+                if raw_article.has_full_content and full_content:
+                    logger.info("📝 Заповнення повного контенту для топ-статті...")
+                    # Генеруємо повний контент на всіх мовах
+                    processed_article.full_content_en = self._generate_full_content(full_content, 'en')
+                    processed_article.full_content_pl = self._generate_full_content(full_content, 'pl')
+                    processed_article.full_content_uk = self._generate_full_content(full_content, 'uk')
+                    processed_article.full_content_parsed = True
+                    processed_article.original_word_count = len(full_content.split())
+                    processed_article.reading_time = max(5, processed_article.original_word_count // 200)
+
+                # 6) Публікуємо статтю (встановлюємо статус, пріоритет, дату)
                 base_priority = 3
                 try:
                     score = getattr(relevance_analysis, "relevance_score", None)
@@ -247,6 +292,39 @@ class SmartNewsPipeline:
             logger.exception(f"❌ Помилка обробки статті: {e}")
             return None
 
+    def _generate_full_content(self, content: str, language: str) -> str:
+        """Генерує повний Business Impact контент на конкретній мові (2000-3000 символів)"""
+        try:
+            # Використовуємо AI для генерації детального Business Impact контенту
+            prompt = f"""
+Як експерт LAZYSOFT з автоматизації бізнес-процесів, створи детальний Business Impact аналіз на {language} мові на основі наступної статті:
+
+{content}
+
+Структура аналізу:
+1. Ключові технологічні тренди та їх вплив на бізнес
+2. Конкретні можливості для автоматизації та оптимізації
+3. Практичні кроки впровадження для МСБ
+4. ROI оцінка та потенційні економії
+5. Ризики та способи їх мінімізації
+6. Конкурентні переваги та можливості росту
+
+Вимоги:
+- Довжина: 2000-3000 символів
+- Практичний фокус на автоматизації
+- Конкретні цифри та приклади
+- Адаптовано для {language} ринку
+- Стиль LAZYSOFT: експертний, але зрозумілий
+"""
+            
+            full_content = self.ai_processor._call_ai_model(prompt, max_tokens=3000)
+            return full_content.strip()
+            
+        except Exception as e:
+            logger.warning(f"⚠️ Помилка генерації Business Impact для {language}: {e}")
+            # Повертаємо оригінальний контент якщо генерація не вдалася
+            return content
+
     def _enrich_processed_article(self, processed_article: ProcessedArticle, enhanced_insights, relevance_analysis):
         """Додає розширені інсайти до ProcessedArticle (безпечно обробляє відсутні поля/типи)."""
         def pick_lang(d, lang, list_expected=False):
@@ -260,18 +338,32 @@ class SmartNewsPipeline:
         try:
             # Дістанемо словники з enhanced_insights незалежно від його типу (dataclass/obj/dict)
             insights_dict = {}
-            for key in ["interesting_facts", "business_opportunities", "lazysoft_recommendations"]:
+            for key in ["interesting_facts", "business_opportunities", "lazysoft_recommendations", "business_insights"]:
                 try:
                     insights_dict[key] = getattr(enhanced_insights, key, {}) or {}
                 except Exception:
                     insights_dict[key] = {}
 
-            # 1) Цікавинки (очікуємо списки)
+            # 1) Business Insights (основні інсайти)
+            business_insights = insights_dict.get("business_insights", {})
+            processed_article.business_insight_en = pick_lang(business_insights, "english_audience")
+            processed_article.business_insight_pl = pick_lang(business_insights, "polish_audience")
+            processed_article.business_insight_uk = pick_lang(business_insights, "ukrainian_audience")
+            
+            # Якщо business_insights порожні, спробуємо взяти з main_insight
+            if not processed_article.business_insight_en:
+                processed_article.business_insight_en = pick_lang(business_insights, "english")
+            if not processed_article.business_insight_pl:
+                processed_article.business_insight_pl = pick_lang(business_insights, "polish")
+            if not processed_article.business_insight_uk:
+                processed_article.business_insight_uk = pick_lang(business_insights, "ukrainian")
+
+            # 2) Цікавинки (очікуємо списки)
             processed_article.interesting_facts_en = pick_lang(insights_dict["interesting_facts"], "english", list_expected=True)
             processed_article.interesting_facts_pl = pick_lang(insights_dict["interesting_facts"], "polish", list_expected=True)
             processed_article.interesting_facts_uk = pick_lang(insights_dict["interesting_facts"], "ukrainian", list_expected=True)
 
-            # 2) Бізнес-можливості (рядки)
+            # 3) Бізнес-можливості (рядки)
             bo_en = pick_lang(insights_dict["business_opportunities"], "english")
             bo_pl = pick_lang(insights_dict["business_opportunities"], "polish")
             bo_uk = pick_lang(insights_dict["business_opportunities"], "ukrainian")
@@ -288,12 +380,12 @@ class SmartNewsPipeline:
             processed_article.business_opportunities_pl = bo_pl
             processed_article.business_opportunities_uk = bo_uk
 
-            # 3) Рекомендації LAZYSOFT (рядки)
+            # 4) Рекомендації LAZYSOFT (рядки)
             processed_article.lazysoft_recommendations_en = pick_lang(insights_dict["lazysoft_recommendations"], "english")
             processed_article.lazysoft_recommendations_pl = pick_lang(insights_dict["lazysoft_recommendations"], "polish")
             processed_article.lazysoft_recommendations_uk = pick_lang(insights_dict["lazysoft_recommendations"], "ukrainian")
 
-            # 4) Прокинемо релевантність, якщо є поле в моделі
+            # 5) Прокинемо релевантність, якщо є поле в моделі
             try:
                 score = getattr(relevance_analysis, "relevance_score", None)
                 if score is None and isinstance(relevance_analysis, dict):
@@ -324,12 +416,14 @@ class SmartNewsPipeline:
                 except Exception:
                     continue
 
+            # Шукаємо статті, які НЕ є топ-статтями (не оброблені через SmartNewsPipeline)
             remaining_articles = RawArticle.objects.filter(
                 fetched_at__date=date,
-                is_processed=False,
                 is_duplicate=False
             ).exclude(id__in=exclude_ids)[:10]  # максимум 10 у дайджест
 
+            logger.info(f"🔍 Знайдено {remaining_articles.count()} статей для дайджесту (виключено {len(exclude_ids)} топ-статей)")
+            
             if not remaining_articles.exists():
                 logger.info("📭 Немає додаткових статей для дайджесту")
                 return False
@@ -357,8 +451,6 @@ class SmartNewsPipeline:
             logger.error(f"❌ Помилка створення дайджесту: {e}")
             return False
 
-            return False
-
     def _update_roi_metrics(self, date: datetime.date, articles_processed: int) -> bool:
         """Оновлює ROI метрики"""
         
@@ -373,13 +465,14 @@ class SmartNewsPipeline:
 
     def _update_homepage_widgets(self, processed_articles: List[ProcessedArticle]):
         """Оновлює віджети новин на головній сторінці"""
-        
+ 
         try:
+            logger.info("🏠 Оновлення віджетів — отримано %d статей", len(processed_articles))
             # Тут можна додати логіку оновлення кешу віджетів
             # Наприклад, інвалідувати кеш або оновити статичні файли
-            
+ 
             from django.core.cache import cache
-            
+ 
             # Очищаємо кеш віджетів новин
             cache_keys = [
                 'homepage_news_uk',
@@ -388,12 +481,12 @@ class SmartNewsPipeline:
                 'featured_articles',
                 'news_digest'
             ]
-            
+ 
             for key in cache_keys:
                 cache.delete(key)
-            
+ 
             logger.info("✅ Кеш віджетів очищено")
-            
+ 
         except Exception as e:
             logger.warning(f"⚠️ Помилка оновлення віджетів: {e}")
 

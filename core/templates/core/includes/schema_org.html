@@ -1,0 +1,366 @@
+{% load static %}
+{% load i18n %}
+
+<!-- Schema.org Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "{{ SITE_URL }}#organization",
+  "name": "{{ SITE_NAME }}",
+  "url": "{{ SITE_URL }}",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "{{ SITE_URL }}{% static 'images/logo.png' %}",
+    "width": 200,
+    "height": 60
+  },
+  "description": "{% if LANGUAGE_CODE == 'uk' %}Автоматизація та веб-розробка для бізнесу. Створюємо боти, AI рішення та сучасні веб-додатки.{% elif LANGUAGE_CODE == 'pl' %}Automatyzacja i tworzenie stron internetowych dla biznesu. Tworzymy boty, rozwiązania AI i nowoczesne aplikacje webowe.{% else %}Business automation and web development. We create bots, AI solutions and modern web applications.{% endif %}",
+  "foundingDate": "2023",
+  "numberOfEmployees": "1-10",
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "Poland"
+    },
+    {
+      "@type": "Country", 
+      "name": "Ukraine"
+    },
+    {
+      "@type": "Country",
+      "name": "Germany"
+    },
+    {
+      "@type": "Country",
+      "name": "United States"
+    }
+  ],
+  "serviceType": [
+    "Web Development",
+    "Process Automation", 
+    "AI Integration",
+    "Chatbot Development",
+    "Business Consulting",
+    "Custom Software Development"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Edwarda Dembowskiego 98/1",
+    "addressLocality": "Wrocław",
+    "postalCode": "51-669",
+    "addressCountry": "PL"
+  },
+  "contactPoint": [
+    {
+      "@type": "ContactPoint",
+      "telephone": "+48-727-842-737",
+      "contactType": "Customer Service",
+      "email": "dchuprina@lazysoft.pl",
+      "availableLanguage": ["English", "Polish", "Ukrainian"],
+      "areaServed": "Worldwide"
+    }
+  ],
+  "sameAs": [
+    "https://www.linkedin.com/company/lazysoft-dev",
+    "https://github.com/lazysoft",
+    "https://t.me/Lazysoft_news"
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "{% if LANGUAGE_CODE == 'uk' %}Послуги автоматизації{% elif LANGUAGE_CODE == 'pl' %}Usługi automatyzacji{% else %}Automation Services{% endif %}",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "{% if LANGUAGE_CODE == 'uk' %}Розробка чат-ботів{% elif LANGUAGE_CODE == 'pl' %}Tworzenie chatbotów{% else %}Chatbot Development{% endif %}"
+        }
+      },
+      {
+        "@type": "Offer", 
+        "itemOffered": {
+          "@type": "Service",
+          "name": "{% if LANGUAGE_CODE == 'uk' %}AI автоматизація{% elif LANGUAGE_CODE == 'pl' %}Automatyzacja AI{% else %}AI Automation{% endif %}"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service", 
+          "name": "{% if LANGUAGE_CODE == 'uk' %}Веб-розробка{% elif LANGUAGE_CODE == 'pl' %}Tworzenie stron internetowych{% else %}Web Development{% endif %}"
+        }
+      }
+    ]
+  }
+}
+</script>
+
+<!-- WebSite Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "{{ SITE_URL }}#website",
+  "name": "{{ SITE_NAME }}",
+  "url": "{{ SITE_URL }}",
+  "description": "{% if LANGUAGE_CODE == 'uk' %}Автоматизація та веб-розробка для бізнесу{% elif LANGUAGE_CODE == 'pl' %}Automatyzacja i tworzenie stron internetowych dla biznesu{% else %}Business automation and web development{% endif %}",
+  "publisher": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization"
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "{{ SITE_URL }}/{{ LANGUAGE_CODE }}/search/?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  },
+  "inLanguage": ["uk", "pl", "en"],
+  "mainEntity": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization"
+  }
+}
+</script>
+
+<!-- BreadcrumbList Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "{% if LANGUAGE_CODE == 'uk' %}Головна{% elif LANGUAGE_CODE == 'pl' %}Strona główna{% else %}Home{% endif %}",
+      "item": "{{ SITE_URL }}/{% if LANGUAGE_CODE != 'en' %}{{ LANGUAGE_CODE }}/{% endif %}"
+    }
+    {% if breadcrumbs %}
+    {% for crumb in breadcrumbs %}
+    ,{
+      "@type": "ListItem",
+      "position": {{ forloop.counter|add:1 }},
+      "name": "{{ crumb.name }}",
+      "item": "{{ SITE_URL }}{{ crumb.url }}"
+    }
+    {% endfor %}
+    {% endif %}
+  ]
+}
+</script>
+
+<!-- Conditional schemas based on page type -->
+{% if article %}
+<!-- Article Schema for News -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{ article.get_title|truncatechars:110|escapejs }}",
+  "description": "{{ article.get_summary|truncatechars:160|escapejs }}",
+  "image": [
+    {% if article.featured_image %}"{{ SITE_URL }}{{ article.featured_image.url }}"{% else %}"{{ SITE_URL }}{% static 'images/default-news.png' %}"{% endif %}
+    {% if article.ai_image_url %}, "{{ article.ai_image_url }}"{% endif %}
+  ],
+  "datePublished": "{{ article.published_at|date:'c' }}",
+  "dateModified": "{{ article.updated_at|date:'c' }}",
+  "author": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization",
+    "name": "{{ SITE_NAME }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization",
+    "name": "{{ SITE_NAME }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ SITE_URL }}{% static 'images/logo.png' %}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ SITE_URL }}{{ article.get_absolute_url }}"
+  },
+  "articleSection": "{{ article.category.get_name|escapejs }}",
+  "inLanguage": "{{ LANGUAGE_CODE }}",
+  "keywords": "{% for takeaway in article.key_takeaways_en %}{{ takeaway|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}",
+  "wordCount": "{{ article.get_word_count }}",
+  "timeRequired": "PT{{ article.get_reading_time }}M",
+  "isAccessibleForFree": true,
+  "genre": "Technology News"
+}
+</script>
+{% endif %}
+
+{% if project %}
+<!-- Service Schema for Projects -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "{{ project.get_title|escapejs }}",
+  "description": "{{ project.get_short_description|truncatechars:160|escapejs }}",
+  "provider": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization"
+  },
+  "image": {% if project.featured_image %}"{{ SITE_URL }}{{ project.featured_image.url }}"{% else %}"{{ SITE_URL }}{% static 'images/default-project.png' %}"{% endif %},
+  "offers": {
+    "@type": "Offer",
+    "availability": "https://schema.org/InStock",
+    "priceCurrency": "EUR",
+    "priceRange": "€{{ project.get_budget_range_display }}",
+    "validFrom": "{{ project.created_at|date:'c' }}"
+  },
+  "serviceType": "{{ project.get_category_display|escapejs }}",
+  "areaServed": {
+    "@type": "Place",
+    "name": "Europe"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "{{ project.get_category_display|escapejs }}"
+  }
+}
+</script>
+{% endif %}
+
+{% if service_category %}
+<!-- Service Category Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "{{ service_category.get_title|escapejs }}",
+  "description": "{{ service_category.get_description|truncatechars:160|escapejs }}",
+  "provider": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization"
+  },
+  "serviceType": "{{ service_category.get_title|escapejs }}",
+  "areaServed": [
+    {
+      "@type": "Country",
+      "name": "Poland"
+    },
+    {
+      "@type": "Country",
+      "name": "Ukraine"
+    },
+    {
+      "@type": "Country",
+      "name": "Germany"
+    }
+  ],
+  "audience": {
+    "@type": "BusinessAudience",
+    "audienceType": "Small and Medium Businesses, Enterprises"
+  }
+}
+</script>
+{% endif %}
+
+{% if page_type == 'home' %}
+<!-- Homepage Service Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "{% if LANGUAGE_CODE == 'uk' %}AI Автоматизація для бізнесу{% elif LANGUAGE_CODE == 'pl' %}Automatyzacja AI dla biznesu{% else %}AI Automation for Business{% endif %}",
+  "description": "{% if LANGUAGE_CODE == 'uk' %}Комплексні послуги ШІ автоматизації та веб-розробки для європейських МСП{% elif LANGUAGE_CODE == 'pl' %}Kompleksowe usługi automatyzacji AI i tworzenia stron internetowych dla europejskich MŚP{% else %}Comprehensive AI automation and web development services for European SMEs{% endif %}",
+  "provider": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization"
+  },
+  "areaServed": "Worldwide",
+  "audience": {
+    "@type": "BusinessAudience",
+    "audienceType": "Small and Medium Businesses, Enterprises"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "{% if LANGUAGE_CODE == 'uk' %}Послуги автоматизації{% elif LANGUAGE_CODE == 'pl' %}Usługi automatyzacji{% else %}Automation Services{% endif %}",
+    "itemListElement": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "{% if LANGUAGE_CODE == 'uk' %}Розробка чат-ботів{% elif LANGUAGE_CODE == 'pl' %}Tworzenie chatbotów{% else %}Chatbot Development{% endif %}"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service", 
+          "name": "{% if LANGUAGE_CODE == 'uk' %}AI автоматизація процесів{% elif LANGUAGE_CODE == 'pl' %}Automatyzacja procesów AI{% else %}AI Process Automation{% endif %}"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "{% if LANGUAGE_CODE == 'uk' %}Веб-розробка{% elif LANGUAGE_CODE == 'pl' %}Tworzenie stron internetowych{% else %}Web Development{% endif %}"
+        }
+      }
+    ]
+  }
+}
+</script>
+{% endif %}
+
+<!-- FAQ Schema (if FAQ page) -->
+{% if faqs %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for faq in faqs %}
+    {
+      "@type": "Question",
+      "name": "{{ faq.question|escapejs }}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ faq.answer|escapejs }}"
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+
+<!-- LocalBusiness Schema (for contact page) -->
+{% if page_type == 'contact' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "{{ SITE_URL }}#organization",
+  "name": "{{ SITE_NAME }}",
+  "description": "{% if LANGUAGE_CODE == 'uk' %}Автоматизація та веб-розробка для бізнесу{% elif LANGUAGE_CODE == 'pl' %}Automatyzacja i tworzenie stron internetowych dla biznesu{% else %}Business automation and web development{% endif %}",
+  "url": "{{ SITE_URL }}",
+  "telephone": "+48-727-842-737",
+  "email": "dchuprina@lazysoft.pl",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Edwarda Dembowskiego 98/1",
+    "addressLocality": "Wrocław",
+    "postalCode": "51-669",
+    "addressCountry": "PL"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "51.1079",
+    "longitude": "17.0385"
+  },
+  "openingHours": "Mo-Fr 09:00-17:00",
+  "priceRange": "€€",
+  "paymentAccepted": "Cash, Credit Card, Bank Transfer",
+  "currenciesAccepted": "EUR, USD, PLN, UAH"
+}
+</script>
+{% endif %}

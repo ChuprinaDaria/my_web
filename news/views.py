@@ -779,12 +779,15 @@ def get_homepage_news_context(language='uk', limit=5):
     Допоміжна функція для отримання новин на головну сторінку
     Використовуй в головному view твого сайту
     """
+    from django.utils import timezone
     
-    # Останні важливі новини
+    # Топ-статті з повним контентом (оброблені через пайплайн)
     latest_news = ProcessedArticle.objects.filter(
         status='published',
-        priority__gte=2  # Середній пріоритет і вище
-    ).order_by('-priority', '-published_at')[:limit]
+        is_top_article=True,
+        top_selection_date=timezone.now().date(),
+        raw_article__has_full_content=True  # Тільки з повним контентом через FiveFilters
+    ).order_by('article_rank')[:limit]
     
     # Форматуємо для шаблону
     news_data = []

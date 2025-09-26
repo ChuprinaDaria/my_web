@@ -179,7 +179,12 @@ def start_chat_session(request):
             }
         )
         # Зберігаємо вибір мови як системне повідомлення на початку сесії
-        if language and created:
+        if language:
+            Message.objects.filter(
+                chat_session=chat_session,
+                role='system',
+                content__startswith='language:'
+            ).delete()
             Message.objects.create(chat_session=chat_session, role='system', content=f"language:{language}")
         
         # Створюємо аналітику для нової сесії
@@ -228,6 +233,11 @@ def send_message(request):
         
         # 🚀 НОВА RAG ЛОГІКА - замість простого алгоритму
         if language:
+            Message.objects.filter(
+                chat_session=chat_session,
+                role='system',
+                content__startswith='language:'
+            ).delete()
             Message.objects.create(chat_session=chat_session, role='system', content=f"language:{language}")
         rag_result = enhanced_consultant.generate_response(message_content, chat_session)
         

@@ -10,11 +10,13 @@ from pgvector.django import CosineDistance
 import google.generativeai as genai
 from openai import OpenAI
 from django.utils import timezone
+import numpy as np
 
 from .models import EmbeddingModel, ChatSession, ChatMessage, RAGAnalytics
 from services.models import ServiceCategory, FAQ
 from projects.models import Project
 from pricing.models import ServicePricing
+from .utils import get_active_embedding_conf # Імпортуємо утиліту
 
 logger = logging.getLogger(__name__)
 
@@ -28,53 +30,159 @@ class EmbeddingService:
         
         # Налаштування з settings
         self.rag_settings = getattr(settings, 'RAG_SETTINGS', {})
-        self.embedding_model = self.rag_settings.get('EMBEDDING_MODEL', 'gemini')
+        
+        # Отримуємо конфігурацію активної моделі embeddings
+        self.active_embedding_conf = get_active_embedding_conf()
+        self.embedding_model_name = self.active_embedding_conf["name"]
+        self.embedding_dimensions = self.active_embedding_conf["dim"]
         
         # Ініціалізація AI клієнтів
-        if self.embedding_model == 'gemini' and self.gemini_api_key:
-            genai.configure(api_key=self.gemini_api_key)
-            
-        if self.openai_api_key:
-            self.openai_client = OpenAI(api_key=self.openai_api_key)
+        self.openai_client = None
+        self.gemini_embedding_model = None
+        
+        self._init_embedding_clients()
     
-    def generate_embedding(self, text: str, model: str = None) -> List[float]:
-        """Генерує embedding для тексту"""
+    def _init_embedding_clients(self):
+        # Ініціалізація Gemini клієнта
+        if self.gemini_api_key:
+            try:
+                genai.configure(api_key=self.gemini_api_key)
+                # Модель для Gemini може бути встановлена незалежно від активного провайдера
+                self.gemini_embedding_model = self.rag_settings.get('GEMINI_EMBEDDING_MODEL', 'models/embedding-001')
+                logger.info(f"Gemini embedding клієнт ініціалізовано: {self.gemini_embedding_model}")
+            except Exception as e:
+                logger.error(f"❌ Помилка ініціалізації Gemini embedding клієнта: {e}")
+        else:
+            logger.warning("Gemini API ключ для embedding не встановлено.")
+            
+        # Ініціалізація OpenAI клієнта
+        if self.openai_api_key:
+            try:
+                self.openai_client = OpenAI(api_key=self.openai_api_key)
+                logger.info("OpenAI embedding клієнт ініціалізовано")
+            except Exception as e:
+                self.openai_client = None # Забезпечуємо, що клієнт None у випадку помилки
+                logger.error(f"❌ Помилка ініціалізації OpenAI embedding клієнта: {e}")
+        else:
+            logger.warning("OpenAI API ключ для embedding не встановлено.")
+
+    def generate_embedding(self, text: str, model_provider: str = None) -> Tuple[List[float], str]:
+        """Генерує embedding для тексту з фолбеком"""
         if not text.strip():
             raise ValueError("Текст не може бути пустим")
             
-        model = model or self.embedding_model
-        
-        try:
-            if model == 'gemini':
-                return self._generate_gemini_embedding(text)
-            elif model == 'openai':
-                return self._generate_openai_embedding(text)
+        provider_to_use = (
+            model_provider
+            or self.active_embedding_conf.get("provider")
+            or self.rag_settings.get("PROVIDER", "gemini")
+        )
+        expected_dim = int(self.embedding_dimensions or self.active_embedding_conf.get("dim") or 0)
+        if expected_dim <= 0:
+            raise ValueError("Невірна розмірність embedding (<= 0)")
+
+        def _ensure_vector_dim(vec, provider_name, target_dim):
+            import numpy as np
+
+            if isinstance(vec, dict) and "embedding" in vec:
+                vec = vec["embedding"]
+
+            if isinstance(vec, list) and vec and isinstance(vec[0], (list, tuple)):
+                vec = vec[0]
+
+            try:
+                arr = np.asarray(vec, dtype=float)
+            except Exception as err:
+                raise ValueError(f"Embedding від {provider_name} має невірний формат: {err}")
+
+            arr = np.nan_to_num(arr, nan=0.0, posinf=0.0, neginf=0.0)
+            if arr.ndim != 1:
+                arr = arr.flatten()
+
+            if arr.size == target_dim:
+                return arr.tolist()
+
+            logger.warning(
+                "[EMBEDDING] Модель %s повернула розмірність %s, очікували %s — робимо підгін.",
+                provider_name,
+                arr.size,
+                target_dim,
+            )
+
+            if arr.size > target_dim:
+                arr = arr[:target_dim]
             else:
-                raise ValueError(f"Невідома модель: {model}")
-                
-        except Exception as e:
-            logger.error(f"Помилка генерації embedding: {e}")
+                arr = np.pad(arr, (0, target_dim - arr.size), mode="constant")
+
+            return arr.tolist()
+
+        try:
+            if provider_to_use == "gemini" and self.gemini_embedding_model:
+                embedding = self._call_gemini_embedding(text)
+                return _ensure_vector_dim(embedding, "gemini", expected_dim), "gemini"
+            if provider_to_use == "openai" and self.openai_client:
+                embedding = self._call_openai_embedding(text)
+                return _ensure_vector_dim(embedding, "openai", expected_dim), "openai"
+        except Exception as primary_err:
+            logger.warning("[EMBEDDING] Основна модель (%s) недоступна: %s", provider_to_use, primary_err)
+
+        backup_provider = "openai" if provider_to_use == "gemini" else "gemini"
+        backup_dim = expected_dim
+
+        try:
+            if backup_provider == "openai" and self.openai_client:
+                logger.info("[EMBEDDING] Використовуємо резервну OpenAI модель...")
+                embedding = self._call_openai_embedding(text)
+                return _ensure_vector_dim(embedding, "openai", backup_dim), "openai"
+            if backup_provider == "gemini" and self.gemini_embedding_model:
+                logger.info("[EMBEDDING] Використовуємо резервну Gemini модель...")
+                embedding = self._call_gemini_embedding(text)
+                return _ensure_vector_dim(embedding, "gemini", backup_dim), "gemini"
+        except Exception as backup_err:
+            logger.error("[EMBEDDING] Резервна embedding модель (%s) теж недоступна: %s", backup_provider, backup_err)
             raise
     
-    def _generate_gemini_embedding(self, text: str) -> List[float]:
+        raise Exception("Немає доступних embedding моделей.")
+    
+    def _call_gemini_embedding(self, text: str) -> List[float]:
         """Генерація embedding через Gemini"""
-        model = self.rag_settings.get('GEMINI_EMBEDDING_MODEL', 'models/embedding-001')
+        # Завжди використовуємо налаштування активної моделі для Gemini, якщо вона активна
+        if self.active_embedding_conf["provider"] == "gemini":
+            model_name = self.embedding_model_name
+            expected_dim = self.embedding_dimensions
+        else:
+            # Якщо Gemini не активний провайдер, беремо дефолтні налаштування для Gemini
+            model_name = self.rag_settings.get('GEMINI_EMBEDDING_MODEL', 'models/embedding-001')
+            expected_dim = self.rag_settings.get('GEMINI_EMBEDDING_DIMENSIONS', 768)
         
         response = genai.embed_content(
-            model=model,
+            model=model_name,
             content=text,
             task_type="retrieval_document"
         )
         
-        return response['embedding']
+        embedding = response['embedding']
+        # Доповнюємо або обрізаємо embedding до потрібної розмірності
+        if len(embedding) < expected_dim:
+            embedding.extend([0.0] * (expected_dim - len(embedding)))
+        elif len(embedding) > expected_dim:
+            embedding = embedding[:expected_dim]
+        return embedding
     
-    def _generate_openai_embedding(self, text: str) -> List[float]:
+    def _call_openai_embedding(self, text: str) -> List[float]:
         """Генерація embedding через OpenAI"""
-        model = self.rag_settings.get('OPENAI_EMBEDDING_MODEL', 'text-embedding-3-small')
+        # Завжди використовуємо налаштування активної моделі для OpenAI, якщо вона активна
+        if self.active_embedding_conf["provider"] == "openai":
+            model_name = self.embedding_model_name
+            expected_dim = self.embedding_dimensions
+        else:
+            # Якщо OpenAI не активний провайдер, беремо дефолтні налаштування для OpenAI
+            model_name = self.rag_settings.get('OPENAI_EMBEDDING_MODEL', 'text-embedding-3-small')
+            expected_dim = self.rag_settings.get('OPENAI_EMBEDDING_DIMENSIONS', 1536)
         
         response = self.openai_client.embeddings.create(
-            model=model,
-            input=text
+            model=model_name,
+            input=text,
+            dimensions=expected_dim # Задаємо розмірність явно
         )
         
         return response.data[0].embedding
@@ -94,7 +202,7 @@ class EmbeddingService:
         
         # Генеруємо embedding
         try:
-            embedding_vector = self.generate_embedding(text_content)
+            embedding_vector, model_name_used = self.generate_embedding(text_content)
         except Exception as e:
             logger.error(f"Не вдалося згенерувати embedding для {obj}: {e}")
             raise
@@ -109,7 +217,7 @@ class EmbeddingService:
                 'content_text': text_content[:5000],  # Обмежуємо довжину
                 'content_title': title,
                 'content_category': category,
-                'model_name': f"{self.embedding_model}-embedding",
+                'model_name': f"{model_name_used}-embedding",
                 'is_active': True,
             }
         )
@@ -291,7 +399,9 @@ class VectorSearchService:
         
         # Генеруємо embedding для запиту
         try:
-            query_embedding = self.embedding_service.generate_embedding(query)
+            vec, _provider = self.embedding_service.generate_embedding(query)
+            arr = np.asarray(vec, dtype=float).flatten()
+            query_embedding = arr.tolist()
         except Exception as e:
             logger.error(f"Не вдалося згенерувати embedding для запиту '{query}': {e}")
             return []
@@ -433,9 +543,123 @@ class RAGConsultantService:
         self.rag_settings = getattr(settings, 'RAG_SETTINGS', {})
         
         # AI клієнт для генерації відповідей
+        self.openai_client = None
+        self.gemini_model = None
+        
+        self.preferred_model = getattr(settings, 'AI_PREFERRED_MODEL', 'gemini')
+        self.backup_model = getattr(settings, 'AI_BACKUP_MODEL', 'openai')
+        
+        # Додаємо API ключі для генеративних моделей
         self.gemini_api_key = getattr(settings, 'GEMINI_API_KEY', None)
+        self.openai_api_key = getattr(settings, 'OPENAI_API_KEY', None)
+        
+        self._init_generative_clients()
+
+    def _init_generative_clients(self):
+        # OpenAI
+        org = getattr(settings, "OPENAI_ORG_ID", "") or None
+        proj = getattr(settings, "OPENAI_PROJECT_ID", "") or None
+        api_key = getattr(settings, "OPENAI_API_KEY", "")
+        
+        if api_key:
+            try:
+                self.openai_client = OpenAI(
+                    api_key=api_key,
+                    organization=org,
+                    project=proj,
+                )
+                logger.info("RAG OpenAI клієнт ініціалізовано (org=%s, project=%s)", org or "-", proj or "-")
+            except Exception as e:
+                self.openai_client = None
+                logger.error("RAG OpenAI клієнт не ініціалізувався: %s", e)
+        else:
+            logger.warning("RAG OpenAI API ключ не встановлено.")
+        
+        # Google Gemini
         if self.gemini_api_key:
-            genai.configure(api_key=self.gemini_api_key)
+            try:
+                genai.configure(api_key=self.gemini_api_key)
+                self.gemini_model = genai.GenerativeModel(getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash'))
+                logger.info("RAG Gemini клієнт ініціалізовано")
+            except Exception as e:
+                logger.error(f"❌ Помилка ініціалізації RAG Gemini: {e}")
+        else:
+            logger.warning("RAG Gemini API ключ не встановлено.")
+
+    def _call_generative_ai_model(self, prompt: str, max_tokens: int) -> Tuple[str, str]:
+        """Універсальний виклик AI для генерації з фолбеком."""
+        temperature = getattr(settings, 'AI_TEMPERATURE', 0.7)
+        max_output_tokens = getattr(settings, 'AI_MAX_TOKENS', 1000)
+        
+        # 1) Основна модель
+        try:
+            if self.preferred_model == "gemini" and self.gemini_model:
+                logger.info(f"[RAG AI] Використовуємо Gemini ({getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')})...")
+                response = self._call_gemini_generative(prompt, max_output_tokens, temperature)
+                return response, 'gemini'
+            elif self.preferred_model == "openai" and self.openai_client:
+                logger.info(f"[RAG AI] Використовуємо OpenAI ({getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')})...")
+                response = self._call_openai_generative(prompt, max_output_tokens, temperature)
+                return response, 'openai'
+        except Exception as e:
+            logger.warning(f"[RAG AI] Основна генеративна модель ({self.preferred_model}) недоступна: {e}")
+            
+        # 2) Резервна модель
+        if self.backup_model:
+            logger.info(f"[RAG AI] Спробуємо резервну генеративну модель ({self.backup_model})...")
+            try:
+                if self.backup_model == "openai" and self.openai_client:
+                    logger.info(f"[RAG AI] Використовуємо OpenAI Fallback ({getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')})...")
+                    response = self._call_openai_generative(prompt, max_output_tokens, temperature, is_fallback=True)
+                    return response, 'openai'
+                elif self.backup_model == "gemini" and self.gemini_model:
+                    logger.info(f"[RAG AI] Використовуємо Gemini Fallback ({getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')})...")
+                    response = self._call_gemini_generative(prompt, max_output_tokens, temperature)
+                    return response, 'gemini'
+            except Exception as e:
+                logger.error(f"❌ RAG Резервна генеративна модель ({self.backup_model}) теж недоступна: {e}")
+                
+        raise Exception("❌ Жодна генеративна AI модель недоступна для RAG.")
+
+    def _call_openai_generative(self, prompt: str, max_tokens: int, temperature: float, is_fallback: bool = False) -> str:
+        """Виклик OpenAI GPT для генерації."""
+        model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')
+        if is_fallback:
+            model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')
+        
+        logger.info(f"[RAG OpenAI] Відправляємо запит до моделі {model_name} довжиною {len(prompt)} символів...")
+        try:
+            resp = self.openai_client.chat.completions.create(
+                model=model_name,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=max_tokens,
+                temperature=temperature,
+            )
+            logger.info(f"[RAG OpenAI] Успішна відповідь від {model_name}: {len(resp.choices[0].message.content)} символів")
+            return resp.choices[0].message.content
+        except Exception as e:
+            logger.error(f"[RAG OpenAI] Помилка від {model_name}: {e}")
+            raise
+            
+    def _call_gemini_generative(self, prompt: str, max_tokens: int, temperature: float) -> str:
+        """Виклик Google Gemini для генерації."""
+        model_name = getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')
+        logger.info(f"[RAG Gemini] Відправляємо запит до моделі {model_name} довжиною {len(prompt)} символів...")
+        try:
+            response = self.gemini_model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
+                    max_output_tokens=max_tokens,
+                    temperature=temperature,
+                ),
+            )
+            if not getattr(response, "text", None):
+                raise Exception("Gemini повернув пустий response.text")
+            logger.info(f"[RAG Gemini] Успішна відповідь від {model_name}: {len(response.text)} символів")
+            return response.text
+        except Exception as e:
+            logger.error(f"[RAG Gemini] Помилка від {model_name}: {e}")
+            raise
 
     def _contains_pricing_keywords(self, text: str) -> bool:
         t = (text or '').lower()
@@ -495,7 +719,7 @@ class RAGConsultantService:
             allow_ask = False
 
         # Генеруємо відповідь
-        response = self._generate_rag_response(
+        response_data, model_used = self._generate_rag_response(
             query=query,
             search_results=search_results,
             language=language,
@@ -507,14 +731,14 @@ class RAGConsultantService:
 
         # Гарантія показу кнопки прорахунку при текстових ознаках цін
         try:
-            resp_text = (response.get('content') or '').lower()
+            resp_text = (response_data.get('content') or '').lower()
             has_textual_price = any(
                 key in resp_text for key in ['орієнтовн', 'вартіст', 'price', 'usd', '$']
             )
-            if has_textual_price and not response.get('prices_ready', False):
-                response['prices_ready'] = True
-            if response.get('prices_ready'):
-                actions = list(response.get('actions', []))
+            if has_textual_price and not response_data.get('prices_ready', False):
+                response_data['prices_ready'] = True
+            if response_data.get('prices_ready'):
+                actions = list(response_data.get('actions', []))
                 has_quote_btn = any(
                     (a.get('type') == 'button' and a.get('action') == 'request_quote') for a in actions
                 )
@@ -525,7 +749,7 @@ class RAGConsultantService:
                         'action': 'request_quote',
                         'style': 'primary'
                     })
-                response['actions'] = actions
+                response_data['actions'] = actions
         except Exception:
             pass
 
@@ -534,7 +758,7 @@ class RAGConsultantService:
             meta['clarification_asked'] = True
         
         # Оновлюємо metadata стан для pricing (одноразове уточнення → очікуємо; коли ціни готові → завершуємо)
-        resp = response
+        resp = response_data
         if detected_intent == 'pricing' and allow_ask:
             meta['awaiting_pricing_details'] = True
         if detected_intent == 'pricing' and bool(resp.get('prices_ready')):
@@ -554,19 +778,19 @@ class RAGConsultantService:
         ChatMessage.objects.create(
             session=session,
             role='assistant', 
-            content=response['content'],
+            content=response_data['content'],
             rag_sources_used=[r['content_title'] for r in search_results],
             vector_search_results=search_results,
-            ai_model_used='gemini-pro'
+            ai_model_used=model_used
         )
         
         return {
-            'response': response['content'],
+            'response': response_data['content'],
             'intent': detected_intent,
             'sources': search_results,
-            'suggestions': response.get('suggestions', []),
-            'actions': response.get('actions', []),
-            'prices_ready': response.get('prices_ready', False),
+            'suggestions': response_data.get('suggestions', []),
+            'actions': response_data.get('actions', []),
+            'prices_ready': response_data.get('prices_ready', False),
             'session_id': session_id
         }
     
@@ -602,11 +826,12 @@ class RAGConsultantService:
         chat_history: List[ChatMessage],
         is_followup: bool,
         allow_ask: bool
-    ) -> Dict:
+    ) -> Tuple[Dict, str]:
         """Генерує відповідь на основі RAG контексту"""
         
         if not search_results:
-            return self._generate_fallback_response(query, language, intent)
+            # Fallback відповідь, якщо немає релевантного контенту
+            return self._generate_fallback_response(query, language, intent), "fallback"
         
         # Будуємо контекст з найкращих результатів
         context_parts = []
@@ -705,105 +930,94 @@ class RAGConsultantService:
 Запит користувача: {query}
 """
         
-        try:
-            model = genai.GenerativeModel('gemini-1.5-pro-latest')
-            response = model.generate_content(
-                f"{system_prompt}\n\n{user_prompt}",
-                generation_config=genai.types.GenerationConfig(
-                    temperature=0.7,
-                    max_output_tokens=1000,
-                )
-            )
-            
-            ai_response = response.text
+        ai_response_content, model_used = self._call_generative_ai_model(
+            prompt=f"{system_prompt}\n\n{user_prompt}",
+            max_tokens=getattr(settings, 'AI_MAX_TOKENS', 1000)
+        )
 
-            prices_ready = False
-            prices = []
-            # Якщо pricing і це фоллоуап — додаємо/підсилюємо ціни (без додаткових питань)
-            if pricing_flow_mode and is_followup:
-                pricing_lines = []
-                for r in search_results:
-                    if r.get('content_category') == 'pricing':
-                        price_from = r.get('price_from')
-                        price_to = r.get('price_to')
-                        currency = r.get('currency', '')
-                        pkg = r.get('package_name') or r.get('content_title')
-                        service_title = r.get('service_title')
-                        price_str = None
-                        if price_from is not None and price_to is not None:
-                            price_str = f"{price_from}-{price_to} {currency}".strip()
-                        elif price_from is not None:
-                            price_str = f"від {price_from} {currency}".strip()
-                        elif price_to is not None:
-                            price_str = f"до {price_to} {currency}".strip()
-                        if (price_from is not None or price_to is not None) and pkg:
-                            prices.append({
-                                'title': f"{pkg}{f' ({service_title})' if service_title else ''}",
-                                'description': '',
-                                'price_from': price_from if price_from is not None else '',
-                                'price_to': price_to if price_to is not None else '',
-                                'currency': currency
-                            })
-                        if price_str and pkg:
-                            line = f"- {pkg}: {price_str}"
-                            if service_title:
-                                line = f"{line} ({service_title})"
-                            pricing_lines.append(line)
-                pricing_lines = list(dict.fromkeys(pricing_lines))[:5]
-                if pricing_lines:
-                    prices_ready = True
-                    if 'Ціни' not in ai_response:
-                        ai_response = ai_response.strip() + "\n\nЦіни (орієнтовно):\n" + "\n".join(pricing_lines)
+        prices_ready = False
+        prices = []
+        # Якщо pricing і це фоллоуап — додаємо/підсилюємо ціни (без додаткових питань)
+        if pricing_flow_mode and is_followup:
+            pricing_lines = []
+            for r in search_results:
+                if r.get('content_category') == 'pricing':
+                    price_from = r.get('price_from')
+                    price_to = r.get('price_to')
+                    currency = r.get('currency', '')
+                    pkg = r.get('package_name') or r.get('content_title')
+                    service_title = r.get('service_title')
+                    price_str = None
+                    if price_from is not None and price_to is not None:
+                        price_str = f"{price_from}-{price_to} {currency}".strip()
+                    elif price_from is not None:
+                        price_str = f"від {price_from} {currency}".strip()
+                    elif price_to is not None:
+                        price_str = f"до {price_to} {currency}".strip()
+                    if (price_from is not None or price_to is not None) and pkg:
+                        prices.append({
+                            'title': f"{pkg}{f' ({service_title})' if service_title else ''}",
+                            'description': '',
+                            'price_from': price_from if price_from is not None else '',
+                            'price_to': price_to if price_to is not None else '',
+                            'currency': currency
+                        })
+                    if price_str and pkg:
+                        line = f"- {pkg}: {price_str}"
+                        if service_title:
+                            line = f"{line} ({service_title})"
+                        pricing_lines.append(line)
+            pricing_lines = list(dict.fromkeys(pricing_lines))[:5]
+            if pricing_lines:
+                prices_ready = True
+            if 'Ціни' not in ai_response_content:
+                ai_response_content = ai_response_content.strip() + "\n\nЦіни (орієнтовно):\n" + "\n".join(pricing_lines)
 
-            # Резервне визначення наявності базових цін за текстом відповіді
-            if not prices_ready:
-                resp_lower = (ai_response or '').lower()
-                if ('орієнтовн' in resp_lower) or ('$' in ai_response) or ('usd' in resp_lower) or ('вартіст' in resp_lower) or ('price' in resp_lower):
-                    prices_ready = True
+        # Резервне визначення наявності базових цін за текстом відповіді
+        if not prices_ready:
+            resp_lower = (ai_response_content or '').lower()
+            if ('орієнтовн' in resp_lower) or ('$' in ai_response_content) or ('usd' in resp_lower) or ('вартіст' in resp_lower) or ('price' in resp_lower):
+                prices_ready = True
 
-            # Одноразова згадка GDPR у першій відповіді в сесії
-            is_first_assistant_reply = True
-            if chat_history:
-                for m in chat_history:
-                    if m.role == 'assistant':
-                        is_first_assistant_reply = False
-                        break
-            if is_first_assistant_reply:
-                ai_response = ai_response.strip() + "\n\nЦе гарантує конфіденційність та відповідність стандартам GDPR."
+        # Одноразова згадка GDPR у першій відповіді в сесії
+        is_first_assistant_reply = True
+        if chat_history:
+            for m in chat_history:
+                if m.role == 'assistant':
+                    is_first_assistant_reply = False
+                    break
+        if is_first_assistant_reply:
+            ai_response_content = ai_response_content.strip() + "\n\nЦе гарантує конфіденційність та відповідність стандартам GDPR."
 
-            # Дії (CTA)
-            actions = []
-            consult_url = self.rag_settings.get('CONSULTATION_URL') or self.rag_settings.get('CONSULTATION_CALENDAR_URL')
-            if consult_url:
-                actions.append({
-                    'type': 'link',
-                    'text': 'Записатися на консультацію',
-                    'url': consult_url,
-                    'style': 'secondary',
-                    'persistent': True
-                })
-            if prices_ready:
-                actions.append({
-                    'type': 'button',
-                    'text': '🧮 Отримати детальний прорахунок у PDF',
-                    'action': 'request_quote',
-                    'style': 'primary'
-                })
+        # Дії (CTA)
+        actions = []
+        consult_url = self.rag_settings.get('CONSULTATION_URL') or self.rag_settings.get('CONSULTATION_CALENDAR_URL')
+        if consult_url:
+            actions.append({
+                'type': 'link',
+                'text': 'Записатися на консультацію',
+                'url': consult_url,
+                'style': 'secondary',
+                'persistent': True
+            })
+        if prices_ready:
+            actions.append({
+                'type': 'button',
+                'text': '🧮 Отримати детальний прорахунок у PDF',
+                'action': 'request_quote',
+                'style': 'primary'
+            })
             
-            suggestions = self._generate_suggestions(intent, search_results, language)
-            
-            return {
-                'content': ai_response,
-                'suggestions': suggestions,
-                'context_used': len(search_results),
-                'prices_ready': prices_ready,
-                'actions': actions,
-                'prices': prices
-            }
-            
-        except Exception as e:
-            logger.error(f"Помилка генерації RAG відповіді: {e}")
-            return self._generate_fallback_response(query, language, intent)
+        suggestions = self._generate_suggestions(intent, search_results, language)
+        
+        return {
+            'content': ai_response_content,
+            'suggestions': suggestions,
+            'context_used': len(search_results),
+            'prices_ready': prices_ready,
+            'actions': actions,
+            'prices': prices
+        }, model_used
     
     def _get_system_prompt(self, language: str, intent: str, is_first_message: bool, is_followup: bool) -> str:
         """Повертає системний промпт залежно від наміру"""
@@ -832,7 +1046,7 @@ class RAGConsultantService:
                 'intro': f"Przedstaw się jako {consultant_name}, doświadczona konsultantka IT w firmie LazySoft, i przywitaj się.",
                 'language': "Odpowiadaj po polsku.",
                 'behavior': """Twoje zachowanie:
-- Odpowiadaj profesjonalnie, ale przyjaźnie. Nie przedstawiaj się, jeśli to nie pierwsza wiadomość.
+- Odpowiadaj profesjonalnie, але przyjaźnie. Nie przedstawiaj się, jeśli to nie pierwsza wiadomość.
 - Używaj konkretnych faktów z kontekstu i poprzedniej rozmowy.
 - Proponuj praktyczne rozwiązania.
 - Wspominaj o odpowiednich projektach lub usługach TYLKO jeśli użytkownik o nie pyta lub jest to stosowne w kontekście.
@@ -1021,24 +1235,24 @@ class RAGConsultantService:
         fallback_responses = {
             'uk': {
                 'greeting': "Привіт! Я Юлія, IT консультантка LazySoft. Ми допомагаємо бізнесу з автоматизацією та розробкою технічних рішень. Чим можу допомогти?",
-                'pricing': "Щоб дати точну ціну, мені потрібно більше деталей про ваш проєкт. Розкажіть, будь ласка, що саме вас цікавить?",
+                'pricing': "Щоб зорієнтувати по бюджету, розкажіть, будь ласка, про тип продукту, ключові функції та бажані терміни — і я підкажу діапазон.",
                 'consultation': "Я буду рада обговорити ваше питання на консультації. Коли вам буде зручно зустрітися?",
-                'services': "Розкажіть більше про те, що вас цікавить, і я зможу запропонувати найкраще рішення.",
-                'general': "Цікаве питання! Щоб дати максимально корисну відповідь, уточніть, будь ласка, деталі."
+                'services': "Ми в LazySoft розробляємо чат-боти, CRM-рішення, landing page, автоматизації даних та аналітичні панелі. Напишіть, який напрям вам цікавий, і я підкажу, з чого почати.",
+                'general': "З радістю допоможу! Ми в LazySoft створюємо IT-рішення під ключ: від чат-ботів і CRM до landing page та автоматизацій даних. Розкажіть, будь ласка, що саме плануєте — і я підкажу найкращий формат співпраці."
             },
             'pl': {
-                'greeting': "Cześć! Jestem Julia, konsultantka IT w LazySoft. Pomagamy biznesowi w automatyzacji i rozwoju rozwiązań technicznych. W czym mogę pomóc?",
-                'pricing': "Aby podać dokładną cenę, potrzebuję więcej szczegółów o Twoim projekcie. Proszę, opowiedz, co dokładnie Cię interesuje?",
-                'consultation': "Z przyjemnością omówię Twoje pytanie na konsultacji. Kiedy będzie Ci wygodnie się spotkać?",
-                'services': "Opowiedz więcej o tym, co Cię interesuje, a zaproponuję najlepsze rozwiązanie.",
-                'general': "Ciekawe pytanie! Aby dać najbardziej pomocną odpowiedź, proszę o więcej szczegółów."
+                'greeting': "Cześć! Jestem Julia, konsultantka IT w LazySoft. Pomagamy firmom automatyzować procesy i budować rozwiązania cyfrowe. Jak mogę pomóc?",
+                'pricing': "Aby podać budżet, daj proszę znać, jaki produkt planujesz, jakie funkcje są kluczowe i jaki masz termin — od razu zaproponuję widełki cenowe.",
+                'consultation': "Chętnie omówię Twój temat na konsultacji. Kiedy pasuje Ci spotkanie online?",
+                'services': "W LazySoft tworzymy chatboty, systemy CRM, landing page, automatyzacje danych i pulpity analityczne. Napisz, które rozwiązanie Cię interesuje, a zaproponuję następne kroki.",
+                'general': "Z przyjemnością pomogę! W LazySoft budujemy rozwiązania IT dopasowane do biznesu: chatboty, CRM, strony landing oraz automatyzacje danych. Powiedz, czego dokładnie potrzebujesz, a doradzę najlepsze wyjście."
             },
             'en': {
-                'greeting': "Hello! I'm Julia, an IT consultant at LazySoft. We help businesses with automation and technical solution development. How can I help you?",
-                'pricing': "To give an accurate price, I need more details about your project. Please tell me what exactly interests you?",
-                'consultation': "I'll be happy to discuss your question in a consultation. When would be convenient for you to meet?",
-                'services': "Tell me more about what interests you, and I can offer the best solution.",
-                'general': "Interesting question! To give the most helpful answer, please provide more details."
+                'greeting': "Hello! I'm Julia, an IT consultant at LazySoft. We help businesses automate processes and craft digital solutions. How can I assist you today?",
+                'pricing': "To suggest a budget range, let me know what kind of product you have in mind, the key features and the timeline — I'll outline the expected costs right away.",
+                'consultation': "I'd be glad to discuss your project on a consultation call. What time works best for you?",
+                'services': "At LazySoft we build chatbots, CRM systems, landing pages, data automation workflows and analytics dashboards. Tell me which direction you're exploring and I'll guide you through the next steps.",
+                'general': "Happy to help! At LazySoft we design end-to-end IT solutions — chatbots, CRM, landing pages and data automations. Share what you're planning and I'll recommend the most effective path forward."
             }
         }
         

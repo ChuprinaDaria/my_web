@@ -230,7 +230,10 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
         
         # Якщо контент вже довгий - можливо вже збагачено
         if original_length > 1500:
-            self.logger.info(f"[FIVEFILTERS] Контент вже довгий ({original_length} симв), пропускаємо")
+            self.logger.info(f"[FIVEFILTERS] Контент вже довгий ({original_length} симв), вважаємо повним")
+            # Встановлюємо флаг повного контенту
+            raw_article.has_full_content = True
+            raw_article.save(update_fields=['has_full_content'])
             return raw_article.content or ""
         
         try:
@@ -246,16 +249,21 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
                 
                 # ЗБЕРІГАЄМО збагачений контент в БД
                 raw_article.content = full_content
-                raw_article.save(update_fields=['content'])
+                raw_article.has_full_content = True
+                raw_article.save(update_fields=['content', 'has_full_content'])
                 
                 self.logger.info(f"[FIVEFILTERS] ✅ Збагачено: +{improvement} символів ({len(full_content)} total)")
                 return full_content
             else:
                 self.logger.warning(f"[FIVEFILTERS] ⚠️ Не вдалося збагатити або контент коротший")
+                raw_article.has_full_content = False
+                raw_article.save(update_fields=['has_full_content'])
                 return raw_article.content or raw_article.summary or ""
                 
         except Exception as e:
             self.logger.warning(f"[FIVEFILTERS] ❌ Помилка: {e}")
+            raw_article.has_full_content = False
+            raw_article.save(update_fields=['has_full_content'])
             return raw_article.content or raw_article.summary or ""
 
 
