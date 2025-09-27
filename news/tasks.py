@@ -91,9 +91,13 @@ def post_top_news_to_telegram_task():
             return
 
         telegram_service = TelegramService()
+        # Безпечно обрізаємо заголовок та summary для уникнення varchar помилок
+        title = article_to_post.get_title('uk')[:200]
+        summary = article_to_post.get_summary('uk')[:1000]
+        
         message = (
-            f"🔥 *{article_to_post.get_title('uk')}*\n\n"
-            f"{article_to_post.get_summary('uk')}\n\n"
+            f"🔥 *{title}*\n\n"
+            f"{summary}\n\n"
             f"🔗 [Читати далі]({article_to_post.get_absolute_url('uk')})"
         )
         
@@ -104,7 +108,7 @@ def post_top_news_to_telegram_task():
             platform='telegram_uk',
             defaults={
                 'content': message,
-                'image_url': article_to_post.ai_image_url,
+                'image_url': article_to_post.ai_image_url[:500] if article_to_post.ai_image_url else '',
                 'status': 'draft'
             }
         )

@@ -81,6 +81,7 @@ class SimpleROIAdmin(admin.ModelAdmin):
 @admin.register(ProcessedArticle)
 class SimpleArticleAdmin(admin.ModelAdmin):
     list_display = ['get_title', 'category', 'status', 'priority', 'is_top_article', 'article_rank', 'show_ai_cost', 'show_ai_time', 'show_ai_ops', 'show_social_posts', 'telegram_publish_button', 'created_at']
+    # list_editable = ['priority', 'is_top_article', 'article_rank']  # Тимчасово вимкнено
     list_filter = ['status', 'category', 'priority', 'is_top_article']
     search_fields = ['title_uk', 'title_en', 'title_pl']
     readonly_fields = ['created_at', 'updated_at', 'ai_image_url', 'get_original_content', 'get_original_summary', 'get_original_url', 'get_full_content_uk', 'show_ai_cost', 'show_ai_time', 'show_ai_ops', 'show_social_posts', 'telegram_publish_button']
@@ -89,6 +90,11 @@ class SimpleArticleAdmin(admin.ModelAdmin):
     def publish_single_to_telegram(self, request, article_id):
         """Публікує одну статтю в Telegram"""
         try:
+            # Перевіряємо чи article_id є числом
+            if not isinstance(article_id, int):
+                messages.error(request, f'❌ Невірний ID статті: {article_id}')
+                return redirect('..')
+            
             article = ProcessedArticle.objects.get(pk=article_id)
             
             # Перевіряємо чи вже опубліковано
@@ -97,19 +103,16 @@ class SimpleArticleAdmin(admin.ModelAdmin):
                 return redirect('..')
             
             # Створюємо повідомлення з українським контентом
-            # Якщо title_uk такий же як title_en (англійський), використовуємо business_insight_uk для заголовка
-            if article.title_uk == article.title_en and article.business_insight_uk:
-                title = article.business_insight_uk[:80] + "..."
-            else:
-                title = article.title_uk[:80] if article.title_uk else article.title_en[:80]
+            # Заголовок завжди беремо з title_uk або title_en (обрізаємо до 200 символів для безпеки)
+            title = article.title_uk[:200] if article.title_uk else article.title_en[:200]
             
             # Summary - якщо український summary порожній або такий же як англійський, використовуємо business_insight_uk
             if article.summary_uk and article.summary_uk != article.summary_en:
-                summary = article.summary_uk[:200]
+                summary = article.summary_uk[:1000]  # Безпечний ліміт
             elif article.business_insight_uk:
-                summary = article.business_insight_uk[:200] + "..."
+                summary = article.business_insight_uk[:1000] + "..."
             else:
-                summary = article.summary_en[:200]
+                summary = article.summary_en[:1000]
             
             message = (
                 f"🔥 <strong>{title}</strong>\n\n"
@@ -129,6 +132,11 @@ class SimpleArticleAdmin(admin.ModelAdmin):
                 reply_markup=button
             )
             
+            # Логування для діагностики
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"🔍 Telegram публікація: external_id = {external_id}")
+            
             if external_id:
                 # Створюємо запис про публікацію
                 from news.models import SocialMediaPost
@@ -137,13 +145,15 @@ class SimpleArticleAdmin(admin.ModelAdmin):
                     platform='telegram_uk',
                     defaults={
                         'content': message,
-                        'image_url': article.ai_image_url,
+                        'image_url': article.ai_image_url[:500] if article.ai_image_url else '',
                         'status': 'draft'
                     }
                 )
                 smp.mark_as_published(external_id)
+                logger.info(f"✅ SocialMediaPost створено/оновлено: ID={smp.id}, Status={smp.status}")
                 messages.success(request, f'✅ Статтю "{article.get_title("uk")}" успішно опубліковано в Telegram!')
             else:
+                logger.warning(f"❌ Telegram API не повернув external_id для статті {article.id}")
                 messages.error(request, '❌ Не вдалося опублікувати статтю в Telegram')
                 
         except ProcessedArticle.DoesNotExist:
@@ -189,19 +199,16 @@ class SimpleArticleAdmin(admin.ModelAdmin):
                     continue
                 
                 # Створюємо повідомлення з українським контентом
-                # Якщо title_uk такий же як title_en (англійський), використовуємо business_insight_uk для заголовка
-                if article.title_uk == article.title_en and article.business_insight_uk:
-                    title = article.business_insight_uk[:80] + "..."
-                else:
-                    title = article.title_uk[:80] if article.title_uk else article.title_en[:80]
+                # Заголовок завжди беремо з title_uk або title_en (обрізаємо до 200 символів для безпеки)
+                title = article.title_uk[:200] if article.title_uk else article.title_en[:200]
                 
                 # Summary - якщо український summary порожній або такий же як англійський, використовуємо business_insight_uk
                 if article.summary_uk and article.summary_uk != article.summary_en:
-                    summary = article.summary_uk[:200]
+                    summary = article.summary_uk[:1000]  # Безпечний ліміт
                 elif article.business_insight_uk:
-                    summary = article.business_insight_uk[:200] + "..."
+                    summary = article.business_insight_uk[:1000] + "..."
                 else:
-                    summary = article.summary_en[:200]
+                    summary = article.summary_en[:1000]
                 
                 message = (
                     f"🔥 <strong>{title}</strong>\n\n"
@@ -221,6 +228,11 @@ class SimpleArticleAdmin(admin.ModelAdmin):
                     reply_markup=button
                 )
                 
+                # Логування для діагностики
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.info(f"🔍 Bulk Telegram публікація: article_id={article.id}, external_id={external_id}")
+                
                 if external_id:
                     # Створюємо запис про публікацію
                     from news.models import SocialMediaPost
@@ -229,11 +241,12 @@ class SimpleArticleAdmin(admin.ModelAdmin):
                         platform='telegram_uk',
                         defaults={
                             'content': message,
-                            'image_url': article.ai_image_url,
+                            'image_url': article.ai_image_url[:200] if article.ai_image_url else '',
                             'status': 'draft'
                         }
                     )
                     smp.mark_as_published(external_id)
+                    logger.info(f"✅ Bulk SocialMediaPost створено/оновлено: ID={smp.id}, Status={smp.status}")
                     published_count += 1
                 else:
                     errors.append(f"Не вдалося опублікувати: {article.get_title('uk')[:50]}...")
@@ -253,18 +266,44 @@ class SimpleArticleAdmin(admin.ModelAdmin):
     
     def telegram_publish_button(self, obj):
         """Кнопка для публікації в Telegram з деталей статті"""
-        if obj.pk:
-            # Перевіряємо чи вже опубліковано
-            if obj.social_posts.filter(platform='telegram_uk', status='published').exists():
+        try:
+            if not obj or not obj.pk:
+                return "—"
+
+            # Безпечний доступ до related (на випадок відсутності related_name)
+            try:
+                social_posts_qs = obj.social_posts
+            except AttributeError:
+                social_posts_qs = getattr(obj, 'socialmediapost_set', None)
+
+            already = False
+            if social_posts_qs is not None:
+                try:
+                    already = social_posts_qs.filter(platform='telegram_uk', status='published').exists()
+                except Exception:
+                    already = False
+
+            try:
+                url = reverse('admin:news_processedarticle_publish_telegram', args=[obj.pk])
+            except Exception:
+                return "—"
+
+            if already:
+                # показуємо і бейдж, і кнопку перепосту
                 return format_html(
-                    '<span style="color: green;">✅ Вже опубліковано в Telegram</span>'
+                    '<span style="color: green; margin-right:8px;">✅ Опубліковано</span>'
+                    '<a href="{}" class="button" style="background:#6c757d;color:#fff;padding:5px 10px;'
+                    'text-decoration:none;border-radius:3px;">🔁 Перепостити</a>',
+                    url
                 )
-            else:
-                return format_html(
-                    '<a href="{}" class="button" style="background: #28a745; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px;">📢 Опублікувати в Telegram</a>',
-                    reverse('admin:news_processedarticle_publish_telegram', args=[obj.pk])
-                )
-        return "-"
+
+            return format_html(
+                '<a href="{}" class="button" style="background:#28a745;color:#fff;padding:5px 10px;'
+                'text-decoration:none;border-radius:3px;">📢 Опублікувати в Telegram</a>',
+                url
+            )
+        except Exception as e:
+            return f"Помилка: {str(e)[:50]}"
     
     telegram_publish_button.short_description = "Telegram"
     
@@ -305,6 +344,16 @@ class SimpleArticleAdmin(admin.ModelAdmin):
         return obj.title_uk or obj.title_en or "Без назви"
     get_title.short_description = "Назва"
     
+    def get_is_top_article(self, obj):
+        return "✅" if obj.is_top_article else "❌"
+    get_is_top_article.short_description = "Топ стаття"
+    get_is_top_article.admin_order_field = "is_top_article"
+    
+    def get_article_rank(self, obj):
+        return f"#{obj.article_rank}" if obj.article_rank else "-"
+    get_article_rank.short_description = "Ранг"
+    get_article_rank.admin_order_field = "article_rank"
+    
     def get_original_content(self, obj):
         """Повертає оригінальний контент статті"""
         if obj.raw_article and obj.raw_article.content:
@@ -322,8 +371,8 @@ class SimpleArticleAdmin(admin.ModelAdmin):
     def get_original_url(self, obj):
         """Повертає посилання на оригінальну статтю"""
         if obj.raw_article and obj.raw_article.original_url:
-            return obj.raw_article.original_url
-        return "Немає посилання"
+            return format_html('<a href="{0}" target="_blank" rel="noopener">{0}</a>', obj.raw_article.original_url)
+        return "—"
     get_original_url.short_description = 'Оригінальне посилання'
     
     def get_full_content_uk(self, obj):
@@ -361,13 +410,16 @@ class SimpleArticleAdmin(admin.ModelAdmin):
     def show_social_posts(self, obj):
         """Показує кількість постів в соцмережах для цієї статті"""
         try:
+            if not obj or not obj.pk:
+                return "0 постів"
             posts_count = obj.social_posts.filter(status='published').count()
             if posts_count > 0:
                 return f"{posts_count} постів"
             return "0 постів"
-        except:
-            return "0 постів"
+        except Exception as e:
+            return f"Помилка: {str(e)[:20]}"
     show_social_posts.short_description = "Соцмережі"
+    show_social_posts.admin_order_field = "social_posts__status"
 
 
 # === AI PROCESSING LOGS ===

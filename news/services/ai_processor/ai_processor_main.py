@@ -6,8 +6,8 @@ from datetime import datetime, timedelta
 
 from .ai_processor_content import AIContentProcessor
 from .ai_processor_helpers import AIProcessorHelpers
-from news.models import RawArticle, ProcessedArticle, AIProcessingLog
-from .ai_processor_database import AIProcessorDatabase 
+from .ai_processor_database import AIProcessorDatabase
+from news.models import RawArticle, ProcessedArticle, AIProcessingLog 
 
 class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabase):
     """Головний AI процесор для новин - основна обробка"""
@@ -106,8 +106,13 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
             self.logger.error(f"[ERROR] Помилка обробки статті: {error_msg}")
             return None
 
-    def process_batch(self, limit: int = 10, category: str = None) -> Dict:
-        """Обробляє пакет необроблених статей"""
+    def process_batch(self, limit: int = 10, category: str = None, auto_prioritize: bool = True) -> Dict:
+        """
+        ЗАСТАРІЛИЙ МЕТОД: Обробляє пакет необроблених статей з автоматичною пріоритизацією
+        
+        ⚠️ УВАГА: Цей метод застарілий! Використовуйте SmartNewsPipeline який обробляє тільки ТОП-5 статей.
+        Цей метод обробляє ВСІ статті і витрачає багато AI API коштів.
+        """
         
         self.logger.info(f"🚀 Пакетна обробка: до {limit} статей")
         
@@ -141,6 +146,12 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
             
             # Невелика пауза між запитами
             time.sleep(1)
+        
+        # Автоматична пріоритизація топ-статей
+        if auto_prioritize and results:
+            successful_articles = [r for r in results if r is not None]
+            if successful_articles:
+                self._auto_prioritize_articles(successful_articles)
         
         # Фінальна статистика
         successful = len([r for r in results if r is not None])
@@ -293,3 +304,122 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
         # Повертаємо топ-5 найчастіших
         keywords = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)
         return [word for word, freq in keywords[:5]]
+
+    def _auto_prioritize_articles(self, articles: list) -> None:
+        """Автоматично встановлює пріоритети та топ-статті на основі AI аналізу"""
+        from django.utils import timezone
+        from datetime import date
+        
+        if not articles:
+            return
+            
+        self.logger.info(f"[PRIORITY] Автоматична пріоритизація {len(articles)} статей...")
+        
+        # Сортуємо статті за пріоритетом та якістю контенту
+        scored_articles = []
+        
+        for article in articles:
+            score = self._calculate_article_score(article)
+            scored_articles.append((article, score))
+            
+        # Сортуємо за скором (найвищий спочатку)
+        scored_articles.sort(key=lambda x: x[1], reverse=True)
+        
+        today = timezone.now().date()
+        
+        # Топ-5 статей отримують спеціальний статус
+        top_count = min(5, len(scored_articles))
+        
+        for i, (article, score) in enumerate(scored_articles[:top_count]):
+            # Встановлюємо високий пріоритет для топ-статей
+            priority = max(3, min(5, int(score // 20)))  # Скор 0-100 -> пріоритет 3-5
+            
+            article.is_top_article = True
+            article.article_rank = i + 1
+            article.top_selection_date = today
+            article.priority = priority
+            
+            article.save(update_fields=[
+                'is_top_article', 'article_rank', 'top_selection_date', 'priority'
+            ])
+            
+            self.logger.info(f"[TOP-{i+1}] {article.title_uk[:50]}... (скор: {score:.1f}, пріоритет: {priority})")
+        
+        # Решта статей отримують звичайний пріоритет
+        for article, score in scored_articles[top_count:]:
+            priority = max(2, min(4, int(score // 25)))  # Нижчий пріоритет
+            
+            if article.priority != priority:
+                article.priority = priority
+                article.save(update_fields=['priority'])
+                
+        self.logger.info(f"[PRIORITY] ✅ Пріоритизація завершена: {top_count} топ-статей")
+
+    def _calculate_article_score(self, article) -> float:
+        """Розраховує скор статті для пріоритизації (0-100)"""
+        score = 50.0  # Базовий скор
+        
+        try:
+            # Фактори якості контенту
+            content_length = len(article.summary_uk or "")
+            if content_length > 2000:
+                score += 15  # Довгий якісний контент
+            elif content_length > 1000:
+                score += 10
+            elif content_length < 500:
+                score -= 10  # Короткий контент
+            
+            # Наявність бізнес-інсайтів
+            if article.business_insight_uk and len(article.business_insight_uk) > 50:
+                score += 10
+                
+            if article.business_opportunities_uk and len(article.business_opportunities_uk) > 50:
+                score += 10
+                
+            if article.lazysoft_recommendations_uk and len(article.lazysoft_recommendations_uk) > 50:
+                score += 10
+            
+            # Категорія (деякі категорії важливіші)
+            if hasattr(article, 'category') and article.category:
+                high_priority_categories = ['ai', 'automation', 'fintech']
+                if article.category.slug in high_priority_categories:
+                    score += 15
+                elif article.category.slug == 'general':
+                    score -= 5
+            
+            # Наявність зображення
+            if article.ai_image_url:
+                score += 5
+            
+            # Свіжість (новіші статті кращі)
+            if hasattr(article, 'created_at'):
+                from django.utils import timezone
+                from datetime import timedelta
+                
+                age = timezone.now() - article.created_at
+                if age < timedelta(hours=6):
+                    score += 10  # Дуже свіжа
+                elif age < timedelta(hours=24):
+                    score += 5   # Свіжа
+                elif age > timedelta(days=3):
+                    score -= 5   # Стара
+            
+            # Ключові слова в заголовку
+            title = (article.title_uk or "").lower()
+            high_value_keywords = [
+                'google', 'microsoft', 'apple', 'openai', 'chatgpt', 
+                'automation', 'ai', 'breakthrough', 'launch', 'new'
+            ]
+            
+            for keyword in high_value_keywords:
+                if keyword in title:
+                    score += 8
+                    
+            # Обмежуємо скор діапазоном 0-100
+            score = max(0, min(100, score))
+            
+        except Exception as e:
+            self.logger.warning(f"[SCORE] Помилка розрахунку скору: {e}")
+            score = 50  # Дефолтний скор при помилці
+            
+        return score

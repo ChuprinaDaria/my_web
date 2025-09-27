@@ -10,7 +10,7 @@ crispy-bootstrap5>=0.7
 django-select2>=8.0.0
 django-axes>=6.0.0
 django-otp>=1.2.0
-django-otp-plugins>=1.2.0
+
 
 # PostgreSQL + pgvector підтримка
 psycopg2-binary>=2.9.0
@@ -32,20 +32,73 @@ google-auth-oauthlib>=1.0.0
 google-auth-httplib2>=0.1.0
 google-api-python-client>=2.86.0
 
-# Email з шаблонами
-premailer>=3.10.0   # Інлайн CSS для email
+# Django Core
+Django==4.2.7
+python-decouple==3.8
 
-# Асинхронна обробка (опціонально)
-celery>=5.3.0
-redis>=4.5.0
+# Database
+psycopg2-binary==2.9.6
+pgvector==0.4.1
 
-# Додаткові утиліти
-python-slugify>=8.0.0
-python-decouple>=3.8  # Для .env файлів
+# Cache & Tasks  
+redis==5.2.1
+celery==5.5.3
+django-celery-beat==2.8.1
 
-# Інші корисні пакети
-Pillow>=10.0.0
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-lxml>=4.9.0
-PyJWT>=2.8.0
+# Translations & i18n
+django-parler==2.3
+
+# Forms & UI
+django-crispy-forms==2.4
+crispy-bootstrap5==2025.6
+django-select2==8.4.1
+django-filter==25.1
+
+# Content & Editors
+django-ckeditor==6.7.3
+django-ckeditor-5==0.2.18
+
+# Security & Auth
+django-axes==8.0.0
+django-otp==1.6.1
+qrcode==7.4.2
+
+# Development Tools
+django-extensions==4.1
+
+# Production Server
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# AI & APIs
+openai==1.85.0
+google-generativeai==0.8.5
+requests==2.31.0
+
+# Image Processing
+Pillow==10.1.0
+
+# Web Parsing & RSS
+beautifulsoup4==4.13.4
+feedparser==6.0.10
+lxml==5.4.0
+
+# Phone Numbers (якщо використовуєш)
+django-phonenumber-field==8.1.0
+phonenumbers==9.0.13
+
+# Telegram Bot (якщо використовуєш в Django)
+python-telegram-bot==20.7
+
+# Utilities
+python-dateutil==2.9.0.post0
+python-slugify==8.0.4
+pytz==2025.2
+
+# Additional dependencies that might be needed
+setuptools==65.5.0
+sqlparse==0.5.3
+asgiref==3.8.1
+tzdata==2025.2
+
+django-redis==5.4.0

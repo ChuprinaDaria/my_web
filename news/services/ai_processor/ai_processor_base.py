@@ -93,8 +93,8 @@ class AINewsProcessor:
         self.gemini_api_key = getattr(settings, 'GEMINI_API_KEY', None)
         
         # Налаштування AI
-        self.preferred_model = getattr(settings, 'AI_PREFERRED_MODEL', 'gemini')  # 'openai' або 'gemini'
-        self.backup_model = getattr(settings, 'AI_BACKUP_MODEL', 'openai')
+        self.preferred_model = getattr(settings, 'AI_PREFERRED_MODEL', 'openai')  # 'openai' або 'gemini'
+        self.backup_model = getattr(settings, 'AI_BACKUP_MODEL', 'gemini')
         
         # Ініціалізація AI клієнтів
         self.openai_client = None

@@ -1469,7 +1469,7 @@ class SocialMediaPost(models.Model):
     
     # Статус та метрики
     status = models.CharField(_('Статус'), max_length=20, choices=STATUS_CHOICES, default='draft')
-    external_post_id = models.CharField(_('ID в соцмережі'), max_length=100, blank=True)
+    external_post_id = models.CharField(_('ID в соцмережі'), max_length=200, blank=True)
     
     # Метрики (заповнюються автоматично)
     likes_count = models.IntegerField(_('Лайків'), default=0)
@@ -1504,7 +1504,8 @@ class SocialMediaPost(models.Model):
         """Позначити як опубліковано"""
         self.status = 'published'
         self.published_at = timezone.now()
-        self.external_post_id = external_id
+        # Обрізаємо external_id до 200 символів для уникнення varchar помилки
+        self.external_post_id = str(external_id)[:200] if external_id else ''
         self.save()
 
 

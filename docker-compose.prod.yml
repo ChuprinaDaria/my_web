@@ -1,0 +1,132 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    environment:
+      - DEBUG=False
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379/0
+    env_file:
+      - .env.prod
+    volumes:
+      - media_volume:/app/media
+      - static_volume:/app/staticfiles
+      - logs_volume:/app/logs
+    depends_on:
+      - db
+      - redis
+    networks:
+      - lazysoft_network
+    # Не відкриваємо порт назовні - тільки через nginx
+    expose:
+      - "8000"
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+      - media_volume:/var/www/media
+      - static_volume:/var/www/static
+    depends_on:
+      - web
+    networks:
+      - lazysoft_network
+
+  # Твоя база даних (pgvector для RAG)
+  db:
+    image: ankane/pgvector:latest
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lazysoft_network
+    # Не відкриваємо порт назовні для безпеки
+    expose:
+      - "5432"
+
+  # Redis для кешу та Celery
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - lazysoft_network
+    expose:
+      - "6379"
+
+  # Celery worker для фонових задач
+  celery:
+    build: .
+    restart: unless-stopped
+    command: celery -A lazysoft worker -l info --concurrency=2
+    environment:
+      - DEBUG=False
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379/0
+    env_file:
+      - .env.prod
+    volumes:
+      - logs_volume:/app/logs
+    depends_on:
+      - db
+      - redis
+    networks:
+      - lazysoft_network
+
+  # Celery beat для cron задач
+  celery-beat:
+    build: .
+    restart: unless-stopped
+    command: celery -A lazysoft beat -l info
+    environment:
+      - DEBUG=False
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379/0
+    env_file:
+      - .env.prod
+    volumes:
+      - logs_volume:/app/logs
+    depends_on:
+      - db
+      - redis
+    networks:
+      - lazysoft_network
+
+  # RSS парсер (твій існуючий контейнер)
+  fullfeedrss:
+    image: "heussd/fivefilters-full-text-rss:latest"
+    container_name: lazysoft-fivefilters-prod
+    restart: unless-stopped
+    environment:
+      - FTR_ADMIN_PASSWORD=${FTR_ADMIN_PASSWORD}
+    volumes:
+      - rss_cache:/var/www/html/cache/rss
+    networks:
+      - lazysoft_network
+    expose:
+      - "80"
+
+volumes:
+  postgres_data:
+  redis_data:
+  media_volume:
+  static_volume:
+  logs_volume:
+  rss_cache:
+
+networks:
+  lazysoft_network:
+    driver: bridge

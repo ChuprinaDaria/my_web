@@ -28,8 +28,7 @@ def home(request):
         raw_article__has_full_content=True  # Тільки з повним контентом через FiveFilters
     ).order_by('article_rank')[:5]
     
-    # Отримуємо дайджест (решта новин без повного контенту)
-    # Спочатку шукаємо в DailyDigest, якщо немає - то в ProcessedArticle
+    # Отримуємо дайджест (тепер тільки з ТОП-5 статей)
     from news.models import DailyDigest
     try:
         today_digest = DailyDigest.objects.filter(
@@ -37,23 +36,20 @@ def home(request):
             is_published=True
         ).first()
         
+        # Дайджест тепер містить тільки ТОП-5 статей, тому показуємо їх
         if today_digest:
-            # Якщо є дайджест, отримуємо статті з нього
-            daily_digest = ProcessedArticle.objects.filter(
-                status='published',
-                is_top_article=False
-            ).order_by('-published_at')[:10]
+            daily_digest = latest_articles  # Дайджест = ТОП-5 статей
         else:
-            # Якщо немає дайджесту, показуємо решту статей
+            # Якщо немає дайджесту, показуємо ТОП статті за попередні дні
             daily_digest = ProcessedArticle.objects.filter(
                 status='published',
-                is_top_article=False
-            ).order_by('-published_at')[:10]
+                is_top_article=True
+            ).order_by('-published_at')[:5]
     except Exception:
+        # Fallback: показуємо будь-які опубліковані статті
         daily_digest = ProcessedArticle.objects.filter(
-            status='published',
-            is_top_article=False
-        ).order_by('-published_at')[:10]
+            status='published'
+        ).order_by('-published_at')[:5]
     
     # Отримуємо проєкти
     featured_projects = Project.objects.filter(

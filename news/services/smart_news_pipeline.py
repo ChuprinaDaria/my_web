@@ -32,13 +32,15 @@ class PipelineResult:
 
 class SmartNewsPipeline:
     """
-    Розумний пайплайн обробки новин що поєднує всі компоненти:
+    ОПТИМІЗОВАНИЙ розумний пайплайн обробки новин:
     1. Audience Analyzer - селекція топ-5 релевантних статей
-    2. Full Article Parser - завантаження повного контенту
-    3. Enhanced AI Analyzer - створення LAZYSOFT інсайтів
-    4. AI News Processor - генерація тримовного контенту + зображення
-    5. Автопублікація топ статей + створення дайджесту решти
+    2. Full Article Parser - завантаження повного контенту ТІЛЬКИ для ТОП-5
+    3. Enhanced AI Analyzer - створення LAZYSOFT інсайтів ТІЛЬКИ для ТОП-5
+    4. AI News Processor - генерація тримовного контенту ТІЛЬКИ для ТОП-5
+    5. Автопублікація ТОП-5 статей + створення дайджесту з цих же ТОП-5
     6. Оновлення ROI метрик
+    
+    ЕКОНОМІЯ: тільки 5 AI викликів замість всіх статей!
     """
     
     def __init__(self):
@@ -148,13 +150,13 @@ class SmartNewsPipeline:
                     errors.append(error_msg)
                     logger.error(error_msg)
             
-            # === КРОК 3: Створення дайджесту решти новин ===
+            # === КРОК 3: Створення дайджесту з ТОП-5 статей ===
             if not dry_run and processed_articles:
-                logger.info("📰 Крок 3: Створення дайджесту решти новин...")
+                logger.info("📰 Крок 3: Створення дайджесту з ТОП-5 статей...")
                 try:
-                    digest_created = self._create_daily_digest(date, processed_articles)
+                    digest_created = self._create_daily_digest_from_top_articles(date, processed_articles)
                     if digest_created:
-                        logger.info("✅ Дайджест створено")
+                        logger.info("✅ Дайджест створено з ТОП-5 статей")
                 except Exception as e:
                     errors.append(f"Помилка створення дайджесту: {str(e)}")
                     logger.error(f"❌ Помилка дайджесту: {e}")
@@ -401,50 +403,36 @@ class SmartNewsPipeline:
         except Exception as e:
             logger.warning(f"⚠️ Помилка додавання інсайтів: {e}")
 
-    def _create_daily_digest(self, date: datetime.date, processed_articles: List[ProcessedArticle]) -> bool:
-        """Створює щоденний дайджест з решти новин (safe exclude)."""
+    def _create_daily_digest_from_top_articles(self, date: datetime.date, top_articles: List[ProcessedArticle]) -> bool:
+        """Створює щоденний дайджест ТІЛЬКИ з ТОП-5 статей."""
         try:
-            # raw ids для виключення (працює і з об'єктами, і з dict-ами, і з пустими)
-            exclude_ids = []
-            for a in (processed_articles or []):
-                try:
-                    rid = getattr(a, "raw_article_id", None)
-                    if rid is None and hasattr(a, "raw_article"):
-                        rid = getattr(a.raw_article, "id", None)
-                    if rid:
-                        exclude_ids.append(rid)
-                except Exception:
-                    continue
-
-            # Шукаємо статті, які НЕ є топ-статтями (не оброблені через SmartNewsPipeline)
-            remaining_articles = RawArticle.objects.filter(
-                fetched_at__date=date,
-                is_duplicate=False
-            ).exclude(id__in=exclude_ids)[:10]  # максимум 10 у дайджест
-
-            logger.info(f"🔍 Знайдено {remaining_articles.count()} статей для дайджесту (виключено {len(exclude_ids)} топ-статей)")
-            
-            if not remaining_articles.exists():
-                logger.info("📭 Немає додаткових статей для дайджесту")
+            if not top_articles:
+                logger.info("📭 Немає ТОП статей для дайджесту")
                 return False
 
+            # Створюємо дайджест з ТОП-5 статей
             digest, created = DailyDigest.objects.get_or_create(
                 date=date,
                 defaults={
-                    'title_en': f"Tech News Digest - {date.strftime('%B %d, %Y')}",
-                    'title_pl': f"Przegląd wiadomości technologicznych - {date.strftime('%d %B %Y')}",
-                    'title_uk': f"Дайджест технологічних новин - {date.strftime('%d %B %Y')}",
-                    'intro_text_en': f"Other interesting tech news from {date}",
-                    'intro_text_pl': f"Inne ciekawe wiadomości technologiczne z {date}",
-                    'intro_text_uk': f"Інші цікаві технологічні новини за {date}",
-                    'total_articles': remaining_articles.count(),
+                    'title_en': f"LAZYSOFT Top Tech News - {date.strftime('%B %d, %Y')}",
+                    'title_pl': f"LAZYSOFT Top wiadomości technologiczne - {date.strftime('%d %B %Y')}",
+                    'title_uk': f"LAZYSOFT Топ технологічних новин - {date.strftime('%d %B %Y')}",
+                    'intro_text_en': f"Our top {len(top_articles)} curated tech insights for {date}",
+                    'intro_text_pl': f"Nasze top {len(top_articles)} wyselekcjonowanych wiadomości technologicznych za {date}",
+                    'intro_text_uk': f"Наші топ-{len(top_articles)} відібраних технологічних інсайтів за {date}",
+                    'total_articles': len(top_articles),
                     'is_generated': True,
                     'is_published': True,
                     'published_at': timezone.now()
                 }
             )
 
-            logger.info(f"✅ Дайджест {'створено' if created else 'оновлено'} з {remaining_articles.count()} статей")
+            # Оновлюємо кількість статей якщо дайджест вже існував
+            if not created:
+                digest.total_articles = len(top_articles)
+                digest.save()
+
+            logger.info(f"✅ Дайджест {'створено' if created else 'оновлено'} з {len(top_articles)} ТОП статей")
             return True
 
         except Exception as e:

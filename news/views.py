@@ -26,11 +26,12 @@ class NewsListView(ListView):
     paginate_by = 12
     
     def get_queryset(self):
-        """Фільтрований список опублікованих статей"""
+        """Фільтрований список опублікованих ТОП статей"""
         language = get_language() or 'uk'
         
         queryset = ProcessedArticle.objects.filter(
-            status='published'
+            status='published',
+            is_top_article=True  # Тільки ТОП статті
         ).select_related('category', 'raw_article__source').order_by('-published_at')
         
         # Фільтр по категорії
@@ -61,11 +62,11 @@ class NewsListView(ListView):
         context = super().get_context_data(**kwargs)
         language = get_language() or 'uk'
         
-        # Категорії для навігації
+        # Категорії для навігації (рахуємо тільки ТОП статті)
         context['categories'] = NewsCategory.objects.filter(
             is_active=True
         ).annotate(
-            articles_count=Count('articles', filter=Q(articles__status='published'))
+            articles_count=Count('articles', filter=Q(articles__status='published', articles__is_top_article=True))
         ).order_by('order')
         
         # Поточна категорія
@@ -78,21 +79,20 @@ class NewsListView(ListView):
         # Пошуковий запит
         context['search_query'] = self.request.GET.get('search', '')
         
-        # Інші новини (не топ 10) для sidebar
-        top_articles = ProcessedArticle.objects.filter(
-            status='published',
-            is_top_article=True
-        ).order_by('-published_at')[:10]
+        # Інші новини - тільки ТОП статті за попередні дні для sidebar
+        current_articles_ids = [article.id for article in context['articles']]
         
         context['other_news'] = ProcessedArticle.objects.filter(
-            status='published'
+            status='published',
+            is_top_article=True  # Тільки ТОП статті
         ).exclude(
-            id__in=[article.id for article in top_articles]
+            id__in=current_articles_ids
         ).order_by('-published_at')[:8]
         
-        # Загальна кількість статей
+        # Загальна кількість ТОП статей
         context['total_articles'] = ProcessedArticle.objects.filter(
-            status='published'
+            status='published',
+            is_top_article=True  # Тільки ТОП статті
         ).count()
         
         # Пов'язані сервіси для sidebar

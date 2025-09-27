@@ -19,19 +19,16 @@ class Command(BaseCommand):
                 self.stdout.write(f"📄 Стаття: {article.get_title('uk')}")
                 
                 # Формуємо повідомлення з українським контентом
-                # Якщо title_uk такий же як title_en (англійський), використовуємо business_insight_uk для заголовка
-                if article.title_uk == article.title_en and article.business_insight_uk:
-                    title = article.business_insight_uk[:80] + "..."
-                else:
-                    title = article.title_uk[:80] if article.title_uk else article.title_en[:80]
+                # Заголовок завжди беремо з title_uk або title_en
+                title = article.title_uk[:250] if article.title_uk else article.title_en[:250]
                 
                 # Summary - якщо український summary порожній або такий же як англійський, використовуємо business_insight_uk
                 if article.summary_uk and article.summary_uk != article.summary_en:
-                    summary = article.summary_uk[:200]
+                    summary = article.summary_uk[:1024]
                 elif article.business_insight_uk:
-                    summary = article.business_insight_uk[:200] + "..."
+                    summary = article.business_insight_uk[:1024] + "..."
                 else:
-                    summary = article.summary_en[:200]
+                    summary = article.summary_en[:1024]
                 
                 message = (
                     f"🔥 <strong>{title}</strong>\n\n"
@@ -61,7 +58,20 @@ class Command(BaseCommand):
                     )
                     
                     if external_id:
+                        # Створюємо запис про публікацію
+                        from news.models import SocialMediaPost
+                        smp, created = SocialMediaPost.objects.get_or_create(
+                            article=article,
+                            platform='telegram_uk',
+                            defaults={
+                                'content': message,
+                                'image_url': article.ai_image_url[:200] if article.ai_image_url else '',
+                                'status': 'draft'
+                            }
+                        )
+                        smp.mark_as_published(external_id)
                         self.stdout.write(f"✅ Успішно опубліковано! ID: {external_id}")
+                        self.stdout.write(f"✅ SocialMediaPost створено: ID={smp.id}, Status={smp.status}")
                     else:
                         self.stdout.write("❌ Не вдалося опублікувати")
                 else:

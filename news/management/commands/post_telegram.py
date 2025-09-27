@@ -96,8 +96,8 @@ class Command(BaseCommand):
         url = f"{SITE_URL}{path}"
 
         # Формуємо caption з правильним форматуванням
-        title_part = f"🔥 *{escape(clamp(title, 140))}*\n\n" if title else ""
-        summary_part = f"{escape(clamp(summary, 400))}\n\n" if summary else ""
+        title_part = f"🔥 *{escape(clamp(title, 250))}*\n\n" if title else ""
+        summary_part = f"{escape(clamp(summary, 1024))}\n\n" if summary else ""
         footer = "— Lazysoft AI News"
         caption = f"{title_part}{summary_part}{footer}"
 

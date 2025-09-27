@@ -223,15 +223,9 @@
               </h3>
 
               <p>
-                {% if article.is_top_article and article.full_content_parsed %}
-                  {% if CURRENT_LANG == 'uk' and article.full_content_uk %}{{ article.full_content_uk|safe|truncatewords:30 }}
-                  {% elif CURRENT_LANG == 'pl' and article.full_content_pl %}{{ article.full_content_pl|safe|truncatewords:30 }}
-                  {% else %}{{ article.full_content_en|safe|truncatewords:30 }}{% endif %}
-                {% else %}
-                  {% if CURRENT_LANG == 'uk' and article.business_insight_uk %}{{ article.business_insight_uk|safe|truncatewords:25 }}
-                  {% elif CURRENT_LANG == 'pl' and article.business_insight_pl %}{{ article.business_insight_pl|safe|truncatewords:25 }}
-                  {% else %}{{ article.business_insight_en|safe|truncatewords:25 }}{% endif %}
-                {% endif %}
+                {% if CURRENT_LANG == 'uk' and article.summary_uk %}{{ article.summary_uk|safe|truncatewords:25 }}
+                {% elif CURRENT_LANG == 'pl' and article.summary_pl %}{{ article.summary_pl|safe|truncatewords:25 }}
+                {% else %}{{ article.summary_en|safe|truncatewords:25 }}{% endif %}
               </p>
 
               <div class="news-card-meta">

@@ -8,7 +8,7 @@ from news.services.ai_processor.ai_processor_database import AIProcessorDatabase
 
 
 class Command(BaseCommand):
-    help = 'AI обробка сирих статей у готові до публікації'
+    help = '⚠️ ЗАСТАРІЛИЙ: AI обробка сирих статей. Використовуйте daily_news_pipeline --full-pipeline для ТОП-5!'
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -41,6 +41,13 @@ class Command(BaseCommand):
         )
         
         parser.add_argument(
+            '--auto-prioritize',
+            action='store_true',
+            default=True,
+            help='Автоматично встановлювати пріоритети та топ-статті'
+        )
+        
+        parser.add_argument(
             '--verbose',
             action='store_true',
             help='Детальний вивід процесу'
@@ -56,10 +63,26 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
+        # ПОПЕРЕДЖЕННЯ ПРО ЗАСТАРІЛІСТЬ
+        self.stdout.write(
+            self.style.ERROR('⚠️ УВАГА: Ця команда ЗАСТАРІЛА!')
+        )
+        self.stdout.write(
+            self.style.WARNING('Використовуйте: python manage.py daily_news_pipeline --full-pipeline')
+        )
+        self.stdout.write(
+            self.style.WARNING('Новий пайплайн обробляє тільки ТОП-5 статей і економить AI API кошти!')
+        )
+        
+        confirm = input('Все одно продовжити з застарілою командою? (y/N): ')
+        if confirm.lower() != 'y':
+            self.stdout.write(self.style.SUCCESS('Скасовано. Використовуйте новий пайплайн!'))
+            return
+        
         start_time = time.time()
         
         self.stdout.write(
-            self.style.SUCCESS('🤖 AI ПРОЦЕСОР НОВИН LAZYSOFT')
+            self.style.SUCCESS('🤖 AI ПРОЦЕСОР НОВИН LAZYSOFT (ЗАСТАРІЛИЙ)')
         )
         
         if options['dry_run']:
@@ -203,8 +226,12 @@ class Command(BaseCommand):
         if category:
             self.stdout.write(f'📂 Категорія: {category}')
         
-        # Запускаємо обробку
-        results = processor.process_batch(limit=limit, category=category)
+        # Запускаємо обробку з автоматичною пріоритизацією
+        results = processor.process_batch(
+            limit=limit, 
+            category=category, 
+            auto_prioritize=options.get('auto_prioritize', True)
+        )
         
         # Показуємо результати
         self.stdout.write('\n📊 РЕЗУЛЬТАТИ AI ОБРОБКИ:')
