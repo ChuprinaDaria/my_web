@@ -419,9 +419,9 @@ class AIContentProcessor(AINewsProcessor):
         topic = self._extract_main_topic(original_title)
 
         return {
-            "title_en": f"LAZYSOFT insights: {topic} analysis from {source_name}",
-            "title_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}",
-            "title_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}",
+            "title_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:300],
+            "title_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:300],
+            "title_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:300],
             "summary_en": summary, "summary_pl": summary, "summary_uk": summary,
 
             "business_insight_en": "This technology update may impact European businesses.",
@@ -441,10 +441,10 @@ class AIContentProcessor(AINewsProcessor):
             "cta_description_uk": "Звʼяжіться з нами для персоналізованої бізнес-консультації",
             "cta_buttons": self._generate_cta_buttons(category_info["category"]),
 
-            # Промпти з опису
-            "ai_image_prompt_en": f"LAZYSOFT insights: {topic} analysis from {source_name}",
-            "ai_image_prompt_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}",
-            "ai_image_prompt_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}",
+            # Промпти з опису (обрізаємо для безпеки)
+            "ai_image_prompt_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:200],
+            "ai_image_prompt_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:200],
+            "ai_image_prompt_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:200],
             
 
             # SEO – не пусті

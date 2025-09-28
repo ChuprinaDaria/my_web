@@ -48,10 +48,10 @@ class AIProcessorDatabase:
         key_takeaways_pl = self._safe_get_value(content, "key_takeaways_pl", []) or []
         key_takeaways_uk = self._safe_get_value(content, "key_takeaways_uk", []) or []
 
-        # CTA (завжди не пусто)
-        cta_title_en = self._safe_get_value(content, "cta_title_en", "Get Expert Analysis")
-        cta_title_pl = self._safe_get_value(content, "cta_title_pl", "Otrzymaj ekspercką analizę")
-        cta_title_uk = self._safe_get_value(content, "cta_title_uk", "Отримати експертний аналіз")
+        # CTA (завжди не пусто, обрізаємо до 200 символів для varchar безпеки)
+        cta_title_en = self._safe_get_value(content, "cta_title_en", "Get Expert Analysis")[:200]
+        cta_title_pl = self._safe_get_value(content, "cta_title_pl", "Otrzymaj ekspercką analizę")[:200]
+        cta_title_uk = self._safe_get_value(content, "cta_title_uk", "Отримати експертний аналіз")[:200]
 
         cta_description_en = self._safe_get_value(content, "cta_description_en", "Contact us for personalized business consultation")
         cta_description_pl = self._safe_get_value(content, "cta_description_pl", "Skontaktuj się z nami w sprawie spersonalizowanej konsultacji biznesowej")

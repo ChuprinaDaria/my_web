@@ -91,29 +91,42 @@ def post_top_news_to_telegram_task():
             return
 
         telegram_service = TelegramService()
-        # Безпечно обрізаємо заголовок та summary для уникнення varchar помилок
-        title = article_to_post.get_title('uk')[:200]
-        summary = article_to_post.get_summary('uk')[:1000]
+        
+        # Створюємо повідомлення з українським контентом (як в адмінці)
+        # Заголовок завжди беремо з title_uk або title_en (обрізаємо до 200 символів для безпеки)
+        title = article_to_post.title_uk[:200] if article_to_post.title_uk else article_to_post.title_en[:200]
+        
+        # Summary - якщо український summary порожній або такий же як англійський, використовуємо business_insight_uk
+        if article_to_post.summary_uk and article_to_post.summary_uk != article_to_post.summary_en:
+            summary = article_to_post.summary_uk[:1000]  # Безпечний ліміт
+        elif article_to_post.business_insight_uk:
+            summary = article_to_post.business_insight_uk[:1000] + "..."
+        else:
+            summary = article_to_post.summary_en[:1000]
         
         message = (
-            f"🔥 *{title}*\n\n"
+            f"🔥 <strong>{title}</strong>\n\n"
             f"{summary}\n\n"
-            f"🔗 [Читати далі]({article_to_post.get_absolute_url('uk')})"
+            f"— <em>Lazysoft AI News</em>"
         )
         
-        external_id = telegram_service.post_to_telegram(message, photo_url=article_to_post.ai_image_url)
+        # Створюємо кнопку "Читати далі" (як в адмінці)
+        button = {"inline_keyboard": [[{"text": "📖 Читати далі", "url": f"https://lazysoft.dev{article_to_post.get_absolute_url('uk')}"}]]}
+        
+        external_id = telegram_service.post_to_telegram(message, photo_url=article_to_post.ai_image_url, reply_markup=button)
 
         smp, _ = SocialMediaPost.objects.get_or_create(
             article=article_to_post,
             platform='telegram_uk',
             defaults={
                 'content': message,
-                'image_url': article_to_post.ai_image_url[:500] if article_to_post.ai_image_url else '',
+                'image_url': (article_to_post.ai_image_url[:200] if article_to_post.ai_image_url else ''),
                 'status': 'draft'
             }
         )
         if external_id:
-            smp.mark_as_published(external_id)
+            # Обрізаємо external_id до 200 символів для бази даних
+            smp.mark_as_published(str(external_id)[:200])
         
         logger.info(f"Posted article '{article_to_post.get_title('uk')}' to Telegram.")
 

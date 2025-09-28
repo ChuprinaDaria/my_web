@@ -104,7 +104,7 @@ class SimpleArticleAdmin(admin.ModelAdmin):
             
             # Створюємо повідомлення з українським контентом
             # Заголовок завжди беремо з title_uk або title_en (обрізаємо до 200 символів для безпеки)
-            title = article.title_uk[:200] if article.title_uk else article.title_en[:200]
+            title = article.title_uk[:500] if article.title_uk else article.title_en[:600]
             
             # Summary - якщо український summary порожній або такий же як англійський, використовуємо business_insight_uk
             if article.summary_uk and article.summary_uk != article.summary_en:
