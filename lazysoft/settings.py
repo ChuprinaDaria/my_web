@@ -26,13 +26,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # === 🔐 CORE SECURITY ===
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://192.168.1.13:8000",
-    "https://lazysoft.pl",
-    "https://www.lazysoft.pl"
-]
+# ✅ Керуємо з .env: DJANGO_ALLOWED_HOSTS, DJANGO_CSRF_TRUSTED_ORIGINS
+# приклад у .env:
+# DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,lazysoft.pl,www.lazysoft.pl
+# DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost,https://localhost,http://127.0.0.1,https://127.0.0.1,https://lazysoft.pl,https://www.lazysoft.pl
+ALLOWED_HOSTS = [h for h in config('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',') if h]
+
+_csrf_from_env = [o for o in config(
+    'DJANGO_CSRF_TRUSTED_ORIGINS',
+    default='http://localhost,https://localhost,http://127.0.0.1,https://127.0.0.1'
+).split(',') if o]
+# Якщо у .env нема доменів для CSRF — додамо їх автоматично з ALLOWED_HOSTS (http/https)
+if _csrf_from_env:
+    CSRF_TRUSTED_ORIGINS = _csrf_from_env
+else:
+    CSRF_TRUSTED_ORIGINS = [f"http://{h}" for h in ALLOWED_HOSTS] + [f"https://{h}" for h in ALLOWED_HOSTS]
 
 # === 🔐 AUTHENTICATION ===
 AUTHENTICATION_BACKENDS = [
@@ -121,7 +130,7 @@ ROOT_URLCONF = 'lazysoft.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'core'/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -179,7 +188,7 @@ RAG_SETTINGS = {
         "about.About",
     ],
     "SUPPORTED_LANGUAGES": ["uk", "en", "pl"],
-    "CONSULTANT_NAME": "Юлія",
+    "CONSULTANT_NAME": "Julie",
     "CONSULTANT_PERSONALITY": "Дружелюбна IT-експертка, яка допомагає з технічними рішеннями",
     "DEFAULT_LANGUAGE": "uk",
     "CONSULTATION_CALENDAR_URL": "https://calendar.google.com/",
@@ -274,9 +283,9 @@ PARLER_LANGUAGES = {
 }
 
 # === 📁 STATIC & MEDIA ===
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # Для production збірки
+STATICFILES_DIRS = [BASE_DIR / 'static']  # Для розробки
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -487,7 +496,7 @@ LINUS_SECURITY_ENABLED = True
 LINUS_TELEGRAM_ALERTS = True
 LINUS_LOG_ALL_ATTACKS = True
 
-# === ☁️ CLOUDFLARE ===
+# === ☁️ CLOUDFLARE / REVERSE PROXY ===
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -549,12 +558,12 @@ else:
     CSRF_COOKIE_SECURE = False
     SECURE_SSL_REDIRECT = False
     SECURE_HSTS_SECONDS = 0
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_INCLUDE_SUBDOMАINS = False
     SECURE_HSTS_PRELOAD = False
 
 # === 📁 CREATE DIRECTORIES ===
 os.makedirs(BASE_DIR / 'logs', exist_ok=True)
 os.makedirs(BASE_DIR / 'media', exist_ok=True)
-os.makedirs(BASE_DIR / 'staticfiles', exist_ok=True)
+os.makedirs(BASE_DIR / 'static', exist_ok=True)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

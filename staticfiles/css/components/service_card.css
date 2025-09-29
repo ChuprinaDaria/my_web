@@ -1,0 +1,616 @@
+/* ===============================================
+   🎠 SERVICE CARD ФІКС - Обрізання при hover
+   =============================================== */
+
+/* 🎠 CAROUSEL CONTAINER - додаємо padding для hover ефекту */
+.services-carousel {
+  width: 100%;
+  position: relative;
+  padding: 20px var(--spacing-lg); /* ← Додали top/bottom padding */
+  max-width: var(--container-xl);
+  margin: 0 auto;
+  overflow: visible; /* ← ВАЖЛИВО! */
+}
+
+.services-container {
+  display: flex;
+  gap: var(--spacing-lg);
+  transition: transform 0.3s ease;
+  will-change: transform;
+  padding: 10px 0; /* ← Додаємо padding зверху/знизу */
+}
+
+.carousel-item {
+  flex-shrink: 0;
+  width: auto;
+  min-width: 320px;
+  max-width: 600px;
+  position: relative; /* ← Для z-index */
+}
+
+/* 🃏 SERVICE CARD ОСНОВА */
+.service-card-horizontal {
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-bg);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  backdrop-filter: var(--blur-medium);
+  position: relative;
+  overflow: hidden;
+  height: 320px;
+  width: 100%;
+  margin: 10px 5px;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  contain: layout style paint;
+  will-change: transform;
+}
+
+.services-grid-container {
+  display: flex;
+  gap: var(--spacing-xl);
+  align-items: stretch;
+  
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: var(--spacing-md);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.services-grid-container::-webkit-scrollbar {
+  display: none;
+}
+
+.service-grid-item {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 320px;
+  max-width: 500px;
+  scroll-snap-align: start;
+  height: auto;
+}
+
+/* 🔥 HOVER ЕФЕКТ - БЕЗ ОБРІЗАННЯ */
+.service-card-horizontal:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--accent-green);
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.2),
+    0 0 20px rgba(158, 255, 0, 0.3);
+  z-index: 5;
+}
+
+/* 📱 RESPONSIVE ФІКСИ */
+@media (max-width: 768px) {
+  .services-carousel {
+    padding: 15px var(--spacing-md);
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  
+  .services-container {
+    padding: 8px 0;
+    touch-action: pan-x;
+  }
+  
+  .service-card-horizontal {
+    margin: 8px 3px;
+    transition: none;
+  }
+  
+  .service-card-horizontal:hover {
+    transform: none;
+    border-color: var(--glass-border);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .service-card-horizontal:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+    transition: all 0.1s ease;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-carousel {
+    padding: 10px var(--spacing-sm);
+  }
+  
+  .services-container {
+    padding: 5px 0;
+  }
+  
+  .service-card-horizontal {
+    margin: 5px 2px;
+  }
+}
+
+/* ✨ ДОДАТКОВІ ЕФЕКТИ */
+.service-card-horizontal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(158, 255, 0, 0.05) 0%,
+    rgba(255, 0, 255, 0.05) 100%
+  );
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  border-radius: var(--radius-lg);
+}
+
+.service-card-horizontal:hover::before {
+  opacity: 1;
+}
+
+/* 🖼️ IMAGE SECTION */
+.service-image-section {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin: 0 0 var(--spacing-sm) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  order: 2;
+}
+
+.service-image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-normal);
+  border-radius: var(--radius-sm);
+}
+
+.service-card-horizontal:hover .service-image-section img {
+  transform: scale(1.05);
+}
+
+@media (min-width: 1024px) {
+  .service-image-section {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .service-image-section img {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .service-card-horizontal {
+    transition: none;
+  }
+  
+  .service-card-horizontal:hover {
+    transform: none;
+    border-color: var(--glass-border);
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .service-card-horizontal::before {
+    animation: none;
+  }
+}
+
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(158, 255, 0, 0.2),
+    rgba(255, 0, 255, 0.2)
+  );
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.service-card-horizontal:hover .image-overlay {
+  opacity: 1;
+}
+
+.service-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: 2rem;
+}
+
+/* 📝 CONTENT SECTION */
+.service-content {
+  order: 3;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-height: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.project-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-white);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.service-description {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+.client-request {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.request-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-green);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.request-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* 🏷️ TAGS */
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.project-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.project-tag.highlight {
+  background: var(--accent-pink) !important;
+  color: white !important;
+  animation: pulse 2s infinite;
+}
+
+/* 🏷️ SERVICE TAGS */
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.service-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(102, 255, 0, 0.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(102, 255, 0, 0.2);
+}
+
+/* 📊 SERVICE METRICS */
+.service-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: auto;
+}
+
+.metric {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.metric.priority {
+  background: linear-gradient(135deg, rgba(255, 0, 107, 0.2), rgba(255, 0, 107, 0.1));
+  color: var(--accent-pink);
+  border-color: rgba(255, 0, 107, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 0, 107, 0.2);
+}
+
+.metric.featured {
+  background: linear-gradient(135deg, rgba(158, 255, 0, 0.2), rgba(158, 255, 0, 0.1));
+  color: var(--accent-green);
+  border-color: rgba(158, 255, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(158, 255, 0, 0.2);
+}
+
+.metric.projects {
+  background: linear-gradient(135deg, rgba(158, 255, 0, 0.2), rgba(158, 255, 0, 0.1));
+  color: var(--accent-green);
+  border-color: rgba(158, 255, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(158, 255, 0, 0.2);
+}
+
+/* 🎯 SERVICE CTA */
+.service-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cta-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-green);
+}
+
+.cta-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-green);
+  transition: transform 0.2s ease;
+}
+
+.service-card:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* 📱 MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .service-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: var(--spacing-md);
+    margin: 0;
+  }
+  
+  .service-content {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0;
+  }
+  
+  .service-description {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  .service-tags {
+    gap: 4px;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .service-tag {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .service-metrics {
+    gap: 4px;
+    margin-top: var(--spacing-xs);
+  }
+  
+  .metric {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+  }
+  
+  .service-cta {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+  }
+  
+  .cta-text {
+    font-size: 0.8rem;
+  }
+  
+  .cta-arrow {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .service-card {
+    padding: var(--spacing-sm);
+  }
+  
+  .service-description {
+    font-size: 0.75rem;
+  }
+  
+  .service-tag {
+    font-size: 0.65rem;
+    padding: 1px 4px;
+  }
+  
+  .metric {
+    font-size: 0.65rem;
+    padding: 1px 3px;
+  }
+  
+  .cta-text {
+    font-size: 0.75rem;
+  }
+}
+
+/* 📊 METRICS */
+.project-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: auto;
+}
+
+.metric-item {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 🎯 CTA BUTTON */
+.project-cta {
+  margin-top: auto;
+  padding-top: var(--spacing-xs);
+}
+
+.cta-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: transparent;
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: fit-content;
+  text-decoration: none;
+}
+
+.cta-button:hover {
+  background: var(--accent-green);
+  color: var(--primary-black);
+  transform: translateX(2px);
+}
+
+.cta-arrow {
+  transition: transform var(--transition-fast);
+}
+
+.cta-button:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* ✨ GLOW EFFECT */
+.project-glow-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    135deg,
+    rgba(158, 255, 0, 0.1),
+    rgba(255, 0, 255, 0.1)
+  );
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+.service-card-horizontal:hover .project-glow-effect {
+  opacity: 1;
+}
+
+/* 🎭 ANIMATIONS */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* 🔧 PERFORMANCE OPTIMIZATIONS */
+
+.service-card-horizontal:hover {
+  contain: layout style paint;
+}
+
+/* 🏷️ SERVICE META - копія з новин */
+.service-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+  order: 1;
+}
+
+.service-meta .chip {
+  background: var(--accent-green);
+  color: var(--primary-black);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  border: none;
+}
+
+.service-meta .chip:hover {
+  background: rgba(158, 255, 0, 0.8);
+  transform: translateY(-1px);
+}
+
+.service-meta .more-tags {
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+}
+
+/* ======

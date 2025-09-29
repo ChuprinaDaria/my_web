@@ -1,6 +1,5 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from django.contrib.sitemaps.views import sitemap
 from django.http import JsonResponse  
 from django.utils import timezone 
 from .views import (
@@ -13,11 +12,6 @@ from .views import NewsByDateView
 
 app_name = 'news'
 
-# Sitemaps для SEO
-sitemaps = {
-    'articles': NewsSitemap,
-    'categories': NewsCategorySitemap,
-}
 
 urlpatterns = [
     # Головна сторінка новин
@@ -36,9 +30,6 @@ urlpatterns = [
     # API для новин
     path('api/articles/', news_api_view, name='api_articles'),
     
-    # Sitemap для SEO - ВИПРАВЛЕНО!
-    path('sitemap-articles.xml', sitemap, {'sitemaps': {'articles': NewsSitemap}}, name='sitemap_articles'),
-    path('sitemap-categories.xml', sitemap, {'sitemaps': {'categories': NewsCategorySitemap}}, name='sitemap_categories'),
     
     # RSS фід
     path('rss.xml', TemplateView.as_view(template_name='news/rss_feed.xml', content_type='application/rss+xml'), name='rss_feed'),

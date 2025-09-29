@@ -1,0 +1,171 @@
+/* ===============================================
+   📱 МОБІЛЬНА ВЕРСІЯ ПРОСТИХ СЕРВІСІВ
+   =============================================== */
+
+@media (max-width: 768px) {
+  .services-container-section {
+    padding: var(--spacing-lg) var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .services-header {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .services-header h2 {
+    font-size: clamp(1.8rem, 5vw, 2.2rem);
+  }
+  
+  .services-subtitle {
+    font-size: 1rem;
+  }
+  
+  /* МОБІЛЬНИЙ СЕРВІС ЕЛЕМЕНТ */
+  .service-horizontal-item {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    gap: var(--spacing-md);
+  }
+  
+  .service-horizontal-item:hover {
+    transform: none;
+    border-color: #ff006b;
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 0, 107, 0.3);
+  }
+  
+  .service-horizontal-item:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+    transition: all 0.1s ease;
+  }
+  
+  /* ІКОНКА НА МОБІЛЬНОМУ */
+  .service-icon-section {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .service-icon-section img {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .service-placeholder-icon {
+    width: 30px;
+    height: 30px;
+  }
+  
+  /* КОНТЕНТ НА МОБІЛЬНОМУ */
+  .service-main-content {
+    padding-right: var(--spacing-md);
+  }
+  
+  .service-title-row {
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .service-title {
+    font-size: 1.2rem;
+    margin: 0;
+    cursor: pointer;
+  }
+  
+  .service-title:hover {
+    color: var(--accent-green);
+  }
+  
+  .accordion-arrow {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .service-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  
+  /* ФУТЕР НА МОБІЛЬНОМУ */
+  .services-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+  }
+  
+  .btn-get-started,
+  .btn-view-all {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+  }
+  
+  /* ПРИБИРАЄМО HOVER ЕФЕКТИ НА ТАЧСКРІНАХ */
+  .service-horizontal-item::before,
+  .service-glow-border {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-container-section {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+  
+  .service-horizontal-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .service-icon-section {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .service-icon-section img {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .service-title {
+    font-size: 1.1rem;
+  }
+  
+  .accordion-arrow {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .service-description {
+    font-size: 0.85rem;
+  }
+  
+  .btn-get-started,
+  .btn-view-all {
+    max-width: 260px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+  }
+}
+
+/* ОПТИМІЗАЦІЯ ДЛЯ ТАЧСКРІНІВ */
+@media (hover: none) and (pointer: coarse) {
+  .service-horizontal-item {
+    transition: none;
+  }
+  
+  .service-horizontal-item:hover {
+    transform: none;
+    border-color: #ff006b;
+    box-shadow: 
+      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 0, 107, 0.3);
+  }
+  
+  .service-glow-border {
+    display: none;
+  }
+}

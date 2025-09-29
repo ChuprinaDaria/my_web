@@ -1,0 +1,181 @@
+/* ===============================================
+   📱 PROJECTS CAROUSEL - MOBILE ONLY
+   =============================================== */
+
+@media (max-width: 768px) {
+  .projects-carousel-container {
+    margin: 1.5rem 0;
+    position: relative;
+  }
+
+  .projects-carousel-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    position: relative;
+    padding-right: 0;
+    margin-bottom: 1rem;
+  }
+  
+  .carousel-title,
+  .section-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+  
+  .carousel-navigation {
+    position: sticky;
+    top: 80px;
+    z-index: 100;
+    justify-content: center;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px);
+    border-radius: 25px;
+    margin: 0 auto;
+    width: fit-content;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+  
+  .carousel-project-item {
+    width: 280px;
+    max-width: 280px;
+    margin: 8px 3px;
+    scroll-snap-align: start;
+  }
+
+  
+  .carousel-nav-btn {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+    box-shadow: 0 0 20px rgba(102, 255, 0, 0.4);
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  .carousel-nav-btn i {
+    width: 18px;
+    height: 18px;
+    stroke-width: 3.5px;
+  }
+
+  .carousel-nav-btn:disabled {
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: flex;
+  }
+
+  .projects-carousel-wrapper {
+    overflow: visible; /* Дозволяємо hover ефекти */
+    padding: 20px 0; /* Збільшуємо padding для hover ефектів */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  .projects-carousel-track {
+    gap: 1rem;
+    overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
+    padding: 20px 0; /* Збільшуємо padding для hover ефектів */
+    overflow-x: auto;
+    overflow-y: visible; /* Дозволяємо hover ефекти */
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .empty-carousel-state {
+    min-height: 200px;
+    padding: 2rem 1rem;
+  }
+
+  .empty-icon {
+    font-size: 2.5rem;
+  }
+
+  .empty-carousel-state p {
+    font-size: 1rem;
+  }
+
+  .empty-carousel-state small {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .projects-carousel-container {
+    margin: 1rem 0;
+  }
+
+  .carousel-title,
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .carousel-project-item {
+    width: 260px;
+    max-width: 260px;
+  }
+  
+  .carousel-nav-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .carousel-nav-btn i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .projects-carousel-track {
+    gap: 0.75rem;
+  }
+
+  .empty-carousel-state {
+    padding: 1.5rem 0.5rem;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .carousel-project-item,
+  .carousel-project-item * {
+    transition: none !important;
+  }
+
+  .carousel-project-item:hover,
+  .carousel-project-item:focus {
+    transform: none !important;
+  }
+
+  .carousel-nav-btn:hover {
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .carousel-nav-btn:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+    transition: all 0.1s ease;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .projects-carousel-track,
+  .carousel-project-item,
+  .project-card-home {
+    touch-action: auto !important;
+  }
+}

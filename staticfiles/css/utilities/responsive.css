@@ -1,0 +1,253 @@
+/* ===============================================
+   📱 RESPONSIVE - Адаптивність та медіа-запити
+   (copy of utilites/responsive.css to fix wrong path)
+   =============================================== */
+
+/* 🔧 Breakpoints змінні (для референсу) */
+:root {
+  --breakpoint-xs: 0px;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-xxl: 1400px;
+}
+
+/* 📐 Responsive utilities */
+.container-fluid {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* 🖥️ Desktop First - Large screens */
+@media (max-width: 1400px) {
+  .d-xxl-none { display: none !important; }
+  .d-xxl-block { display: block !important; }
+  .d-xxl-flex { display: flex !important; }
+  .d-xxl-grid { display: grid !important; }
+  
+  .container-xxl {
+    max-width: 1320px;
+  }
+}
+
+/* 💻 Desktop - XL screens */
+@media (max-width: 1200px) {
+  .d-xl-none { display: none !important; }
+  .d-xl-block { display: block !important; }
+  .d-xl-flex { display: flex !important; }
+  .d-xl-grid { display: grid !important; }
+  
+  .container-xl {
+    max-width: 1140px;
+  }
+  
+  /* Зменшуємо шрифти на великих екранах */
+  /* Typography styles use base/typography.css */
+  
+  /* Адаптуємо відступи */
+  .section {
+    padding: 70px 0;
+  }
+}
+
+/* 🖥️ Laptop - Large screens */
+@media (max-width: 992px) {
+  .d-lg-none { display: none !important; }
+  .d-lg-block { display: block !important; }
+  .d-lg-flex { display: flex !important; }
+  .d-lg-grid { display: grid !important; }
+  
+  .container-lg {
+    max-width: 960px;
+  }
+  
+  /* Grid адаптація */
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  
+  /* Content layout */
+  .content-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .sidebar { order: -1; }
+  
+  /* Навігація */
+  .navbar { padding: 10px 20px; }
+  .nav-links { gap: 15px; }
+}
+
+/* 📱 Tablet - Medium screens */
+@media (max-width: 768px) {
+  .d-md-none { display: none !important; }
+  .d-md-block { display: block !important; }
+  .d-md-flex { display: flex !important; }
+  .d-md-grid { display: grid !important; }
+  
+  .container-md { max-width: 720px; }
+  
+  /* Всі grid в одну колонку */
+  .grid,
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  /* Flex адаптація */
+  .flex-row-md { flex-direction: row; }
+  .flex-column-md { flex-direction: column; }
+  
+  /* Секції */
+  .section { padding: 50px 0; }
+  .section-lg { padding: 70px 0; }
+  
+  /* Hero адаптація */
+  .hero { min-height: 60vh; padding: 50px 15px 40px; }
+  .hero-cta { flex-direction: column; gap: 15px; width: 100%; }
+  
+  /* Cards */
+  .cards-grid { grid-template-columns: 1fr; gap: 20px; }
+  
+  /* Text alignment */
+  .text-md-center { text-align: center !important; }
+  .text-md-left { text-align: left !important; }
+  .text-md-right { text-align: right !important; }
+}
+
+/* 📱 Mobile - Small screens */
+@media (max-width: 576px) {
+  .d-sm-none { display: none !important; }
+  .d-sm-block { display: block !important; }
+  .d-sm-flex { display: flex !important; }
+  .d-sm-grid { display: grid !important; }
+  
+  .container-sm { max-width: 540px; }
+  
+  /* Контейнери на мобільному */
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl { padding: 0 15px; }
+  
+  /* Секції */
+  .section { padding: 40px 0; }
+  .section-lg { padding: 60px 0; }
+  .section-xl { padding: 80px 0; }
+  
+  /* Заголовки */
+  /* Typography styles use base/typography.css */
+  
+  /* Кнопки */
+  .cta-primary,
+  .cta-secondary {
+    width: 100%;
+    max-width: 280px;
+    justify-content: center;
+    padding: 14px 20px;
+    font-size: 14px;
+  }
+  
+  /* Flex утиліти */
+  .flex-sm-column { flex-direction: column; }
+  .flex-sm-row { flex-direction: row; }
+}
+
+/* 📱 Extra Small - Mobile portrait */
+@media (max-width: 480px) {
+  .d-xs-none { display: none !important; }
+  .d-xs-block { display: block !important; }
+  .d-xs-flex { display: flex !important; }
+  .d-xs-grid { display: grid !important; }
+  
+  /* Мінімальні відступи */
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl { padding: 0 10px; }
+  
+  /* Секції */
+  .section { padding: 30px 0; }
+  .section-lg { padding: 50px 0; }
+  
+  /* Hero */
+  .hero { min-height: 50vh; padding: 40px 10px 30px; }
+  
+  /* Навігація */
+  .navbar { top: 10px; padding: 10px 15px; width: calc(100vw - 20px); }
+  
+  /* Cards та gaps */
+  .cards-grid,
+  .grid { gap: 15px; }
+  
+  /* Typography */
+  body { font-size: 14px; }
+  /* Typography styles use base/typography.css */
+  
+  /* Кнопки */
+  .cta-primary,
+  .cta-secondary { font-size: 13px; padding: 12px 18px; }
+}
+
+/* 🔄 Orientation адаптація */
+@media (orientation: landscape) and (max-height: 600px) {
+  .hero { min-height: 80vh; }
+  .section { padding: 40px 0; }
+}
+
+/* 🖨️ Print styles */
+@media print {
+  .d-print-none { display: none !important; }
+  .d-print-block { display: block !important; }
+  
+  .navbar,
+  .burger,
+  .bg-animation { display: none !important; }
+  
+  body { font-size: 12pt; line-height: 1.4; color: #000; background: #fff; }
+  .container { max-width: 100%; padding: 0; }
+}
+
+/* 🎯 Spacing utilities - responsive */
+@media (max-width: 768px) {
+  .p-md-0 { padding: 0 !important; }
+  .p-md-1 { padding: 0.25rem !important; }
+  .p-md-2 { padding: 0.5rem !important; }
+  .p-md-3 { padding: 1rem !important; }
+  
+  .m-md-0 { margin: 0 !important; }
+  .m-md-1 { margin: 0.25rem !important; }
+  .m-md-2 { margin: 0.5rem !important; }
+  .m-md-3 { margin: 1rem !important; }
+  
+  .gap-md-1 { gap: 0.25rem !important; }
+  .gap-md-2 { gap: 0.5rem !important; }
+  .gap-md-3 { gap: 1rem !important; }
+}
+
+/* 🔧 Visibility utilities */
+.visible { visibility: visible !important; }
+.invisible { visibility: hidden !important; }
+
+/* Показати тільки на певних екранах */
+.show-xs { display: none !important; }
+.show-sm { display: none !important; }
+.show-md { display: none !important; }
+.show-lg { display: none !important; }
+.show-xl { display: none !important; }
+
+@media (max-width: 480px) { .show-xs { display: block !important; } }
+@media (min-width: 481px) and (max-width: 576px) { .show-sm { display: block !important; } }
+@media (min-width: 577px) and (max-width: 768px) { .show-md { display: block !important; } }
+@media (min-width: 769px) and (max-width: 992px) { .show-lg { display: block !important; } }
+@media (min-width: 993px) { .show-xl { display: block !important; } }
+
+

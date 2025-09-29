@@ -200,12 +200,18 @@ class PublicDashboardAPIView(TemplateView):
 def robots_txt(request):
     """Robots.txt для SEO"""
     from django.http import HttpResponse
+    from django.conf import settings
     
-    content = """User-agent: *
+    site_url = getattr(settings, 'SITE_URL', 'https://lazysoft.pl')
+    
+    content = f"""User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /account/
 Disallow: /api/
+Disallow: /control/
+
+Sitemap: {site_url}/sitemap.xml
 """
     
     return HttpResponse(content, content_type='text/plain')

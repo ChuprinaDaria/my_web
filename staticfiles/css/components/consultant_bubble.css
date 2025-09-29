@@ -1,0 +1,370 @@
+/* ===============================================
+   🫧 CONSULTANT BUBBLE - 3D Мильна бульбашка
+   =============================================== */
+
+/* Основний контейнер пузирика */
+.consultant-bubble-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+/* Кільце пульсації */
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(158, 255, 0, 0.2);
+  border-radius: 50%;
+  animation: pulse 5s ease-out infinite;
+  transition: all 0.3s ease;
+}
+
+/* Світіння кільця при наведенні на контейнер */
+.consultant-bubble-container:hover .pulse-ring {
+  border-color: rgba(158, 255, 0, 0.6);
+  box-shadow: 
+    0 0 20px rgba(158, 255, 0, 0.4),
+    0 0 40px rgba(158, 255, 0, 0.2);
+  animation: pulseGlow 2s ease-out infinite;
+}
+
+@keyframes pulseGlow {
+  0% {
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 1;
+    border-color: rgba(158, 255, 0, 0.8);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+    border-color: rgba(158, 255, 0, 0.2);
+  }
+}
+
+/* Сцена для 3D ефектів */
+.bubble-stage {
+  width: 120px;
+  height: 120px;
+  perspective: 800px;
+  perspective-origin: 50% 50%;
+  position: relative;
+}
+
+/* Основний пузирик */
+.consultant-bubble {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 20px auto;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: float 8s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+.consultant-bubble:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 20px rgba(158, 255, 0, 0.8)) 
+          drop-shadow(0 0 40px rgba(158, 255, 0, 0.6))
+          drop-shadow(0 0 60px rgba(158, 255, 0, 0.4));
+  box-shadow: 
+    0 0 30px rgba(158, 255, 0, 0.5),
+    0 0 60px rgba(158, 255, 0, 0.3),
+    0 0 90px rgba(158, 255, 0, 0.2);
+}
+
+/* Основна сфера з реалістичним градієнтом */
+.sphere {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    /* Основний об'ємний градієнт */
+    radial-gradient(
+      circle at 30% 30%, 
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(158, 255, 0, 0.3) 15%,
+      rgba(255, 0, 107, 0.2) 35%,
+      rgba(147, 51, 234, 0.15) 55%,
+      rgba(0, 0, 0, 0.3) 85%,
+      rgba(0, 0, 0, 0.6) 100%
+    ),
+    /* Другий шар для глибини */
+    radial-gradient(
+      circle at 70% 70%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+  box-shadow: 
+    /* Внутрішня тінь для об'єму */
+    inset -20px -20px 40px rgba(0, 0, 0, 0.4),
+    inset 10px 10px 20px rgba(255, 255, 255, 0.1),
+    /* Зовнішня тінь */
+    0 8px 25px rgba(0, 0, 0, 0.3);
+  animation: sphereColorShift 10s ease-in-out infinite;
+}
+
+/* Переливи що рухаються */
+.iridescence {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: 
+    conic-gradient(
+      from 0deg,
+      rgba(158, 255, 0, 0.15),
+      rgba(255, 0, 107, 0.12),
+      rgba(147, 51, 234, 0.18),
+      rgba(0, 255, 255, 0.14),
+      rgba(255, 215, 0, 0.16),
+      rgba(158, 255, 0, 0.15)
+    );
+  animation: iridescenceRotate 10s linear infinite;
+  mix-blend-mode: color-dodge;
+  opacity: 0.6;
+}
+
+/* Основний яскравий відблиск */
+.highlight {
+  position: absolute;
+  top: 15%;
+  left: 25%;
+  width: 25%;
+  height: 35%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.7) 30%,
+      rgba(158, 255, 0, 0.4) 60%,
+      transparent 100%
+    );
+  transform: rotate(-15deg);
+  animation: highlightPulse 6s ease-in-out infinite;
+}
+
+/* Вторинний відблиск */
+.secondary-highlight {
+  position: absolute;
+  top: 60%;
+  right: 20%;
+  width: 15%;
+  height: 20%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 0, 107, 0.6) 0%,
+      rgba(255, 0, 107, 0.3) 50%,
+      transparent 100%
+    );
+  animation: secondaryShimmer 5s ease-in-out infinite;
+}
+
+/* Малий блиск */
+.tiny-spark {
+  position: absolute;
+  top: 45%;
+  left: 70%;
+  width: 8%;
+  height: 12%;
+  border-radius: 50%;
+  background: 
+    radial-gradient(
+      ellipse at center,
+      rgba(147, 51, 234, 0.8) 0%,
+      transparent 70%
+    );
+  animation: sparkTwinkle 3s ease-in-out infinite;
+}
+
+/* Тінь під сферою */
+.shadow {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(90deg);
+  width: 60px;
+  height: 30px;
+  background: 
+    radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.1) 60%,
+      transparent 100%
+    );
+  border-radius: 50%;
+  animation: shadowMove 8s ease-in-out infinite;
+}
+
+/* Текст на пузирику */
+.bubble-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 4px rgba(158, 255, 0, 0.4);
+  z-index: 10;
+  text-align: center;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  mix-blend-mode: overlay;
+}
+
+/* Анімації */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+@keyframes sphereColorShift {
+  0% { filter: hue-rotate(0deg) saturate(1) brightness(1); }
+  25% { filter: hue-rotate(90deg) saturate(1.1) brightness(1.05); }
+  50% { filter: hue-rotate(180deg) saturate(1.2) brightness(1.1); }
+  75% { filter: hue-rotate(270deg) saturate(1.1) brightness(1.05); }
+  100% { filter: hue-rotate(360deg) saturate(1) brightness(1); }
+}
+
+@keyframes iridescenceRotate {
+  0% {
+    transform: rotate(0deg);
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+    filter: hue-rotate(180deg);
+  }
+}
+
+@keyframes highlightPulse {
+  0%, 100% {
+    opacity: 0.9;
+    transform: rotate(-15deg) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: rotate(-15deg) scale(1.1);
+  }
+}
+
+@keyframes secondaryShimmer {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.3);
+  }
+}
+
+@keyframes sparkTwinkle {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.5);
+  }
+}
+
+@keyframes shadowMove {
+  0%, 100% {
+    transform: translateX(-50%) rotateX(90deg) translateY(0px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(-50%) rotateX(90deg) translateY(2px);
+    opacity: 0.3;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .consultant-bubble-container {
+    bottom: 15px;
+    right: 15px;
+  }
+  
+  .bubble-stage {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .consultant-bubble {
+    width: 70px;
+    height: 70px;
+    margin: 15px auto;
+  }
+  
+  .pulse-ring {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .bubble-text {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .consultant-bubble-container {
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .bubble-stage {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .consultant-bubble {
+    width: 60px;
+    height: 60px;
+    margin: 15px auto;
+  }
+  
+  .pulse-ring {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .bubble-text {
+    font-size: 10px;
+  }
+}

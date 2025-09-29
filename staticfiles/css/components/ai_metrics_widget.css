@@ -1,0 +1,262 @@
+/* 🤖 AI METRICS WIDGET STYLES */
+
+/* 🎯 ГОЛОВНИЙ КОНТЕЙНЕР ВІДЖЕТА */
+.ai-metrics-widget {
+    max-width: 1200px;
+    margin: 40px auto;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+/* 💫 АНІМОВАНИЙ ФОН */
+.ai-metrics-widget::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(158, 255, 0, 0.05), 
+        transparent);
+    animation: shimmer 4s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+}
+
+/* 📊 ЗАГОЛОВОК ВІДЖЕТА */
+.widget-header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 2;
+}
+
+.widget-title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 700;
+    margin: 0;
+    color: var(--accent-green);
+    text-shadow: 0 0 10px var(--green-glow-primary);
+}
+
+.widget-subtitle {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin: 8px 0 0 0;
+}
+
+/* 🎲 СІТКА МЕТРИК */
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 2;
+}
+
+/* 📋 КАРТКА МЕТРИКИ */
+.metric-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(158, 255, 0, 0.2);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    position: relative;
+    transition: all var(--transition-normal);
+    overflow: hidden;
+}
+
+.metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--accent-green), 
+        transparent);
+    transition: left 0.8s ease;
+}
+
+.metric-card:hover::before {
+    left: 100%;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-green);
+    box-shadow: 0 10px 30px var(--green-glow-primary);
+}
+
+/* 🏷️ ЛЕЙБЛ МЕТРИКИ */
+.metric-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 📈 ЗНАЧЕННЯ МЕТРИКИ */
+.metric-value {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin: 10px 0;
+    color: var(--accent-green);
+    text-shadow: 0 0 8px var(--green-glow-primary);
+    position: relative;
+    transition: all 0.3s ease-in-out;
+}
+
+
+/* 🎨 AI МОДЕЛЬ КАРТКА - ЦЕНТРУВАННЯ ЛОГО */
+.ai-model-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.ai-model-logo {
+    margin-bottom: 8px;
+}
+
+.ai-model-name {
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.metric-unit {
+    font-size: 0.6em;
+    opacity: 0.8;
+}
+
+/* 📝 ОПИС МЕТРИКИ */
+.metric-description {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    margin: 8px 0 0 0;
+    line-height: 1.4;
+}
+
+/* 🔥 ОСОБЛИВІ ЕФЕКТИ ДЛЯ ROI */
+.metric-card.roi .metric-value {
+    background: linear-gradient(135deg, #9eff00, #66ff00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 🕒 ЛІЧИЛЬНИК ЧАСУ */
+.metric-card.time .metric-value {
+    color: #00d4ff;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+/* 📰 НОВИНИ */
+.metric-card.content .metric-value {
+    color: #ff6b35;
+    text-shadow: 0 0 8px rgba(255, 107, 53, 0.3);
+}
+
+/* ⚡ ЕФЕКТИВНІСТЬ */
+.metric-card.efficiency .metric-value {
+    color: #a855f7;
+    text-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+}
+
+/* 🎯 CTA КНОПКА */
+.metrics-cta {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, var(--accent-green), #66ff00);
+    color: var(--primary-black);
+    border: none;
+    border-radius: 50px;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #66ff00, var(--accent-green));
+    transition: left 0.4s ease;
+}
+
+.cta-button:hover::before {
+    left: 0;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px var(--green-glow-primary);
+    text-decoration: none;
+    color: var(--primary-black);
+}
+
+.cta-button span {
+    position: relative;
+    z-index: 1;
+}
+
+/* 🌟 ПУЛЬСАЦІЯ ДЛЯ LIVE ДАНИХ */
+.metric-value.live {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* 📈 ТРЕНД ІНДИКАТОРИ */
+.trend-indicator {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.8em;
+}
+
+.trend-up { color: #22c55e; }
+.trend-down { color: #ef4444; }
+.trend-stable { color: var(--text-secondary); }
+
+/* 🎨 ОСТАННЯ ОНОВЛЕННЯ */
+.last-updated {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 20px;
+    opacity: 0.7;
+}

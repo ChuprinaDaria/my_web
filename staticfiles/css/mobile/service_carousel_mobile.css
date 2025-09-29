@@ -1,0 +1,273 @@
+/* ===============================================
+   📱 SERVICE CAROUSEL MOBILE - Мобільна версія каруселі сервісів
+   =============================================== */
+
+/* 📱 MOBILE CAROUSEL CONTAINER */
+@media (max-width: 768px) {
+  .services-carousel-container {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-sm) 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  
+  .services-carousel-wrapper {
+    display: flex;
+    gap: var(--spacing-md);
+    padding: 0 var(--spacing-sm);
+    scroll-snap-type: x mandatory;
+  }
+  
+  .services-carousel-item {
+    flex: 0 0 auto;
+    width: 280px;
+    scroll-snap-align: start;
+    padding: var(--spacing-md);
+    margin-bottom: 0;
+  }
+  
+  .services-carousel-item:hover {
+    transform: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .services-carousel-item:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  /* 🎨 MOBILE CAROUSEL CONTENT */
+  .carousel-service-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .carousel-service-icon img {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .carousel-service-title {
+    font-size: 1.1rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .carousel-service-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .carousel-service-tags {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .carousel-service-tag {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+  
+  .carousel-service-cta {
+    padding-top: var(--spacing-xs);
+  }
+  
+  .carousel-service-link {
+    font-size: 0.85rem;
+  }
+  
+  .carousel-service-link i {
+    width: 14px;
+    height: 14px;
+  }
+  
+  /* 🎮 MOBILE CAROUSEL CONTROLS */
+  .carousel-controls {
+    margin-top: var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+  
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    border-width: 1px;
+  }
+  
+  .carousel-btn i {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .carousel-indicators {
+    gap: 6px;
+  }
+  
+  .carousel-indicator {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* 📱 SMALL MOBILE */
+@media (max-width: 480px) {
+  .services-carousel-container {
+    margin: var(--spacing-sm) 0;
+    padding: 0;
+  }
+  
+  .services-carousel-wrapper {
+    gap: var(--spacing-sm);
+    padding: 0 var(--spacing-xs);
+  }
+  
+  .services-carousel-item {
+    width: 260px;
+    padding: var(--spacing-sm);
+  }
+  
+  .carousel-service-icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .carousel-service-icon img {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .carousel-service-title {
+    font-size: 1rem;
+  }
+  
+  .carousel-service-description {
+    font-size: 0.8rem;
+  }
+  
+  .carousel-service-tag {
+    font-size: 0.65rem;
+    padding: 2px 5px;
+  }
+  
+  .carousel-service-link {
+    font-size: 0.8rem;
+  }
+  
+  .carousel-controls {
+    margin-top: var(--spacing-sm);
+  }
+  
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .carousel-btn i {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .carousel-indicator {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* 📱 EXTRA SMALL MOBILE */
+@media (max-width: 320px) {
+  .services-carousel-item {
+    width: 240px;
+    padding: var(--spacing-xs);
+  }
+  
+  .carousel-service-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .carousel-service-icon img {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .carousel-service-title {
+    font-size: 0.95rem;
+  }
+  
+  .carousel-service-description {
+    font-size: 0.75rem;
+  }
+  
+  .carousel-service-tag {
+    font-size: 0.6rem;
+    padding: 2px 4px;
+  }
+  
+  .carousel-service-link {
+    font-size: 0.75rem;
+  }
+  
+  .carousel-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .carousel-btn i {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+/* 🎭 MOBILE FOCUS STATES */
+@media (max-width: 768px) {
+  .carousel-btn:focus,
+  .carousel-indicator:focus {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 1px;
+  }
+}
+
+/* 🎪 MOBILE ANIMATIONS */
+@media (max-width: 768px) {
+  .services-carousel-item {
+    animation-duration: 0.4s;
+  }
+  
+  .services-carousel-item:nth-child(2) { animation-delay: 0.05s; }
+  .services-carousel-item:nth-child(3) { animation-delay: 0.1s; }
+  .services-carousel-item:nth-child(4) { animation-delay: 0.15s; }
+  .services-carousel-item:nth-child(5) { animation-delay: 0.2s; }
+}
+
+/* 📱 TOUCH IMPROVEMENTS */
+@media (max-width: 768px) {
+  .carousel-btn,
+  .carousel-indicator {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .carousel-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* 🎯 HOVER DISABLE ON TOUCH DEVICES */
+@media (hover: none) and (pointer: coarse) {
+  .services-carousel-item:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .carousel-btn:hover {
+    transform: none;
+    background: var(--glass-bg);
+  }
+  
+  .carousel-service-link:hover {
+    transform: none;
+    color: var(--accent-green);
+  }
+}

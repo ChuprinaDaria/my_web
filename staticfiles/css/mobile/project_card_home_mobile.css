@@ -1,0 +1,317 @@
+/* ===============================================
+   📱 PROJECT CARD HOME - MOBILE ONLY
+   =============================================== */
+
+@media (max-width: 768px) {
+  .project-card-home {
+    min-height: 300px;
+    height: auto;
+    transition: none;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+    padding: 20px; /* Як у news cards */
+  }
+  
+  .project-card-home:hover {
+    transform: translateY(-5px) scale(1.01); /* Як у news cards */
+    box-shadow: 
+      0 8px 24px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  .project-card-home:active {
+    transform: scale(0.98);
+    opacity: 0.9;
+    transition: all 0.1s ease;
+  }
+
+  .project-card-home .project-image {
+    height: 160px; /* Як у news cards */
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px; /* Як у news cards */
+    width: 100%;
+    flex-shrink: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  .project-card-home .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: none;
+  }
+
+  .project-card-home:hover .project-image img {
+    transform: none;
+  }
+
+  .project-card-home .card-tags {
+    top: 10px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+    gap: 4px;
+  }
+
+  .project-card-home .chip {
+    padding: 3px 6px;
+    font-size: 0.75rem; /* text-xs з typography */
+    border-radius: 8px;
+  }
+
+  .project-card-home .tag-icon {
+    font-size: 0.625rem; /* менше ніж text-xs */
+  }
+
+  .project-card-home .project-title {
+    font-size: 1rem; /* Як у news cards */
+    margin-bottom: 12px; /* Як у news cards */
+    font-weight: 700; /* Як у news cards */
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .project-card-home .section-box {
+    margin: 0 12px 10px 12px;
+    padding: 8px 10px;
+  }
+
+  .project-card-home .section-label {
+    font-size: 0.75rem; /* text-xs з typography */
+    margin-bottom: 3px;
+  }
+
+  .project-card-home .section-text {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem); /* p з typography */
+    max-height: 12em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    line-clamp: 10;
+    -webkit-box-orient: vertical;
+  }
+
+  .project-card-home .metrics {
+    margin: 0 12px 10px 12px;
+    gap: 4px;
+  }
+
+  .project-card-home .metrics .metric {
+    font-size: 0.75rem; /* text-xs з typography */
+    padding: 3px 6px;
+  }
+
+  .project-card-home .cta-row {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .project-card-home .cta-primary {
+    padding: 10px 14px;
+    font-size: 0.875rem; /* text-sm з typography */
+    border-radius: 30px; /* Як у buttons.css */
+    min-height: 40px;
+  }
+
+  .project-card-home .cta-icon,
+  .project-card-home .cta-arrow {
+    font-size: 0.875rem; /* text-sm з typography */
+  }
+
+  .project-card-home .secondary-actions {
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .project-card-home .details-link,
+  .project-card-home .demo-link {
+    padding: 4px 8px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 10px !important;
+    text-decoration: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    pointer-events: auto !important;
+    z-index: 20 !important;
+  }
+  
+  .project-card-home .details-link {
+    background: rgba(255, 0, 107, 0.2) !important;
+    border: 1px solid rgba(255, 0, 107, 0.5) !important;
+    color: var(--accent-pink) !important;
+  }
+  
+  .project-card-home .details-link:hover {
+    background: rgba(255, 0, 107, 0.3) !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  .project-card-home .demo-link {
+    background: rgba(102, 255, 0, 0.1) !important;
+    border: 1px solid rgba(102, 255, 0, 0.3) !important;
+    color: var(--accent-green) !important;
+  }
+  
+  .project-card-home .demo-link:hover {
+    background: rgba(102, 255, 0, 0.2) !important;
+    transform: translateY(-1px) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-card-home {
+    min-height: 320px;
+    height: auto;
+  }
+
+  .project-card-home .project-image {
+    height: 120px;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-md);
+    margin: 10px 10px 10px 10px;
+    width: calc(100% - 20px);
+  }
+
+  .project-card-home .project-title {
+    font-size: 0.9rem; /* Як у news cards */
+    margin-bottom: 10px; /* Як у news cards */
+    font-weight: 700; /* Як у news cards */
+  }
+
+  .project-card-home .section-box {
+    margin: 0 10px 8px 10px;
+    padding: 6px 8px;
+  }
+
+  .project-card-home .section-label {
+    font-size: 12px;
+  }
+
+  .project-card-home .section-text {
+    font-size: 12px;
+    max-height: 12em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    line-clamp: 10;
+    -webkit-box-orient: vertical;
+  }
+
+  .project-card-home .metrics {
+    margin: 0 10px 8px 10px;
+  }
+
+  .project-card-home .metrics .metric {
+    font-size: 12px;
+    padding: 2px 5px;
+  }
+
+  .project-card-home .cta-row {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .project-card-home .cta-primary {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    min-height: 36px;
+    border-radius: 30px; /* Як у buttons.css */
+  }
+
+  .project-card-home .secondary-actions {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .project-card-home .details-link,
+  .project-card-home .demo-link {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 12px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    pointer-events: auto;
+    z-index: 20;
+  }
+  
+  .project-card-home .details-link {
+    background: rgba(255, 0, 107, 0.2) !important;
+    border: 1px solid rgba(255, 0, 107, 0.5) !important;
+    color: var(--accent-pink) !important;
+  }
+  
+  .project-card-home .details-link:hover {
+    background: rgba(255, 0, 107, 0.3) !important;
+    transform: translateY(-1px) !important;
+  }
+  
+  .project-card-home .demo-link {
+    background: rgba(102, 255, 0, 0.1) !important;
+    border: 1px solid rgba(102, 255, 0, 0.3) !important;
+    color: var(--accent-green) !important;
+  }
+  
+  .project-card-home .demo-link:hover {
+    background: rgba(102, 255, 0, 0.2) !important;
+    transform: translateY(-1px) !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .project-card-home:hover,
+  .project-card-home:focus-within {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .project-card-home .project-image img {
+    transform: none !important;
+  }
+
+  .project-card-home .image-overlay {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .project-card-home, .project-card-home * {
+    transition: none !important;
+  }
+}
+
+/* Стилі для чипів */
+.project-card-home .chip.primary {
+  background: rgba(102, 255, 0, 0.7);
+  color: #000;
+}
+
+.project-card-home .chip.innovation {
+  background: rgba(255, 0, 107, 0.7);
+  color: #fff;
+}
+
+.project-card-home .chip.ai {
+  background: rgba(138, 43, 226, 0.7);
+  color: #fff;
+}
+
+.project-card-home .chip.top {
+  background: rgba(255, 215, 0, 0.7);
+  color: #000;
+}
+

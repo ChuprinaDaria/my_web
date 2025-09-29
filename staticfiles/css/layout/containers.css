@@ -1,0 +1,451 @@
+/* ===============================================
+   📦 CONTAINERS - Система контейнерів та layoutів
+   =============================================== */
+
+/* 🏗️ Основні контейнери */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.container-sm {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.container-lg {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.container-xl {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.container-full {
+  width: 100%;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+/* 📋 Спеціальні контейнери для різних секцій */
+.container-reg {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 0 0 0;
+  width: 100%;
+}
+
+.container-wide {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 40px;
+  width: 100%;
+}
+
+/* 🎯 Секційні контейнери */
+.section {
+  padding: 80px 0;
+  position: relative;
+}
+
+.section-sm {
+  padding: 40px 0;
+}
+
+.section-lg {
+  padding: 120px 0;
+}
+
+.section-xl {
+  padding: 160px 0;
+}
+
+/* 🧩 Layout Grid System */
+.grid {
+  display: grid;
+  gap: 30px;
+  width: 100%;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-auto {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-auto-sm {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.grid-auto-lg {
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+/* 📐 Flex Layouts */
+.flex {
+  display: flex;
+  gap: 20px;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.flex-start {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+/* 🎨 Content Layout для статей та сторінок */
+.content-layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 40px;
+  align-items: start;
+}
+
+.content-layout.no-sidebar {
+  grid-template-columns: 1fr;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.main-content {
+  min-width: 0; /* Щоб контент не переповнював */
+}
+
+.sidebar {
+  min-width: 0;
+}
+
+/* 📱 Two Column Layout */
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.two-column.equal {
+  grid-template-columns: 1fr 1fr;
+}
+
+.two-column.golden {
+  grid-template-columns: 1.618fr 1fr; /* Золотий перетин */
+}
+
+/* 🃏 Card Containers */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  margin: 40px 0;
+}
+
+.cards-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+/* 🎠 Carousel Container */
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.carousel-wrapper {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 20px 0;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
+}
+
+.carousel-wrapper::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* 📋 List Containers */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.list-grid {
+  display: grid;
+  gap: 15px;
+}
+
+/* 🔄 Wrapper загальний */
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-wrapper {
+  flex: 1;
+  padding-top: 100px; /* Відступ для fixed navbar */
+}
+
+/* 🎯 Центрування контенту */
+.center-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 50vh;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.center-block {
+  margin: 0 auto;
+  display: block;
+}
+
+/* 📱 АДАПТИВНІСТЬ */
+@media (max-width: 1200px) {
+  .container,
+  .container-reg {
+    padding: 80px 25px 0 25px;
+  }
+  
+  .container-wide {
+    padding: 0 30px;
+  }
+  
+  .grid-4 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .content-layout {
+    gap: 30px;
+  }
+}
+
+@media (max-width: 992px) {
+  .container,
+  .container-sm,
+  .container-lg,
+  .container-xl,
+  .container-reg {
+    padding: 70px 20px 0 20px;
+  }
+  
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .content-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .sidebar {
+    order: -1; /* Сайдбар зверху на мобільному */
+  }
+  
+  .two-column {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container,
+  .container-sm,
+  .container-lg,
+  .container-xl,
+  .container-reg,
+  .container-wide {
+    padding: 60px 15px 0 15px;
+  }
+  
+  .section {
+    padding: 60px 0;
+  }
+  
+  .section-lg {
+    padding: 80px 0;
+  }
+  
+  .section-xl {
+    padding: 100px 0;
+  }
+  
+  .grid,
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .flex,
+  .flex-center,
+  .flex-between {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .flex-between {
+    align-items: center;
+  }
+  
+  .carousel-wrapper {
+    gap: 15px;
+  }
+  
+  .content-wrapper {
+    padding-top: 85px; /* Більший відступ на мобільному */
+  }
+}
+
+@media (max-width: 480px) {
+  .container,
+  .container-sm,
+  .container-lg,
+  .container-xl,
+  .container-reg,
+  .container-wide {
+    padding: 50px 10px 0 10px;
+  }
+  
+  .section {
+    padding: 40px 0;
+  }
+  
+  .section-lg {
+    padding: 60px 0;
+  }
+  
+  .section-xl {
+    padding: 80px 0;
+  }
+  
+  .grid,
+  .cards-grid {
+    gap: 15px;
+  }
+  
+  .flex,
+  .flex-center,
+  .flex-between,
+  .flex-column {
+    gap: 10px;
+  }
+}
+
+/* 🎨 Утиліти для spacing */
+.mt-auto { margin-top: auto; }
+.mb-auto { margin-bottom: auto; }
+.ml-auto { margin-left: auto; }
+.mr-auto { margin-right: auto; }
+
+.no-padding { padding: 0 !important; }
+.no-margin { margin: 0 !important; }
+
+/* 🔧 Debugging (для розробки) */
+.debug .container,
+.debug .container-sm,
+.debug .container-lg {
+  outline: 2px dashed rgba(255, 0, 0, 0.3);
+}
+
+.debug .grid,
+.debug .flex {
+  outline: 2px dashed rgba(0, 255, 0, 0.3);
+}
+
+/* 🌟 Спеціальні контейнери для специфічних секцій */
+.hero-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.projects-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 30px;
+}
+
+.news-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 25px;
+}
+
+.contact-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+}

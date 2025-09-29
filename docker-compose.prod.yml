@@ -1,45 +1,6 @@
 version: '3.8'
 
 services:
-  web:
-    build: .
-    restart: unless-stopped
-    environment:
-      - DEBUG=False
-      - DB_HOST=db
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    env_file:
-      - .env
-    volumes:
-      - media_volume:/app/media
-      - static_volume:/app/staticfiles
-      - logs_volume:/app/logs
-    depends_on:
-      - db
-      - redis
-    networks:
-      - lazysoft_network
-    expose:
-      - "8000"
-
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/ssl:/etc/nginx/ssl:ro
-      - media_volume:/var/www/media:ro
-      - static_volume:/var/www/static:ro
-    depends_on:
-      - web
-    networks:
-      - lazysoft_network
-
   db:
     image: ankane/pgvector:latest
     restart: unless-stopped
@@ -75,16 +36,64 @@ services:
       timeout: 3s
       retries: 5
 
+  web:
+    build: .
+    restart: unless-stopped
+    command: >
+      sh -lc "
+      python manage.py migrate --noinput &&
+      python manage.py collectstatic --noinput &&
+      gunicorn lazysoft.wsgi:application --bind 0.0.0.0:8000"
+    environment:
+      DEBUG: "False"
+      DB_HOST: db
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,lazysoft.pl,www.lazysoft.pl"
+      DJANGO_CSRF_TRUSTED_ORIGINS: "http://localhost,https://localhost,http://127.0.0.1,https://127.0.0.1,https://lazysoft.pl,https://www.lazysoft.pl"
+    env_file:
+      - .env
+    volumes:
+      - media_volume:/app/media
+      - static_volume:/app/staticfiles
+      - logs_volume:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - lazysoft_network
+    expose:
+      - "8000"
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - media_volume:/var/www/media:ro
+      - static_volume:/var/www/static:ro   # той самий volume, що й у web
+    depends_on:
+      - web
+    networks:
+      - lazysoft_network
+
   celery:
     build: .
     restart: unless-stopped
     command: celery -A lazysoft worker -l info --pool=solo
     environment:
-      - DEBUG=False
-      - DB_HOST=db
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      DEBUG: "False"
+      DB_HOST: db
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
     env_file:
       - .env
     volumes:
@@ -102,11 +111,11 @@ services:
     restart: unless-stopped
     command: celery -A lazysoft beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     environment:
-      - DEBUG=False
-      - DB_HOST=db
-      - REDIS_URL=redis://redis:6379/0
-      - CELERY_BROKER_URL=redis://redis:6379/0
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      DEBUG: "False"
+      DB_HOST: db
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
     env_file:
       - .env
     volumes:
@@ -120,11 +129,11 @@ services:
       - lazysoft_network
 
   fullfeedrss:
-    image: "heussd/fivefilters-full-text-rss:latest"
+    image: heussd/fivefilters-full-text-rss:latest
     container_name: lazysoft-fivefilters-prod
     restart: unless-stopped
     environment:
-      - FTR_ADMIN_PASSWORD=${FTR_ADMIN_PASSWORD}
+      FTR_ADMIN_PASSWORD: ${FTR_ADMIN_PASSWORD}
     volumes:
       - rss_cache:/var/www/html/cache/rss
     networks:

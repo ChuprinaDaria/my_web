@@ -1,0 +1,129 @@
+/* typography.css - оновлена версія */
+
+/* Підключаємо Inter з Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap&subset=latin,cyrillic');
+
+/* CSS змінні для шрифтів */
+:root {
+  --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Базові стилі */
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+
+
+/* H1 - Головні заголовки */
+h1 { 
+  font-family: var(--font-heading);
+  font-size: clamp(4.5rem, 10vw, 6rem); 
+  font-weight: 700;
+  color: var(--accent-green);
+  text-align: center;
+}
+
+/* H2 - Секційні заголовки */
+h2 { 
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text-white);
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+}
+
+/* H3 - Підзаголовки */
+h3 { 
+  font-family: var(--font-heading);
+  font-size: clamp(1.25rem, 3vw, 1.5rem); 
+  font-weight: 500;
+  color: var(--text-white);
+  text-align: center;
+}
+
+/* H4 - Менші заголовки */
+h4 { 
+  font-family: var(--font-heading);
+  font-size: 1.25rem; 
+  font-weight: 500;
+  color: var(--text-white);
+}
+
+/* H5 - Додаткові заголовки */
+h5 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-white);
+}
+
+/* H6 - Найменші заголовки */
+h6 {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-white);
+}
+
+/* Параграфи */
+p {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+/* Навігація та меню */
+.nav, .navbar, .menu, nav {
+  font-family: var(--font-heading);
+  font-weight: 500;
+}
+
+.nav a, .navbar a, .menu a, nav a {
+  font-weight: 500;
+  text-decoration: none;
+}
+
+/* Кнопки */
+.btn, button, input[type="submit"] {
+  font-family: var(--font-heading);
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Форми */
+input, textarea, select {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+}
+
+/* Мобільна оптимізація */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  h1 { font-size: 3.5rem; }
+  h2 { font-size: clamp(1.8rem, 6vw, 2.2rem); }
+  h3 { font-size: 1.25rem; }
+  
+}
+
+/* Великі екрани */
+@media (min-width: 1200px) {
+  h1 { font-size: 5.5rem; }
+  h2 { font-size: 2.25rem; }
+}
+
+/* Fallback для браузерів без підтримки веб-шрифтів */
+.no-webfonts h1, 
+.no-webfonts h2, 
+.no-webfonts h3,
+.no-webfonts .nav,
+.no-webfonts .btn {
+  font-family: var(--font-body);
+}

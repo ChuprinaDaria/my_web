@@ -1,0 +1,441 @@
+/* ===============================================
+   🖥️ SERVICE CARD - DESKTOP STYLES
+   =============================================== */
+
+/* 🎯 SERVICE CARD - ГОРИЗОНТАЛЬНА РАЙДУЖНА */
+.service-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xl);
+  width: 100%;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-lg);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.4s ease;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+  
+  /* 🌈 RAINBOW BORDER SETUP - як у проєктах */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  
+  /* 🌟 BASE GLOW */
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* 📝 SERVICE CONTENT */
+.service-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  box-sizing: border-box;
+  order: 2;
+  padding-left: var(--spacing-lg);
+}
+
+/* 🌈 RAINBOW BORDER EFFECT */
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-lg); /* Співпадає з карткою */
+  padding: 2px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-green) 0%,
+    var(--accent-pink) 25%,
+    var(--accent-blue) 50%,
+    var(--accent-purple) 75%,
+    var(--accent-green) 100%
+  );
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+}
+
+/* 🌊 SHIMMER EFFECT */
+.service-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 2;
+}
+
+/* 🔥 HOVER EFFECTS */
+.service-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+
+.service-card:hover::before {
+  opacity: 1;
+  animation-duration: 1.5s;
+}
+
+.service-card:hover::after {
+  left: 100%;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-green);
+  box-shadow: 0 10px 30px var(--green-glow-primary);
+}
+
+/* 🖼️ SERVICE MAIN IMAGE - головне зображення сервісу */
+.service-card .service-icon--cover {
+  width: 300px !important;
+  height: 220px !important;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  order: 1;
+}
+
+.service-card .service-icon--cover img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.service-card:hover .service-icon--cover {
+  transform: scale(1.05);
+}
+
+.service-card:hover .service-icon--cover img {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* 🎯 SERVICE ICON BADGE - малий круглий для icon */
+.service-card .service-icon--badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  order: 1;
+}
+
+.service-card .service-icon--badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 📝 SERVICE TEXT CONTENT */
+.service-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.project-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-white);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.service-description {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0;
+}
+
+/* 🏷️ SERVICE TAGS */
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+}
+
+.service-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: rgba(102, 255, 0, 0.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(102, 255, 0, 0.2);
+}
+
+/* 📊 SERVICE METRICS */
+.service-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  margin-top: auto;
+}
+
+.metric {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.metric.priority {
+  background: linear-gradient(135deg, rgba(255, 0, 107, 0.2), rgba(255, 0, 107, 0.1));
+  color: var(--accent-pink);
+  border-color: rgba(255, 0, 107, 0.3);
+  box-shadow: 0 2px 8px rgba(255, 0, 107, 0.2);
+}
+
+.metric.featured {
+  background: linear-gradient(135deg, rgba(158, 255, 0, 0.2), rgba(158, 255, 0, 0.1));
+  color: var(--accent-green);
+  border-color: rgba(158, 255, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(158, 255, 0, 0.2);
+}
+
+.metric.projects {
+  background: linear-gradient(135deg, rgba(158, 255, 0, 0.2), rgba(158, 255, 0, 0.1));
+  color: var(--accent-green);
+  border-color: rgba(158, 255, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(158, 255, 0, 0.2);
+}
+
+.metric:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.metric i {
+  width: 14px;
+  height: 14px;
+}
+
+/* 🎯 SERVICE CTA */
+.service-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-sm);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cta-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent-green);
+}
+
+.cta-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-green);
+  transition: transform 0.2s ease;
+}
+
+.service-card:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* 📱 RESPONSIVE SERVICES */
+@media (max-width: 1024px) {
+  .service-card {
+    max-width: 100%;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* 🎭 FOCUS STATES */
+.service-card:focus {
+  outline: 2px solid var(--accent-green);
+  outline-offset: 2px;
+}
+
+/* 🎪 ANIMATIONS */
+@keyframes serviceCardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes serviceCardGlow {
+  0%, 100% {
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow: 
+      0 12px 40px rgba(102, 255, 0, 0.2),
+      0 0 0 1px rgba(102, 255, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+@keyframes serviceCardShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.service-card {
+  animation: serviceCardSlideIn 0.8s ease-out;
+}
+
+.service-card:hover {
+  animation: serviceCardGlow 2s ease-in-out infinite;
+}
+
+.service-card::after {
+  animation: serviceCardShimmer 3s ease-in-out infinite;
+}
+
+/* ✨ SERVICE GLOW EFFECT */
+.service-glow-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(
+    135deg,
+    rgba(158, 255, 0, 0.1),
+    rgba(255, 0, 255, 0.1)
+  );
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.service-card:hover .service-glow-effect {
+  opacity: 1;
+}
+
+/* 📭 NO SERVICES STATE */
+.no-services {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4xl) var(--spacing-lg);
+  text-align: center;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  margin: var(--spacing-xl) 0;
+}
+
+.no-services-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-green);
+  border-radius: 50%;
+  margin-bottom: var(--spacing-lg);
+  color: var(--primary-black);
+}
+
+.no-services-icon i {
+  width: 40px;
+  height: 40px;
+}
+
+.no-services h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-white);
+  margin-bottom: var(--spacing-md);
+}
+
+.no-services p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 400px;
+}

@@ -1,0 +1,796 @@
+/* ===============================================
+   📱 MOBILE PROJECTS CSS - Окремо від Desktop
+   =============================================== */
+
+/* 📱 Mobile Projects Page */
+@media (max-width: 768px) {
+  
+  /* 🎯 HERO SECTION MOBILE */
+  .projects-hero-section {
+    padding: 40px 0;
+  }
+  
+  /* Typography styles use base/typography.css */
+  
+  .projects-subtitle {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    padding: 0 15px;
+  }
+  
+  /* 📊 STATS MOBILE */
+  .projects-stats {
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .stat-item {
+    padding: 0 15px;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
+  }
+  
+  /* 🏷️ TECH TAGS MOBILE */
+  .popular-technologies {
+    margin-bottom: 30px;
+  }
+  
+  .tech-tags {
+    justify-content: center;
+    padding: 0 15px;
+  }
+  
+  .tech-tag {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
+  .tech-tag small {
+    font-size: 12px;
+  }
+  
+  /* 📋 PROJECTS GRID MOBILE */
+  .all-projects-section {
+    padding: 40px 0;
+  }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 15px;
+  }
+  
+  /* 🃏 PROJECT CARD MOBILE */
+  .project-card {
+    border-radius: var(--radius-xl);
+  }
+  
+  .project-image {
+    height: 180px;
+  }
+  
+  .project-tags {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 12px 15px 0;
+  }
+  
+  .project-tag {
+    padding: 3px 8px;
+    font-size: 12px;
+  }
+  
+  .project-content {
+    padding: 15px;
+  }
+  
+  .project-title {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  
+  .project-description {
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .project-metrics {
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .metric-item {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+  
+  .project-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  /* 💼 SERVICES CROSS-PROMO MOBILE */
+  .related-services-cross-promo {
+    padding: 40px 0;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    padding: 0 15px;
+  }
+  
+  .services-promo-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 15px;
+  }
+  
+  .service-promo-card {
+    padding: 16px;
+    border-radius: var(--radius-md);
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .service-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+  
+  .service-title {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+  
+  .service-description {
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+  
+  .service-metrics {
+    font-size: 0.75rem;
+  }
+  
+  .service-arrow {
+    display: none; /* Прибираємо на мобілці */
+  }
+  
+  .view-all-services {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    margin-top: 30px;
+  }
+  
+  /* 📭 EMPTY STATE MOBILE */
+  .empty-state {
+    padding: 40px 15px;
+  }
+  
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+  }
+  
+  .empty-state p {
+    font-size: 1rem;
+  }
+}
+
+/* 📱 EXTRA SMALL MOBILE */
+@media (max-width: 480px) {
+  
+  /* 🎯 HERO EXTRA SMALL */
+  .projects-hero-section {
+    padding: 30px 0;
+  }
+  
+  /* Typography styles use base/typography.css */
+  
+  .projects-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  /* 📊 STATS EXTRA SMALL */
+  .projects-stats {
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+  }
+  
+  /* 📋 GRID EXTRA SMALL */
+  .projects-grid {
+    padding: 0 10px;
+    gap: 15px;
+  }
+  
+  .project-content {
+    padding: 12px;
+  }
+  
+  .project-image {
+    height: 160px;
+  }
+  
+  .project-title {
+    font-size: 1.1rem;
+  }
+  
+  .project-description {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  /* 💼 SERVICES EXTRA SMALL */
+  .services-promo-grid {
+    padding: 0 10px;
+  }
+  
+  .service-promo-card {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .service-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .service-title {
+    font-size: 1rem;
+  }
+  
+  .service-description {
+    font-size: 0.8rem;
+  }
+}
+
+/* 🌈 MOBILE ANIMATIONS - спрощені */
+@media (max-width: 768px) {
+  
+  /* Менше анімацій на мобільці для продуктивності */
+  .project-card {
+    transition: transform 0.2s ease;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+  
+  .service-promo-card {
+    transition: transform 0.2s ease;
+  }
+  
+  .service-promo-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Вимикаємо складні ефекти */
+  .project-card::before {
+    animation: none;
+  }
+  
+  .project-glow-effect {
+    display: none;
+  }
+  
+  .image-overlay {
+    transition: none;
+  }
+}
+
+/* 🔧 MOBILE UTILITIES */
+@media (max-width: 768px) {
+  
+  /* Краще читання тексту */
+  .project-description,
+  .service-description,
+  .projects-subtitle {
+    line-height: 1.5;
+  }
+  
+  /* Більші кнопки для touch */
+  .btn-primary,
+  .btn-secondary,
+  .view-all-services {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Відступи для кращого UX */
+  .section-header {
+    margin-bottom: 30px;
+    padding: 0 15px;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+  }
+  
+  /* Скролінг оптимізація */
+  .projects-grid,
+  .services-promo-grid {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ===============================================
+   📱 SIMPLE PROJECTS LIST - MOBILE STYLES
+   =============================================== */
+
+/* 📱 TABLET STYLES (768px - 1024px) */
+@media (max-width: 1024px) {
+  .featured-projects-section {
+    padding: var(--spacing-2xl) 0;
+  }
+  
+  .projects-simple-list {
+    max-width: 100%;
+    margin: 0;
+    padding: 0 var(--spacing-md);
+  }
+  
+  .project-simple-item {
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .project-media {
+    width: 160px;
+    height: 120px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .project-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 100%;
+  }
+  
+  .project-title {
+    font-size: 1.6rem;
+  }
+  
+  .project-content {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .project-trigger {
+    width: 100%;
+    text-align: left;
+  }
+  
+  .project-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .project-header h3 {
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--spacing-sm);
+  }
+  
+  /* 🎬 PROJECT ACTIONS */
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* 📱 MOBILE STYLES (max-width: 768px) */
+@media (max-width: 768px) {
+  /* 🏗️ PROJECTS LAYOUT */
+  .projects-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  
+  .projects-main {
+    width: 100%;
+    order: 1;
+  }
+  
+  .projects-sidebar {
+    width: 100%;
+    order: 2;
+    position: static;
+    margin-top: var(--spacing-lg);
+  }
+  
+  /* 🏗️ SECTION LAYOUT */
+  .featured-projects-section {
+    padding: var(--spacing-xl) 0;
+    overflow-x: hidden;
+  }
+  
+  .featured-projects-section .container {
+    max-width: 100%;
+    padding: 0 var(--spacing-sm);
+    margin: 0 auto;
+  }
+  
+  .section-header {
+    margin-bottom: var(--spacing-xl);
+    padding: 0;
+    text-align: center;
+  }
+  
+  .projects-main .section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  /* Typography styles use base/typography.css */
+  
+  /* 📋 PROJECTS LIST */
+  .projects-simple-list {
+    gap: var(--spacing-md);
+    padding: 0;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  
+  /* 🃏 PROJECT ITEM - VERTICAL LAYOUT */
+  .project-simple-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    width: 94%;
+    max-width: 94%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+  
+  /* 🖼️ PROJECT MEDIA - FULL WIDTH */
+  .project-media {
+    width: 100%;
+    height: 180px;
+    order: 1;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .project-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 100%;
+  }
+  
+  /* 📝 PROJECT CONTENT */
+  .project-content {
+    order: 2;
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .project-trigger {
+    width: 100%;
+    text-align: left;
+  }
+  
+  .project-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .project-header h3 {
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--spacing-sm);
+  }
+  
+  .project-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  /* 🎬 PROJECT ACTIONS */
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  /* 🔽 ACCORDION ARROW - RIGHT ALIGNED */
+  .accordion-arrow {
+    align-self: flex-end;
+    margin-top: -30px;
+  }
+  
+  /* 🎬 PROJECT ACTIONS - STACKED */
+  .project-actions {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1rem;
+  }
+}
+
+/* 📱 SMALL MOBILE (max-width: 480px) */
+@media (max-width: 480px) {
+  /* 🏗️ PROJECTS LAYOUT */
+  .projects-layout {
+    gap: var(--spacing-md);
+  }
+  
+  .projects-sidebar {
+    margin-top: var(--spacing-md);
+  }
+  
+  /* 🏗️ SECTION LAYOUT */
+  .featured-projects-section {
+    padding: var(--spacing-lg) 0;
+    overflow-x: hidden;
+  }
+  
+  .featured-projects-section .container {
+    max-width: 100%;
+    padding: 0 var(--spacing-xs);
+    margin: 0 auto;
+  }
+  
+  .section-header {
+    margin-bottom: var(--spacing-lg);
+    padding: 0;
+    text-align: center;
+  }
+  
+  .projects-main .section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Typography styles use base/typography.css */
+  
+  /* 📋 PROJECTS LIST */
+  .projects-simple-list {
+    gap: var(--spacing-sm);
+    padding: 0;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+  }
+  
+  /* 🃏 PROJECT ITEM - COMPACT */
+  .project-simple-item {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-lg);
+    width: 96%;
+    max-width: 96%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    min-width: 0;
+  }
+  
+  /* 🖼️ PROJECT MEDIA */
+  .project-media {
+    height: 160px;
+    border-radius: var(--radius-md);
+    max-width: 100%;
+    overflow: hidden;
+  }
+  
+  .project-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: 100%;
+  }
+  
+  /* 📝 PROJECT CONTENT */
+  .project-content {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .project-trigger {
+    width: 100%;
+    text-align: left;
+  }
+  
+  .project-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .project-header h3 {
+    flex: 1;
+    min-width: 0;
+    margin-right: var(--spacing-sm);
+  }
+  
+  /* 🎬 PROJECT ACTIONS */
+  .project-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.95rem;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  /* 😔 EMPTY STATE */
+  .empty-state {
+    padding: var(--spacing-xl);
+  }
+  
+  .empty-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .empty-state p {
+    font-size: 1rem;
+  }
+}
+
+/* 📱 EXTRA SMALL MOBILE (max-width: 320px) */
+@media (max-width: 320px) {
+  .project-simple-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .project-media {
+    height: 150px;
+  }
+  
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+}
+
+/* 🎭 MOBILE FOCUS STATES */
+@media (max-width: 768px) {
+  .project-trigger:focus {
+    outline-offset: 2px;
+  }
+  
+  .project-actions a:focus {
+    outline-offset: 1px;
+  }
+}
+
+/* 🎪 MOBILE ANIMATIONS */
+@media (max-width: 768px) {
+  .project-simple-item {
+    animation-duration: 0.4s;
+  }
+  
+  /* Менші затримки на мобільному */
+  .project-simple-item:nth-child(2) { animation-delay: 0.05s; }
+  .project-simple-item:nth-child(3) { animation-delay: 0.1s; }
+  .project-simple-item:nth-child(4) { animation-delay: 0.15s; }
+  .project-simple-item:nth-child(5) { animation-delay: 0.2s; }
+}
+
+/* 📱 TOUCH IMPROVEMENTS */
+@media (max-width: 768px) {
+  .project-trigger {
+    min-height: 44px; /* Мінімальний розмір для touch */
+    padding: var(--spacing-sm) 0;
+  }
+  
+  .accordion-arrow {
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* Збільшені кнопки для touch */
+  .project-actions .btn-primary,
+  .project-actions .btn-secondary {
+    min-height: 48px;
+    font-weight: 600;
+  }
+}
+
+/* 🎯 HOVER DISABLE ON TOUCH DEVICES */
+@media (hover: none) and (pointer: coarse) {
+  .project-simple-item:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+  }
+  
+  .project-simple-item:hover .project-glow-border {
+    opacity: 0;
+  }
+  
+  .project-simple-item:hover .project-media img {
+    transform: none;
+  }
+  
+  .project-trigger:hover .project-title {
+    color: var(--text-white);
+  }
+  
+  .project-actions .btn-primary:hover,
+  .project-actions .btn-secondary:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,554 @@
+/* ===============================================
+   📱 UNIFIED SIDEBAR - MOBILE STYLES
+   =============================================== */
+
+/* 🏗️ LAYOUT SYSTEMS */
+@media (max-width: 1024px) {
+  .projects-layout,
+  .services-layout {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* 📱 MOBILE LAYOUT (max-width: 768px) */
+@media (max-width: 768px) {
+  .projects-layout,
+  .services-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  
+  .projects-main,
+  .services-main {
+    width: 100%;
+    order: 1;
+  }
+  
+  .projects-sidebar,
+  .services-sidebar {
+    width: 100%;
+    order: 2;
+    position: static;
+    margin-top: var(--spacing-lg);
+  }
+}
+
+/* 📱 SMALL MOBILE LAYOUT (max-width: 480px) */
+@media (max-width: 480px) {
+  .projects-layout,
+  .services-layout {
+    gap: var(--spacing-md);
+  }
+  
+  .projects-sidebar,
+  .services-sidebar {
+    margin-top: var(--spacing-md);
+  }
+}
+
+/* 📱 TABLET STYLES (768px - 1024px) */
+@media (max-width: 1024px) {
+  .projects-sidebar,
+  .services-sidebar,
+  .news-sidebar {
+    width: 280px;
+    position: static;
+    margin-bottom: var(--spacing-xl);
+    order: 2; /* Sidebar після контенту */
+  }
+  
+  .sidebar-section {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .sidebar-section h3 {
+    font-size: 1rem;
+  }
+  
+  .service-item,
+  .project-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .related-services-list .service-icon,
+  .related-projects-list .project-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .service-name,
+  .project-name {
+    font-size: 0.9rem;
+  }
+  
+  .service-description,
+  .project-description {
+    font-size: 0.75rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .stat-item {
+    padding: var(--spacing-sm);
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+}
+
+/* 📱 MOBILE STYLES (max-width: 768px) */
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+  
+  .projects-sidebar,
+  .services-sidebar,
+  .news-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: var(--spacing-xl);
+    order: 2; /* Переконуємось, що після контенту */
+  }
+  
+  .sidebar-section {
+    margin-bottom: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+  
+  .sidebar-section:hover {
+    transform: none;
+  }
+  
+  .sidebar-section h3 {
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .filter-section {
+    gap: var(--spacing-md);
+  }
+  
+  .filter-group {
+    gap: var(--spacing-xs);
+  }
+  
+  .filter-label {
+    font-size: 0.8rem;
+  }
+  
+  .filter-options {
+    gap: 6px;
+  }
+  
+  .filter-chip {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .project-tags {
+    gap: 6px;
+  }
+  
+  .tag-chip {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .tag-count {
+    font-size: 0.7rem;
+    padding: 1px 4px;
+  }
+  
+  .service-item,
+  .project-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .service-item:hover,
+  .project-item:hover {
+    transform: translateY(-1px);
+  }
+  
+  .related-services-list .service-icon,
+  .related-projects-list .project-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .service-name,
+  .project-name {
+    font-size: 0.9rem;
+  }
+  
+  .service-description,
+  .project-description {
+    font-size: 0.75rem;
+  }
+  
+  .related-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .related-item:hover {
+    transform: translateY(-1px);
+  }
+  
+  .related-content h4 {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  
+  .related-meta {
+    font-size: 0.7rem;
+  }
+  
+  .related-image {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xs);
+  }
+  
+  .stat-item {
+    padding: var(--spacing-sm);
+  }
+  
+  .stat-number {
+    font-size: 1.4rem;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  .cta-sidebar {
+    min-width: 300px;
+    margin: var(--spacing-lg) auto 0 auto; /* Додаємо відступ зверху */
+    text-align: center; /* Центруємо текст */
+  }
+  
+  .sidebar-section {
+    margin: 0 auto !important; /* Центруємо всі sidebar секції */
+    text-align: center !important; /* Центруємо текст */
+  }
+  
+  .sidebar-cta-button {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 30px;
+  }
+  
+  .cta-features {
+    gap: var(--spacing-xs);
+  }
+  
+  .cta-feature {
+    font-size: 0.8rem;
+    font-family: var(--font-body);
+  }
+}
+
+/* 📱 SMALL MOBILE (max-width: 480px) */
+@media (max-width: 480px) {
+  .projects-sidebar,
+  .services-sidebar,
+  .news-sidebar {
+    padding: 0 var(--spacing-sm);
+  }
+  
+  .sidebar-section {
+    width: 100%;
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .sidebar-section h3 {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+  }
+  
+  .sidebar-cta-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+    font-family: var(--font-heading);
+  }
+  
+  .cta-feature {
+    font-size: 0.75rem;
+    font-family: var(--font-body);
+  }
+  
+  .cta-sidebar {
+    margin: var(--spacing-md) auto 0 auto; /* Додаємо відступ зверху */
+    text-align: center; /* Центруємо текст */
+  }
+  
+  .sidebar-section {
+    margin: 0 auto !important; /* Центруємо всі sidebar секції */
+    text-align: center !important; /* Центруємо текст */
+  }
+}
+
+/* 📱 EXTRA SMALL MOBILE (max-width: 320px) */
+@media (max-width: 320px) {
+  .sidebar-section {
+    padding: var(--spacing-sm);
+  }
+  
+  .sidebar-section h3 {
+    font-size: 0.85rem;
+    font-family: var(--font-heading);
+  }
+  
+  .sidebar-cta-button {
+    font-size: 0.85rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-family: var(--font-heading);
+  }
+}
+
+/* 🎭 MOBILE FOCUS STATES */
+@media (max-width: 768px) {
+  .tag-chip:focus,
+  .service-item:focus,
+  .project-item:focus,
+  .related-item:focus,
+  .sidebar-cta-button:focus {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 2px;
+  }
+}
+
+/* 🎪 MOBILE ANIMATIONS */
+@media (max-width: 768px) {
+  .sidebar-section {
+    animation-duration: 0.4s;
+  }
+  
+  .sidebar-section:nth-child(2) { animation-delay: 0.05s; }
+  .sidebar-section:nth-child(3) { animation-delay: 0.1s; }
+  .sidebar-section:nth-child(4) { animation-delay: 0.15s; }
+  .sidebar-section:nth-child(5) { animation-delay: 0.2s; }
+}
+
+/* 📱 TOUCH IMPROVEMENTS */
+@media (max-width: 768px) {
+  .tag-chip,
+  .service-item,
+  .project-item,
+  .related-item,
+  .sidebar-cta-button {
+    min-height: 44px;
+  }
+  
+  .sidebar-cta-button {
+    min-height: 48px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+}
+
+/* 🎯 HOVER DISABLE ON TOUCH DEVICES */
+@media (hover: none) and (pointer: coarse) {
+  .sidebar-section:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .tag-chip:hover,
+  .service-item:hover,
+  .project-item:hover,
+  .related-item:hover {
+    transform: none;
+    background: rgba(255, 255, 255, 0.03);
+  }
+  
+  .sidebar-cta-button:hover {
+    transform: none;
+    box-shadow: 0 4px 20px rgba(158, 255, 0, 0.3);
+  }
+}
+
+/* 🎯 Додаткові стилі для центрування sidebar секцій */
+@media (max-width: 768px) {
+  .related-projects-list {
+    text-align: center !important;
+  }
+  
+  .project-item {
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .news-sidebar .categories-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+  }
+  
+  .news-sidebar .category-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 6px 8px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    font-size: 0.78rem;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .news-sidebar .category-item i {
+    display: none;
+  }
+
+  .news-sidebar .category-item small {
+    margin-left: auto;
+    font-size: 0.68rem;
+    opacity: 0.8;
+  }
+}
+
+@media (max-width: 480px) {
+  .related-projects-list {
+    text-align: center !important;
+  }
+  
+  .project-item {
+    justify-content: center !important;
+  }
+}
+
+/* 🎯 Специфічні стилі для CTA sidebar з відступом зверху */
+/* Десктоп та планшети */
+.sidebar-section.cta-sidebar {
+  margin: var(--spacing-xl) auto 0 auto !important;
+  text-align: center !important;
+}
+
+@media (max-width: 1024px) {
+  .sidebar-section.cta-sidebar {
+    margin: var(--spacing-lg) auto 0 auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-section.cta-sidebar {
+    margin: var(--spacing-lg) auto 0 auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar-section.cta-sidebar {
+    margin: var(--spacing-md) auto 0 auto !important;
+  }
+}
+
+/* Додаткові стилі для service-icon зображень */
+.related-services-list .service-icon img,
+.related-projects-list .project-icon img {
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  max-width: 36px;
+  max-height: 36px;
+}
+
+/* Специфічні мобільні стилі для related-services-list */
+@media (max-width: 1024px) {
+  .related-services-list .service-item {
+    padding: var(--spacing-lg);
+  }
+  
+  .related-services-list .service-icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .related-services-list .service-icon img {
+    max-width: 45px;
+    max-height: 45px;
+  }
+  
+  .related-services-list .service-name {
+    font-size: 1rem;
+  }
+  
+  .related-services-list .service-description {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .related-services-list .service-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .related-services-list .service-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .related-services-list .service-icon img {
+    max-width: 36px;
+    max-height: 36px;
+  }
+  
+  .related-services-list .service-name {
+    font-size: 0.9rem;
+  }
+  
+  .related-services-list .service-description {
+    font-size: 0.75rem;
+  }
+  
+  .related-services-list .service-item:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 480px) {
+  .related-services-list .service-item {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+  
+  .related-services-list .service-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .related-services-list .service-icon img {
+    max-width: 32px;
+    max-height: 32px;
+  }
+  
+  .related-services-list .service-name {
+    font-size: 0.85rem;
+  }
+  
+  .related-services-list .service-description {
+    font-size: 0.7rem;
+  }
+}

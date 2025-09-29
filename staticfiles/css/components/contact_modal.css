@@ -1,0 +1,291 @@
+/* 🎯 UNIVERSAL CONTACT MODAL */
+.consultation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10001;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.consultation-modal.show {
+    opacity: 1;
+}
+
+.consultation-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+}
+
+.consultation-modal-content {
+    position: relative;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 2px solid var(--accent-green);
+    border-radius: 20px;
+    padding: 2rem;
+    max-width: 700px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.consultation-modal.show .consultation-modal-content {
+    transform: scale(1);
+}
+
+.consultation-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: var(--accent-green);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s ease;
+}
+
+.consultation-modal-close:hover {
+    background: rgba(102, 255, 0, 0.1);
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.modal-title {
+    color: var(--accent-green);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    line-height: 1.2;
+}
+
+.modal-subtitle {
+    color: #ffffff;
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 1.4;
+}
+
+/* Form styles - копіюємо з contact_form.css */
+.modal-contact-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.modal-contact-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-contact-form label {
+    color: var(--accent-green);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.modal-contact-form input,
+.modal-contact-form textarea {
+    padding: 1rem;
+    border: 2px solid #333;
+    border-radius: 10px;
+    background: #2a2a2a;
+    color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.modal-contact-form input:focus,
+.modal-contact-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-green);
+}
+
+.btn-modal-submit {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent-green) 0%, #4ddb00 100%);
+    color: #000;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 255, 0, 0.3);
+    margin-top: 1rem;
+}
+
+.btn-modal-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 255, 0, 0.4);
+}
+
+.modal-message {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 1rem;
+}
+
+.modal-message.success {
+    background: rgba(102, 255, 0, 0.1);
+    color: var(--accent-green);
+    border: 1px solid rgba(102, 255, 0, 0.3);
+}
+
+.modal-message.error {
+    background: rgba(255, 68, 68, 0.1);
+    color: #ff4444;
+    border: 1px solid rgba(255, 68, 68, 0.3);
+}
+
+/* 📱 Запобігання збільшенню масштабу на мобільних */
+@media (max-width: 768px) {
+    .consultation-modal {
+        /* Запобігаємо збільшенню масштабу */
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+}
+
+/* 📱 Mobile styles */
+@media (max-width: 768px) {
+    .consultation-modal-content {
+        margin: 0.5rem;
+        padding: 1rem;
+        max-width: 95%;
+        width: 95%;
+        max-height: 95vh;
+        /* Запобігаємо збільшенню масштабу на мобільних */
+        transform: scale(1);
+        transform-origin: center center;
+    }
+    
+    .modal-contact-form .form-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .modal-title {
+        font-size: 1.3rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .modal-subtitle {
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .modal-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+    
+    .form-group label {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+        /* Запобігаємо автоматичному збільшенню на мобільних */
+        font-size: 16px !important;
+        transform: scale(1);
+        transform-origin: center center;
+    }
+    
+    .btn-modal-submit {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        margin-top: 0.75rem;
+    }
+    
+    .consultation-modal-close {
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 25px;
+        height: 25px;
+        font-size: 1.2rem;
+    }
+}
+
+/* 📱 Extra small mobile styles */
+@media (max-width: 480px) {
+    .consultation-modal-content {
+        margin: 0.25rem;
+        padding: 0.75rem;
+        max-width: 98%;
+        width: 98%;
+        /* Запобігаємо збільшенню масштабу на мобільних */
+        transform: scale(1);
+        transform-origin: center center;
+    }
+    
+    .modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .modal-subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .modal-header {
+        margin-bottom: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+        /* Запобігаємо автоматичному збільшенню на мобільних */
+        font-size: 16px !important;
+        transform: scale(1);
+        transform-origin: center center;
+    }
+    
+    .btn-modal-submit {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}

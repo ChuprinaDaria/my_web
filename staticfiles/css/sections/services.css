@@ -1,0 +1,472 @@
+/* ===============================================
+   🌈 SERVICES SECTION - Райдужні горизонтальні карти
+   =============================================== */
+
+/* 📄 SERVICES PAGE CONTAINER - схожий на project_details */
+.services-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* 🎯 HERO SECTION - контейнер для тексту */
+.services-hero {
+  padding: var(--spacing-4xl) 0;
+  background: linear-gradient(
+    135deg, 
+    rgba(102, 255, 0, 0.05) 0%, 
+    rgba(255, 0, 255, 0.05) 100%
+  );
+}
+
+.services-hero .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.services-hero .hero-content {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Typography styles use base/typography.css */
+
+.services-hero .subtitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.6;
+}
+
+.services-hero .description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-2xl);
+  line-height: 1.7;
+}
+
+.services-hero .hero-cta {
+  display: flex;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.services-hero .cta-primary,
+.services-hero .cta-secondary {
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.services-hero .cta-primary {
+  background: linear-gradient(135deg, var(--accent-green), #80ff40);
+  color: var(--primary-black);
+  box-shadow: 0 4px 15px rgba(158, 255, 0, 0.3);
+}
+
+.services-hero .cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(158, 255, 0, 0.4);
+}
+
+.services-hero .cta-secondary {
+  background: transparent;
+  color: var(--text-white);
+  border: 2px solid var(--glass-border);
+}
+
+.services-hero .cta-secondary:hover {
+  background: var(--glass-bg);
+  border-color: var(--accent-green);
+}
+
+/* 🛠️ TECH STACK SECTION - контейнер для технологій */
+.tech-stack-section {
+  padding: var(--spacing-4xl) 0;
+  background: var(--bg-secondary);
+}
+
+.tech-stack-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-top: 4rem;
+  padding: 0 var(--spacing-lg);
+}
+
+.tech-stack-section .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-3xl);
+  color: var(--text-white);
+}
+
+.tech-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  align-items: center;
+}
+
+.tech-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  color: var(--text-white);
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tech-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(102, 255, 0, 0.2);
+  border-color: var(--accent-green);
+}
+
+.tech-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-green);
+}
+
+/* 📋 SERVICES CATEGORIES - контейнер для категорій */
+.services-categories {
+  padding: var(--spacing-xs) 0;
+}
+
+.services-categories .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.services-categories .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-3xl);
+  color: var(--text-white);
+}
+
+/* 🏗️ SERVICES LAYOUT */
+.services-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--spacing-xl);
+  align-items: start;
+}
+
+/* 📏 Відступ перед секцією Our Services на services_list */
+.services-list .services-categories {
+  margin-top: 4rem;
+}
+
+/* 📱 Зменшені відступи на мобільних пристроях */
+@media (max-width: 768px) {
+  .services-list .services-categories {
+    margin-top: 2rem; /* Зменшено з 4rem до 2rem */
+  }
+  
+  .services-list .faq-preview {
+    margin-top: 2rem; /* Зменшено відступ перед FAQ */
+  }
+}
+
+@media (max-width: 480px) {
+  .services-list .services-categories {
+    margin-top: 1.5rem; /* Ще менший відступ на маленьких екранах */
+  }
+  
+  .services-list .faq-preview {
+    margin-top: 1.5rem; /* Ще менший відступ перед FAQ */
+  }
+}
+
+.services-main {
+  min-width: 0;
+}
+
+.services-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  max-width: 100%;
+  margin: 0;
+  padding: var(--spacing-3xl) 0;
+}
+
+/* 📊 FAQ PREVIEW - контейнер для FAQ */
+.faq-preview {
+  padding: var(--spacing-4xl) 0;
+  background: var(--bg-secondary);
+}
+
+/* 📱 Зменшені відступи для всіх секцій на мобільних */
+@media (max-width: 768px) {
+  .services-hero,
+  .tech-stack-section{
+    padding: var(--spacing-xs) 0; /* Зменшено з var(--spacing-4xl) */
+  }
+}
+
+@media (max-width: 480px) {
+  .services-hero,
+  .tech-stack-section,
+  .services-categories {
+    padding: var(--spacing-lg) 0; /* Ще менше на маленьких екранах */
+  }
+}
+
+.faq-preview .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.faq-preview .section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: var(--spacing-3xl);
+  color: var(--text-white);
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+.faq-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.faq-question:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.faq-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-green);
+  transition: transform 0.3s ease;
+}
+
+.faq-item[open] .faq-icon {
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* 📱 RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+  .services-layout {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .services-grid {
+    padding: var(--spacing-xl) var(--spacing-lg);
+  }
+  
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .services-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  
+  .services-main {
+    width: 100%;
+    order: 1;
+  }
+  
+  .services-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: 0;
+  }
+  
+  /* Спеціально для головної сторінки */
+  #homepage .services-main {
+    width: 100%;
+  }
+  
+  #homepage .services-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: 0;
+  }
+  
+  .services-hero .subtitle {
+    font-size: 1.3rem;
+  }
+  
+  .services-hero .description {
+    font-size: 1rem;
+  }
+  
+  .services-hero .hero-cta {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tech-stack {
+    gap: var(--spacing-md);
+  }
+  
+  .tech-item {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+  }
+  
+  .tech-stack-section .section-title,
+  .services-categories .section-title,
+  .faq-preview .section-title {
+    font-size: 2rem;
+  }
+  
+  .category-title {
+    font-size: 1.5rem;
+  }
+  
+  .category-description {
+    font-size: 0.9rem;
+  }
+  
+  .faq-question {
+    font-size: 1rem;
+    padding: var(--spacing-md);
+  }
+  
+  .faq-answer {
+    padding: 0 var(--spacing-md) var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  .services-layout {
+    gap: var(--spacing-md);
+  }
+  
+  .services-grid {
+    gap: var(--spacing-md);
+  }
+  
+  /* Спеціально для головної сторінки */
+  #homepage .services-grid {
+    gap: var(--spacing-md);
+  }
+  
+  .services-hero {
+    padding: var(--spacing-3xl) 0;
+  }
+  
+  .services-hero .subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .services-hero .description {
+    font-size: 0.95rem;
+  }
+  
+  .tech-stack,
+  .services-categories,
+  .faq-preview,
+  .contact {
+    padding: var(--spacing-xs) 0;
+  }
+  
+  .tech-stack-section .section-title,
+  .services-categories .section-title,
+  .faq-preview .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .category-content {
+    padding: var(--spacing-lg);
+  }
+  
+  .tech-item {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.85rem;
+  }
+  
+  .faq-question {
+    font-size: 0.95rem;
+  }
+}
+
+/* 🎪 ANIMATIONS */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.services-hero,
+.tech-stack-section,
+.services-categories,
+.faq-preview {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.services-hero { animation-delay: 0.1s; }
+.tech-stack-section { animation-delay: 0.2s; }
+.services-categories { animation-delay: 0.3s; }
+.faq-preview { animation-delay: 0.4s; }

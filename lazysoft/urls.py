@@ -11,6 +11,7 @@ from django.utils.translation import get_language
 # 📰 Імпортуємо sitemaps для SEO
 try:
     from news.views import NewsSitemap, NewsCategorySitemap
+    from core.sitemaps import StaticViewSitemap
     SITEMAPS_AVAILABLE = True
 except ImportError:
     SITEMAPS_AVAILABLE = False
@@ -46,13 +47,15 @@ urlpatterns += [
 # 🗺️ Sitemap (без i18n-префіксів)
 if SITEMAPS_AVAILABLE:
     sitemaps = {
+        'static': StaticViewSitemap,
         'news': NewsSitemap,
         'news_categories': NewsCategorySitemap,
     }
     urlpatterns += [
         path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+        path('sitemap-static.xml', sitemap, {'sitemaps': {'static': StaticViewSitemap}}, name='static_sitemap'),
         path('sitemap-news.xml', sitemap, {'sitemaps': {'news': NewsSitemap}}, name='news_sitemap'),
-        path('sitemap-categories.xml', sitemap, {'sitemaps': {'categories': NewsCategorySitemap}}, name='categories_sitemap'),
+        path('sitemap-categories.xml', sitemap, {'sitemaps': {'news_categories': NewsCategorySitemap}}, name='categories_sitemap'),
     ]
 
 # robots.txt (без i18n) - ВІДКЛЮЧЕНО НА DEV
@@ -91,7 +94,8 @@ urlpatterns += i18n_patterns(
 
 # Статика/медіа у DEBUG
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    from django.conf.urls.static import static
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler400 = 'core.views.error_400'
