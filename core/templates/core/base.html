@@ -172,7 +172,7 @@
             <a href="/pl{{ request.path|cut:'/uk/'|cut:'/pl/'|cut:'/en/' }}" 
                class="lang-btn {% if CURRENT_LANG == 'pl' %}active{% endif %}"
                hreflang="pl">PL</a>
-            <a href="/en{{ request.path|cut:'/uk/'|cut:'/pl/'|cut:'/en/' }}" 
+            <a href="{{ request.path|cut:'/uk/'|cut:'/pl/'|cut:'/en/' }}" 
                class="lang-btn {% if CURRENT_LANG == 'en' %}active{% endif %}"
                hreflang="en">EN</a>
           </div>

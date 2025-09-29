@@ -110,7 +110,7 @@
             <i data-lucide="globe"></i>
             Polski
           </a>
-          <a href="/en{{ request.get_full_path|cut:'/uk/'|cut:'/pl/'|cut:'/en/' }}" 
+          <a href="{{ request.get_full_path|cut:'/uk/'|cut:'/pl/'|cut:'/en/' }}" 
              class="footer-lang-link {% if CURRENT_LANG == 'en' %}active{% endif %}"
              hreflang="en">
             <i data-lucide="globe"></i>
