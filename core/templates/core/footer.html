@@ -98,19 +98,19 @@
       <div class="footer-section">
         <h3>{% trans "Languages" %}</h3>
         <div class="footer-lang-selector">
-          <a href="/uk{{ request.get_full_path|remove_language_prefix }}" 
+          <a href="{{ request.get_full_path|remove_language_prefix|add_language_prefix:'uk' }}" 
              class="footer-lang-link {% if CURRENT_LANG == 'uk' %}active{% endif %}"
              hreflang="uk">
             <i data-lucide="globe"></i>
             Українська
           </a>
-          <a href="/pl{{ request.get_full_path|remove_language_prefix }}" 
+          <a href="{{ request.get_full_path|remove_language_prefix|add_language_prefix:'pl' }}" 
              class="footer-lang-link {% if CURRENT_LANG == 'pl' %}active{% endif %}"
              hreflang="pl">
             <i data-lucide="globe"></i>
             Polski
           </a>
-          <a href="{{ request.get_full_path|remove_language_prefix }}" 
+          <a href="{{ request.get_full_path|remove_language_prefix|add_language_prefix:'en' }}" 
              class="footer-lang-link {% if CURRENT_LANG == 'en' %}active{% endif %}"
              hreflang="en">
             <i data-lucide="globe"></i>

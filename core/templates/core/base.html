@@ -166,13 +166,13 @@
         
         <li class="lang-switcher">
           <div class="language-selector">
-            <a href="/uk{{ request.path|remove_language_prefix }}" 
+            <a href="{{ request.path|remove_language_prefix|add_language_prefix:'uk' }}" 
                class="lang-btn {% if CURRENT_LANG == 'uk' %}active{% endif %}"
                hreflang="uk">UA</a>
-            <a href="/pl{{ request.path|remove_language_prefix }}" 
+            <a href="{{ request.path|remove_language_prefix|add_language_prefix:'pl' }}" 
                class="lang-btn {% if CURRENT_LANG == 'pl' %}active{% endif %}"
                hreflang="pl">PL</a>
-            <a href="{{ request.path|remove_language_prefix }}" 
+            <a href="{{ request.path|remove_language_prefix|add_language_prefix:'en' }}" 
                class="lang-btn {% if CURRENT_LANG == 'en' %}active{% endif %}"
                hreflang="en">EN</a>
           </div>

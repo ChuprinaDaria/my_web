@@ -14,13 +14,44 @@ def remove_language_prefix(path):
     /about/ -> /about/ (без змін)
     """
     if not path:
-        return path
+        return '/'
+    
+    # Забезпечуємо, що path починається з /
+    if not path.startswith('/'):
+        path = '/' + path
     
     # Регулярний вираз для видалення мовного префіксу тільки з початку
-    pattern = r'^/(uk|pl|en)/'
+    # Включаємо випадки /uk, /uk/, /pl, /pl/, /en, /en/
+    pattern = r'^/(uk|pl|en)(/|$)'
     
     # Якщо знайдено мовний префікс на початку, видаляємо його
-    if re.match(pattern, path):
-        return re.sub(pattern, '/', path)
+    match = re.match(pattern, path)
+    if match:
+        # Видаляємо префікс, залишаючи початковий /
+        result = re.sub(pattern, '/', path)
+        # Якщо результат порожній або тільки /, повертаємо /
+        return result if result != '' else '/'
     
     return path
+
+
+@register.filter
+def add_language_prefix(path, lang):
+    """
+    Додає мовний префікс до URL шляху
+    ('/about/', 'uk') -> '/uk/about/'
+    ('/about/', 'en') -> '/about/' (для англійської без префікса)
+    """
+    if not path:
+        path = '/'
+    
+    # Забезпечуємо, що path починається з /
+    if not path.startswith('/'):
+        path = '/' + path
+    
+    # Для англійської мови (default) не додаємо префікс
+    if lang == 'en':
+        return path
+    
+    # Для інших мов додаємо префікс
+    return f'/{lang}{path}'
