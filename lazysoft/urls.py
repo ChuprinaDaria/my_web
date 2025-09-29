@@ -89,7 +89,7 @@ urlpatterns += i18n_patterns(
     path('contacts/', include('contacts.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('legal/', include('terms.urls')),
-    prefix_default_language=True,
+    prefix_default_language=False,  # Тимчасово для діагностики
 )
 
 # Статика/медіа у DEBUG
