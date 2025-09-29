@@ -42,6 +42,7 @@ urlpatterns += [
     path('privacy-policy/', redirect_privacy_policy, name='privacy_policy_short'),
     path('terms-of-service/', redirect_terms_of_service, name='terms_of_service_short'),
     path('cookies-policy/', redirect_cookies_policy, name='cookies_policy_short'),
+    path('', include(('core.urls', 'core'), namespace='core_main')),  # Головна без префікса
 ]
 
 # 🗺️ Sitemap (без i18n-префіксів)
