@@ -32,7 +32,7 @@ class AIContentProcessor(AINewsProcessor):
         prompt = f"""
         Analyze this article and determine the most appropriate category:
         
-        Article: {content_for_analysis[:500]}
+        Article: {content_for_analysis[:2000]}
         
         Categories: {json.dumps(categories)}
         
@@ -412,7 +412,7 @@ class AIContentProcessor(AINewsProcessor):
         """Створює fallback контент якщо AI недоступний"""
         original_title = raw_article.title or ""
         summary_src = raw_article.summary or raw_article.content or ""
-        summary = summary_src[:160]
+        summary = summary_src[:500]
         
         # Створюємо унікальні fallback заголовки замість копіювання оригіналу
         source_name = raw_article.source.name if raw_article.source else "Tech Source"
@@ -442,16 +442,16 @@ class AIContentProcessor(AINewsProcessor):
             "cta_buttons": self._generate_cta_buttons(category_info["category"]),
 
             # Промпти з опису (обрізаємо для безпеки)
-            "ai_image_prompt_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:200],
-            "ai_image_prompt_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:200],
-            "ai_image_prompt_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:200],
+            "ai_image_prompt_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:500],
+            "ai_image_prompt_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:500],
+            "ai_image_prompt_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:500],
             
 
             # SEO – не пусті
-            "meta_title_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:60], 
-            "meta_title_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:60], 
-            "meta_title_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:60],
-            "meta_description_en": summary[:160], "meta_description_pl": summary[:160], "meta_description_uk": summary[:160],
+            "meta_title_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:500], 
+            "meta_title_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:500], 
+            "meta_title_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:500],
+            "meta_description_en": summary[:500], "meta_description_pl": summary[:500], "meta_description_uk": summary[:500],
 
             "category_slug": category_info["category"],
             "priority": category_info["priority"],

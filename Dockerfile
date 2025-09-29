@@ -12,7 +12,7 @@ WORKDIR /app
 
 # Копіюємо requirements та встановлюємо залежності
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 # Копіюємо весь проект
 COPY . .
@@ -20,10 +20,17 @@ COPY . .
 # Створюємо необхідні директорії
 RUN mkdir -p logs media staticfiles
 
-# Збираємо статику
-RUN python manage.py collectstatic --noinput
+# Компілюємо переклади (якщо є)
+RUN python manage.py compilemessages --ignore=venv || true
+
+# НЕ запускаємо collectstatic тут - зробимо при старті контейнера
+# бо потрібні змінні з .env
 
 EXPOSE 8000
 
-# Команда запуску
+# Entrypoint скрипт
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "lazysoft.wsgi:application"]

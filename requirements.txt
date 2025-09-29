@@ -102,3 +102,5 @@ asgiref==3.8.1
 tzdata==2025.2
 
 django-redis==5.4.0
+
+PyJWT==2.8.0

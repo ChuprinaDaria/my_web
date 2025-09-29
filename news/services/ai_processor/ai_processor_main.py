@@ -106,67 +106,7 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
             self.logger.error(f"[ERROR] Помилка обробки статті: {error_msg}")
             return None
 
-    def process_batch(self, limit: int = 10, category: str = None, auto_prioritize: bool = True) -> Dict:
-        """
-        ЗАСТАРІЛИЙ МЕТОД: Обробляє пакет необроблених статей з автоматичною пріоритизацією
-        
-        ⚠️ УВАГА: Цей метод застарілий! Використовуйте SmartNewsPipeline який обробляє тільки ТОП-5 статей.
-        Цей метод обробляє ВСІ статті і витрачає багато AI API коштів.
-        """
-        
-        self.logger.info(f"🚀 Пакетна обробка: до {limit} статей")
-        
-        # Отримуємо необроблені статті
-        queryset = RawArticle.objects.filter(
-            is_processed=False,
-            is_duplicate=False
-        ).order_by('-published_at')
-        
-        if category:
-            queryset = queryset.filter(source__category=category)
-        
-        articles = list(queryset[:limit])
-        
-        if not articles:
-            self.logger.info("📭 Немає статей для обробки")
-            return {
-                'processed': 0,
-                'successful': 0,
-                'failed': 0,
-                'total_cost': 0
-            }
-        
-        self.logger.info(f"📄 Знайдено {len(articles)} статей для обробки")
-        
-        # Обробляємо кожну статтю
-        results = []
-        for article in articles:
-            result = self.process_article(article)
-            results.append(result)
-            
-            # Невелика пауза між запитами
-            time.sleep(1)
-        
-        # Автоматична пріоритизація топ-статей
-        if auto_prioritize and results:
-            successful_articles = [r for r in results if r is not None]
-            if successful_articles:
-                self._auto_prioritize_articles(successful_articles)
-        
-        # Фінальна статистика
-        successful = len([r for r in results if r is not None])
-        
-        self.logger.info(
-            f"🎯 Пакетна обробка завершена: {successful}/{len(articles)} успішних"
-        )
-        
-        return {
-            'processed': len(articles),
-            'successful': successful,
-            'failed': len(articles) - successful,
-            'total_cost': self.stats['total_cost'],
-            'total_time': self.stats['total_time']
-        }
+    
 
     def process_top5_by_engagement(self, days: int = 7) -> Dict:
         """Обробляє топ-5 статей по engagement за останні дні"""
