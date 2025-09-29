@@ -7,6 +7,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.contrib.sitemaps.views import sitemap
 from django.shortcuts import redirect
 from django.utils.translation import get_language
+from django.http import HttpResponse
 
 # 📰 Імпортуємо sitemaps для SEO
 try:
@@ -17,7 +18,6 @@ except ImportError:
     SITEMAPS_AVAILABLE = False
     print("⚠️ News sitemaps not available - run migrations first")
 
-urlpatterns = []
 
 # 🔁 Сумісність: редірект зі старого /admin/ на новий /<lang>/control/
 def redirect_admin(request):
@@ -37,12 +37,14 @@ def redirect_cookies_policy(request):
     lang = get_language() or 'pl'
     return redirect(f'/{lang}/legal/cookies-policy/')
 
+urlpatterns = []
+
 urlpatterns += [
     path('admin/', redirect_admin, name='admin_legacy_redirect'),
     path('privacy-policy/', redirect_privacy_policy, name='privacy_policy_short'),
     path('terms-of-service/', redirect_terms_of_service, name='terms_of_service_short'),
     path('cookies-policy/', redirect_cookies_policy, name='cookies_policy_short'),
-    path('', include(('core.urls', 'core'), namespace='core_main')),  # Головна без префікса
+    # path('', simple_home_view, name='simple_home'),  # Перенесено на початок
 ]
 
 # 🗺️ Sitemap (без i18n-префіксів)

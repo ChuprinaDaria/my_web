@@ -1,4 +1,4 @@
-{% load static i18n %}
+{% load static i18n language_tags %}
 {% get_current_language as CURRENT_LANG %}
 
 <footer class="footer">
@@ -98,19 +98,19 @@
       <div class="footer-section">
         <h3>{% trans "Languages" %}</h3>
         <div class="footer-lang-selector">
-          <a href="/uk{{ request.get_full_path|cut:'/uk/'|cut:'/pl/'|cut:'/en/' }}" 
+          <a href="/uk{{ request.get_full_path|remove_language_prefix }}" 
              class="footer-lang-link {% if CURRENT_LANG == 'uk' %}active{% endif %}"
              hreflang="uk">
             <i data-lucide="globe"></i>
             Українська
           </a>
-          <a href="/pl{{ request.get_full_path|cut:'/uk/'|cut:'/pl/'|cut:'/en/' }}" 
+          <a href="/pl{{ request.get_full_path|remove_language_prefix }}" 
              class="footer-lang-link {% if CURRENT_LANG == 'pl' %}active{% endif %}"
              hreflang="pl">
             <i data-lucide="globe"></i>
             Polski
           </a>
-          <a href="{{ request.get_full_path|cut:'/uk/'|cut:'/pl/'|cut:'/en/' }}" 
+          <a href="{{ request.get_full_path|remove_language_prefix }}" 
              class="footer-lang-link {% if CURRENT_LANG == 'en' %}active{% endif %}"
              hreflang="en">
             <i data-lucide="globe"></i>
