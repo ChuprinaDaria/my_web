@@ -224,12 +224,32 @@ def service_detail(request, slug):
     
     print(f"🎯 Service '{service_data['title']}': {len(related_projects)} проєктів, {len(related_articles)} новин")
     
+    # OG-теги для соцмереж
+    og_title = service_data['title']
+    og_description = service_data['short'][:200] if service_data.get('short') else ''
+    og_image_url = None
+
+    # Перевіряємо чи є og_image
+    if hasattr(service_category, 'og_image') and service_category.og_image:
+        og_image_url = request.build_absolute_uri(service_category.og_image.url)
+    # Якщо немає og_image, використовуємо main_image
+    elif service_category.main_image:
+        og_image_url = request.build_absolute_uri(service_category.main_image.url)
+    # Або icon як fallback
+    elif service_category.icon:
+        og_image_url = request.build_absolute_uri(service_category.icon.url)
+    
     return render(request, "services/service_detail.html", {
         "service": service_data,
         "related_projects": related_projects,
         "related_articles": related_articles,
         "cross_promotion_content": cross_promotion_content,
         "lang": lang,
+        # OG-теги для соцмереж
+        "og_title": og_title,
+        "og_description": og_description,
+        "og_image": og_image_url,
+        "og_url": request.build_absolute_uri(),
     })
 
 def faq_list(request):

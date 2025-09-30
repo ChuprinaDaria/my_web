@@ -5,10 +5,10 @@
 {% block meta_description %}{{ contact_info.seo_description|default:_("Зв'яжіться з нами для обговорення вашого проєкту. Працюємо по всьому світу.") }}{% endblock %}
 {% block og_title %}{{ contact_info.seo_title|default:_("Контакти - Lazysoft") }}{% endblock %}
 {% block og_description %}{{ contact_info.seo_description|default:_("Зв'яжіться з нами для обговорення вашого проєкту. Працюємо по всьому світу.") }}{% endblock %}
-{% block og_image %}{% if contact_info.office_photo %}https://lazysoft.dev{{ contact_info.office_photo.url }}{% else %}{% static 'images/contacts-og.jpg' %}{% endif %}{% endblock %}
+{% block og_image %}{% if contact_info.office_photo %}https://lazysoft.pl{{ contact_info.office_photo.url }}{% endif %}{% endblock %}
 
 {% block extra_meta %}
-  <link rel="canonical" href="https://lazysoft.dev{% url 'contacts:contact_page' %}" />
+  <link rel="canonical" href="https://lazysoft.pl{% url 'contacts:contact_page' %}" />
   
   <link rel="stylesheet" href="{% static 'css/sections/contact_form.css' %}" />
   
@@ -17,8 +17,8 @@
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Lazysoft",
-    "url": "https://lazysoft.dev",
-    "logo": "https://lazysoft.dev{% static 'images/logo.png' %}",
+    "url": "https://lazysoft.pl",
+    "logo": "https://lazysoft.pl{% static 'images/logo.png' %}",
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "{{ contact_info.phone }}",
@@ -36,9 +36,9 @@
     },
     {% endif %}
     "sameAs": [
-      "https://github.com/ChuprinaDaria",
-      "https://www.linkedin.com/in/dchuprina/",
-      "https://www.instagram.com/lazysoft_/"
+      "https://github.com/Lazysoft-pl",
+      "https://www.linkedin.com/company/lazysoft-pl",
+      "https://www.instagram.com/lazysoft.pl/"
     ]
   }
   </script>
@@ -295,17 +295,17 @@
             </h4>
             
             <div class="social-links">
-              <a href="https://github.com/ChuprinaDaria" target="_blank" 
+              <a href="https://github.com/Lazysoft-pl" target="_blank" 
                  class="social-link" rel="noopener">
                 <i data-lucide="github" class="social-icon"></i>
                 <span>GitHub</span>
               </a>
-              <a href="https://www.linkedin.com/in/dchuprina/" target="_blank" 
+              <a href="https://www.linkedin.com/company/lazysoft-pl" target="_blank" 
                  class="social-link" rel="noopener">
                 <i data-lucide="linkedin" class="social-icon"></i>
                 <span>LinkedIn</span>
               </a>
-              <a href="https://www.instagram.com/lazysoft_/" target="_blank" 
+              <a href="https://www.instagram.com/lazysoft.pl/" target="_blank" 
                  class="social-link" rel="noopener">
                 <i data-lucide="instagram" class="social-icon"></i>
                 <span>Instagram</span>
@@ -335,7 +335,7 @@
   "@type": "ContactPage",
   "name": "{{ contact_info.get_title|default:_('Контакти')|escapejs }}",
   "description": "{{ contact_info.get_description|striptags|default:_('Контактна сторінка')|escapejs }}",
-  "url": "https://lazysoft.dev{% url 'contacts:contact_page' %}",
+  "url": "https://lazysoft.pl{% url 'contacts:contact_page' %}",
   "inLanguage": "{{ LANGUAGE_CODE }}",
   "breadcrumb": {
     "@type": "BreadcrumbList",
@@ -344,13 +344,13 @@
         "@type": "ListItem",
         "position": 1,
         "name": "{% trans 'Головна'|escapejs %}",
-        "item": "https://lazysoft.dev{% url 'core:home' %}"
+        "item": "https://lazysoft.pl{% url 'core:home' %}"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "{% trans 'Контакти'|escapejs %}",
-        "item": "https://lazysoft.dev{% url 'contacts:contact_page' %}"
+        "item": "https://lazysoft.pl{% url 'contacts:contact_page' %}"
       }
     ]
   }

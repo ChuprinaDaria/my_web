@@ -53,6 +53,12 @@ class ServiceCategory(models.Model):
         help_text="Рекомендований розмір: 400x250px"
     )
     
+    og_image = models.ImageField(
+        upload_to='services/og/', 
+        null=True, blank=True,
+        help_text="Зображення для соцмереж (1200x630px)"
+    )
+    
     cta_text_en = models.CharField(max_length=50, default="Learn More")
     cta_text_uk = models.CharField(max_length=50, default="Дізнатися більше") 
     cta_text_pl = models.CharField(max_length=50, default="Dowiedz się więcej")

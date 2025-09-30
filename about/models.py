@@ -40,6 +40,12 @@ class About(models.Model):
     gallery_image_2 = models.ImageField(upload_to="about/gallery/", blank=True, null=True) 
     gallery_image_3 = models.ImageField(upload_to="about/gallery/", blank=True, null=True)
     
+    og_image = models.ImageField(
+        upload_to='about/og/', 
+        null=True, blank=True,
+        help_text="Зображення для соцмереж (1200x630px)"
+    )
+    
     # Відео
     video_url = models.URLField(blank=True, null=True, help_text=_("YouTube, Vimeo або інший URL"))
     video_file = models.FileField(upload_to="about/videos/", blank=True, null=True, help_text=_("Або завантажте відео файл"))

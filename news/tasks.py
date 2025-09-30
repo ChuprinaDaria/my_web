@@ -111,7 +111,7 @@ def post_top_news_to_telegram_task():
         )
         
         # Створюємо кнопку "Читати далі" (як в адмінці)
-        button = {"inline_keyboard": [[{"text": "📖 Читати далі", "url": f"https://lazysoft.dev{article_to_post.get_absolute_url('uk')}"}]]}
+        button = {"inline_keyboard": [[{"text": "📖 Читати далі", "url": f"https://lazysoft.pl{article_to_post.get_absolute_url('uk')}"}]]}
         
         external_id = telegram_service.post_to_telegram(message, photo_url=article_to_post.ai_image_url, reply_markup=button)
 

@@ -24,7 +24,7 @@
   {% trans "Professional AI automation services: chatbots, business automation, web development. Transform your business with Lazysoft's cutting-edge solutions." %}
 {% endblock %}
 
-{% block og_image %}{% static 'images/services-og.jpg' %}{% endblock %}
+{% block og_image %}{% endblock %}
 {% block og_type %}website{% endblock %}
 
 {% block twitter_title %}
@@ -64,7 +64,7 @@
 {% block extra_meta %}
   {{ block.super }}
   
-  <link rel="canonical" href="https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/" />
+  <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/" />
   
   <script type="application/ld+json">
   {
@@ -72,7 +72,7 @@
     "@type": "CollectionPage",
     "name": "{% trans 'Lazysoft Services' %}",
     "description": "{% trans 'AI automation services catalog' %}",
-    "url": "https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/",
+    "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/",
     "mainEntity": {
       "@type": "ItemList",
       "numberOfItems": {{ services|length }},
@@ -86,7 +86,7 @@
           "provider": {
             "@type": "Organization",
             "name": "Lazysoft",
-            "@id": "https://lazysoft.dev#organization"
+            "@id": "https://lazysoft.pl#organization"
           }
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
@@ -99,13 +99,13 @@
           "@type": "ListItem",
           "position": 1,
           "name": "{% trans 'Home' %}",
-          "item": "https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
+          "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "{% trans 'Services' %}",
-          "item": "https://lazysoft.dev/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/"
+          "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/"
         }
       ]
     }

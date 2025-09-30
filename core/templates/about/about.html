@@ -8,14 +8,12 @@
 {% block title %}{{ page_title }} | Lazysoft{% endblock %}
 {% block meta_description %}{{ page_description }}{% endblock %}
 
+{% block og_title %}{{ og_title|default:page_title }}{% endblock %}
+{% block og_description %}{{ og_description|default:page_description }}{% endblock %}
+{% block og_image %}{% if og_image %}{{ og_image }}{% elif about.gallery_image_1 %}https://lazysoft.pl{{ about.gallery_image_1.url }}{% elif about.gallery_image_2 %}https://lazysoft.pl{{ about.gallery_image_2.url }}{% elif about.gallery_image_3 %}https://lazysoft.pl{{ about.gallery_image_3.url }}{% endif %}{% endblock %}
+
 {% block extra_head %}
-  <meta property="og:title" content="{{ page_title }} | Lazysoft">
-  <meta property="og:description" content="{{ page_description }}">
-  <meta property="og:type" content="website">
-  {% if about.gallery_image_1 %}
-    <meta property="og:image" content="{{ request.build_absolute_uri }}{{ about.gallery_image_1.url }}">
-  {% endif %}
-  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <link rel="canonical" href="https://lazysoft.pl{{ request.get_full_path }}">
 {% endblock %}
 
 {% block content %}

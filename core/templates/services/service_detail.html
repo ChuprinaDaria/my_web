@@ -4,16 +4,16 @@
 
 {% block title %}{{ service.seo_title|default:service.title }} | Lazysoft{% endblock %}
 {% block meta_description %}{{ service.seo_description|default:service.short|striptags|truncatewords:25 }}{% endblock %}
-{% block og_title %}{{ service.title|striptags }}{% endblock %}
-{% block og_description %}{{ service.short|striptags|truncatewords:30 }}{% endblock %}
-{% block og_image %}{% if service.main_image %}https://lazysoft.dev{{ service.main_image.url }}{% else %}https://lazysoft.dev{% static 'images/services-og.jpg' %}{% endif %}{% endblock %}
+{% block og_title %}{{ og_title|default:service.title|striptags }}{% endblock %}
+{% block og_description %}{{ og_description|default:service.short|striptags|truncatewords:30 }}{% endblock %}
+{% block og_image %}{% if og_image %}{{ og_image }}{% elif service.main_image %}https://lazysoft.pl{{ service.main_image.url }}{% elif service.icon %}https://lazysoft.pl{{ service.icon.url }}{% endif %}{% endblock %}
 
 {% block extra_meta %}
-  <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/" />
+  <link rel="canonical" href="https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/" />
   
-  <link rel="alternate" href="https://lazysoft.dev/en/services/{{ service.slug }}/" hreflang="en">
-  <link rel="alternate" href="https://lazysoft.dev/uk/services/{{ service.slug }}/" hreflang="uk">
-  <link rel="alternate" href="https://lazysoft.dev/pl/services/{{ service.slug }}/" hreflang="pl">
+  <link rel="alternate" href="https://lazysoft.pl/en/services/{{ service.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/uk/services/{{ service.slug }}/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.pl/pl/services/{{ service.slug }}/" hreflang="pl">
   
   <script type="application/ld+json">
   {
@@ -24,11 +24,11 @@
     "provider": {
       "@type": "Organization",
       "name": "Lazysoft",
-      "url": "https://lazysoft.dev"
+      "url": "https://lazysoft.pl"
     },
     "areaServed": "Worldwide",
-    {% if service.main_image %}"image": "https://lazysoft.dev{{ service.main_image.url }}",{% endif %}
-    "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
+    {% if service.main_image %}"image": "https://lazysoft.pl{{ service.main_image.url }}",{% endif %}
+    "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
   }
   </script>
 {% endblock %}

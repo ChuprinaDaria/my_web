@@ -14,29 +14,18 @@
   {% else %}{{ project.client_request_en|striptags|truncatewords:25 }}{% endif %}
 {% endblock %}
 
-{% block og_title %}
-  {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags }}
-  {% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags }}
-  {% else %}{{ project.title_en|striptags }}{% endif %}
-{% endblock %}
+{% block og_title %}{{ og_title|default:project.title_uk|default:project.title_en|striptags }}{% endblock %}
 
-{% block og_description %}
-  {% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|truncatewords:30 }}
-  {% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|truncatewords:30 }}
-  {% else %}{{ project.short_description_en|striptags|truncatewords:30 }}{% endif %}
-{% endblock %}
+{% block og_description %}{{ og_description|default:project.short_description_uk|default:project.short_description_en|striptags|truncatewords:30 }}{% endblock %}
 
-{% block og_image %}
-  {% if project.featured_image %}https://lazysoft.dev{{ project.featured_image.url }}
-  {% else %}https://lazysoft.dev{% static 'images/projects-og.jpg' %}{% endif %}
-{% endblock %}
+{% block og_image %}{% if og_image %}{{ og_image }}{% elif project.featured_image %}https://lazysoft.pl{{ project.featured_image.url }}{% endif %}{% endblock %}
 
 {% block extra_meta %}
-  <link rel="canonical" href="https://lazysoft.dev/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" />
+  <link rel="canonical" href="https://lazysoft.pl/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" />
   
-  <link rel="alternate" href="https://lazysoft.dev/en/projects/{{ project.slug }}/" hreflang="en">
-  <link rel="alternate" href="https://lazysoft.dev/uk/projects/{{ project.slug }}/" hreflang="uk">
-  <link rel="alternate" href="https://lazysoft.dev/pl/projects/{{ project.slug }}/" hreflang="pl">
+  <link rel="alternate" href="https://lazysoft.pl/en/projects/{{ project.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/uk/projects/{{ project.slug }}/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.pl/pl/projects/{{ project.slug }}/" hreflang="pl">
 {% endblock %}
 
 {% block content %}
@@ -191,16 +180,16 @@
   "@type": "CreativeWork",
   "name": "{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}",
   "description": "{% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|escapejs }}{% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|escapejs }}{% else %}{{ project.short_description_en|striptags|escapejs }}{% endif %}",
-  "url": "https://lazysoft.dev/{{ CURRENT_LANG }}/projects/{{ project.slug }}/",
+  "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/{{ project.slug }}/",
   "inLanguage": "{{ CURRENT_LANG }}",
   "dateCreated": "{{ project.project_date|date:'c' }}",
-  {% if project.featured_image %}"image": "https://lazysoft.dev{{ project.featured_image.url }}",{% endif %}
+  {% if project.featured_image %}"image": "https://lazysoft.pl{{ project.featured_image.url }}",{% endif %}
   {% if project.technologies_used %}"keywords": "{{ project.technologies_used }}",{% endif %}
   {% if project.project_url %}"workExample": "{{ project.project_url }}",{% endif %}
   "creator": {
     "@type": "Organization",
     "name": "Lazysoft",
-    "url": "https://lazysoft.dev"
+    "url": "https://lazysoft.pl"
   }
 }
 </script>

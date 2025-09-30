@@ -494,6 +494,26 @@ def project_detail(request, slug):
         f"{len(related_articles)} новин, {len(related_services)} сервісів"
     )
 
+    # OG-теги для соцмереж
+    og_title = title
+    og_description = _loc(project, "short_description")[:200] if _loc(project, "short_description") else ''
+    og_image_url = None
+
+    # Перевіряємо чи є og_image
+    if hasattr(project, 'og_image') and project.og_image:
+        og_image_url = request.build_absolute_uri(project.og_image.url)
+    # Якщо немає og_image, використовуємо featured_image
+    elif project.featured_image:
+        og_image_url = request.build_absolute_uri(project.featured_image.url)
+
+    # Додаємо OG-теги до контексту
+    context.update({
+        "og_title": og_title,
+        "og_description": og_description,
+        "og_image": og_image_url,
+        "og_url": request.build_absolute_uri(),
+    })
+
     return render(request, "projects/project_detail.html", context)
 
 

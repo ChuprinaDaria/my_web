@@ -217,6 +217,12 @@ class Project(models.Model):
         help_text="Основне зображення проєкту"
     )
     
+    og_image = models.ImageField(
+        upload_to='projects/og/', 
+        null=True, blank=True,
+        help_text="Зображення для соцмереж (1200x630px)"
+    )
+    
     gallery_image_1 = models.ImageField(upload_to="projects/gallery/", blank=True, null=True)
     gallery_image_2 = models.ImageField(upload_to="projects/gallery/", blank=True, null=True)
     gallery_image_3 = models.ImageField(upload_to="projects/gallery/", blank=True, null=True)
