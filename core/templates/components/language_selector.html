@@ -1,0 +1,234 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<div id="languageSelectorOverlay" class="language-selector-overlay" style="display: none;">
+  <div class="language-selector-modal">
+    <div class="language-icon">🌐</div>
+    
+    <h3>{% trans "Choose Language" %}</h3>
+    <p>{% trans "Please select your preferred language" %}</p>
+    
+    <div class="language-options">
+      <button class="language-option {% if CURRENT_LANG == 'en' %}selected{% endif %}" data-lang="en" data-url="/">
+        <span class="flag">🇬🇧</span>
+        <span class="lang-name">English</span>
+      </button>
+      
+      <button class="language-option {% if CURRENT_LANG == 'uk' %}selected{% endif %}" data-lang="uk" data-url="/uk/">
+        <span class="flag">🇺🇦</span>
+        <span class="lang-name">Українська</span>
+      </button>
+      
+      <button class="language-option {% if CURRENT_LANG == 'pl' %}selected{% endif %}" data-lang="pl" data-url="/pl/">
+        <span class="flag">🇵🇱</span>
+        <span class="lang-name">Polski</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+.language-selector-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(5px);
+}
+
+.language-selector-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.language-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.language-selector-modal h3 {
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.language-selector-modal p {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.language-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 15px 25px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.language-option:hover {
+  border-color: #007bff;
+  background: #f8f9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
+}
+
+.language-option.selected {
+  border-color: #007bff;
+  background: #007bff;
+  color: white;
+}
+
+.language-option.selected:hover {
+  background: #0056b3;
+}
+
+.flag {
+  font-size: 24px;
+}
+
+.lang-name {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .language-selector-modal {
+    padding: 30px 20px;
+    margin: 20px;
+  }
+  
+  .language-options {
+    gap: 12px;
+  }
+  
+  .language-option {
+    padding: 12px 20px;
+    font-size: 15px;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const languageOverlay = document.getElementById('languageSelectorOverlay');
+  const languageOptions = document.querySelectorAll('.language-option');
+  
+  // Показуємо модалку вибору мови після cookie consent
+  function showLanguageSelector() {
+    // Перевіряємо, чи користувач вже обрав мову
+    const selectedLanguage = sessionStorage.getItem('user_language_selected');
+    const currentPath = window.location.pathname;
+    
+    // Визначаємо поточну мову з URL
+    let currentLang = 'en';
+    if (currentPath.startsWith('/uk/') || currentPath === '/uk') {
+      currentLang = 'uk';
+    } else if (currentPath.startsWith('/pl/') || currentPath === '/pl') {
+      currentLang = 'pl';
+    }
+    
+    // Якщо користувач вже на правильній мові, не показуємо модалку
+    if (selectedLanguage === currentLang) {
+      return;
+    }
+    
+    // Показуємо модалку
+    languageOverlay.style.display = 'flex';
+    
+    // Додаємо клас для анімації
+    setTimeout(() => {
+      languageOverlay.style.opacity = '1';
+    }, 10);
+  }
+  
+  // Обробка вибору мови
+  languageOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const lang = this.dataset.lang;
+      const url = this.dataset.url;
+      
+      // Зберігаємо вибір в sessionStorage
+      sessionStorage.setItem('user_language_selected', lang);
+      sessionStorage.setItem('user_language_url', url);
+      
+      // Додаємо клас selected до вибраної опції
+      languageOptions.forEach(opt => opt.classList.remove('selected'));
+      this.classList.add('selected');
+      
+      // Перенаправляємо на вибрану мову
+      if (url !== window.location.pathname) {
+        window.location.href = url;
+      } else {
+        // Якщо вже на правильній сторінці, просто ховаємо модалку
+        hideLanguageSelector();
+      }
+    });
+  });
+  
+  function hideLanguageSelector() {
+    languageOverlay.style.opacity = '0';
+    setTimeout(() => {
+      languageOverlay.style.display = 'none';
+    }, 300);
+  }
+  
+  // Показуємо модалку після cookie consent
+  const acceptBtn = document.getElementById('acceptCookies');
+  const declineBtn = document.getElementById('declineCookies');
+  
+  if (acceptBtn) {
+    acceptBtn.addEventListener('click', function() {
+      setTimeout(showLanguageSelector, 500); // Невелика затримка для плавності
+    });
+  }
+  
+  if (declineBtn) {
+    declineBtn.addEventListener('click', function() {
+      setTimeout(showLanguageSelector, 500);
+    });
+  }
+  
+  // Якщо cookie consent вже прийнято, показуємо модалку мови
+  const cookieConsent = localStorage.getItem('cookie_consent');
+  if (cookieConsent && !sessionStorage.getItem('user_language_selected')) {
+    setTimeout(showLanguageSelector, 1000);
+  }
+});
+</script>
