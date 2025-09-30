@@ -25,7 +25,6 @@
 </div>
 
 <style>
-/* Додаткові стилі для модалки вибору мови */
 .language-option.selected {
   background: var(--accent-green) !important;
   color: var(--primary-black) !important;
@@ -44,70 +43,72 @@ document.addEventListener('DOMContentLoaded', function() {
   const languageOverlay = document.getElementById('languageSelectorOverlay');
   const languageOptions = document.querySelectorAll('.language-option');
   
-  // Показуємо модалку вибору мови після cookie consent
   function showLanguageSelector() {
-    // Перевіряємо, чи користувач вже обрав мову
-    const selectedLanguage = sessionStorage.getItem('user_language_selected');
+    const djangoLanguageCookie = document.cookie.match(/django_language=([^;]+)/)?.[1];
     const currentPath = window.location.pathname;
     
-    // Показуємо модалку тільки на головній сторінці
-    const isHomePage = currentPath === '/' || currentPath === '/uk/' || currentPath === '/pl/' || currentPath === '/en/';
+    const isHomePage = currentPath === '/' || currentPath === '/uk/' || currentPath === '/pl/';
     if (!isHomePage) {
       return;
     }
     
-    // Визначаємо поточну мову з URL
-    let currentLang = 'en'; // За замовчуванням англійська
+    let currentLang = 'en';
     if (currentPath.startsWith('/uk/') || currentPath === '/uk') {
       currentLang = 'uk';
     } else if (currentPath.startsWith('/pl/') || currentPath === '/pl') {
       currentLang = 'pl';
     }
     
-    // Якщо користувач вже обрав мову, не показуємо модалку
-    if (selectedLanguage) {
+    if (djangoLanguageCookie) {
       return;
     }
     
-    // Показуємо модалку з анімацією (як cookie consent)
     languageOverlay.style.display = 'flex';
     setTimeout(() => {
       languageOverlay.classList.add('show');
     }, 10);
   }
   
-  // Обробка вибору мови
   languageOptions.forEach(option => {
     option.addEventListener('click', function() {
       const lang = this.dataset.lang;
       const currentPath = window.location.pathname;
       
-      // Формуємо правильний URL для вибраної мови
       let targetUrl = '/';
       
       if (lang === 'en') {
-        // Для англійської мови - головна сторінка без префіксу
         targetUrl = '/';
       } else {
-        // Для інших мов - головна сторінка з мовним префіксом
         targetUrl = `/${lang}/`;
       }
       
-      // Зберігаємо вибір в sessionStorage
-      sessionStorage.setItem('user_language_selected', lang);
-      sessionStorage.setItem('user_language_url', targetUrl);
-      
-      // Додаємо клас selected до вибраної опції
-      languageOptions.forEach(opt => opt.classList.remove('selected'));
-      this.classList.add('selected');
-      
-      // Перенаправляємо на головну сторінку вибраної мови
-      if (targetUrl !== currentPath) {
-        window.location.href = targetUrl;
-      } else {
-        // Якщо вже на правильній сторінці, просто ховаємо модалку
-        hideLanguageSelector();
-      }
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/i18n/setlang/';
+
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value 
+          || document.cookie.match(/csrftoken=([^;]+)/)?.[1];
+          
+      const csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = 'csrfmiddlewaretoken';
+      csrfInput.value = csrfToken;
+
+      const langInput = document.createElement('input');
+      langInput.type = 'hidden';
+      langInput.name = 'language';
+      langInput.value = lang;
+
+      const nextInput = document.createElement('input');
+      nextInput.type = 'hidden';
+      nextInput.name = 'next';
+      nextInput.value = targetUrl;
+
+      form.appendChild(csrfInput);
+      form.appendChild(langInput);
+      form.appendChild(nextInput);
+      document.body.appendChild(form);
+      form.submit();
     });
   });
   
@@ -118,13 +119,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 300);
   }
   
-  // Показуємо модалку після cookie consent
   const acceptBtn = document.getElementById('acceptCookies');
   const declineBtn = document.getElementById('declineCookies');
   
   if (acceptBtn) {
     acceptBtn.addEventListener('click', function() {
-      setTimeout(showLanguageSelector, 500); // Невелика затримка для плавності
+      setTimeout(showLanguageSelector, 500);
     });
   }
   
@@ -134,9 +134,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Якщо cookie consent вже прийнято, показуємо модалку мови
   const cookieConsent = localStorage.getItem('cookie_consent');
-  if (cookieConsent && !sessionStorage.getItem('user_language_selected')) {
+  const djangoLanguageCookie = document.cookie.match(/django_language=([^;]+)/)?.[1];
+  if (cookieConsent && !djangoLanguageCookie) {
     setTimeout(showLanguageSelector, 1000);
   }
 });

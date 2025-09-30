@@ -78,6 +78,13 @@ urlpatterns += [
 
 # 🔤 Усе, що має мовні префікси
 from core.views_2fa import TwoFactorLoginView, TwoFactorSetupView
+
+# 🌐 Django i18n URL для зміни мови (ПЕРЕД i18n_patterns!)
+from django.conf.urls.i18n import i18n_patterns
+urlpatterns += [
+    path('i18n/', include('django.conf.urls.i18n')),
+]
+
 urlpatterns += i18n_patterns(
     path('control/login/', TwoFactorLoginView.as_view(), name='admin_2fa_login'),
     path('control/2fa/setup/', TwoFactorSetupView.as_view(), name='2fa_setup'),
