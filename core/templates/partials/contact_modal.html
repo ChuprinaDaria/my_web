@@ -52,6 +52,16 @@
                           placeholder="{% trans 'Розкажіть про ваш проєкт або запитання...' %}"></textarea>
             </div>
             
+            <!-- 🍯 Honeypot - приховане поле для ботів -->
+            <input 
+                type="text" 
+                name="website" 
+                style="position: absolute; left: -9999px; width: 1px; height: 1px;" 
+                tabindex="-1" 
+                autocomplete="off"
+                aria-hidden="true"
+            >
+            
             <button type="submit" class="btn-modal-submit">
                 <span class="btn-text">{% trans "Надіслати заявку" %}</span>
                 <span class="btn-loading" style="display: none;">{% trans "Надсилаємо..." %}</span>

@@ -188,6 +188,16 @@
               
               <input type="hidden" name="referred_from" value="contact_page">
               
+              <!-- 🍯 Honeypot - приховане поле для ботів -->
+              <input 
+                  type="text" 
+                  name="website" 
+                  style="position: absolute; left: -9999px; width: 1px; height: 1px;" 
+                  tabindex="-1" 
+                  autocomplete="off"
+                  aria-hidden="true"
+              >
+              
               <button type="submit" class="submit-btn btn-primary">
                 <span class="btn-text">
                   {% trans "Надіслати повідомлення" %}

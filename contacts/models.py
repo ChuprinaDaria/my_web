@@ -158,6 +158,14 @@ class ContactSubmission(models.Model):
     subject = models.CharField(max_length=255)
     message = models.TextField()
     
+    # Honeypot поле для захисту від ботів
+    website = models.CharField(
+        max_length=255, 
+        blank=True, 
+        null=True,
+        help_text="Honeypot field - should always be empty"
+    )
+    
     # З якої сторінки прийшов
     referred_from = models.CharField(
         max_length=50, 

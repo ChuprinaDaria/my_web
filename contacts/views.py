@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.core.mail import send_mail
+from django.core.cache import cache
 from django.conf import settings
 import json
 import logging
@@ -63,6 +64,33 @@ def submit_contact_form(request):
         cta_source = data.get('cta_source', '')
         page_url = data.get('page_url', '') or request.META.get('HTTP_REFERER', '')
         session_id = data.get('session_id', '') or request.session.session_key or ''
+        
+        # 🔒 ДОДАЙ ЦІ ПЕРЕВІРКИ ПІСЛЯ ВАЛІДАЦІЇ ПОЛІВ, ПЕРЕД ContactSubmission.objects.create()
+
+        # 1. Honeypot перевірка (якщо бот заповнив приховане поле)
+        honeypot = data.get('website', '')  # боти заповнять це поле
+        if honeypot:
+            logger.warning(f"🤖 Bot detected via honeypot from {get_client_ip(request)}")
+            return JsonResponse({'success': False, 'error': 'Spam detected'}, status=400)
+
+        # 2. Rate limiting - не більше 3 заявок з однієї IP за 10 хвилин
+        ip = get_client_ip(request)
+        cache_key = f'contact_form_{ip}'
+        submissions_count = cache.get(cache_key, 0)
+        if submissions_count >= 3:
+            logger.warning(f"🚫 Rate limit exceeded for {ip}")
+            return JsonResponse({'success': False, 'error': 'Too many requests'}, status=429)
+
+        # 3. Перевірка на спам-текст у темі та повідомленні
+        spam_keywords = ['sex', 'casino', 'viagra', 'loan', 'depraved', 'dating']
+        subject_lower = data.get('subject', '').lower()
+        message_lower = data.get('message', '').lower()
+        if any(keyword in subject_lower or keyword in message_lower for keyword in spam_keywords):
+            logger.warning(f"🗑️ Spam content detected from {ip}")
+            return JsonResponse({'success': False, 'error': 'Invalid content'}, status=400)
+
+        # 4. Збільшуємо лічильник запитів (після всіх перевірок, перед створенням submission)
+        cache.set(cache_key, submissions_count + 1, 600)  # 600 сек = 10 хвилин
         
         # Створюємо запис в БД
         submission = ContactSubmission.objects.create(
