@@ -17,6 +17,14 @@ msgstr ""
 msgid "Cookies & Privacy"
 msgstr "Pliki cookie i prywatność"
 
+#: core/templates/components/language_selector.html:6
+msgid "Choose Language"
+msgstr "Wybierz język"
+
+#: core/templates/components/language_selector.html:7
+msgid "Please select your preferred language"
+msgstr "Proszę wybrać preferowany język"
+
 #: core/templates/components/cookie_consent.html:14
 msgid ""
 "Ми використовуємо cookies для покращення вашого досвіду на сайті. "

@@ -256,9 +256,9 @@ RAG_LEARNING_SETTINGS = {
 
 # === 🌐 INTERNATIONALIZATION ===
 LANGUAGES = [
+    ('en', 'English'),
     ('uk', 'Українська'),
     ('pl', 'Polski'),
-    ('en', 'English'),
 ]
 
 LANGUAGE_CODE = 'en'
@@ -272,12 +272,12 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 # === 🎨 PARLER (Multi-language) ===
 PARLER_LANGUAGES = {
     None: (
+        {'code': 'en'},
         {'code': 'uk'},
         {'code': 'pl'},
-        {'code': 'en'},
     ),
     'default': {
-        'fallbacks': ['uk', 'en'],
+        'fallbacks': ['en', 'uk'],
         'hide_untranslated': False,
     }
 }

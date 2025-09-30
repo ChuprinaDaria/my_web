@@ -1,0 +1,143 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<div id="languageSelectorOverlay" class="cookie-consent-overlay" style="display: none;">
+  <div class="cookie-consent-modal">
+    <div class="cookie-icon">🌐</div>
+    
+    <h3>{% trans "Choose Language" %}</h3>
+    <p>{% trans "Please select your preferred language" %}</p>
+    
+    <div class="cookie-buttons">
+      <button class="cookie-btn accept language-option {% if CURRENT_LANG == 'en' %}selected{% endif %}" data-lang="en" data-url="/">
+        🇬🇧 English
+      </button>
+      
+      <button class="cookie-btn decline language-option {% if CURRENT_LANG == 'uk' %}selected{% endif %}" data-lang="uk" data-url="/uk/">
+        🇺🇦 Українська
+      </button>
+      
+      <button class="cookie-btn decline language-option {% if CURRENT_LANG == 'pl' %}selected{% endif %}" data-lang="pl" data-url="/pl/">
+        🇵🇱 Polski
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+.language-option.selected {
+  background: var(--accent-green) !important;
+  color: var(--primary-black) !important;
+  border-color: var(--accent-green) !important;
+}
+
+.language-option.selected:hover {
+  background: rgba(158, 255, 0, 0.9) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(158, 255, 0, 0.3);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const languageOverlay = document.getElementById('languageSelectorOverlay');
+  const languageOptions = document.querySelectorAll('.language-option');
+  
+  function showLanguageSelector() {
+    const djangoLanguageCookie = document.cookie.match(/django_language=([^;]+)/)?.[1];
+    const currentPath = window.location.pathname;
+    
+    const isHomePage = currentPath === '/' || currentPath === '/uk/' || currentPath === '/pl/';
+    if (!isHomePage) {
+      return;
+    }
+    
+    let currentLang = 'en';
+    if (currentPath.startsWith('/uk/') || currentPath === '/uk') {
+      currentLang = 'uk';
+    } else if (currentPath.startsWith('/pl/') || currentPath === '/pl') {
+      currentLang = 'pl';
+    }
+    
+    if (djangoLanguageCookie) {
+      return;
+    }
+    
+    languageOverlay.style.display = 'flex';
+    setTimeout(() => {
+      languageOverlay.classList.add('show');
+    }, 10);
+  }
+  
+  languageOptions.forEach(option => {
+    option.addEventListener('click', function() {
+      const lang = this.dataset.lang;
+      const currentPath = window.location.pathname;
+      
+      let targetUrl = '/';
+      
+      if (lang === 'en') {
+        targetUrl = '/';
+      } else {
+        targetUrl = `/${lang}/`;
+      }
+      
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '/i18n/setlang/';
+
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value 
+          || document.cookie.match(/csrftoken=([^;]+)/)?.[1];
+          
+      const csrfInput = document.createElement('input');
+      csrfInput.type = 'hidden';
+      csrfInput.name = 'csrfmiddlewaretoken';
+      csrfInput.value = csrfToken;
+
+      const langInput = document.createElement('input');
+      langInput.type = 'hidden';
+      langInput.name = 'language';
+      langInput.value = lang;
+
+      const nextInput = document.createElement('input');
+      nextInput.type = 'hidden';
+      nextInput.name = 'next';
+      nextInput.value = targetUrl;
+
+      form.appendChild(csrfInput);
+      form.appendChild(langInput);
+      form.appendChild(nextInput);
+      document.body.appendChild(form);
+      form.submit();
+    });
+  });
+  
+  function hideLanguageSelector() {
+    languageOverlay.classList.remove('show');
+    setTimeout(() => {
+      languageOverlay.style.display = 'none';
+    }, 300);
+  }
+  
+  const acceptBtn = document.getElementById('acceptCookies');
+  const declineBtn = document.getElementById('declineCookies');
+  
+  if (acceptBtn) {
+    acceptBtn.addEventListener('click', function() {
+      setTimeout(showLanguageSelector, 500);
+    });
+  }
+  
+  if (declineBtn) {
+    declineBtn.addEventListener('click', function() {
+      setTimeout(showLanguageSelector, 500);
+    });
+  }
+  
+  const cookieConsent = localStorage.getItem('cookie_consent');
+  const djangoLanguageCookie = document.cookie.match(/django_language=([^;]+)/)?.[1];
+  if (cookieConsent && !djangoLanguageCookie) {
+    setTimeout(showLanguageSelector, 1000);
+  }
+});
+</script>
