@@ -97,6 +97,15 @@ msgstr "Darmowa konsultacja"
 msgid "Get expert consultation from our specialists"
 msgstr "Otrzymaj ekspercką konsultację od naszych specjalistów"
 
+msgid "Let's discuss how we can help transform your business with smart automation."
+msgstr "Porozmawiajmy o tym, jak możemy pomóc przekształcić Twój biznes dzięki inteligentnej automatyzacji."
+
+msgid "Help others discover this solution"
+msgstr "Pomóż innym odkryć to rozwiązanie"
+
+msgid "Let's discuss how this technology can transform your business"
+msgstr "Porozmawiajmy o tym, jak ta technologia może przekształcić Twój biznes"
+
 msgid "Contact Now"
 msgstr "Skontaktuj się teraz"
 
