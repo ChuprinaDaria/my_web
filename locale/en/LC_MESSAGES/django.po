@@ -43,6 +43,54 @@ msgstr "Accept"
 msgid "Decline"
 msgstr "Decline"
 
+msgid "Write to us"
+msgstr "Write to us"
+
+msgid "Contact Information"
+msgstr "Contact Information"
+
+msgid "Availability"
+msgstr "Availability"
+
+msgid "Available worldwide"
+msgstr "Available worldwide"
+
+msgid "Office Address"
+msgstr "Office Address"
+
+msgid "View on Google Maps"
+msgstr "View on Google Maps"
+
+msgid "Follow us"
+msgstr "Follow us"
+
+msgid "Send Message"
+msgstr "Send Message"
+
+msgid "Write to us"
+msgstr "Write to us"
+
+msgid "Contact Information"
+msgstr "Contact Information"
+
+msgid "Availability"
+msgstr "Availability"
+
+msgid "Available worldwide"
+msgstr "Available worldwide"
+
+msgid "Office Address"
+msgstr "Office Address"
+
+msgid "View on Google Maps"
+msgstr "View on Google Maps"
+
+msgid "Follow us"
+msgstr "Follow us"
+
+msgid "Send Message"
+msgstr "Send Message"
+
 msgid "Projects - LazySoft"
 msgstr "Projects - LazySoft"
 
