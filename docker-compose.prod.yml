@@ -87,7 +87,7 @@ services:
   celery:
     build: .
     restart: unless-stopped
-    command: celery -A lazysoft worker -l info --pool=solo
+    command: celery -A lazysoft worker -l info --pool=solo -Q celery,news_parsing,social,rag
     environment:
       DEBUG: "False"
       DB_HOST: db
