@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const style = document.createElement('style');
   style.textContent = `
-    [data-lang]:not(.js-active) {
+    [data-lang]:not(.js-active):not(.language-option) {
       display: none !important;
       visibility: hidden !important;
       opacity: 0 !important;
@@ -75,8 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function switchLanguage(currentLang) {
-  
-  document.querySelectorAll("[data-lang]").forEach(el => {
+  document.querySelectorAll("[data-lang]:not(.language-option)").forEach(el => {
     if (el.dataset.lang === currentLang) {
       
       el.style.opacity = '0';

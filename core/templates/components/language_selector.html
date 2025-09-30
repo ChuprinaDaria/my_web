@@ -9,17 +9,17 @@
     <p>{% trans "Please select your preferred language" %}</p>
     
     <div class="cookie-buttons">
-      <button class="cookie-btn accept language-option {% if CURRENT_LANG == 'en' %}selected{% endif %}" data-lang="en" data-url="/">
-        🇬🇧 English
-      </button>
-      
-      <button class="cookie-btn decline language-option {% if CURRENT_LANG == 'uk' %}selected{% endif %}" data-lang="uk" data-url="/uk/">
-        🇺🇦 Українська
-      </button>
-      
-      <button class="cookie-btn decline language-option {% if CURRENT_LANG == 'pl' %}selected{% endif %}" data-lang="pl" data-url="/pl/">
-        🇵🇱 Polski
-      </button>
+     <button class="cookie-btn accept language-option {% if CURRENT_LANG == 'en' %}selected{% endif %}" data-lang="en">
+  🇬🇧 English
+</button>
+
+<button class="cookie-btn decline language-option {% if CURRENT_LANG == 'uk' %}selected{% endif %}" data-lang="uk">
+  🇺🇦 Українська
+</button>
+
+<button class="cookie-btn decline language-option {% if CURRENT_LANG == 'pl' %}selected{% endif %}" data-lang="pl">
+  🇵🇱 Polski
+</button>
     </div>
   </div>
 </div>
@@ -44,21 +44,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const languageOptions = document.querySelectorAll('.language-option');
   
   function showLanguageSelector() {
-    const djangoLanguageCookie = document.cookie.match(/django_language=([^;]+)/)?.[1];
     const currentPath = window.location.pathname;
+    const isHomePage = ['/', '/uk/', '/pl/', '', '/uk', '/pl'].includes(currentPath);
     
-    const isHomePage = currentPath === '/' || currentPath === '/uk/' || currentPath === '/pl/';
     if (!isHomePage) {
       return;
     }
     
-    let currentLang = 'en';
-    if (currentPath.startsWith('/uk/') || currentPath === '/uk') {
-      currentLang = 'uk';
-    } else if (currentPath.startsWith('/pl/') || currentPath === '/pl') {
-      currentLang = 'pl';
-    }
-    
+    const djangoLanguageCookie = document.cookie.match(/django_language=([^;]+)/)?.[1];
     if (djangoLanguageCookie) {
       return;
     }
@@ -72,38 +65,30 @@ document.addEventListener('DOMContentLoaded', function() {
   languageOptions.forEach(option => {
     option.addEventListener('click', function() {
       const lang = this.dataset.lang;
-      const currentPath = window.location.pathname;
-      
-      let targetUrl = '/';
-      
-      if (lang === 'en') {
-        targetUrl = '/';
-      } else {
-        targetUrl = `/${lang}/`;
-      }
+      let targetUrl = lang === 'en' ? '/' : `/${lang}/`;
       
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = '/i18n/setlang/';
-
+      
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value 
           || document.cookie.match(/csrftoken=([^;]+)/)?.[1];
-          
+      
       const csrfInput = document.createElement('input');
       csrfInput.type = 'hidden';
       csrfInput.name = 'csrfmiddlewaretoken';
       csrfInput.value = csrfToken;
-
+      
       const langInput = document.createElement('input');
       langInput.type = 'hidden';
       langInput.name = 'language';
       langInput.value = lang;
-
+      
       const nextInput = document.createElement('input');
       nextInput.type = 'hidden';
       nextInput.name = 'next';
       nextInput.value = targetUrl;
-
+      
       form.appendChild(csrfInput);
       form.appendChild(langInput);
       form.appendChild(nextInput);
@@ -135,8 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   const cookieConsent = localStorage.getItem('cookie_consent');
-  const djangoLanguageCookie = document.cookie.match(/django_language=([^;]+)/)?.[1];
-  if (cookieConsent && !djangoLanguageCookie) {
+  if (cookieConsent) {
     setTimeout(showLanguageSelector, 1000);
   }
 });
