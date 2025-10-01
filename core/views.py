@@ -206,12 +206,44 @@ def robots_txt(request):
     
     content = f"""User-agent: *
 Allow: /
+
+# Sitemaps
+Sitemap: {site_url}/sitemap.xml
+Sitemap: {site_url}/sitemap-static.xml
+Sitemap: {site_url}/sitemap-services.xml
+Sitemap: {site_url}/sitemap-projects.xml
+Sitemap: {site_url}/sitemap-articles.xml
+Sitemap: {site_url}/sitemap-news.xml
+Sitemap: {site_url}/sitemap-categories.xml
+
+# Disallow admin and control panels
 Disallow: /admin/
+Disallow: /control/
 Disallow: /account/
 Disallow: /api/
-Disallow: /control/
 
-Sitemap: {site_url}/sitemap.xml
+# Allow important pages
+Allow: /en/
+Allow: /uk/
+Allow: /pl/
+Allow: /services/
+Allow: /projects/
+Allow: /news/
+Allow: /about/
+Allow: /contacts/
+Allow: /consultant/
+
+# Disallow static files that don't need indexing
+Disallow: /static/admin/
+Disallow: /static/ckeditor/
+Disallow: /media/ai_images/
+Disallow: /media/company/
+Disallow: /media/contacts/
+Disallow: /media/projects/
+Disallow: /media/services/
+
+# Crawl delay
+Crawl-delay: 1
 """
     
     return HttpResponse(content, content_type='text/plain')

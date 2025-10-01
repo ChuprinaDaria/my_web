@@ -12,7 +12,7 @@ from django.http import HttpResponse
 # 📰 Імпортуємо sitemaps для SEO
 try:
     from news.views import NewsSitemap, NewsCategorySitemap
-    from core.sitemaps import StaticViewSitemap
+    from core.sitemaps import StaticViewSitemap, ServiceDetailSitemap, ProjectDetailSitemap, ArticleDetailSitemap
     SITEMAPS_AVAILABLE = True
 except ImportError:
     SITEMAPS_AVAILABLE = False
@@ -51,12 +51,18 @@ urlpatterns += [
 if SITEMAPS_AVAILABLE:
     sitemaps = {
         'static': StaticViewSitemap,
+        'services': ServiceDetailSitemap,
+        'projects': ProjectDetailSitemap,
+        'articles': ArticleDetailSitemap,
         'news': NewsSitemap,
         'news_categories': NewsCategorySitemap,
     }
     urlpatterns += [
         path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
         path('sitemap-static.xml', sitemap, {'sitemaps': {'static': StaticViewSitemap}}, name='static_sitemap'),
+        path('sitemap-services.xml', sitemap, {'sitemaps': {'services': ServiceDetailSitemap}}, name='services_sitemap'),
+        path('sitemap-projects.xml', sitemap, {'sitemaps': {'projects': ProjectDetailSitemap}}, name='projects_sitemap'),
+        path('sitemap-articles.xml', sitemap, {'sitemaps': {'articles': ArticleDetailSitemap}}, name='articles_sitemap'),
         path('sitemap-news.xml', sitemap, {'sitemaps': {'news': NewsSitemap}}, name='news_sitemap'),
         path('sitemap-categories.xml', sitemap, {'sitemaps': {'news_categories': NewsCategorySitemap}}, name='categories_sitemap'),
     ]

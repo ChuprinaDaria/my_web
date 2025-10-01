@@ -1,49 +1,94 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
-from django.conf import settings
 
 
 class StaticViewSitemap(Sitemap):
     """Sitemap для статичних сторінок сайту"""
     priority = 0.9
     changefreq = 'monthly'
+    i18n = True  # Django автоматично згенерує всі мови
     
     def items(self):
-        """Список статичних URL для всіх мов"""
-        static_urls = []
-        languages = ['en', 'uk', 'pl']  # Підтримувані мови
-        
-        # Основні сторінки для кожної мови
-        pages = [
-            'core:home',
-            'about:about_index', 
-            'services:services_index',
-            'projects:projects_list',
-            'contacts:contacts_index',
-            'news:news_list',
+        """Список статичних URL - Django автоматично створить версії для всіх мов"""
+        return [
+            'core:home',           # core/urls.py
+            'about:about',         # about/urls.py
+            'services:services_list',  # services/urls.py
+            'projects:projects',   # projects/urls.py
+            'contact_page',        # contacts/urls.py
+            'news:news_list',      # news/urls.py
+            'consultant:chat',     # consultant/urls.py
         ]
-        
-        for lang in languages:
-            for page in pages:
-                try:
-                    static_urls.append((page, lang))
-                except:
-                    pass  # Ігноруємо неіснуючі URL
-        
-        return static_urls
     
     def location(self, item):
-        """Генеруємо URL з мовним префіксом"""
-        page, lang = item
-        try:
-            if lang == 'en':
-                return f"/{reverse(page).lstrip('/')}"
-            else:
-                return f"/{lang}/{reverse(page).lstrip('/')}"
-        except:
-            return f"/{lang}/"
+        """Генеруємо URL - Django автоматично додасть мовний префікс"""
+        return reverse(item)
+
+
+class ServiceDetailSitemap(Sitemap):
+    """Sitemap для детальних сторінок послуг"""
+    priority = 0.8
+    changefreq = 'weekly'
+    i18n = True
     
-    def lastmod(self, item):
+    def items(self):
+        """Отримуємо всі активні послуги"""
+        try:
+            from services.models import ServiceCategory
+            return ServiceCategory.objects.all()
+        except ImportError:
+            return []
+    
+    def location(self, obj):
+        """URL детальної сторінки послуги"""
+        return reverse('services:service_detail', kwargs={'slug': obj.slug})
+    
+    def lastmod(self, obj):
         """Дата останньої модифікації"""
-        from django.utils import timezone
-        return timezone.now().date()
+        return obj.date_created
+
+
+class ProjectDetailSitemap(Sitemap):
+    """Sitemap для детальних сторінок проєктів"""
+    priority = 0.8
+    changefreq = 'weekly'
+    i18n = True
+    
+    def items(self):
+        """Отримуємо всі активні проєкти"""
+        try:
+            from projects.models import Project
+            return Project.objects.filter(is_active=True)
+        except ImportError:
+            return []
+    
+    def location(self, obj):
+        """URL детальної сторінки проєкту"""
+        return reverse('projects:project_detail', kwargs={'slug': obj.slug})
+    
+    def lastmod(self, obj):
+        """Дата останньої модифікації"""
+        return obj.date_created
+
+
+class ArticleDetailSitemap(Sitemap):
+    """Sitemap для детальних сторінок статей"""
+    priority = 0.7
+    changefreq = 'daily'
+    i18n = True
+    
+    def items(self):
+        """Отримуємо всі опубліковані статті"""
+        try:
+            from news.models import ProcessedArticle
+            return ProcessedArticle.objects.filter(status='published')
+        except ImportError:
+            return []
+    
+    def location(self, obj):
+        """URL детальної сторінки статті"""
+        return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
+    
+    def lastmod(self, obj):
+        """Дата останньої модифікації"""
+        return obj.published_at or obj.created_at
