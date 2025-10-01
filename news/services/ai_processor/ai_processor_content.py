@@ -241,9 +241,19 @@ class AIContentProcessor(AINewsProcessor):
     def _create_multilingual_content(self, raw_article: RawArticle, category_info: Dict) -> dict:
         """Створює тримовний ОРИГІНАЛЬНИЙ бізнес-аналіз з RSS (~1000–1200 символів)."""
         original_title = raw_article.title or ""
-        # Використовуємо збагачений контент (FiveFilters вже спрацював)
+        # Використовуємо максимум контенту від FiveFilters для AI
         full_content = raw_article.content or raw_article.summary or ""
-        content_for_ai = full_content[:2000]  # Збільшуємо ліміт для кращого AI аналізу
+        
+        # Динамічний ліміт: до 8К символів (безпечно для Claude API + промпт)
+        max_ai_content = min(len(full_content), 8000)
+        content_for_ai = full_content[:max_ai_content]
+        
+        self.logger.info(
+            f"[AI INPUT] Стаття: {raw_article.title[:60]}...\n"
+            f"   Full content: {len(full_content)} символів\n"
+            f"   Передаємо AI: {len(content_for_ai)} символів\n"
+            f"   Source: {raw_article.source.name if raw_article.source else 'Unknown'}"
+        )
         category = category_info["category"]
 
         # Підготовуємо дані для промпту
@@ -251,76 +261,98 @@ class AIContentProcessor(AINewsProcessor):
         original_url = raw_article.original_url or ""
         
         main_prompt = f"""
-        You are LAZYSOFT's tech/business editor. Create business analysis for European SMBs.
+You are LAZYSOFT's senior tech analyst. Your job is to ANALYZE and SYNTHESIZE information from tech articles for European SMB audience, NOT to translate or copy.
 
-        ORIGINAL TITLE: {original_title}
-        ARTICLE CONTENT: {content_for_ai[:1200]}
-        CATEGORY: {category}
-        SOURCE: {source_name}
-        ORIGINAL_URL: {original_url}
+CRITICAL ANTI-PLAGIARISM RULES:
+🚫 NEVER copy sentences from the original article
+🚫 NEVER translate article text directly
+🚫 NEVER use exact phrases even in quotes
+✅ ALWAYS analyze, interpret, and explain in YOUR OWN WORDS
+✅ ALWAYS add business context and SMB perspective
+✅ ALWAYS synthesize information into original analysis
 
-        CRITICAL CONCEPT: You are creating LAZYSOFT's ORIGINAL CONTENT - our thoughts, analysis, and opinions about the article.
-        This is NOT a translation or republication. This is LAZYSOFT's unique business perspective.
-        
-        REQUIREMENTS:
-        - Create UNIQUE business-focused titles (NOT translations of original)
-        - Write comprehensive LAZYSOFT analysis (2000-3000 chars) with our insights
-        - Always acknowledge the source and provide link to original
-        - Mix different intro/outro patterns for variety
-        - Focus on business impact for European SMBs
-        
-        TONE VARIETY: Mix professional, analytical, conversational, and expert tones across different articles.
-        STYLE DIVERSITY: Alternate between formal business language and approachable explanations.
+ORIGINAL ARTICLE INFO:
+Title: {original_title}
+Source: {source_name}
+Content to analyze: {content_for_ai}
+Category: {category}
 
-        CRITICAL INSTRUCTIONS:
-        - ALWAYS start summary with one of the provided intro patterns (use "наші думки", "наш аналіз", etc.)
-        - Replace SOURCE with: {source_name}
-        - Replace ORIGINAL_URL with: {original_url}  
-        - Replace [topic] and [temat] with the actual topic from the article
-        - MUST include LAZYSOFT perspective phrases like "наші думки", "наша точка зору", "команда LAZYSOFT"
-        - ALWAYS end summary with source link
+YOUR TASK:
+1. READ and UNDERSTAND the article
+2. EXTRACT key facts, technologies, companies mentioned
+3. ANALYZE what this means for European SMBs
+4. WRITE ORIGINAL analysis in your own words
+5. CREATE unique business-focused titles that describe the news
 
-        IMPORTANT: Respond with ONLY valid JSON. No explanations, no markdown, no extra text.
-        
+TITLE REQUIREMENTS:
+- Must be ORIGINAL, not copy of source title
+- Format examples:
+  * "Новини про [technology/company]: що каже [Source Name] про [key point]"
+  * "Останні розробки [topic]: аналіз від [Source Name]"  
+  * "[Source Name] повідомляє про [main point] - що це означає для бізнесу"
+- Include source name for credibility
+- Describe WHAT the article discusses, not copy its title
+
+CONTENT REQUIREMENTS (2000-3000 chars per language):
+- Write as LAZYSOFT analyst, not as article translator
+- Structure: 
+  1. What happened (in your words)
+  2. Key technologies/companies/numbers involved
+  3. Why it matters for European SMBs
+  4. Practical implications
+- Use phrases like:
+  * "За даними [Source], ..."
+  * "[Source Name] повідомляє, що..."
+  * "Згідно з аналізом від [Source], ..."
+  * "Дослідження показує..."
+- Include specific facts but REPHRASE them
+- Add LAZYSOFT perspective on automation opportunities
+
+EXAMPLE OF ORIGINAL ANALYSIS:
+
+Article: "Google AI Max Early Case Studies: Performance Analysis and Script"
+Source: Search Engine Land
+
+❌ BAD (copying):
+"Google's AI Max combines Dynamic Search Ads and Performance Max. The script creates two tabs in your Sheet: AI Max Performance Max search term data with headlines, landing pages, and performance metrics..."
+
+✅ GOOD (original analysis):
+"Search Engine Land опублікував дослідження ефективності Google AI Max, що об'єднує технології Dynamic Search Ads та Performance Max. Аналіз трьох секторів виявив цікаві патерни: туристичний сектор показав 22.5% перетину з існуючими запитами, що може свідчити про перерозподіл трафіку, тоді як індустрія моди виявила 81.3% абсолютно нових запитів - це справжня можливість для зростання. Для МСП особливо цінним є автоматизований скрипт для Google Sheets, який дозволяє швидко аналізувати ефективність кампаній без ручної роботи..."
+
+VERIFICATION BEFORE RESPONDING:
+☑ Did I write in MY OWN WORDS?
+☑ Did I add business context original article doesn't have?
+☑ Would this pass plagiarism check?
+☑ Did I mention source but not copy their text?
+☑ Are titles ORIGINAL, not translated?
+☑ Did I include specific facts/numbers but rephrase them?
+
+OUTPUT JSON ONLY:
         {{
-            "title_en": "Create unique business title (different from original)",
-            "title_uk": "Створи унікальний бізнес-заголовок (відмінний від оригіналу)",
-            "title_pl": "Stwórz unikalny tytuł biznesowy (różny od oryginału)",
+            "title_en": "Original analytical title mentioning source and key point (e.g., 'Search Engine Land reports: AI Max shows 81% new query discovery in fashion sector')",
+            "title_uk": "Оригінальний аналітичний заголовок з джерелом (напр., 'Search Engine Land: AI Max виявляє 81% нових запитів у fashion-секторі')",
+            "title_pl": "Oryginalny tytuł analityczny ze źródłem (np., 'Search Engine Land: AI Max odkrywa 81% nowych zapytań w sektorze mody')",
             
-            "summary_en": "RANDOM intro pattern: 'Recently SOURCE published an interesting article about [topic]. Here are our thoughts:' OR 'Found a very interesting piece in SOURCE about [topic]. Sharing our insights:' OR 'LAZYSOFT team analyzed SOURCE publication. Our conclusions:' OR 'SOURCE talks about [topic] - we add our context:' OR 'Noticed an interesting trend in SOURCE article. Breaking it down:' OR 'Analyzing fresh publication from SOURCE:' OR 'Studied SOURCE article and have something to say:' + comprehensive LAZYSOFT analysis (2000-3000 chars) + RANDOM outro: 'Source: ORIGINAL_URL' OR 'Full article: ORIGINAL_URL' OR 'Read more: ORIGINAL_URL' OR 'Original piece: ORIGINAL_URL'",
+            "summary_en": "ORIGINAL analysis in your own words (2000-3000 chars) - NOT translation of article",
+            "summary_uk": "ОРИГІНАЛЬНИЙ аналіз своїми словами (2000-3000 символів) - НЕ переклад статті",
+            "summary_pl": "ORYGINALNA analiza własnymi słowami (2000-3000 znaków) - NIE tłumaczenie artykułu",
             
-            "summary_uk": "ОБОВ'ЯЗКОВО почни з ОДНОГО з цих шаблонів: 'Нещодавно SOURCE опублікував цікаву статтю про [тема]. Ось наші думки:' АБО 'Знайшли дуже цікавий матеріал у SOURCE про [тема]. Ділимося інсайтами:' АБО 'Команда LAZYSOFT проаналізувала публікацію SOURCE. Наші висновки:' АБО 'SOURCE розповідає про [тема] - ми додаємо свій контекст:' АБО 'Помітили цікаву тенденцію у статті SOURCE. Розбираємося:' АБО 'Аналізуємо свіжу публікацію SOURCE:' АБО 'Вивчили статтю SOURCE і маємо що сказати:' АБО 'Цікавий кейс від SOURCE. Розбираємо детально:' АБО 'У SOURCE з\'явився матеріал про [тема]. Що ми про це думаємо:' АБО 'SOURCE ділиться інформацією про [тема]. Наша точка зору:' + комплексний аналіз LAZYSOFT (2000-3000 символів) + ОБОВ'ЯЗКОВО закінчи з: 'Джерело: ORIGINAL_URL' АБО 'Повний матеріал: ORIGINAL_URL' АБО 'Детальніше в оригіналі: ORIGINAL_URL' АБО 'Оригінальна стаття: ORIGINAL_URL' АБО 'Більше подробиць: ORIGINAL_URL' АБО 'Повна версія тут: ORIGINAL_URL'",
+            "business_insight_en": "Unique business insight analyzing article findings for SMBs",
+            "business_insight_uk": "Унікальний бізнес-інсайт з аналізом для МСП",
+            "business_insight_pl": "Unikalny wgląd biznesowy z analizą dla MŚP",
             
-            "summary_pl": "LOSOWE intro: 'Niedawno SOURCE opublikował ciekawy artykuł o [temat]. Oto nasze przemyślenia:' LUB 'Znaleźliśmy bardzo ciekawy materiał w SOURCE o [temat]. Dzielimy się spostrzeżeniami:' LUB 'Zespół LAZYSOFT przeanalizował publikację SOURCE. Nasze wnioski:' LUB 'SOURCE mówi o [temat] - dodajemy nasz kontekst:' LUB 'Zauważyliśmy ciekawy trend w artykule SOURCE. Analizujemy:' LUB 'Analizujemy świeżą publikację SOURCE:' LUB 'Przestudiowaliśmy artykuł SOURCE i mamy co powiedzieć:' + kompleksowa analiza LAZYSOFT (2000-3000 znaków) + LOSOWE outro: 'Źródło: ORIGINAL_URL' LUB 'Pełny artykuł: ORIGINAL_URL' LUB 'Więcej szczegółów: ORIGINAL_URL' LUB 'Oryginalny materiał: ORIGINAL_URL'",
+            "business_opportunities_en": "LAZYSOFT perspective on automation opportunities from this news (300-500 chars)",
+            "business_opportunities_uk": "Перспектива LAZYSOFT щодо можливостей автоматизації (300-500 символів)",
+            "business_opportunities_pl": "Perspektywa LAZYSOFT dotycząca możliwości automatyzacji (300-500 znaków)",
             
-            "business_insight_en": "RANDOM start: 'Key business insight:' OR 'Most important for SMB:' OR 'Main conclusion:' OR 'Interesting point:' OR 'Critical takeaway:' OR 'Business impact:' + specific actionable business insight",
-            
-            "business_insight_uk": "ВИПАДКОВИЙ початок: 'Ключовий інсайт для бізнесу:' АБО 'Найважливіше для МСП:' АБО 'Головний висновок:' АБО 'Цікавий момент:' АБО 'Критичний висновок:' АБО 'Вплив на бізнес:' АБО 'Практичний інсайт:' АБО 'Бізнес-можливість:' + конкретний практичний бізнес-інсайт зі статті",
-            
-            "business_insight_pl": "LOSOWY początek: 'Kluczowy wgląd biznesowy:' LUB 'Najważniejsze dla MŚP:' LUB 'Główny wniosek:' LUB 'Ciekawy punkt:' LUB 'Krytyczne spostrzeżenie:' + konkretny praktyczny biznesowy wgląd z artykułu",
-            
-            "business_opportunities_en": "Specific business opportunities for European SMBs (300-500 chars)",
-            "business_opportunities_uk": "Конкретні бізнес-можливості для європейських МСП (300-500 символів)",
-            "business_opportunities_pl": "Konkretne możliwości biznesowe dla europejskich MŚP (300-500 znaków)",
-            
-            "lazysoft_recommendations_en": "RANDOM start: 'LAZYSOFT recommends:' OR 'Our team advises:' OR 'From LAZYSOFT experience:' OR 'Expert advice from LAZYSOFT:' OR 'Based on our expertise:' OR 'LAZYSOFT suggests:' + automation recommendations based on article insights (300-500 chars)",
-            
-            "lazysoft_recommendations_uk": "ВИПАДКОВИЙ початок: 'LAZYSOFT рекомендує:' АБО 'Наша команда радить:' АБО 'З досвіду LAZYSOFT:' АБО 'Експертна порада від LAZYSOFT:' АБО 'На основі нашої експертизи:' АБО 'LAZYSOFT пропонує:' АБО 'За нашими спостереженнями:' АБО 'Практична порада LAZYSOFT:' + рекомендації з автоматизації на основі інсайтів статті (300-500 символів)",
-            
-            "lazysoft_recommendations_pl": "LOSOWY początek: 'LAZYSOFT zaleca:' LUB 'Nasz zespół radzi:' LUB 'Z doświadczenia LAZYSOFT:' LUB 'Ekspercka rada od LAZYSOFT:' LUB 'Na podstawie naszej ekspertyzy:' + rekomendacje LAZYSOFT dotyczące automatyzacji (300-500 znaków)"
+            "lazysoft_recommendations_en": "LAZYSOFT automation recommendations based on article insights (300-500 chars)",
+            "lazysoft_recommendations_uk": "Рекомендації LAZYSOFT з автоматизації на основі інсайтів статті (300-500 символів)",
+            "lazysoft_recommendations_pl": "Rekomendacje LAZYSOFT dotyczące automatyzacji na podstawie wglądów z artykułu (300-500 znaków)"
         }}
-
-        CRITICAL: Use DIFFERENT random variations for EVERY article. Never repeat the same pattern twice.
-        
-        RANDOMIZATION RULES:
-        - Each field must use a different variation from the previous article
-        - Rotate through all available patterns systematically  
-        - Ensure content diversity across all published articles
-        - Mix formal and casual tones appropriately
         """
 
         try:
-            self.logger.info("[AI] Генеруємо оригінальний 3-мовний контент ~2500 символів...")
+            self.logger.info("[AI] Генеруємо оригінальний 3-мовний контент ~2000 символів...")
             response = self._call_ai_model(main_prompt, max_tokens=5000)
             self.logger.info(f"[AI] Отримано відповідь: {len(response)} символів")
             
@@ -360,9 +392,23 @@ class AIContentProcessor(AINewsProcessor):
                 content_data["title_uk"] = f"LAZYSOFT аналізує: інсайти про {topic} від {source_name}"
                 content_data["title_pl"] = f"LAZYSOFT analizuje: wglądy w {topic} od {source_name}"
             
+        except json.JSONDecodeError as e:
+            self.logger.error(
+                f"❌ [AI JSON PARSE] Стаття: {raw_article.title[:60]}...\n"
+                f"   Помилка: {e}\n"
+                f"   AI Response (перші 500 chars): {response[:500] if 'response' in locals() else 'N/A'}\n"
+                f"   Після очищення: {cleaned[:500] if 'cleaned' in locals() else 'N/A'}\n"
+                f"   Content length: {len(content_for_ai)}"
+            )
+            content_data = self._create_fallback_content_dict(raw_article, category_info)
+            
         except Exception as e:
-            self.logger.error(f"[AI] Помилка генерації контенту: {e}")
-            self.logger.info("[AI] Використовуємо fallback контент")
+            self.logger.error(
+                f"❌ [AI CRITICAL] Стаття: {raw_article.title[:60]}...\n"
+                f"   Тип: {type(e).__name__}\n"
+                f"   Деталі: {e}\n"
+                f"   Content передано: {len(content_for_ai) if 'content_for_ai' in locals() else 'N/A'} символів"
+            )
             content_data = self._create_fallback_content_dict(raw_article, category_info)
 
         # Нормалізація довжин summary
@@ -409,52 +455,68 @@ class AIContentProcessor(AINewsProcessor):
 
 
     def _create_fallback_content_dict(self, raw_article: RawArticle, category_info: Dict) -> dict:
-        """Створює fallback контент якщо AI недоступний"""
-        original_title = raw_article.title or ""
-        summary_src = raw_article.summary or raw_article.content or ""
-        summary = summary_src[:500]
+        """Fallback контент - АНАЛІТИЧНИЙ, не копіює оригінал"""
         
-        # Створюємо унікальні fallback заголовки замість копіювання оригіналу
-        source_name = raw_article.source.name if raw_article.source else "Tech Source"
-        topic = self._extract_main_topic(original_title)
-
+        # ВАЖЛИВО: логуємо що fallback спрацював
+        self.logger.warning(
+            f"⚠️ [FALLBACK] AI недоступний! Стаття: '{raw_article.title[:80]}...'\n"
+            f"   Категорія: {category_info.get('category', 'unknown')}\n"
+            f"   Source: {raw_article.source.name if raw_article.source else 'N/A'}\n"
+            f"   Content length: {len(raw_article.content or '')} символів\n"
+            f"   ⚠️ Використовуємо fallback - контент буде базовим!"
+        )
+        
+        original_title = raw_article.title or "Tech Update"
+        source_name = raw_article.source.name if raw_article.source else "tech source"
+        category = category_info.get('category', 'technology')
+        
+        # Беремо контент для базового аналізу
+        full_content = raw_article.content or raw_article.summary or ""
+        
+        # Створюємо АНАЛІТИЧНИЙ заголовок, НЕ копію оригіналу
+        analytical_title_en = f"Latest {category} developments: {source_name} reports on {original_title[:50]}"
+        analytical_title_uk = f"Останні новини {category}: {source_name} повідомляє про {original_title[:50]}"
+        analytical_title_pl = f"Najnowsze wiadomości {category}: {source_name} informuje o {original_title[:50]}"
+        
+        # Fallback summary - базовий аналіз
+        summary_intro_en = f"According to {source_name}, recent developments in {category} sector indicate "
+        summary_intro_uk = f"За даними {source_name}, останні розробки в секторі {category} вказують на "
+        summary_intro_pl = f"Według {source_name}, najnowsze rozwój w sektorze {category} wskazuje na "
+        
+        # Додаємо частину оригінального контенту як context, але з введенням
+        content_snippet = full_content[:1500] if full_content else "technological advancement in the industry"
+        
         return {
-            "title_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:300],
-            "title_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:300],
-            "title_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:300],
-            "summary_en": summary, "summary_pl": summary, "summary_uk": summary,
-
-            "business_insight_en": "This technology update may impact European businesses.",
-            "business_insight_pl": "Ta aktualizacja technologiczna może wpłynąć na europejskie firmy.",
-            "business_insight_uk": "Це технологічне оновлення може вплинути на європейський бізнес.",
-
-            "key_takeaways_en": ["Stay updated with latest tech trends"],
-            "key_takeaways_pl": ["Bądź na bieżąco z najnowszymi trendami technologicznymi"],
-            "key_takeaways_uk": ["Залишайтесь в курсі останніх технологічних трендів"],
-
-            # CTA – не пусті
-            "cta_title_en": "Get Expert Analysis",
-            "cta_title_pl": "Otrzymaj ekspercką analizę",
-            "cta_title_uk": "Отримати експертний аналіз",
-            "cta_description_en": "Contact us for personalized business consultation",
-            "cta_description_pl": "Skontaktuj się z nami w sprawie spersonalizowanej konsultacji biznesowej",
-            "cta_description_uk": "Звʼяжіться з нами для персоналізованої бізнес-консультації",
-            "cta_buttons": self._generate_cta_buttons(category_info["category"]),
-
-            # Промпти з опису (обрізаємо для безпеки)
-            "ai_image_prompt_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:500],
-            "ai_image_prompt_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:500],
-            "ai_image_prompt_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:500],
+            # АНАЛІТИЧНІ заголовки з джерелом
+            "title_en": analytical_title_en, 
+            "title_pl": analytical_title_pl, 
+            "title_uk": analytical_title_uk,
             
+            # Базовий аналіз з введенням джерела
+            "summary_en": f"{summary_intro_en}significant changes in business technology landscape. {content_snippet} For European SMBs, these developments may present opportunities for process automation and efficiency improvements. Detailed AI analysis temporarily unavailable - refer to original source for complete information.",
+            
+            "summary_pl": f"{summary_intro_pl}istotne zmiany w krajobrazie technologii biznesowej. {content_snippet} Dla europejskich MŚP rozwój ten może stanowić okazję do automatyzacji procesów i poprawy efektywności. Szczegółowa analiza AI tymczasowo niedostępna.",
+            
+            "summary_uk": f"{summary_intro_uk}значні зміни в ландшафті бізнес-технологій. {content_snippet} Для європейських МСП ці розробки можуть представляти можливості для автоматизації процесів та підвищення ефективності. Детальний AI аналіз тимчасово недоступний.",
 
-            # SEO – не пусті
-            "meta_title_en": f"LAZYSOFT insights: {topic} analysis from {source_name}"[:500], 
-            "meta_title_pl": f"LAZYSOFT spostrzeżenia: analiza {topic} od {source_name}"[:500], 
-            "meta_title_uk": f"LAZYSOFT інсайти: аналіз {topic} від {source_name}"[:500],
-            "meta_description_en": summary[:500], "meta_description_pl": summary[:500], "meta_description_uk": summary[:500],
-
-            "category_slug": category_info["category"],
-            "priority": category_info["priority"],
-            "ai_model_used": "fallback",
-            "cost": 0.0,
+            # Insights з аналітичним контекстом
+            "business_insight_en": f"Based on {source_name} report about {category}, European SMBs should monitor these technological developments for potential automation and optimization opportunities. Full analysis requires detailed review.",
+            
+            "business_insight_pl": f"Na podstawie raportu {source_name} dotyczącego {category}, europejskie MŚP powinny monitorować te rozwój technologiczne pod kątem potencjalnych możliwości automatyzacji. Pełna analiza wymaga szczegółowego przeglądu.",
+            
+            "business_insight_uk": f"На основі звіту {source_name} про {category}, європейські МСП мають відстежувати ці технологічні розробки для потенційних можливостей автоматизації. Повний аналіз потребує детального огляду.",
+            
+            # Opportunities - не generic!
+            "business_opportunities_en": f"Technology developments reported by {source_name} may offer process automation potential. LAZYSOFT recommends detailed assessment for specific business applications.",
+            
+            "business_opportunities_pl": f"Rozwój technologiczny zgłoszony przez {source_name} może oferować potencjał automatyzacji procesów. LAZYSOFT zaleca szczegółową ocenę dla konkretnych zastosowań biznesowych.",
+            
+            "business_opportunities_uk": f"Технологічні розробки від {source_name} можуть запропонувати потенціал автоматизації. LAZYSOFT рекомендує детальну оцінку для конкретних бізнес-застосувань.",
+            
+            # LAZYSOFT recommendations
+            "lazysoft_recommendations_en": f"Contact LAZYSOFT for professional analysis of how {category} developments from {source_name} can be applied to your business automation strategy.",
+            
+            "lazysoft_recommendations_pl": f"Skontaktuj się z LAZYSOFT w celu profesjonalnej analizy, jak rozwój {category} od {source_name} może być zastosowany do Twojej strategii automatyzacji biznesowej.",
+            
+            "lazysoft_recommendations_uk": f"Зв'яжіться з LAZYSOFT для професійного аналізу того, як розробки {category} від {source_name} можуть бути застосовані до вашої стратегії автоматизації бізнесу.",
         }

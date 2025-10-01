@@ -176,8 +176,9 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
     def _enhance_with_fivefilters(self, raw_article: RawArticle) -> str:
         """Збагачує статтю повним текстом через FiveFilters"""
         
-        # Перевіряємо чи не збагачено вже
+        # ДО збагачення
         original_length = len(raw_article.content or "")
+        self.logger.info(f"[FIVEFILTERS] ДО: {original_length} символів")
         
         # Якщо контент вже довгий - можливо вже збагачено
         if original_length > 1500:
@@ -195,6 +196,7 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
             extractor = FullTextExtractor()
             full_content = extractor.extract_article(raw_article.original_url)
             
+            # ПІСЛЯ збагачення
             if full_content and len(full_content) > original_length:
                 improvement = len(full_content) - original_length
                 
@@ -203,7 +205,9 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
                 raw_article.has_full_content = True
                 raw_article.save(update_fields=['content', 'has_full_content'])
                 
-                self.logger.info(f"[FIVEFILTERS] ✅ Збагачено: +{improvement} символів ({len(full_content)} total)")
+                self.logger.info(
+                    f"[FIVEFILTERS] ✅ ПІСЛЯ: {len(full_content)} символів (+{improvement})"
+                )
                 return full_content
             else:
                 self.logger.warning(f"[FIVEFILTERS] ⚠️ Не вдалося збагатити або контент коротший")
