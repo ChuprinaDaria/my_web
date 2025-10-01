@@ -92,3 +92,43 @@ class ArticleDetailSitemap(Sitemap):
     def lastmod(self, obj):
         """Дата останньої модифікації"""
         return obj.published_at or obj.created_at
+
+
+class NewsSitemap(Sitemap):
+    """Sitemap для новин"""
+    priority = 0.7
+    changefreq = 'daily'
+    i18n = True
+    
+    def items(self):
+        try:
+            from news.models import ProcessedArticle
+            return ProcessedArticle.objects.filter(status='published')
+        except ImportError:
+            return []
+    
+    def location(self, obj):
+        return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
+    
+    def lastmod(self, obj):
+        return obj.published_at or obj.created_at
+
+
+class NewsCategorySitemap(Sitemap):
+    """Sitemap для категорій новин"""
+    priority = 0.6
+    changefreq = 'weekly'
+    i18n = True
+    
+    def items(self):
+        try:
+            from news.models import NewsCategory
+            return NewsCategory.objects.filter(is_active=True)
+        except ImportError:
+            return []
+    
+    def location(self, obj):
+        return reverse('news:category_detail', kwargs={'slug': obj.slug})
+    
+    def lastmod(self, obj):
+        return obj.updated_at if hasattr(obj, 'updated_at') else None

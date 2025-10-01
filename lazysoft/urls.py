@@ -11,8 +11,14 @@ from django.http import HttpResponse
 
 # 📰 Імпортуємо sitemaps для SEO
 try:
-    from news.views import NewsSitemap, NewsCategorySitemap
-    from core.sitemaps import StaticViewSitemap, ServiceDetailSitemap, ProjectDetailSitemap, ArticleDetailSitemap
+    from core.sitemaps import (
+        StaticViewSitemap, 
+        ServiceDetailSitemap, 
+        ProjectDetailSitemap, 
+        ArticleDetailSitemap,
+        NewsSitemap,
+        NewsCategorySitemap
+    )
     SITEMAPS_AVAILABLE = True
 except ImportError:
     SITEMAPS_AVAILABLE = False
