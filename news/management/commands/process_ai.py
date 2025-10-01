@@ -121,20 +121,18 @@ class Command(BaseCommand):
             )
 
     def _check_ai_availability(self, processor):
-        """Перевіряє доступність AI моделей"""
-        if not processor.openai_client and not processor.gemini_model:
+        """Перевіряє доступність AI моделей (тільки OpenAI)"""
+        if not processor.openai_client:
             self.stdout.write(
                 self.style.ERROR(
-                    '❌ Жодна AI модель не доступна!\n'
-                    'Перевірте налаштування OPENAI_API_KEY або GEMINI_API_KEY в settings.py'
+                    '❌ OpenAI не доступний!\n'
+                    'Перевірте налаштування OPENAI_API_KEY в settings.py'
                 )
             )
             return False
         
         if processor.openai_client:
             self.stdout.write(' OpenAI доступний')
-        if processor.gemini_model:
-            self.stdout.write(' Gemini доступний')
             
         return True
 

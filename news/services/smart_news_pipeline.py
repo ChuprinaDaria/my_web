@@ -533,8 +533,8 @@ class SmartNewsPipeline:
                 analysis = self.audience_analyzer.analyze_article_relevance(test_article)
                 health['audience_analyzer'] = analysis.relevance_score > 0
                 
-                # Тест AI процесора
-                health['ai_processor'] = self.ai_processor.openai_client is not None or self.ai_processor.gemini_model is not None
+                # Тест AI процесора (тільки OpenAI)
+                health['ai_processor'] = self.ai_processor.openai_client is not None
             else:
                 health['audience_analyzer'] = False
                 health['ai_processor'] = False
