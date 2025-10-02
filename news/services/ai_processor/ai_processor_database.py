@@ -11,151 +11,16 @@ class AIProcessorDatabase:
     print("HAS SAVE:", hasattr(processor, "_save_processed_article"))
 
     def _save_processed_article(self, raw_article: RawArticle, content: Union[Dict, Any]) -> ProcessedArticle:
-        """Зберігає оброблену статтю (працює і з dict, і з об'єктом)."""
-        
-        # Категорія
-        try:
-            category = NewsCategory.objects.get(slug=self._safe_get_value(content, "category_slug", "general"))
-        except NewsCategory.DoesNotExist:
-            category = NewsCategory.objects.get(slug="general")
+        """
+        Єдиний шлях збереження: будуємо валідований словник і тільки потім створюємо модель.
+        Якщо валідація не проходить – автоматичний fallback у _create_processed_article_dict.
+        """
 
-        # Значення з фолбеками
-        title_en = self._safe_get_value(content, "title_en", raw_article.title or "")
-        title_pl = self._safe_get_value(content, "title_pl", raw_article.title or "")
-        title_uk = self._safe_get_value(content, "title_uk", raw_article.title or "")
+        # 1) Сконструювати словник з валідацією (використовує _validate_content_before_save)
+        article_data = self._create_processed_article_dict(raw_article, content)
 
-        summary_en = self._safe_get_value(content, "summary_en", (raw_article.summary or raw_article.content or "")[:160])
-        summary_pl = self._safe_get_value(content, "summary_pl", summary_en)
-        summary_uk = self._safe_get_value(content, "summary_uk", summary_en)
-
-        business_insight_en = self._safe_get_value(content, "business_insight_en", "")
-        business_insight_pl = self._safe_get_value(content, "business_insight_pl", "")
-        business_insight_uk = self._safe_get_value(content, "business_insight_uk", "")
-
-        business_opportunities_en = self._safe_get_value(content, "business_opportunities_en", "")
-        business_opportunities_pl = self._safe_get_value(content, "business_opportunities_pl", "")
-        business_opportunities_uk = self._safe_get_value(content, "business_opportunities_uk", "")
-
-        lazysoft_recommendations_en = self._safe_get_value(content, "lazysoft_recommendations_en", "")
-        lazysoft_recommendations_pl = self._safe_get_value(content, "lazysoft_recommendations_pl", "")
-        lazysoft_recommendations_uk = self._safe_get_value(content, "lazysoft_recommendations_uk", "")
-
-        local_context_en = self._safe_get_value(content, "local_context_en", "")
-        local_context_pl = self._safe_get_value(content, "local_context_pl", "")
-        local_context_uk = self._safe_get_value(content, "local_context_uk", "")
-
-        key_takeaways_en = self._safe_get_value(content, "key_takeaways_en", []) or []
-        key_takeaways_pl = self._safe_get_value(content, "key_takeaways_pl", []) or []
-        key_takeaways_uk = self._safe_get_value(content, "key_takeaways_uk", []) or []
-
-        # Нові поля для детального аналізу
-        interesting_facts_en = self._safe_get_value(content, "interesting_facts_en", []) or []
-        interesting_facts_pl = self._safe_get_value(content, "interesting_facts_pl", []) or []
-        interesting_facts_uk = self._safe_get_value(content, "interesting_facts_uk", []) or []
-
-        implementation_steps_en = self._safe_get_value(content, "implementation_steps_en", []) or []
-        implementation_steps_pl = self._safe_get_value(content, "implementation_steps_pl", []) or []
-        implementation_steps_uk = self._safe_get_value(content, "implementation_steps_uk", []) or []
-
-        # CTA (завжди не пусто, обрізаємо до 200 символів для varchar безпеки)
-        cta_title_en = self._safe_get_value(content, "cta_title_en", "Get Expert Analysis")[:200]
-        cta_title_pl = self._safe_get_value(content, "cta_title_pl", "Otrzymaj ekspercką analizę")[:200]
-        cta_title_uk = self._safe_get_value(content, "cta_title_uk", "Отримати експертний аналіз")[:200]
-
-        cta_description_en = self._safe_get_value(content, "cta_description_en", "Contact us for personalized business consultation")
-        cta_description_pl = self._safe_get_value(content, "cta_description_pl", "Skontaktuj się z nami w sprawie spersonalizowanej konsultacji biznesowej")
-        cta_description_uk = self._safe_get_value(content, "cta_description_uk", "Звʼяжіться з нами для персоналізованої бізнес-консультації")
-
-        cta_buttons = self._safe_get_value(content, "cta_buttons", []) or self._generate_cta_buttons(self._safe_get_value(content, "category_slug", "general"))
-
-        # SEO (гарантовано заповнені)
-        meta_title_en = self._safe_get_value(content, "meta_title_en", title_en[:60])
-        meta_title_pl = self._safe_get_value(content, "meta_title_pl", title_pl[:60])
-        meta_title_uk = self._safe_get_value(content, "meta_title_uk", title_uk[:60])
-
-        meta_description_en = self._safe_get_value(content, "meta_description_en", summary_en[:160])
-        meta_description_pl = self._safe_get_value(content, "meta_description_pl", summary_pl[:160])
-        meta_description_uk = self._safe_get_value(content, "meta_description_uk", summary_uk[:160])
-
-        # Промпти з опису (твоя вимога)
-        ai_image_prompt_en = self._safe_get_value(content, "ai_image_prompt_en", title_en)
-        ai_image_prompt_pl = self._safe_get_value(content, "ai_image_prompt_pl", title_pl)
-        ai_image_prompt_uk = self._safe_get_value(content, "ai_image_prompt_uk", title_uk)
-        
-        ai_image_url = self._safe_get_value(content, "ai_image_url", "")
-
-        # Встановлюємо дату публікації
-        from django.utils import timezone
-        published_at = timezone.now()
-
-        processed_article = ProcessedArticle.objects.create(
-            raw_article=raw_article,
-            category=category,
-
-            title_en=title_en, 
-            title_pl=title_pl, 
-            title_uk=title_uk,
-            
-            summary_en=summary_en, 
-            summary_pl=summary_pl, 
-            summary_uk=summary_uk,
-
-            business_insight_en=business_insight_en,
-            business_insight_pl=business_insight_pl,
-            business_insight_uk=business_insight_uk,
-
-            business_opportunities_en=business_opportunities_en,
-            business_opportunities_pl=business_opportunities_pl,
-            business_opportunities_uk=business_opportunities_uk,
-
-            lazysoft_recommendations_en=lazysoft_recommendations_en,
-            lazysoft_recommendations_pl=lazysoft_recommendations_pl,
-            lazysoft_recommendations_uk=lazysoft_recommendations_uk,
-
-            local_context_en=local_context_en,
-            local_context_pl=local_context_pl,
-            local_context_uk=local_context_uk,
-
-            key_takeaways_en=key_takeaways_en,
-            key_takeaways_pl=key_takeaways_pl,
-            key_takeaways_uk=key_takeaways_uk,
-
-            interesting_facts_en=interesting_facts_en,
-            interesting_facts_pl=interesting_facts_pl,
-            interesting_facts_uk=interesting_facts_uk,
-
-            implementation_steps_en=implementation_steps_en,
-            implementation_steps_pl=implementation_steps_pl,
-            implementation_steps_uk=implementation_steps_uk,
-
-            cta_title_en=cta_title_en,
-            cta_title_pl=cta_title_pl,
-            cta_title_uk=cta_title_uk,
-
-            cta_description_en=cta_description_en,
-            cta_description_pl=cta_description_pl,
-            cta_description_uk=cta_description_uk,
-
-            cta_buttons=cta_buttons,
-
-            meta_title_en=meta_title_en,
-            meta_title_pl=meta_title_pl,
-            meta_title_uk=meta_title_uk,
-            
-            meta_description_en=meta_description_en,
-            meta_description_pl=meta_description_pl,
-            meta_description_uk=meta_description_uk,
-
-            ai_image_url=ai_image_url,
-            ai_image_prompt_en=ai_image_prompt_en,
-            
-            published_at=published_at,
-            priority=self._safe_get_value(content, "priority", 2),
-            status="draft",
-            ai_model_used=self._safe_get_value(content, "ai_model_used", ""),
-            ai_cost=self._safe_get_value(content, "cost", 0.0),
-            ai_processing_time=self._safe_get_value(content, "processing_time", 0.0),
-        )
+        # 2) Створити запис (article_data вже містить усі фолбеки та коректні значення)
+        processed_article = ProcessedArticle.objects.create(**article_data)
 
         self.logger.info(f"[SAVE] ProcessedArticle створено: ID {processed_article.id}")
         return processed_article

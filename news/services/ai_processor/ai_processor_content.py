@@ -403,7 +403,7 @@ But fill them with real content (not empty), including titles and arrays.
             # Якщо підтримується – просимо саме JSON-об'єкт
             response = self._call_ai_model(
                 main_prompt,
-                max_tokens=5000,
+                max_tokens=10000,
                 response_format={"type": "json_object"}
             )
             self.logger.info(f"[AI] Отримано відповідь, довжина: {len(response) if response else 0}")
@@ -650,7 +650,7 @@ OUTPUT STRICTLY VALID PLAIN TEXT (NO MARKDOWN).
 5) Конкурентні переваги
 """.strip()
 
-            full_content = self._call_ai_model(prompt, max_tokens=3000)
+            full_content = self._call_ai_model(prompt, max_tokens=10000)
             self.logger.info(f"[BI] Згенеровано Business Impact ({language}) довжиною: {len(full_content) if full_content else 0}")
             return (full_content or "").strip()
         except Exception as e:
