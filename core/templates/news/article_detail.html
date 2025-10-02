@@ -79,6 +79,18 @@
             </div>
           </div>
 
+          {% if article_full_content %}
+          <div class="full-content card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
+            <div class="card-header">
+              <div class="card-icon">📖</div>
+              <h2>{% trans "Full Article (AI)" %}</h2>
+            </div>
+            <div class="card-content">
+              {{ article_full_content|safe }}
+            </div>
+          </div>
+          {% endif %}
+
           <div class="business-insight card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">
             <div class="card-header">
               <div class="card-icon">🎯</div>
@@ -90,6 +102,8 @@
               {{ article_business_insight|safe }}
             </div>
           </div>
+
+          
 
           {% if article_interesting_facts %}
             <div class="interesting-facts card card-lg" style="margin-top: 2rem; margin-bottom: 2rem;">

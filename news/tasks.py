@@ -96,13 +96,15 @@ def post_top_news_to_telegram_task():
         # Заголовок завжди беремо з title_uk або title_en (обрізаємо до 200 символів для безпеки)
         title = article_to_post.title_uk[:200] if article_to_post.title_uk else article_to_post.title_en[:200]
         
-        # Summary - якщо український summary порожній або такий же як англійський, використовуємо business_insight_uk
-        if article_to_post.summary_uk and article_to_post.summary_uk != article_to_post.summary_en:
-            summary = article_to_post.summary_uk[:1000]  # Безпечний ліміт
+        # Тіло повідомлення: пріоритетно повний контент УК з обрізанням, інакше fallback
+        if getattr(article_to_post, 'full_content_uk', None):
+            summary = (article_to_post.full_content_uk or '')[:1000]
+        elif article_to_post.summary_uk and article_to_post.summary_uk != article_to_post.summary_en:
+            summary = (article_to_post.summary_uk or '')[:1000]
         elif article_to_post.business_insight_uk:
-            summary = article_to_post.business_insight_uk[:1000] + "..."
+            summary = (article_to_post.business_insight_uk or '')[:1000] + "..."
         else:
-            summary = article_to_post.summary_en[:1000]
+            summary = (article_to_post.summary_en or '')[:1000]
         
         message = (
             f"🔥 <strong>{title}</strong>\n\n"

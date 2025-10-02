@@ -237,6 +237,11 @@ class ArticleDetailView(DetailView):
         context['article_lazysoft_recommendations'] = article.get_lazysoft_recommendations(language)
         context['article_interesting_facts'] = article.get_interesting_facts(language)
         context['category_name'] = article.category.get_name(language)
+        # Повний контент (якщо доступний)
+        try:
+            context['article_full_content'] = article.get_full_content(language)
+        except Exception:
+            context['article_full_content'] = ''
 
         # Схожі статті
         context['related_articles'] = ProcessedArticle.objects.filter(
