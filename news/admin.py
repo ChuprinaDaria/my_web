@@ -84,7 +84,7 @@ class SimpleArticleAdmin(admin.ModelAdmin):
     # list_editable = ['priority', 'is_top_article', 'article_rank']  # Тимчасово вимкнено
     list_filter = ['status', 'category', 'priority', 'is_top_article']
     search_fields = ['title_uk', 'title_en', 'title_pl']
-    readonly_fields = ['created_at', 'updated_at', 'ai_image_url', 'get_original_content', 'get_original_summary', 'get_original_url', 'get_full_content_uk', 'show_ai_cost', 'show_ai_time', 'show_ai_ops', 'show_social_posts', 'telegram_publish_button']
+    readonly_fields = ['created_at', 'updated_at', 'ai_image_url', 'get_original_content', 'get_original_summary', 'get_original_url', 'get_full_content_uk', 'get_full_content_en', 'get_full_content_pl', 'show_ai_cost', 'show_ai_time', 'show_ai_ops', 'show_social_posts', 'telegram_publish_button']
     actions = ['publish_to_telegram']
     
     def publish_single_to_telegram(self, request, article_id):
@@ -319,7 +319,11 @@ class SimpleArticleAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('Оригінальний контент', {
-            'fields': ('get_original_content', 'get_original_summary', 'get_original_url', 'get_full_content_uk'),
+            'fields': ('get_original_content', 'get_original_summary', 'get_original_url'),
+            'classes': ('wide', 'collapse')
+        }),
+        ('Повний контент (згенерований AI)', {
+            'fields': ('get_full_content_uk', 'get_full_content_en', 'get_full_content_pl'),
             'classes': ('wide', 'collapse')
         }),
         ('Бізнес інсайти', {
@@ -381,6 +385,20 @@ class SimpleArticleAdmin(admin.ModelAdmin):
             return mark_safe(f'<div style="max-height: 500px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background: #f0f8ff;">{obj.full_content_uk}</div>')
         return "Немає повного контенту"
     get_full_content_uk.short_description = 'Повний контент (UK)'
+
+    def get_full_content_en(self, obj):
+        """Повертає повний контент англійською (якщо є)"""
+        if obj.full_content_en:
+            return mark_safe(f'<div style="max-height: 500px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background: #f0fff0;">{obj.full_content_en}</div>')
+        return "Немає повного контенту"
+    get_full_content_en.short_description = 'Повний контент (EN)'
+
+    def get_full_content_pl(self, obj):
+        """Повертає повний контент польською (якщо є)"""
+        if obj.full_content_pl:
+            return mark_safe(f'<div style="max-height: 500px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background: #fff5f0;">{obj.full_content_pl}</div>')
+        return "Немає повного контенту"
+    get_full_content_pl.short_description = 'Повний контент (PL)'
     
     def show_ai_cost(self, obj):
         """Показує вартість AI обробки"""
