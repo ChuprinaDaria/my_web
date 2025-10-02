@@ -1,0 +1,651 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Lazysoft\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-05 08:35+0000\n"
+"PO-Revision-Date: 2025-09-09 09:00+0200\n"
+"Last-Translator: Daria Chuprina <hello@lazysoft.dev>\n"
+"Language-Team: Polish\n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: core/templates/components/cookie_consent.html:9
+msgid "Cookies & Privacy"
+msgstr "Pliki cookie i prywatność"
+
+#: core/templates/components/language_selector.html:6
+msgid "Choose Language"
+msgstr "Wybierz język"
+
+#: core/templates/components/language_selector.html:7
+msgid "Please select your preferred language"
+msgstr "Proszę wybrać preferowany język"
+
+#: core/templates/components/cookie_consent.html:14
+msgid ""
+"Ми використовуємо cookies для покращення вашого досвіду на сайті. "
+"Продовжуючи користуватись сайтом, ви погоджуєтесь з нашою <a href=\"{% url "
+"'privacy_policy' %}\" target=\"_blank\">політикою конфіденційності</a>."
+msgstr ""
+"Używamy plików cookie, aby poprawić Twoje doświadczenia na stronie. "
+"Kontynuując korzystanie z witryny, zgadzasz się z naszą <a href=\"{% url "
+"'privacy_policy' %}\" target=\"_blank\">polityką prywatności</a>."
+
+#: core/templates/components/cookie_consent.html:22
+msgid "Прийняти"
+msgstr "Akceptuj"
+
+#: core/templates/components/cookie_consent.html:24
+msgid "Відхилити"
+msgstr "Odrzuć"
+
+msgid "Projects - LazySoft"
+msgstr "Projekty - LazySoft"
+
+msgid "Discover our portfolio of automation and AI projects"
+msgstr "Odkryj nasze portfolio projektów automatyzacji i AI"
+
+msgid "Related Services"
+msgstr "Powiązane usługi"
+
+msgid "No related services available"
+msgstr "Brak dostępnych powiązanych usług"
+
+msgid "Need Custom Project?"
+msgstr "Potrzebujesz niestandardowego projektu?"
+
+msgid ""
+"Let's create something unique for your business. From automation to custom "
+"solutions."
+msgstr ""
+"Stwórzmy coś wyjątkowego dla Twojego biznesu. Od automatyzacji po "
+"niestandardowe rozwiązania."
+
+msgid "Custom Project Development"
+msgstr "Rozwój niestandardowego projektu"
+
+msgid "Start Project"
+msgstr "Rozpocznij projekt"
+
+msgid "Fast Development"
+msgstr "Szybki rozwój"
+
+msgid "Quality Guarantee"
+msgstr "Gwarancja jakości"
+
+msgid "Full Support"
+msgstr "Pełne wsparcie"
+
+msgid "Latest Tech News"
+msgstr "Najnowsze wiadomości techniczne"
+
+# Success Modal Translations
+msgid "Thank you!"
+msgstr "Dziękujemy!"
+
+msgid "We will contact you soon"
+msgstr "Skontaktujemy się z Tobą wkrótce"
+
+# CTA Modal Translations
+msgid "Free Consultation"
+msgstr "Darmowa konsultacja"
+
+msgid "Get expert consultation from our specialists"
+msgstr "Otrzymaj ekspercką konsultację od naszych specjalistów"
+
+msgid "Let's discuss how we can help transform your business with smart automation."
+msgstr "Porozmawiajmy o tym, jak możemy pomóc przekształcić Twój biznes dzięki inteligentnej automatyzacji."
+
+msgid "Help others discover this solution"
+msgstr "Pomóż innym odkryć to rozwiązanie"
+
+msgid "Let's discuss how this technology can transform your business"
+msgstr "Porozmawiajmy o tym, jak ta technologia może przekształcić Twój biznes"
+
+msgid "Contact Now"
+msgstr "Skontaktuj się teraz"
+
+msgid "Later"
+msgstr "Później"
+
+msgid "100% free • No obligations • Quick response"
+msgstr "100% za darmo • Bez zobowiązań • Szybka odpowiedź"
+
+msgid "Зв'язатися з нами"
+msgstr "Skontaktuj się z nami"
+
+msgid "Заповніть форму і ми зв'яжемося з вами найближчим часом"
+msgstr "Wypełnij formularz, a skontaktujemy się z Tobą wkrótce"
+
+msgid "Ім'я"
+msgstr "Imię"
+
+msgid "Телефон"
+msgstr "Telefon"
+
+msgid "Компанія"
+msgstr "Firma"
+
+msgid "Тема"
+msgstr "Temat"
+
+msgid "Повідомлення"
+msgstr "Wiadomość"
+
+msgid "Розкажіть про ваш проєкт або запитання..."
+msgstr "Opowiedz nam o swoim projekcie lub pytaniu..."
+
+msgid "Надіслати заявку"
+msgstr "Wyślij zgłoszenie"
+
+msgid "Надсилаємо..."
+msgstr "Wysyłanie..."
+
+msgid "Дякуємо!"
+msgstr "Dziękujemy!"
+
+msgid "Ваше повідомлення надіслано. Ми зв'яжемося з вами найближчим часом."
+msgstr "Twoja wiadomość została wysłana. Skontaktujemy się z Tobą wkrótce."
+
+msgid "Зрозуміло"
+msgstr "Rozumiem"
+
+# About page translations
+msgid "About Us"
+msgstr "O nas"
+
+msgid "Our Story"
+msgstr "Nasza historia"
+
+msgid "What We Do"
+msgstr "Co robimy"
+
+msgid "Our Mission"
+msgstr "Nasza misja"
+
+msgid "Gallery"
+msgstr "Galeria"
+
+msgid "Gallery Image 1"
+msgstr "Obraz galerii 1"
+
+msgid "Gallery Image 2"
+msgstr "Obraz galerii 2"
+
+msgid "Gallery Image 3"
+msgstr "Obraz galerii 3"
+
+msgid "About Us Video"
+msgstr "Film o nas"
+
+msgid "Ready to Automate?"
+msgstr "Gotowi do automatyzacji?"
+
+msgid ""
+"Let's discuss how we can help transform your business with smart automation."
+msgstr ""
+"Omówmy, jak możemy pomóc przekształcić Twój biznes dzięki inteligentnej "
+"automatyzacji."
+
+msgid "Get Started"
+msgstr "Zacznij"
+
+msgid "Our Projects"
+msgstr "Nasze projekty"
+
+msgid "All Projects"
+msgstr "Wszystkie projekty"
+
+msgid "Featured Projects"
+msgstr "Polecane projekty"
+
+msgid "No featured projects available"
+msgstr "Brak dostępnych polecanych projektów"
+
+msgid "View Details"
+msgstr "Zobacz szczegóły"
+
+msgid "Demo"
+msgstr "Demo"
+
+msgid "View Case"
+msgstr "Zobacz przypadek"
+
+msgid "No projects available"
+msgstr "Brak dostępnych projektów"
+
+msgid "weeks"
+msgstr "tygodni"
+
+msgid "Projects"
+msgstr "Projekty"
+
+msgid "Solutions"
+msgstr "Rozwiązania"
+
+msgid "Success Rate"
+msgstr "Wskaźnik sukcesu"
+
+msgid "Our Services"
+msgstr "Nasze usługi"
+
+msgid "Explore services related to our projects"
+msgstr "Poznaj usługi związane z naszymi projektami"
+
+msgid "projects"
+msgstr "projektów"
+
+msgid "View All Services"
+msgstr "Zobacz wszystkie usługi"
+
+msgid "Other news of the day"
+msgstr "Inne wiadomości dnia"
+
+msgid "View All Tech News"
+msgstr "Zobacz wszystkie wiadomości techniczne"
+
+msgid "Stay updated with the latest technology trends and insights"
+msgstr ""
+"Bądź na bieżąco z najnowszymi trendami technologicznymi i spostrzeżeniami"
+
+msgid "Related Projects"
+msgstr "Powiązane projekty"
+
+msgid "No related projects available"
+msgstr "Brak dostępnych powiązanych projektów"
+
+msgid "Need Custom Development?"
+msgstr "Potrzebujesz niestandardowego rozwoju?"
+
+msgid "Custom Service Development"
+msgstr "Rozwój niestandardowej usługi"
+
+msgid "News System Under Development"
+msgstr "System wiadomości w rozwoju"
+
+msgid "Our AI-powered news system is coming soon"
+msgstr "Nasz system wiadomości oparty na AI wkrótce się pojawi"
+
+msgid "TECH INSIGHTS by LAZYSOFT"
+msgstr "TECH INSIGHTS od LAZYSOFT"
+
+msgid "Not just news — business insights for European entrepreneurs"
+msgstr ""
+"Nie tylko wiadomości — biznesowe wglądy dla europejskich przedsiębiorców"
+
+msgid "Search"
+msgstr "Szukaj"
+
+msgid "Categories"
+msgstr "Kategorie"
+
+msgid "All News"
+msgstr "Wszystkie wiadomości"
+
+msgid "Other News"
+msgstr "Inne wiadomości"
+
+msgid "Tech Tags"
+msgstr "Tagi technologiczne"
+
+msgid "Previous"
+msgstr "Poprzednia"
+
+msgid "Next"
+msgstr "Następna"
+
+msgid "No news yet in this category"
+msgstr "Jeszcze brak wiadomości w tej kategorii"
+
+msgid "Fresh tech insights are coming soon. Check back later!"
+msgstr "Świeże technologiczne wglądy pojawią się wkrótce. Sprawdź później!"
+
+msgid "View all news"
+msgstr "Zobacz wszystkie wiadomości"
+
+msgid "Business Impact"
+msgstr "Wpływ na biznes"
+
+msgid "Interesting Facts"
+msgstr "Interesujące fakty"
+
+msgid "Business Opportunities"
+msgstr "Możliwości biznesowe"
+
+msgid "LAZYSOFT Recommendations"
+msgstr "Rekomendacje LAZYSOFT"
+
+msgid "Need Automation?"
+msgstr "Potrzebujesz automatyzacji?"
+
+msgid "Let's discuss how this technology can transform your business"
+msgstr "Omówmy, jak ta technologia może przekształcić Twój biznes"
+
+msgid "Let's Talk"
+msgstr "Porozmawiajmy"
+
+msgid "Related News"
+msgstr "Podobne wiadomości"
+
+msgid "All Tech News"
+msgstr "Wszystkie wiadomości"
+
+msgid "🤖 AI Ефективність в Дії"
+msgstr "🤖 AI Efektywność w Działaniu"
+
+# AI Metrics Widget
+msgid "Реальні результати автоматизації для вашого бізнесу"
+msgstr "Realne wyniki automatyzacji dla Twojej firmy"
+
+msgid "Заощаджено коштів"
+msgstr "Zaoszczędzone środki"
+
+msgid "Економія від автоматизації за період"
+msgstr "Oszczędności z automatyzacji w danym okresie"
+
+msgid "Модель AI"
+msgstr "Model AI"
+
+msgid "Основна модель для обробки"
+msgstr "Główny model przetwarzania"
+
+msgid "Зекономлено Часу"
+msgstr "Zaoszczędzono czasu"
+
+msgid "год"
+msgstr "godz"
+
+msgid "Автоматизація робочих процесів"
+msgstr "Automatyzacja procesów roboczych"
+
+msgid "AI Контент"
+msgstr "AI Treści"
+
+msgid "шт"
+msgstr "szt"
+
+msgid "Згенеровано AI статей цього місяця"
+msgstr "Wygenerowane artykuły AI w tym miesiącu"
+
+msgid "Зростання Ефективності"
+msgstr "Wzrost efektywności"
+
+msgid "Покращення продуктивності процесів"
+msgstr "Poprawa wydajności procesów"
+
+msgid "Витрати на AI"
+msgstr "Wydatki na AI"
+
+msgid "Час AI обробки"
+msgstr "Czas przetwarzania AI"
+
+msgid "Загальний час AI обробки"
+msgstr "Łączny czas przetwarzania AI"
+
+msgid "Замовити Консультацію"
+msgstr "Zamówić konsultację"
+
+msgid "Останнє оновлення:"
+msgstr "Ostatnia aktualizacja:"
+
+msgid "сьогодні"
+msgstr "dzisiaj"
+
+msgid "Born to automate. Fired for it."
+msgstr "Urodzeni, by automatyzować. Zwolnieni za to."
+
+msgid ""
+"The story of how laziness became a philosophy, a tech stack, and an "
+"efficient business model. Discover Lazysoft — where automation meets "
+"rebellion."
+msgstr ""
+"Historia o tym, jak lenistwo stało się filozofią, stosem technologii i "
+"efektywnym modelem biznesowym. Odkryj Lazysoft — gdzie automatyzacja spotyka"
+" bunt."
+
+msgid "Share this page"
+msgstr "Udostępnij tę stronę"
+
+msgid "Help others discover this solution"
+msgstr "Pomóż innym odkryć to rozwiązanie"
+
+msgid "Share on Facebook"
+msgstr "Udostępnij na Facebooku"
+
+msgid "Share on Instagram"
+msgstr "Udostępnij na Instagramie"
+
+msgid "Share on LinkedIn"
+msgstr "Udostępnij na LinkedIn"
+
+msgid "Share on X"
+msgstr "Udostępnij na X"
+
+msgid "Share on Reddit"
+msgstr "Udostępnij na Reddicie"
+
+msgid "Share on Threads"
+msgstr "Udostępnij w Threads"
+
+msgid "Share on Telegram"
+msgstr "Udostępnij w Telegramie"
+
+msgid "Services"
+msgstr "Usługi"
+
+msgid "All Services"
+msgstr "Wszystkie usługi"
+
+msgid "AI Chatbots"
+msgstr "Czatboty AI"
+
+msgid "Business Automation"
+msgstr "Automatyzacja biznesu"
+
+msgid "Web Development"
+msgstr "Tworzenie stron WWW"
+
+msgid "API Integrations"
+msgstr "Integracje API"
+
+msgid "Company"
+msgstr "Firma"
+
+msgid "Tech News"
+msgstr "Tech News"
+
+msgid "FAQ"
+msgstr "FAQ"
+
+msgid "Contact"
+msgstr "Kontakt"
+
+# Services list hero CTA
+msgid "Explore Services"
+msgstr "Przeglądaj usługi"
+
+msgid "Get Free Consultation"
+msgstr "Uzyskaj bezpłatną konsultację"
+
+msgid "Languages"
+msgstr "Języki"
+
+msgid "Follow us"
+msgstr "Śledź nas"
+
+msgid "Other news"
+msgstr "Inne wiadomości"
+
+# Buttons
+msgid "Надіслати повідомлення"
+msgstr "Wyślij wiadomość"
+
+# Ukrainian originals used as msgid in templates
+msgid "Слідкуйте за нами"
+msgstr "Śledź nas"
+
+# =====================
+# Additional UI Strings
+# =====================
+msgid "Technologies We Master"
+msgstr "Technologie, które opanowaliśmy"
+
+msgid "Frequently Asked Questions"
+msgstr "Najczęściej zadawane pytania"
+
+msgid "View All FAQ"
+msgstr "Zobacz wszystkie FAQ"
+
+msgid "Get to know our work"
+msgstr "Poznaj nasze realizacje"
+
+msgid "See what we've created for our clients"
+msgstr "Zobacz, co stworzyliśmy dla naszych klientów"
+
+msgid "Learn how we can help your business"
+msgstr "Dowiedz się, jak możemy pomóc Twojej firmie"
+
+msgid "Learn our story and approach"
+msgstr "Poznaj naszą historię i podejście"
+
+msgid "Get This Service"
+msgstr "Zamów tę usługę"
+
+msgid "Quick Contact"
+msgstr "Szybki kontakt"
+
+msgid "Ready to implement this service? Let's discuss your specific needs and create a custom solution."
+msgstr "Gotowi wdrożyć tę usługę? Omówmy Twoje potrzeby i stwórzmy spersonalizowane rozwiązanie."
+
+msgid "Start Discussion"
+msgstr "Rozpocznij rozmowę"
+
+msgid "Service Details"
+msgstr "Szczegóły usługi"
+
+msgid "Priority"
+msgstr "Priorytet"
+
+msgid "Top Service"
+msgstr "Usługa premium"
+
+msgid "Available Since"
+msgstr "Dostępna od"
+
+msgid "Service Overview"
+msgstr "Przegląd usługi"
+
+msgid "Target Audience"
+msgstr "Grupa docelowa"
+
+msgid "You Might Also Like"
+msgstr "Może Ci się spodobać"
+
+msgid "Business Value"
+msgstr "Wartość biznesowa"
+
+msgid "Pricing"
+msgstr "Cennik"
+
+msgid "Service Demonstration"
+msgstr "Prezentacja usługi"
+
+msgid "Ready to Get Started?"
+msgstr "Gotowy, aby zacząć?"
+
+msgid "Let's discuss how this service can transform your business. Get a free consultation and custom solution proposal."
+msgstr "Porozmawiajmy, jak ta usługa może zmienić Twój biznes. Otrzymaj bezpłatną konsultację i spersonalizowaną ofertę."
+
+msgid "Live Demo"
+msgstr "Demo na żywo"
+
+msgid "Get Similar Project"
+msgstr "Zamów podobny projekt"
+
+msgid "Client Request"
+msgstr "Zapytanie klienta"
+
+msgid "Technologies"
+msgstr "Technologie"
+
+msgid "Read more details"
+msgstr "Czytaj więcej szczegółów"
+
+msgid "Project Info"
+msgstr "Informacje o projekcie"
+
+msgid "Implementation"
+msgstr "Wdrożenie"
+
+msgid "Challenges & Solutions"
+msgstr "Wyzwania i rozwiązania"
+
+msgid "Results & Impact"
+msgstr "Rezultaty i wpływ"
+
+msgid "Lessons Learned"
+msgstr "Wnioski"
+
+msgid "Open Service"
+msgstr "Otwórz usługę"
+
+msgid "Want Similar?"
+msgstr "Chcesz coś podobnego?"
+
+msgid "Let's discuss how we can create something similar for your business."
+msgstr "Porozmawiajmy, jak możemy stworzyć coś podobnego dla Twojej firmy."
+
+msgid "TECH INSIGHTS od LAZYSOFT"
+msgstr "TECH INSIGHTS od LAZYSOFT"
+
+msgid "Related services"
+msgstr "Powiązane usługi"
+
+# Ukrainian originals used as msgid in templates
+msgid "Напишіть нам"
+msgstr "Napisz do nas"
+
+msgid "Контактна інформація"
+msgstr "Informacje kontaktowe"
+
+msgid "Доступність"
+msgstr "Dostępność"
+
+msgid "Доступно по всьому світу"
+msgstr "Dostępne na całym świecie"
+
+msgid "Подивитись на карті"
+msgstr "Zobacz na mapie"
+
+msgid "Адреса офісу"
+msgstr "Adres biura"
+
+msgid "Подивитись на Google Maps"
+msgstr "Zobacz w Google Maps"
+
+msgid "Start Free Consultation"
+msgstr "Rozpocznij bezpłatną konsultację"
+
+msgid "Home"
+msgstr "Strona główna"
+
+
+
+
+msgid "About"
+msgstr "O nas"
+
+msgid "News"
+msgstr "Aktualności"
+
+#: core/templates/services/service_detail.html
+msgid "Service Gallery"
+msgstr "Galeria usługi"
+
+#: core/templates/services/service_detail.html
+msgid "Visual examples of our work"
+msgstr "Wizualne przykłady naszej pracy"

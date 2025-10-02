@@ -220,7 +220,72 @@ Respond with just the category slug (e.g., "ai", "automation", etc.)
         except Exception as e:
             self.logger.exception(f"[JSON] Несподівана помилка json.loads: {e}")
             return None
+    def _force_recover_json_object(self, s: str) -> Optional[str]:
+        """
+        Грубе відновлення JSON-об'єкта:
+        - беремо все від першої '{' до кінця;
+        - рахуємо баланс дужок поза рядками і дописуємо відсутні '}';
+        - прибираємо хвостові коми;
+        - повертаємо мінімізований валідний JSON-рядок або None.
+        """
+        import re, json
+        if not s:
+            return None
 
+        start = s.find('{')
+        if start == -1:
+            return None
+        tail = s[start:]
+
+        # зняти markdown fences та JS-коментарі
+        tail = re.sub(r"^\s*```(?:json)?\s*", "", tail)
+        tail = re.sub(r"\s*```\s*$", "", tail)
+        tail = re.sub(r"\s*//.*?$", "", tail, flags=re.M)
+        tail = tail.strip()
+
+        # баланс дужок ПОЗА рядками
+        brace = 0
+        in_str = False
+        esc = False
+        for ch in tail:
+            if esc:
+                esc = False
+                continue
+            if ch == '\\':
+                esc = True
+                continue
+            if ch == '"':
+                in_str = not in_str
+                continue
+            if not in_str:
+                if ch == '{':
+                    brace += 1
+                elif ch == '}':
+                    brace -= 1
+
+        # дописати відсутні '}'
+        if brace > 0:
+            tail = tail + ('}' * brace)
+
+        # прибрати хвостові коми
+        tail = re.sub(r",(\s*[}\]])", r"\1", tail)
+
+        try:
+            obj = json.loads(tail)
+            return json.dumps(obj, ensure_ascii=False, separators=(',', ':'))
+        except json.JSONDecodeError:
+            # обрізати по останній '}'
+            last = tail.rfind('}')
+            if last > 0:
+                cand = tail[:last+1]
+                cand = re.sub(r",(\s*[}\]])", r"\1", cand)
+                try:
+                    obj = json.loads(cand)
+                    return json.dumps(obj, ensure_ascii=False, separators=(',', ':'))
+                except Exception:
+                    pass
+        return None
+ 
     def _clean_json_response(self, response: str) -> str:
         """
         Очищає і витягує JSON з сирої відповіді моделі.

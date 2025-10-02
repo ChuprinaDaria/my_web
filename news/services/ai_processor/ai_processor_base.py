@@ -149,22 +149,67 @@ class AINewsProcessor:
             val = getattr(obj, key, default)
         return val if val is not None else default
 
-    def _call_ai_model(self, prompt: str, max_tokens: int = 1000) -> str:
-        """Виклик OpenAI GPT - єдина модель."""
-        self.logger.info(f"[AI] Викликаємо OpenAI модель...")
+    def _call_ai_model(self, prompt: str, max_tokens: int = 1000, **kwargs) -> str:
+        """
+        Уніфікований виклик до AI-провайдера (OpenAI).
+        - Ігнорує/проковтує незнайомі kwargs (напр., response_format) якщо бекенд їх не підтримує.
+        - Обмежує кількість токенів згідно з налаштуваннями.
+        - Завжди повертає ТЕКСТ (str). Ексепшн піднімається вище для fallback-логіки.
+        """
+        from django.conf import settings  # локальний імпорт, якщо метод викликається рано під час ініціалізації
 
-        # Завантажуємо налаштування температури з settings.py
-        temperature = getattr(settings, 'AI_TEMPERATURE', 0.7)
-        max_output_tokens = getattr(settings, 'AI_MAX_TOKENS', 2000)
+    # Налаштування
+        temperature = float(getattr(settings, "AI_TEMPERATURE", 0.7))
+        max_output_tokens = int(getattr(settings, "AI_MAX_TOKENS", 2000))
+        model_name = getattr(settings, "AI_OPENAI_GENERATIVE_MODEL", "gpt-4o")
 
-        # Використовуємо тільки OpenAI
-        if self.openai_client:
-            self.logger.info(f"[AI] Використовуємо OpenAI ({getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')})...")
-            resp = self._call_openai(prompt, max_output_tokens, temperature)
-            self.logger.info(f"[AI] OpenAI відповів: {len(resp)} символів")
-            return resp
-        else:
-            raise Exception("❌ OpenAI клієнт не ініціалізований")
+    # Фактичний ліміт вихідних токенів
+        out_tokens = max(16, min(int(max_tokens or 0) or 0, max_output_tokens))
+
+    # Діагностика виклику
+        self.logger.info("[AI] Викликаємо OpenAI модель...")
+        self.logger.info(f"[AI] Модель={model_name} | temperature={temperature} | max_tokens={out_tokens}")
+        if kwargs:
+            self.logger.debug(f"[AI] Додаткові параметри: {list(kwargs.keys())}")
+
+        if not getattr(self, "openai_client", None):
+        # Немає ініціалізованого клієнта — це критична ситуація, нехай обробляється вище
+            raise RuntimeError("OpenAI клієнт не ініціалізований")
+
+    # Спроба №1: з усіма kwargs (наприклад, response_format={"type":"json_object"})
+        try:
+            resp = self._call_openai(prompt, out_tokens, temperature, **kwargs)
+            if resp is None:
+                self.logger.warning("[AI] Порожня відповідь (None) від _call_openai у спробі №1.")
+                resp = ""
+            text = resp if isinstance(resp, str) else str(resp)
+            self.logger.info(f"[AI] OpenAI відповів (спроба №1): {len(text)} символів")
+            if len(text) < 64:
+                self.logger.debug(f"[AI RAW <=64] {text!r}")
+            return text
+
+        except TypeError as te:
+        # Напр., бекенд не підтримує response_format або інші kwargs
+            self.logger.warning(f"[AI] _call_openai не підтримує деякі kwargs ({list(kwargs.keys())}). "
+                                f"Повторюю без них. Деталі: {te}")
+
+    # Спроба №2: без додаткових kwargs — максимально сумісно
+        try:
+            resp = self._call_openai(prompt, out_tokens, temperature)
+            if resp is None:
+                self.logger.warning("[AI] Порожня відповідь (None) від _call_openai у спробі №2.")
+                resp = ""
+            text = resp if isinstance(resp, str) else str(resp)
+            self.logger.info(f"[AI] OpenAI відповів (спроба №2): {len(text)} символів")
+            if len(text) < 64:
+                self.logger.debug(f"[AI RAW <=64] {text!r}")
+            return text
+
+        except Exception as e:
+            # Інші помилки — піднімаємо вище, щоб спрацював fallback
+            self.logger.exception(f"[AI] Критична помилка виклику моделі: {e}")
+            raise
+
 
 
     def _call_openai(self, prompt: str, max_tokens: int, temperature: float, is_fallback: bool = False) -> str:
