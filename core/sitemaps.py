@@ -11,13 +11,13 @@ class StaticViewSitemap(Sitemap):
     def items(self):
         """Список статичних URL - Django автоматично створить версії для всіх мов"""
         return [
-            'core:home',           # core/urls.py
-            'about:about',         # about/urls.py
-            'services:services_list',  # services/urls.py
-            'projects:projects',   # projects/urls.py
-            'contact_page',        # contacts/urls.py
-            'news:news_list',      # news/urls.py
-            'consultant:chat',     # consultant/urls.py
+            'core:home',           # core/urls.py (namespaced)
+            'about',               # about/urls.py (без namespace у include)
+            'services:services_list',  # services/urls.py (namespaced)
+            'projects',            # projects/urls.py (без namespace у include)
+            'contact_page',        # contacts/urls.py (без namespace у include)
+            'news:news_list',      # news/urls.py (namespaced)
+            'chat',                # consultant/urls.py (без namespace у include)
         ]
     
     def location(self, item):
@@ -128,7 +128,7 @@ class NewsCategorySitemap(Sitemap):
             return []
     
     def location(self, obj):
-        return reverse('news:category_detail', kwargs={'slug': obj.slug})
+        return reverse('news:news_category', kwargs={'category_slug': obj.slug})
     
     def lastmod(self, obj):
         return obj.updated_at if hasattr(obj, 'updated_at') else None
