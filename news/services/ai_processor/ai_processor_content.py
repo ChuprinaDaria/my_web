@@ -238,19 +238,22 @@ class AIContentProcessor(AINewsProcessor):
             self.logger.error(f"[JSON] Помилка парсингу JSON: {e}")
             return "{}"
 
-    def _create_multilingual_content(self, raw_article: RawArticle, category_info: Dict) -> dict:
+    def _create_multilingual_content(self, raw_article: RawArticle, category_info: Dict, full_content: str = None) -> dict:
         """Створює тримовний ОРИГІНАЛЬНИЙ бізнес-аналіз з RSS (~1000–1200 символів)."""
         original_title = raw_article.title or ""
-        # Використовуємо максимум контенту від FiveFilters для AI
-        full_content = raw_article.content or raw_article.summary or ""
+        # Використовуємо переданий full_content або контент з raw_article
+        if full_content:
+            content_to_use = full_content
+        else:
+            content_to_use = raw_article.content or raw_article.summary or ""
         
         # Динамічний ліміт: до 8К символів (безпечно для Claude API + промпт)
-        max_ai_content = min(len(full_content), 8000)
-        content_for_ai = full_content[:max_ai_content]
+        max_ai_content = min(len(content_to_use), 8000)
+        content_for_ai = content_to_use[:max_ai_content]
         
         self.logger.info(
             f"[AI INPUT] Стаття: {raw_article.title[:60]}...\n"
-            f"   Full content: {len(full_content)} символів\n"
+            f"   Full content: {len(content_to_use)} символів\n"
             f"   Передаємо AI: {len(content_for_ai)} символів\n"
             f"   Source: {raw_article.source.name if raw_article.source else 'Unknown'}"
         )
@@ -327,27 +330,56 @@ VERIFICATION BEFORE RESPONDING:
 ☑ Are titles ORIGINAL, not translated?
 ☑ Did I include specific facts/numbers but rephrase them?
 
+KEY TAKEAWAYS (3-5 bullet points per language):
+- Extract SPECIFIC facts, numbers, technologies mentioned IN THIS ARTICLE
+- NOT generic automation advice - only what THIS article discusses
+- Example: "Google AI Max shows 81% new query discovery" (specific!)
+- NOT: "AI can help businesses" (too generic!)
+
+INTERESTING FACTS (2-3 per language):
+- Statistics or data points FROM THE ARTICLE with source mention
+- Industry trends DISCUSSED IN THE ARTICLE
+- Company announcements or tech developments FROM ARTICLE CONTENT
+
+IMPLEMENTATION STEPS (3-4 per language):
+- Practical steps based on WHAT THE ARTICLE DISCUSSES
+- If article about AI tool - steps to implement THAT tool
+- If article about trend - steps to adapt to THAT trend
+- Keep steps actionable and specific to article topic
+
 OUTPUT JSON ONLY:
         {{
-            "title_en": "Original analytical title mentioning source and key point (e.g., 'Search Engine Land reports: AI Max shows 81% new query discovery in fashion sector')",
-            "title_uk": "Оригінальний аналітичний заголовок з джерелом (напр., 'Search Engine Land: AI Max виявляє 81% нових запитів у fashion-секторі')",
-            "title_pl": "Oryginalny tytuł analityczny ze źródłem (np., 'Search Engine Land: AI Max odkrywa 81% nowych zapytań w sektorze mody')",
+            "title_en": "Original analytical title mentioning source and key point",
+            "title_uk": "Оригінальний аналітичний заголовок з джерелом",
+            "title_pl": "Oryginalny tytuł analityczny ze źródłem",
             
-            "summary_en": "ORIGINAL analysis in your own words (2000-3000 chars) - NOT translation of article",
-            "summary_uk": "ОРИГІНАЛЬНИЙ аналіз своїми словами (2000-3000 символів) - НЕ переклад статті",
-            "summary_pl": "ORYGINALNA analiza własnymi słowami (2000-3000 znaków) - NIE tłumaczenie artykułu",
+            "summary_en": "ORIGINAL analysis in your own words (2000-3000 chars) - NOT translation",
+            "summary_uk": "ОРИГІНАЛЬНИЙ аналіз своїми словами (2000-3000 символів) - НЕ переклад",
+            "summary_pl": "ORYGINALNA analiza własnymi słowami (2000-3000 znaków) - NIE tłumaczenie",
             
             "business_insight_en": "Unique business insight analyzing article findings for SMBs",
             "business_insight_uk": "Унікальний бізнес-інсайт з аналізом для МСП",
             "business_insight_pl": "Unikalny wgląd biznesowy z analizą dla MŚP",
             
-            "business_opportunities_en": "LAZYSOFT perspective on automation opportunities from this news (300-500 chars)",
+            "business_opportunities_en": "LAZYSOFT perspective on automation opportunities (300-500 chars)",
             "business_opportunities_uk": "Перспектива LAZYSOFT щодо можливостей автоматизації (300-500 символів)",
             "business_opportunities_pl": "Perspektywa LAZYSOFT dotycząca możliwości automatyzacji (300-500 znaków)",
             
-            "lazysoft_recommendations_en": "LAZYSOFT automation recommendations based on article insights (300-500 chars)",
-            "lazysoft_recommendations_uk": "Рекомендації LAZYSOFT з автоматизації на основі інсайтів статті (300-500 символів)",
-            "lazysoft_recommendations_pl": "Rekomendacje LAZYSOFT dotyczące automatyzacji na podstawie wglądów z artykułu (300-500 znaków)"
+            "lazysoft_recommendations_en": "LAZYSOFT automation recommendations (300-500 chars)",
+            "lazysoft_recommendations_uk": "Рекомендації LAZYSOFT з автоматизації (300-500 символів)",
+            "lazysoft_recommendations_pl": "Rekomendacje LAZYSOFT dotyczące automatyzacji (300-500 znaków)",
+            
+            "key_takeaways_en": ["specific fact from article", "specific tech mentioned", "specific number"],
+            "key_takeaways_uk": ["конкретний факт зі статті", "конкретна технологія", "конкретна цифра"],
+            "key_takeaways_pl": ["konkretny fakt z artykułu", "konkretna technologia", "konkretna liczba"],
+            
+            "interesting_facts_en": ["stat FROM article with source", "trend FROM article"],
+            "interesting_facts_uk": ["статистика ЗІ статті з джерелом", "тренд ЗІ статті"],
+            "interesting_facts_pl": ["statystyka Z artykułu ze źródłem", "trend Z artykułu"],
+            
+            "implementation_steps_en": ["step 1 based on article topic", "step 2", "step 3"],
+            "implementation_steps_uk": ["крок 1 на основі теми статті", "крок 2", "крок 3"],
+            "implementation_steps_pl": ["krok 1 oparty na temacie artykułu", "krok 2", "krok 3"]
         }}
         """
 
@@ -400,7 +432,7 @@ OUTPUT JSON ONLY:
                 f"   Після очищення: {cleaned[:500] if 'cleaned' in locals() else 'N/A'}\n"
                 f"   Content length: {len(content_for_ai)}"
             )
-            content_data = self._create_fallback_content_dict(raw_article, category_info)
+            content_data = self._create_fallback_content_dict(raw_article, category_info, content_to_use)
             
         except Exception as e:
             self.logger.error(
@@ -409,7 +441,7 @@ OUTPUT JSON ONLY:
                 f"   Деталі: {e}\n"
                 f"   Content передано: {len(content_for_ai) if 'content_for_ai' in locals() else 'N/A'} символів"
             )
-            content_data = self._create_fallback_content_dict(raw_article, category_info)
+            content_data = self._create_fallback_content_dict(raw_article, category_info, content_to_use)
 
         # Нормалізація довжин summary
         content_data = self._normalize_lengths(content_data)
@@ -443,6 +475,18 @@ OUTPUT JSON ONLY:
             "lazysoft_recommendations_pl": content_data.get("lazysoft_recommendations_pl", ""),
             "lazysoft_recommendations_uk": content_data.get("lazysoft_recommendations_uk", ""),
 
+            # Нові поля для детального аналізу
+            "key_takeaways_en": content_data.get("key_takeaways_en", []),
+            "key_takeaways_pl": content_data.get("key_takeaways_pl", []),
+            "key_takeaways_uk": content_data.get("key_takeaways_uk", []),
+            "interesting_facts_en": content_data.get("interesting_facts_en", []),
+            "interesting_facts_pl": content_data.get("interesting_facts_pl", []),
+            "interesting_facts_uk": content_data.get("interesting_facts_uk", []),
+
+            "implementation_steps_en": content_data.get("implementation_steps_en", []),
+            "implementation_steps_pl": content_data.get("implementation_steps_pl", []),
+            "implementation_steps_uk": content_data.get("implementation_steps_uk", []),
+
             "category_slug": category,
             "priority": category_info.get("priority", 2),
 
@@ -454,7 +498,7 @@ OUTPUT JSON ONLY:
         }
 
 
-    def _create_fallback_content_dict(self, raw_article: RawArticle, category_info: Dict) -> dict:
+    def _create_fallback_content_dict(self, raw_article: RawArticle, category_info: Dict, content_to_use: str = None) -> dict:
         """Fallback контент - АНАЛІТИЧНИЙ, не копіює оригінал"""
         
         # ВАЖЛИВО: логуємо що fallback спрацював
@@ -462,7 +506,7 @@ OUTPUT JSON ONLY:
             f"⚠️ [FALLBACK] AI недоступний! Стаття: '{raw_article.title[:80]}...'\n"
             f"   Категорія: {category_info.get('category', 'unknown')}\n"
             f"   Source: {raw_article.source.name if raw_article.source else 'N/A'}\n"
-            f"   Content length: {len(raw_article.content or '')} символів\n"
+            f"   Content length: {len(content_to_use or raw_article.content or '')} символів\n"
             f"   ⚠️ Використовуємо fallback - контент буде базовим!"
         )
         
@@ -471,7 +515,10 @@ OUTPUT JSON ONLY:
         category = category_info.get('category', 'technology')
         
         # Беремо контент для базового аналізу
-        full_content = raw_article.content or raw_article.summary or ""
+        if content_to_use:
+            full_content = content_to_use
+        else:
+            full_content = raw_article.content or raw_article.summary or ""
         
         # Створюємо АНАЛІТИЧНИЙ заголовок, НЕ копію оригіналу
         analytical_title_en = f"Latest {category} developments: {source_name} reports on {original_title[:50]}"
@@ -485,6 +532,9 @@ OUTPUT JSON ONLY:
         
         # Додаємо частину оригінального контенту як context, але з введенням
         content_snippet = full_content[:1500] if full_content else "technological advancement in the industry"
+        
+        # Витягуємо ключові слова зі статті для key_takeaways
+        title_words = [w for w in original_title.split() if len(w) > 4]
         
         return {
             # АНАЛІТИЧНІ заголовки з джерелом
@@ -519,4 +569,62 @@ OUTPUT JSON ONLY:
             "lazysoft_recommendations_pl": f"Skontaktuj się z LAZYSOFT w celu profesjonalnej analizy, jak rozwój {category} od {source_name} może być zastosowany do Twojej strategii automatyzacji biznesowej.",
             
             "lazysoft_recommendations_uk": f"Зв'яжіться з LAZYSOFT для професійного аналізу того, як розробки {category} від {source_name} можуть бути застосовані до вашої стратегії автоматизації бізнесу.",
+            
+            # Нові поля для детального аналізу
+            "key_takeaways_en": [
+                f"Article discusses {title_words[0] if title_words else 'technology'}",
+                f"Source: {source_name}",
+                f"Category: {category}"
+            ],
+            "key_takeaways_uk": [
+                f"Стаття обговорює {title_words[0] if title_words else 'технологію'}",
+                f"Джерело: {source_name}",
+                f"Категорія: {category}"
+            ],
+            "key_takeaways_pl": [
+                f"Artykuł omawia {title_words[0] if title_words else 'technologię'}",
+                f"Źródło: {source_name}",
+                f"Kategoria: {category}"
+            ],
+            "interesting_facts_en": [f"Technology development reported by {source_name}", f"Potential impact on {category} sector", "Automation opportunities identified"],
+            "interesting_facts_pl": [f"Rozwój technologiczny zgłoszony przez {source_name}", f"Potencjalny wpływ na sektor {category}", "Zidentyfikowane możliwości automatyzacji"],
+            "interesting_facts_uk": [f"Технологічний розвиток від {source_name}", f"Потенційний вплив на сектор {category}", "Виявлені можливості автоматизації"],
+            
+            "implementation_steps_en": ["Assess current business processes", "Identify automation opportunities", "Plan technology integration", "Execute and monitor results"],
+            "implementation_steps_pl": ["Oceń obecne procesy biznesowe", "Zidentyfikuj możliwości automatyzacji", "Zaplanuj integrację technologii", "Wykonaj i monitoruj wyniki"],
+            "implementation_steps_uk": ["Оцініть поточні бізнес-процеси", "Визначте можливості автоматизації", "Сплануйте інтеграцію технологій", "Виконайте та відстежуйте результати"],
         }
+
+    def generate_full_content(self, content: str, language: str) -> str:
+        """Генерує повний Business Impact контент на конкретній мові (2000-3000 символів)"""
+        try:
+            # Використовуємо AI для генерації детального Business Impact контенту
+            prompt = f"""
+Як експерт LAZYSOFT з автоматизації бізнес-процесів, створи детальний Business Impact аналіз на {language} мові на основі наступної статті:
+
+{content}
+
+Структура аналізу:
+1. Ключові технологічні тренди та їх вплив на бізнес
+2. Конкретні можливості для автоматизації та оптимізації
+3. Практичні кроки впровадження для МСБ
+4. ROI оцінка та потенційні економії
+5. Ризики та способи їх мінімізації
+6. Конкурентні переваги та можливості росту
+
+Вимоги:
+- Довжина: 2000-3000 символів
+- Практичний фокус на автоматизації
+- Конкретні цифри та приклади
+- Адаптовано для {language} ринку
+- Стиль LAZYSOFT: експертний, але зрозумілий
+- НЕ копіюй оригінальний текст - створюй ОРИГІНАЛЬНИЙ аналіз
+"""
+            
+            full_content = self._call_ai_model(prompt, max_tokens=3000)
+            return full_content.strip()
+            
+        except Exception as e:
+            self.logger.warning(f"⚠️ Помилка генерації Business Impact для {language}: {e}")
+            # Повертаємо оригінальний контент якщо генерація не вдалася
+            return content

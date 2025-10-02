@@ -56,6 +56,15 @@ class ProcessedContent:
     key_takeaways_pl: List[str] = None
     key_takeaways_uk: List[str] = None
     
+    # Нові поля для детального аналізу
+    interesting_facts_en: List[str] = None
+    interesting_facts_pl: List[str] = None
+    interesting_facts_uk: List[str] = None
+    
+    implementation_steps_en: List[str] = None
+    implementation_steps_pl: List[str] = None
+    implementation_steps_uk: List[str] = None
+    
     # CTA
     cta_title_en: str = ""
     cta_title_pl: str = ""

@@ -10,7 +10,6 @@ from django.db.models import Q, Count
 from news.models import RawArticle, ProcessedArticle, NewsCategory, DailyDigest, ROIAnalytics
 
 from news.services.ai_processor.audience_analyzer import AudienceAnalyzer
-from news.services.ai_processor.enhanced_ai_analyzer import EnhancedAIAnalyzer
 from news.services.ai_processor.ai_processor_main import AINewsProcessor
 
 logger = logging.getLogger(__name__)
@@ -47,7 +46,6 @@ class SmartNewsPipeline:
         # Ініціалізуємо всі компоненти
         
         self.audience_analyzer = AudienceAnalyzer()
-        self.enhanced_analyzer = EnhancedAIAnalyzer()
         self.ai_processor = AINewsProcessor()
         
         # Налаштування
@@ -242,35 +240,17 @@ class SmartNewsPipeline:
                 raw_article.has_full_content = False
                 raw_article.save(update_fields=['has_full_content'])
 
-            # 2) Розширені інсайти LAZYSOFT з повним контентом
-            logger.info("🤖 Створення LAZYSOFT інсайтів з повним контентом...")
-            enhanced_insights = self.enhanced_analyzer.analyze_full_article_with_insights(
-                raw_article, full_content
-            )
-
-            # 3) Основна AI-обробка (генерація ~1100 символів оригінального тексту у summary_*)
-            logger.info("🎨 AI обробка та генерація контенту...")
-            processed_article = self.ai_processor.process_article(raw_article)
+            # 2) Основна AI-обробка з повним контентом (генерація всіх полів включаючи інсайти)
+            logger.info("🎨 AI обробка та генерація контенту з повним текстом...")
+            processed_article = self.ai_processor.process_article(raw_article, full_content=full_content)
             if not processed_article:
                 logger.error("❌ AI процесор не зміг обробити статтю")
                 return None
 
-            # 4) Збагачуємо ProcessedArticle інсайтами та релевантністю
+            # 3) Повний контент тепер генерується в ai_processor_main.py
+
+            # 4) Публікуємо статтю (встановлюємо статус, пріоритет, дату)
             if not dry_run:
-                self._enrich_processed_article(processed_article, enhanced_insights, relevance_analysis)
-
-                # 5) Заповнюємо повний контент для топ-статей
-                if raw_article.has_full_content and full_content:
-                    logger.info("📝 Заповнення повного контенту для топ-статті...")
-                    # Генеруємо повний контент на всіх мовах
-                    processed_article.full_content_en = self._generate_full_content(full_content, 'en')
-                    processed_article.full_content_pl = self._generate_full_content(full_content, 'pl')
-                    processed_article.full_content_uk = self._generate_full_content(full_content, 'uk')
-                    processed_article.full_content_parsed = True
-                    processed_article.original_word_count = len(full_content.split())
-                    processed_article.reading_time = max(5, processed_article.original_word_count // 200)
-
-                # 6) Публікуємо статтю (встановлюємо статус, пріоритет, дату)
                 base_priority = 3
                 try:
                     score = getattr(relevance_analysis, "relevance_score", None)
@@ -294,114 +274,7 @@ class SmartNewsPipeline:
             logger.exception(f"❌ Помилка обробки статті: {e}")
             return None
 
-    def _generate_full_content(self, content: str, language: str) -> str:
-        """Генерує повний Business Impact контент на конкретній мові (2000-3000 символів)"""
-        try:
-            # Використовуємо AI для генерації детального Business Impact контенту
-            prompt = f"""
-Як експерт LAZYSOFT з автоматизації бізнес-процесів, створи детальний Business Impact аналіз на {language} мові на основі наступної статті:
 
-{content}
-
-Структура аналізу:
-1. Ключові технологічні тренди та їх вплив на бізнес
-2. Конкретні можливості для автоматизації та оптимізації
-3. Практичні кроки впровадження для МСБ
-4. ROI оцінка та потенційні економії
-5. Ризики та способи їх мінімізації
-6. Конкурентні переваги та можливості росту
-
-Вимоги:
-- Довжина: 2000-3000 символів
-- Практичний фокус на автоматизації
-- Конкретні цифри та приклади
-- Адаптовано для {language} ринку
-- Стиль LAZYSOFT: експертний, але зрозумілий
-"""
-            
-            full_content = self.ai_processor._call_ai_model(prompt, max_tokens=3000)
-            return full_content.strip()
-            
-        except Exception as e:
-            logger.warning(f"⚠️ Помилка генерації Business Impact для {language}: {e}")
-            # Повертаємо оригінальний контент якщо генерація не вдалася
-            return content
-
-    def _enrich_processed_article(self, processed_article: ProcessedArticle, enhanced_insights, relevance_analysis):
-        """Додає розширені інсайти до ProcessedArticle (безпечно обробляє відсутні поля/типи)."""
-        def pick_lang(d, lang, list_expected=False):
-            if not d:
-                return [] if list_expected else ""
-            if isinstance(d, dict):
-                return d.get(lang, [] if list_expected else "")
-            # якщо прийшло щось нестандартне — повернемо дефолт
-            return [] if list_expected else ""
-
-        try:
-            # Дістанемо словники з enhanced_insights незалежно від його типу (dataclass/obj/dict)
-            insights_dict = {}
-            for key in ["interesting_facts", "business_opportunities", "lazysoft_recommendations", "business_insights"]:
-                try:
-                    insights_dict[key] = getattr(enhanced_insights, key, {}) or {}
-                except Exception:
-                    insights_dict[key] = {}
-
-            # 1) Business Insights (основні інсайти)
-            business_insights = insights_dict.get("business_insights", {})
-            processed_article.business_insight_en = pick_lang(business_insights, "english_audience")
-            processed_article.business_insight_pl = pick_lang(business_insights, "polish_audience")
-            processed_article.business_insight_uk = pick_lang(business_insights, "ukrainian_audience")
-            
-            # Якщо business_insights порожні, спробуємо взяти з main_insight
-            if not processed_article.business_insight_en:
-                processed_article.business_insight_en = pick_lang(business_insights, "english")
-            if not processed_article.business_insight_pl:
-                processed_article.business_insight_pl = pick_lang(business_insights, "polish")
-            if not processed_article.business_insight_uk:
-                processed_article.business_insight_uk = pick_lang(business_insights, "ukrainian")
-
-            # 2) Цікавинки (очікуємо списки)
-            processed_article.interesting_facts_en = pick_lang(insights_dict["interesting_facts"], "english", list_expected=True)
-            processed_article.interesting_facts_pl = pick_lang(insights_dict["interesting_facts"], "polish", list_expected=True)
-            processed_article.interesting_facts_uk = pick_lang(insights_dict["interesting_facts"], "ukrainian", list_expected=True)
-
-            # 3) Бізнес-можливості (рядки)
-            bo_en = pick_lang(insights_dict["business_opportunities"], "english")
-            bo_pl = pick_lang(insights_dict["business_opportunities"], "polish")
-            bo_uk = pick_lang(insights_dict["business_opportunities"], "ukrainian")
-
-            # fallback: якщо порожньо — візьмемо з твоїх business_insight_*
-            if not bo_en:
-                bo_en = getattr(processed_article, "business_insight_en", "") or ""
-            if not bo_pl:
-                bo_pl = getattr(processed_article, "business_insight_pl", "") or ""
-            if not bo_uk:
-                bo_uk = getattr(processed_article, "business_insight_uk", "") or ""
-
-            processed_article.business_opportunities_en = bo_en
-            processed_article.business_opportunities_pl = bo_pl
-            processed_article.business_opportunities_uk = bo_uk
-
-            # 4) Рекомендації LAZYSOFT (рядки)
-            processed_article.lazysoft_recommendations_en = pick_lang(insights_dict["lazysoft_recommendations"], "english")
-            processed_article.lazysoft_recommendations_pl = pick_lang(insights_dict["lazysoft_recommendations"], "polish")
-            processed_article.lazysoft_recommendations_uk = pick_lang(insights_dict["lazysoft_recommendations"], "ukrainian")
-
-            # 5) Прокинемо релевантність, якщо є поле в моделі
-            try:
-                score = getattr(relevance_analysis, "relevance_score", None)
-                if score is None and isinstance(relevance_analysis, dict):
-                    score = relevance_analysis.get("relevance_score")
-                if hasattr(processed_article, "relevance_score") and score is not None:
-                    processed_article.relevance_score = int(score)
-            except Exception:
-                pass
-
-            processed_article.save()
-            logger.info("✅ Розширені інсайти додано до статті")
-
-        except Exception as e:
-            logger.warning(f"⚠️ Помилка додавання інсайтів: {e}")
 
     def _create_daily_digest_from_top_articles(self, date: datetime.date, top_articles: List[ProcessedArticle]) -> bool:
         """Створює щоденний дайджест ТІЛЬКИ з ТОП-5 статей."""

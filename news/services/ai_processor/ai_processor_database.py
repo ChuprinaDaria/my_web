@@ -48,6 +48,15 @@ class AIProcessorDatabase:
         key_takeaways_pl = self._safe_get_value(content, "key_takeaways_pl", []) or []
         key_takeaways_uk = self._safe_get_value(content, "key_takeaways_uk", []) or []
 
+        # Нові поля для детального аналізу
+        interesting_facts_en = self._safe_get_value(content, "interesting_facts_en", []) or []
+        interesting_facts_pl = self._safe_get_value(content, "interesting_facts_pl", []) or []
+        interesting_facts_uk = self._safe_get_value(content, "interesting_facts_uk", []) or []
+
+        implementation_steps_en = self._safe_get_value(content, "implementation_steps_en", []) or []
+        implementation_steps_pl = self._safe_get_value(content, "implementation_steps_pl", []) or []
+        implementation_steps_uk = self._safe_get_value(content, "implementation_steps_uk", []) or []
+
         # CTA (завжди не пусто, обрізаємо до 200 символів для varchar безпеки)
         cta_title_en = self._safe_get_value(content, "cta_title_en", "Get Expert Analysis")[:200]
         cta_title_pl = self._safe_get_value(content, "cta_title_pl", "Otrzymaj ekspercką analizę")[:200]
@@ -110,6 +119,14 @@ class AIProcessorDatabase:
             key_takeaways_en=key_takeaways_en,
             key_takeaways_pl=key_takeaways_pl,
             key_takeaways_uk=key_takeaways_uk,
+
+            interesting_facts_en=interesting_facts_en,
+            interesting_facts_pl=interesting_facts_pl,
+            interesting_facts_uk=interesting_facts_uk,
+
+            implementation_steps_en=implementation_steps_en,
+            implementation_steps_pl=implementation_steps_pl,
+            implementation_steps_uk=implementation_steps_uk,
 
             cta_title_en=cta_title_en,
             cta_title_pl=cta_title_pl,
@@ -217,6 +234,15 @@ class AIProcessorDatabase:
             )
             article_data[f'key_takeaways_{lang}'] = self._safe_get_value(
                 content, f"key_takeaways_{lang}", []
+            ) or []
+            
+            # Нові поля для детального аналізу
+            article_data[f'interesting_facts_{lang}'] = self._safe_get_value(
+                content, f"interesting_facts_{lang}", []
+            ) or []
+            
+            article_data[f'implementation_steps_{lang}'] = self._safe_get_value(
+                content, f"implementation_steps_{lang}", []
             ) or []
             
             # CTA

@@ -236,6 +236,11 @@ class ProcessedArticle(models.Model):
     interesting_facts_pl = models.JSONField(_('Цікавинки (PL)'), default=list)
     interesting_facts_uk = models.JSONField(_('Цікавинки (UK)'), default=list)
     
+    # Кроки впровадження (JSON поля)
+    implementation_steps_en = models.JSONField(_('Кроки впровадження (EN)'), default=list)
+    implementation_steps_pl = models.JSONField(_('Кроки впровадження (PL)'), default=list)
+    implementation_steps_uk = models.JSONField(_('Кроки впровадження (UK)'), default=list)
+    
     # Додаткові поля для Full Article Parser
     original_word_count = models.IntegerField(_('Кількість слів оригіналу'), default=0)
     reading_time = models.IntegerField(_('Час читання (хв)'), default=5)

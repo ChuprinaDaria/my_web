@@ -12,7 +12,7 @@ from news.models import RawArticle, ProcessedArticle, AIProcessingLog
 class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabase):
     """Головний AI процесор для новин - основна обробка"""
 
-    def process_article(self, raw_article: RawArticle) -> Optional[ProcessedArticle]:
+    def process_article(self, raw_article: RawArticle, full_content: str = None) -> Optional[ProcessedArticle]:
         """Обробляє одну сиру статтю через AI з FiveFilters збагаченням"""
         start_time = time.time()
         self.logger.info(f"[AI] Обробка статті: {raw_article.title[:50]}...")
@@ -25,8 +25,8 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
             category_info = self._categorize_article(raw_article)
             self.logger.info(f"[AI] Категорія визначена: {category_info['category']}")
 
-            # 2) Тримовний контент (використовує збагачений контент)
-            processed_content = self._create_multilingual_content(raw_article, category_info)
+            # 2) Тримовний контент (використовує збагачений контент або переданий full_content)
+            processed_content = self._create_multilingual_content(raw_article, category_info, full_content)
             self.logger.info("[AI] Тримовний контент створено ✅")
 
             # 3) Стокові зображення замість AI генерації (як ти хотіла)
@@ -71,6 +71,21 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
                 self.logger.warning("[IMAGE] ⚠️ Немає URL для збереження")
 
             self.logger.info("[AI] Статтю збережено в базу ✅")
+
+            # 4.2) Генеруємо повний контент для топ-статей (якщо передано full_content)
+            if full_content and len(full_content) > 1000:  # Тільки для статей з достатнім контентом
+                self.logger.info("📝 Генерація повного контенту для топ-статті...")
+                try:
+                    processed_article.full_content_en = self.generate_full_content(full_content, 'en')
+                    processed_article.full_content_pl = self.generate_full_content(full_content, 'pl')
+                    processed_article.full_content_uk = self.generate_full_content(full_content, 'uk')
+                    processed_article.full_content_parsed = True
+                    processed_article.original_word_count = len(full_content.split())
+                    processed_article.reading_time = max(5, processed_article.original_word_count // 200)
+                    processed_article.save()
+                    self.logger.info("✅ Повний контент згенеровано та збережено")
+                except Exception as e:
+                    self.logger.warning(f"⚠️ Помилка генерації повного контенту: {e}")
 
             # 5) Статистика
             processing_time = time.time() - start_time
