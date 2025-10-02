@@ -72,13 +72,23 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
 
             self.logger.info("[AI] Статтю збережено в базу ✅")
 
-            # 4.2) Генеруємо повний контент для топ-статей (якщо передано full_content)
-            if full_content and len(full_content) > 1000:  # Тільки для статей з достатнім контентом
-                self.logger.info("📝 Генерація повного контенту для топ-статті...")
+            # 4.2) Генеруємо повний контент для топ-статей
+            self.logger.info(f"[FULL_CONTENT] full_content передано: {bool(full_content)}")
+            self.logger.info(f"[FULL_CONTENT] довжина: {len(full_content) if full_content else 0}")
+            self.logger.info(f"[FULL_CONTENT] is_top_article: {getattr(processed_article, 'is_top_article', False)}")
+
+            if full_content and len(full_content) > 1000:
+                self.logger.info("📝 ПОЧИНАЮ генерацію повного контенту для 3 мов...")
                 try:
                     processed_article.full_content_en = self.generate_full_content(full_content, 'en')
+                    self.logger.info(f"✅ EN згенеровано: {len(processed_article.full_content_en or '')} символів")
+
                     processed_article.full_content_pl = self.generate_full_content(full_content, 'pl')
+                    self.logger.info(f"✅ PL згенеровано: {len(processed_article.full_content_pl or '')} символів")
+
                     processed_article.full_content_uk = self.generate_full_content(full_content, 'uk')
+                    self.logger.info(f"✅ UK згенеровано: {len(processed_article.full_content_uk or '')} символів")
+
                     processed_article.full_content_parsed = True
                     processed_article.original_word_count = len(full_content.split())
                     processed_article.reading_time = max(5, processed_article.original_word_count // 200)
@@ -86,6 +96,8 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
                     self.logger.info("✅ Повний контент згенеровано та збережено")
                 except Exception as e:
                     self.logger.warning(f"⚠️ Помилка генерації повного контенту: {e}")
+            else:
+                self.logger.warning(f"⚠️ Умова НЕ спрацювала: full_content={bool(full_content)}, len={len(full_content) if full_content else 0}")
 
             # 5) Статистика
             processing_time = time.time() - start_time
