@@ -1,5 +1,8 @@
 from django.contrib.sitemaps import Sitemap
-from django.urls import reverse
+from django.urls import reverse, NoReverseMatch
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class StaticViewSitemap(Sitemap):
@@ -9,16 +12,27 @@ class StaticViewSitemap(Sitemap):
     i18n = True  # Django автоматично згенерує всі мови
     
     def items(self):
-        """Список статичних URL - Django автоматично створить версії для всіх мов"""
-        return [
-            'core:home',           # core/urls.py (namespaced)
-            'about',               # about/urls.py (без namespace у include)
-            'services:services_list',  # services/urls.py (namespaced)
-            'projects',            # projects/urls.py (без namespace у include)
-            'contact_page',        # contacts/urls.py (без namespace у include)
-            'news:news_list',      # news/urls.py (namespaced)
-            'chat',                # consultant/urls.py (без namespace у include)
+        """Список статичних URL з перевіркою, щоб уникнути 500 у разі NoReverseMatch"""
+        candidates = [
+            'core:home',                 # core/urls.py (namespaced)
+            'about',                     # about/urls.py (без namespace у include)
+            'services:services_list',    # services/urls.py (namespaced)
+            'projects',                  # projects/urls.py (без namespace у include)
+            'contact_page',              # contacts/urls.py (без namespace у include)
+            'news:news_list',            # news/urls.py (namespaced)
+            'chat',                      # consultant/urls.py (без namespace у include)
         ]
+
+        valid = []
+        for name in candidates:
+            try:
+                # Перевіряємо, що reverse працює; i18n префікс додасться під час побудови
+                reverse(name)
+                valid.append(name)
+            except NoReverseMatch:
+                logger.warning("Sitemap: пропускаємо невалідне ім'я маршруту: %s", name)
+                continue
+        return valid
     
     def location(self, item):
         """Генеруємо URL - Django автоматично додасть мовний префікс"""
@@ -64,7 +78,7 @@ class ProjectDetailSitemap(Sitemap):
     
     def location(self, obj):
         """URL детальної сторінки проєкту"""
-        return reverse('projects:project_detail', kwargs={'slug': obj.slug})
+        return reverse('project_detail', kwargs={'slug': obj.slug})
     
     def lastmod(self, obj):
         """Дата останньої модифікації"""

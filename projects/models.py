@@ -3,6 +3,8 @@ from django import forms
 from ckeditor.fields import RichTextField
 from services.models import ServiceCategory
 from django.utils.text import slugify  
+from django.urls import reverse
+from django.utils.translation import get_language
 
 
 class Project(models.Model):
@@ -308,6 +310,13 @@ class Project(models.Model):
     
     # 🛠️ НОВІ МЕТОДИ для крос-промоції з новою системою тегів
     
+    def get_absolute_url(self, language: str = None):
+        """Англійська без префікса, інші мови з префіксом, як у сервісах."""
+        lang = (language or get_language() or 'en').lower()
+        if lang == 'en':
+            return reverse('project_detail', kwargs={'slug': self.slug})
+        return f"/{lang}" + reverse('project_detail', kwargs={'slug': self.slug})
+
     def get_related_articles(self, limit=3):
         """Повертає новини: спочатку по категорії, потім по тегах"""
         try:

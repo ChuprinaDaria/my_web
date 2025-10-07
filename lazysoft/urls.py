@@ -33,15 +33,15 @@ def redirect_admin(request):
 # 🔁 Короткі URL без мовного префікса → редірект на поточну мову
 def redirect_privacy_policy(request):
     lang = get_language() or 'pl'
-    return redirect(f'/{lang}/legal/privacy-policy/')
+    return redirect('/legal/privacy-policy/' if lang == 'en' else f'/{lang}/legal/privacy-policy/')
 
 def redirect_terms_of_service(request):
     lang = get_language() or 'pl'
-    return redirect(f'/{lang}/legal/terms-of-service/')
+    return redirect('/legal/terms-of-service/' if lang == 'en' else f'/{lang}/legal/terms-of-service/')
 
 def redirect_cookies_policy(request):
     lang = get_language() or 'pl'
-    return redirect(f'/{lang}/legal/cookies-policy/')
+    return redirect('/legal/cookies-policy/' if lang == 'en' else f'/{lang}/legal/cookies-policy/')
 
 urlpatterns = []
 

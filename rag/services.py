@@ -12,7 +12,7 @@ from openai import OpenAI
 from django.utils import timezone
 import numpy as np
 
-from .models import EmbeddingModel, ChatSession, ChatMessage, RAGAnalytics
+from .models import EmbeddingModel, ChatSession, ChatMessage, RAGAnalytics, KnowledgeSource
 from services.models import ServiceCategory, FAQ
 from projects.models import Project
 from pricing.models import ServicePricing
@@ -287,6 +287,21 @@ class EmbeddingService:
             if mission: text_parts.append(f"Місія: {mission}")
             if story: text_parts.append(f"Історія: {story}")
             if services: text_parts.append(f"Що робимо: {services}")
+        elif isinstance(obj, KnowledgeSource):
+            # Ручне джерело знань (rag.KnowledgeSource)
+            title = getattr(obj, 'title', '')
+            # Контент потрібною мовою з фолбеком
+            lang_content = (
+                getattr(obj, f'content_{language}', '')
+                or getattr(obj, 'content_uk', '')
+                or getattr(obj, 'content_en', '')
+                or getattr(obj, 'content_pl', '')
+                or ''
+            )
+            if title:
+                text_parts.append(f"Джерело: {title}")
+            if lang_content:
+                text_parts.append(lang_content)
         
         elif isinstance(obj, ServicePricing):
             # 💰 Витягуємо дані про ціни з реальної моделі pricing.ServicePricing
@@ -339,6 +354,8 @@ class EmbeddingService:
             return getattr(obj, f'title_{language}', getattr(obj, 'title_en', 'Contact'))
         if obj.__class__.__name__ == 'About':
             return getattr(obj, f'title_{language}', getattr(obj, 'title_en', 'About'))
+        if isinstance(obj, KnowledgeSource):
+            return getattr(obj, 'title', str(obj))
         if isinstance(obj, ServicePricing):
             # Заголовок для ціни: Назва пакета + сервіс
             service_category = getattr(obj, 'service_category', None)
@@ -373,6 +390,8 @@ class EmbeddingService:
             return 'contact'
         elif obj.__class__.__name__ == 'About':
             return 'about'
+        elif isinstance(obj, KnowledgeSource):
+            return getattr(obj, 'source_type', 'manual') or 'manual'
         return 'unknown'
 
 
@@ -1292,14 +1311,24 @@ class IndexingService:
                 
                 objects = model_class.objects.filter(is_active=True) if hasattr(model_class, 'is_active') else model_class.objects.all()
                 
-                for obj in objects:
-                    for lang in languages:
+                # Якщо індексуємо KnowledgeSource — маршрутизуємо через reindex_object
+                if model_class is KnowledgeSource:
+                    for obj in objects:
                         try:
-                            self.embedding_service.create_embedding_for_object(obj, lang)
+                            self.reindex_object(obj)
                             total_indexed += 1
                         except Exception as e:
-                            logger.error(f"Помилка індексації {obj} ({lang}): {e}")
+                            logger.error(f"Помилка індексації KnowledgeSource {obj}: {e}")
                             continue
+                else:
+                    for obj in objects:
+                        for lang in languages:
+                            try:
+                                self.embedding_service.create_embedding_for_object(obj, lang)
+                                total_indexed += 1
+                            except Exception as e:
+                                logger.error(f"Помилка індексації {obj} ({lang}): {e}")
+                                continue
                             
                 logger.info(f"Індексовано {objects.count()} об'єктів з {model_path}")
                 
@@ -1314,6 +1343,40 @@ class IndexingService:
         """Переіндексує конкретний об'єкт"""
         languages = self.rag_settings.get('SUPPORTED_LANGUAGES', ['uk'])
         
+        # Спеціальна логіка для KnowledgeSource
+        if isinstance(obj, KnowledgeSource):
+            try:
+                src_type = getattr(obj, 'source_type', 'manual')
+                # Якщо джерело вказує на тип контенту, індексуємо відповідні моделі
+                if src_type == 'service':
+                    targets = ServiceCategory.objects.filter(is_active=True) if hasattr(ServiceCategory, 'is_active') else ServiceCategory.objects.all()
+                    for target in targets:
+                        for lang in languages:
+                            self.embedding_service.create_embedding_for_object(target, lang)
+                elif src_type == 'project':
+                    for target in Project.objects.all():
+                        for lang in languages:
+                            self.embedding_service.create_embedding_for_object(target, lang)
+                elif src_type == 'faq':
+                    for target in FAQ.objects.all():
+                        for lang in languages:
+                            self.embedding_service.create_embedding_for_object(target, lang)
+                else:
+                    # manual: індексуємо сам KnowledgeSource
+                    for lang in languages:
+                        self.embedding_service.create_embedding_for_object(obj, lang)
+                # Оновлюємо часову мітку
+                try:
+                    obj.last_embedding_update = timezone.now()
+                    obj.save(update_fields=['last_embedding_update'])
+                except Exception:
+                    pass
+                return
+            except Exception as e:
+                logger.error(f"Помилка маршрутизації KnowledgeSource {obj}: {e}")
+                return
+
+        # За замовчуванням: індексуємо сам об'єкт у всіх мовах
         for lang in languages:
             try:
                 self.embedding_service.create_embedding_for_object(obj, lang)

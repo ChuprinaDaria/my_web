@@ -58,37 +58,21 @@
       </div>
     </div>
 
-    {% if about.gallery_image_1 or about.gallery_image_2 or about.gallery_image_3 %}
+    {% if gallery %}
       <section class="about-gallery-section">
         <div class="gallery-header">
           <h2>{% trans "Gallery" %}</h2>
         </div>
         
         <div class="gallery-grid">
-          {% if about.gallery_image_1 %}
-            <div class="gallery-item" onclick="openLightbox('{{ about.gallery_image_1.url }}')">
-              <img src="{{ about.gallery_image_1.url }}" alt="{% trans 'Gallery Image 1' %}" loading="lazy">
+          {% for image in gallery %}
+            <div class="gallery-item" onclick="openLightbox('{{ image.url }}')">
+              <img src="{{ image.url }}" alt="{{ image.alt|default:'About Gallery' }}" loading="lazy">
               <div class="gallery-overlay">
                 <i data-lucide="zoom-in"></i>
               </div>
             </div>
-          {% endif %}
-          {% if about.gallery_image_2 %}
-            <div class="gallery-item" onclick="openLightbox('{{ about.gallery_image_2.url }}')">
-              <img src="{{ about.gallery_image_2.url }}" alt="{% trans 'Gallery Image 2' %}" loading="lazy">
-              <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
-              </div>
-            </div>
-          {% endif %}
-          {% if about.gallery_image_3 %}
-            <div class="gallery-item" onclick="openLightbox('{{ about.gallery_image_3.url }}')">
-              <img src="{{ about.gallery_image_3.url }}" alt="{% trans 'Gallery Image 3' %}" loading="lazy">
-              <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
-              </div>
-            </div>
-          {% endif %}
+          {% endfor %}
         </div>
       </section>
     {% endif %}

@@ -48,6 +48,7 @@ def services_list(request):
             "short_description_uk": project.short_description_uk,
             "short_description_pl": project.short_description_pl,
             "featured_image": project.featured_image,
+            "url": project.get_absolute_url(lang) if hasattr(project, 'get_absolute_url') else f'/{lang}/projects/{project.slug}/',
         })
     
     faqs = FAQ.objects.filter(is_active=True).order_by("order")

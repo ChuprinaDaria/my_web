@@ -20,13 +20,21 @@ def home(request):
     from projects.models import Project
     from services.models import ServiceCategory
     
-    # Отримуємо топ-5 новин з повним контентом (тільки ті, що оброблені через пайплайн)
+    # Топ-5 новин: спочатку за сьогоднішнім відбором, якщо є; інакше останні топ-статті
+    today = timezone.now().date()
     latest_articles = ProcessedArticle.objects.filter(
         status='published',
         is_top_article=True,
-        top_selection_date=timezone.now().date(),
-        raw_article__has_full_content=True  # Тільки з повним контентом через FiveFilters
+        top_selection_date=today,
     ).order_by('article_rank')[:5]
+    if latest_articles.count() < 5:
+        # Доповнюємо останніми топ-статтями без обов'язкового full_content
+        fallback_needed = 5 - latest_articles.count()
+        fallback_qs = ProcessedArticle.objects.filter(
+            status='published',
+            is_top_article=True,
+        ).exclude(pk__in=latest_articles.values_list('pk', flat=True)).order_by('-published_at')[:fallback_needed]
+        latest_articles = list(latest_articles) + list(fallback_qs)
     
     # Отримуємо дайджест (тепер тільки з ТОП-5 статей)
     from news.models import DailyDigest
@@ -36,9 +44,9 @@ def home(request):
             is_published=True
         ).first()
         
-        # Дайджест тепер містить тільки ТОП-5 статей, тому показуємо їх
-        if today_digest:
-            daily_digest = latest_articles  # Дайджест = ТОП-5 статей
+        # Дайджест тепер містить тільки ТОП-5 статей
+        if today_digest and latest_articles:
+            daily_digest = latest_articles
         else:
             # Якщо немає дайджесту, показуємо ТОП статті за попередні дні
             daily_digest = ProcessedArticle.objects.filter(

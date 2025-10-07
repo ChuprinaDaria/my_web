@@ -55,11 +55,30 @@ def about_page(request):
         og_image_url = request.build_absolute_uri(about.gallery_image_3.url)
 
     # Динамічний контент залежно від мови
+    # Галерея: поєднуємо 3 поля About + пов'язані AboutImage
+    gallery = []
+    # Спершу основні 3 зображення
+    if about.gallery_image_1:
+        gallery.append({'url': about.gallery_image_1.url, 'alt': 'About Gallery 1'})
+    if about.gallery_image_2:
+        gallery.append({'url': about.gallery_image_2.url, 'alt': 'About Gallery 2'})
+    if about.gallery_image_3:
+        gallery.append({'url': about.gallery_image_3.url, 'alt': 'About Gallery 3'})
+
+    # Додаємо додаткові зображення з AboutImage у визначеному порядку
+    try:
+        for img in about.images.filter(is_active=True).order_by('order'):
+            alt = getattr(img, f'alt_text_{current_language}', None) or img.alt_text_en or ''
+            gallery.append({'url': img.image.url, 'alt': alt})
+    except Exception:
+        pass
+
     context = {
         'about': about,
         'page_title': getattr(about, f'seo_title_{current_language}') or getattr(about, f'title_{current_language}'),
         'page_description': getattr(about, f'seo_description_{current_language}') or getattr(about, f'subtitle_{current_language}'),
         'current_language': current_language,
+        'gallery': gallery,
         # OG-теги для соцмереж
         'og_title': og_title,
         'og_description': og_description,

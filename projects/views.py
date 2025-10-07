@@ -66,7 +66,7 @@ def projects_list(request):
             "projects": localized_projects,
             "projects_count": project_count,
             "featured_image": None,  # ServiceCategory не має featured_image поля
-            "service_url": f"/{lang}/services/#{category.slug}",
+            "service_url": f"/services/#{category.slug}" if lang == 'en' else f"/{lang}/services/#{category.slug}",
         })
 
     # Отримуємо 6 випадкових проєктів замість тільки featured
