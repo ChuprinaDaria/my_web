@@ -461,6 +461,7 @@ def request_quote_from_chat(request):
             'issued_at': timezone.now(),
             'name': data['client_name'],
             'email': data['client_email'],
+            'phone': data.get('client_phone', ''),
             'company': data.get('client_company', ''),
             'notes': data.get('message', ''),
             'items': items,

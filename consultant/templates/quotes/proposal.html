@@ -5,119 +5,161 @@
   <meta charset="UTF-8">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% if language == 'uk' %}Комерційна пропозиція{% elif language == 'pl' %}Oferta handlowa{% else %}Commercial Proposal{% endif %}</title>
+  <title>
+    {% if language == 'uk' %}Комерційна пропозиція{% elif language == 'pl' %}Propozycja komercyjna{% else %}Commercial Proposal{% endif %}
+  </title>
   <style>
-    body { font-family: Arial, Helvetica, sans-serif; color: #111; margin: 0; padding: 0; }
-    .wrapper { max-width: 800px; margin: 0 auto; padding: 24px; }
-    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
-    .brand-block { display: flex; align-items: center; gap: 12px; }
-    .brand-logo { height: 42px; }
-    h1 { font-size: 22px; margin: 8px 0 4px; }
-    h2 { font-size: 18px; margin: 24px 0 8px; }
-    p { line-height: 1.5; margin: 6px 0; }
-    .muted { color: #666; font-size: 13px; }
-    .meta { background: #f7f7f7; border-radius: 8px; padding: 12px 16px; margin: 16px 0; }
-    table { width: 100%; border-collapse: collapse; margin: 10px 0 20px; }
-    th, td { border: 1px solid #e5e5e5; padding: 10px 12px; text-align: left; vertical-align: top; }
-    th { background: #fafafa; font-weight: 600; }
+    :root { --text:#111; --muted:#666; --line:#e5e5e5; --bg:#fff; --soft:#f7f7f7; --brand:#198754; }
+    html, body { margin:0; padding:0; background: var(--bg); color: var(--text); }
+    body { font-family: Arial, Helvetica, sans-serif; -webkit-text-size-adjust:100%; }
+    .wrapper { max-width: 900px; margin: 0 auto; padding: 20px 16px; }
+    .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { height: 44px; max-width: 160px; object-fit: contain; }
+    .brand-name { font-weight: 700; font-size: 16px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    h1 { font-size: 20px; margin: 8px 0; }
+    h2 { font-size: 16px; margin: 18px 0 8px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .card { border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: #fff; }
+    .row { display:flex; gap:12px; align-items:flex-start; }
+    .row > div { flex:1; }
+    .kv p { margin: 4px 0; }
+    .kv strong { display: inline-block; min-width: 120px; }
+    table { width:100%; border-collapse: collapse; margin: 10px 0 12px; }
+    th, td { border: 1px solid var(--line); padding: 10px 10px; text-align: left; vertical-align: top; font-size: 13px; }
+    th { background: var(--soft); font-weight: 600; }
     .price { white-space: nowrap; font-weight: 600; }
-    .cta { margin: 28px 0; padding: 16px; background: #f4fbf0; border: 1px solid #d6f0c2; border-radius: 8px; }
-    .cta a { display: inline-block; background: #198754; color: #fff !important; text-decoration: none; padding: 10px 16px; border-radius: 6px; }
-    .footer { margin-top: 32px; font-size: 12px; color: #666; }
-    ul { margin: 6px 0 0 18px; padding: 0; }
+    .total { font-weight: 700; background: #fefefe; }
+    .cta { display:block; margin: 18px 0; padding: 14px; background: #f4fbf0; border: 1px solid #d6f0c2; border-radius: 8px; }
+    .cta a { display:inline-block; background: var(--brand); color:#fff !important; text-decoration:none; padding:10px 14px; border-radius:6px; font-weight:600; }
+    .foot { margin-top:18px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .notes { white-space: pre-wrap; }
+    @media (max-width: 560px){ .row{flex-direction:column;} .kv strong{min-width:0;} th, td{font-size:12px; padding:8px;} }
   </style>
 </head>
 <body>
-<div class="wrapper">
-  <div class="header">
-    <div class="brand-block">
-      {% if brand_logo_url %}<img src="{{ brand_logo_url }}" alt="Logo" class="brand-logo" />{% endif %}
-      <div>
-        <div style="font-weight: 700">{{ brand.company_name|default:'LAZYSOFT' }}</div>
-        <div class="muted">{{ brand.website|default:'https://lazysoft.pl' }}</div>
+  <div class="wrapper">
+    <div class="header">
+      <div class="brand">
+        {% if brand_logo_url %}<img src="{{ brand_logo_url }}" alt="Logo" class="brand-logo" />{% endif %}
+        <div>
+          <div class="brand-name">{{ brand.company_name|default:'LAZYSOFT' }}</div>
+          <div class="muted">{{ brand.website|default:'https://lazysoft.pl' }}</div>
+        </div>
+      </div>
+      <div class="muted">
+        {% if language == 'uk' %}Видано{% elif language == 'pl' %}Wystawiono{% else %}Issued{% endif %}:
+        {{ issued_at|date:'Y-m-d H:i' }}
       </div>
     </div>
-    <div class="muted">{{ issued_at|date:'Y-m-d H:i' }}</div>
-  </div>
 
-  <h1>
-    {% if language == 'uk' %}Комерційна пропозиція{% elif language == 'pl' %}Oferta handlowa{% else %}Commercial Proposal{% endif %}
-  </h1>
+    <h1>
+      {% if language == 'uk' %}Комерційна пропозиція{% elif language == 'pl' %}Propozycja komercyjna{% else %}Commercial Proposal{% endif %}
+    </h1>
 
-  <div class="meta">
-    <p><strong>{% if language == 'uk' %}Клієнт{% elif language == 'pl' %}Klient{% else %}Client{% endif %}:</strong> {{ name }}</p>
-    <p><strong>Email:</strong> {{ email }}</p>
-    {% if company %}<p><strong>{% if language == 'uk' %}Компанія{% elif language == 'pl' %}Firma{% else %}Company{% endif %}:</strong> {{ company }}</p>{% endif %}
-    {% if notes %}<p><strong>{% if language == 'uk' %}Запит{% elif language == 'pl' %}Zapytanie{% else %}Request{% endif %}:</strong> {{ notes }}</p>{% endif %}
-  </div>
+    <div class="row">
+      <div class="card kv">
+        <h2>{% if language == 'uk' %}Надавач послуг{% elif language == 'pl' %}Usługodawca{% else %}Service Provider{% endif %}</h2>
+        <p><strong>{% if language == 'uk' %}Компанія{% elif language == 'pl' %}Firma{% else %}Company{% endif %}:</strong> {{ brand.company_name|default:'LAZYSOFT' }}</p>
+        {% if brand.address_line1 %}<p><strong>{% if language == 'uk' %}Адреса{% elif language == 'pl' %}Adres{% else %}Address{% endif %}:</strong> {{ brand.address_line1 }}{% if brand.city %}, {{ brand.city }}{% endif %}{% if brand.postal_code %} {{ brand.postal_code }}{% endif %}</p>{% endif %}
+        {% if brand.country %}<p><strong>{% if language == 'uk' %}Країна{% elif language == 'pl' %}Kraj{% else %}Country{% endif %}:</strong> {{ brand.country }}</p>{% endif %}
+        {% if brand.tax_id %}<p><strong>NIP/VAT:</strong> {{ brand.tax_id }}</p>{% endif %}
+        {% if brand.website %}<p><strong>URL:</strong> {{ brand.website }}</p>{% endif %}
+        {% if brand.phone %}<p><strong>{% if language == 'uk' %}Телефон{% elif language == 'pl' %}Telefon{% else %}Phone{% endif %}:</strong> {{ brand.phone }}</p>{% endif %}
+        {% if brand.email %}<p><strong>Email:</strong> {{ brand.email }}</p>{% endif %}
+      </div>
+      <div class="card kv">
+        <h2>{% if language == 'uk' %}Клієнт{% elif language == 'pl' %}Klient{% else %}Client{% endif %}</h2>
+        <p><strong>{% if language == 'uk' %}Ім'я{% elif language == 'pl' %}Imię{% else %}Name{% endif %}:</strong> {{ name }}</p>
+        <p><strong>Email:</strong> {{ email }}</p>
+        {% if phone %}<p><strong>{% if language == 'uk' %}Телефон{% elif language == 'pl' %}Telefon{% else %}Phone{% endif %}:</strong> {{ phone }}</p>{% endif %}
+        {% if company %}<p><strong>{% if language == 'uk' %}Компанія{% elif language == 'pl' %}Firma{% else %}Company{% endif %}:</strong> {{ company }}</p>{% endif %}
+        {% if notes %}<p><strong>{% if language == 'uk' %}Примітки{% elif language == 'pl' %}Uwagi{% else %}Notes{% endif %}:</strong> <span class="notes">{{ notes }}</span></p>{% endif %}
+      </div>
+    </div>
 
-  <h2>{% if language == 'uk' %}Орієнтовні пакети та ціни{% elif language == 'pl' %}Proponowane pakiety i ceny{% else %}Suggested packages and pricing{% endif %}</h2>
-  <table role="table" aria-label="Pricing table">
-    <thead>
-      <tr>
-        <th scope="col">{% if language == 'uk' %}Послуга{% elif language == 'pl' %}Usługa{% else %}Service{% endif %}</th>
-        <th scope="col">{% if language == 'uk' %}Пакет{% elif language == 'pl' %}Pakiet{% else %}Package{% endif %}</th>
-        <th scope="col" class="price">{% if language == 'uk' %}Ціна (USD){% elif language == 'pl' %}Cena (USD){% else %}Price (USD){% endif %}</th>
-        <th scope="col">{% if language == 'uk' %}Що входить{% elif language == 'pl' %}Zakres{% else %}Includes{% endif %}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for it in items %}
-      <tr>
-        <td>{{ it.title }}</td>
-        <td>{{ it.pkg }}</td>
-        <td class="price">{{ it.price }} {{ it.currency }}</td>
-        <td>
-          {% if it.assumptions %}
-            <ul>
-              {% for f in it.assumptions.split(';') %}
-                {% if f.strip %}<li>{{ f|trim }}</li>{% endif %}
-              {% endfor %}
-            </ul>
-          {% else %}
-            —
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+    <h2>{% if language == 'uk' %}Оцінка послуг{% elif language == 'pl' %}Wycena usług{% else %}Services Estimation{% endif %}</h2>
+    <table role="table" aria-label="Pricing table">
+      <thead>
+        <tr>
+          <th scope="col">№</th>
+          <th scope="col">{% if language == 'uk' %}Послуга{% elif language == 'pl' %}Usługa{% else %}Service{% endif %}</th>
+          <th scope="col">{% if language == 'uk' %}Пакет{% elif language == 'pl' %}Pakiet{% else %}Package{% endif %}</th>
+          <th scope="col" class="price">{% if language == 'uk' %}Ціна (USD){% elif language == 'pl' %}Cena (USD){% else %}Price (USD){% endif %}</th>
+          <th scope="col">{% if language == 'uk' %}Що входить{% elif language == 'pl' %}Zakres{% else %}Includes{% endif %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for it in items %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ it.title }}</td>
+          <td>{{ it.pkg }}</td>
+          <td class="price">{{ it.price }} {{ it.currency }}</td>
+          <td>
+            {% if it.assumptions %}
+              <ul>
+                {% for f in it.assumptions.split(';') %}
+                  {% if f.strip %}<li>{{ f|trim }}</li>{% endif %}
+                {% endfor %}
+              </ul>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="total">
+          <td colspan="3"><strong>{% if language == 'uk' %}Разом{% elif language == 'pl' %}Razem{% else %}Total{% endif %}</strong></td>
+          <td class="price">— USD</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
 
-  {% if calendly_url %}
-  <div class="cta">
-    <p style="margin-top: 0">
-      {% if language == 'uk' %}
-        Запросіть безкоштовну 30-хв консультацію для детального аналізу вашого запиту.
-      {% elif language == 'pl' %}
-        Umów bezpłatną 30-min konsultację w celu szczegółowej analizy Twojego zapytania.
-      {% else %}
-        Book a free 30-min consultation for a detailed analysis of your request.
-      {% endif %}
-    </p>
-    <a href="{{ calendly_url }}" target="_blank" rel="noopener">
-      {% if language == 'uk' %}Записатися на консультацію{% elif language == 'pl' %}Umów konsultację{% else %}Schedule consultation{% endif %}
-    </a>
-  </div>
-  {% endif %}
-
-  <p class="muted">
-    {% if language == 'uk' %}
-      Примітка: наведені ціни є орієнтовними і можуть змінюватися залежно від деталей проєкту.
-    {% elif language == 'pl' %}
-      Uwaga: podane ceny są orientacyjne i mogą ulec zmianie w zależności od szczegółów projektu.
-    {% else %}
-      Note: Prices are indicative and may vary depending on project details.
+    {% if calendly_url %}
+    <div class="cta">
+      <p style="margin-top: 0">
+        {% if language == 'uk' %}
+          Запросіть безкоштовну 30-хв консультацію для детального аналізу вашого запиту.
+        {% elif language == 'pl' %}
+          Umów bezpłatną 30-min konsultację w celu szczegółowej analizy Twojego zapytania.
+        {% else %}
+          Book a free 30-min consultation for a detailed analysis of your request.
+        {% endif %}
+      </p>
+      <a href="{{ calendly_url }}" target="_blank" rel="noopener">
+        {% if language == 'uk' %}Записатися на консультацію{% elif language == 'pl' %}Umów konsultację{% else %}Schedule consultation{% endif %}
+      </a>
+    </div>
     {% endif %}
-  </p>
 
-  <div class="footer">
-    <p>
-      {{ brand.company_name|default:'LAZYSOFT' }} — {{ brand.address_line1|default:'' }} {{ brand.city|default:'' }} {{ brand.postal_code|default:'' }}
-      {% if brand.phone %} • {{ brand.phone }}{% endif %}
-      {% if brand.email %} • {{ brand.email }}{% endif %}
-    </p>
-    <p class="muted">© {{ issued_at|date:'Y' }} {{ brand.company_name|default:'LAZYSOFT' }}</p>
+    <div class="foot">
+      <p>
+        {% if language == 'uk' %}
+          Вартість орієнтовна та може коригуватись після короткої безкоштовної консультації.
+        {% elif language == 'pl' %}
+          Koszt jest orientacyjny i może być korygowany po krótkiej bezpłatnej konsultacji.
+        {% else %}
+          The cost is estimated and may be adjusted after a short free consultation.
+        {% endif %}
+      </p>
+      <p>
+        {% if language == 'uk' %}
+          Ми дотримуємось GDPR; ваші дані використовуються виключно для підготовки цієї пропозиції.
+        {% elif language == 'pl' %}
+          Przestrzegamy RODO; Twoje dane są wykorzystywane wyłącznie do przygotowania tej propozycji.
+        {% else %}
+          We comply with GDPR; your data is used exclusively for preparing this proposal.
+        {% endif %}
+      </p>
+      <p class="muted">
+        {% if language == 'uk' %}Уповноважена особа{% elif language == 'pl' %}Osoba upoważniona{% else %}Authorized person{% endif %}: {{ brand.authorized_person|default:'LAZYSOFT' }}
+      </p>
+    </div>
   </div>
-</div>
 </body>
 </html>
