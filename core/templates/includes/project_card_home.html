@@ -4,8 +4,8 @@
 <div class="project-card-home clickable" 
      data-complexity="{{ project.complexity_level }}" 
      data-priority="{{ project.priority }}" 
-     data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" 
-     onclick="window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';" 
+     data-href="{% url 'project_detail' slug=project.slug %}" 
+     onclick="window.location.href=this.dataset.href;" 
      style="cursor: pointer;" 
      aria-label="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %} - {% trans 'VIEW PROJECT' %}">
 
@@ -104,7 +104,7 @@
     </button>
     <div class="secondary-actions">
       <button class="details-link" 
-              onclick="event.stopPropagation(); window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';">
+              onclick="event.stopPropagation(); window.location.href=this.closest('.project-card-home').dataset.href;">
         {% trans "FULL CASE" %}
       </button>
       {% if project.project_url %}

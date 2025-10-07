@@ -379,7 +379,7 @@ class KnowledgeSourceAdmin(admin.ModelAdmin):
         )
     priority_display.short_description = '⚡ Пріоритет'
     
-    actions = ['generate_embeddings']
+    actions = ['generate_embeddings', 'index_pricing', 'index_success_dialogs']
     
     def generate_embeddings(self, request, queryset):
         """Генерує embeddings для обраних джерел"""
@@ -395,6 +395,36 @@ class KnowledgeSourceAdmin(admin.ModelAdmin):
         
         messages.success(request, f"Згенеровано embeddings для {count} джерел")
     generate_embeddings.short_description = "🔄 Згенерувати embeddings"
+
+    def index_pricing(self, request, queryset):
+        """Індексує усі ціни сервісів (ServicePricing)"""
+        indexing_service = IndexingService()
+        total = 0
+        try:
+            from pricing.models import ServicePricing
+            objs = ServicePricing.objects.filter(is_active=True)
+            for obj in objs:
+                indexing_service.reindex_object(obj)
+                total += 1
+            messages.success(request, f"Проіндексовано {total} записів прайсингу")
+        except Exception as e:
+            messages.error(request, f"Помилка індексації прайсингу: {e}")
+    index_pricing.short_description = "💰 Індексувати прайсинг"
+
+    def index_success_dialogs(self, request, queryset):
+        """Індексувати успішні діалоги (через KnowledgeSource типу 'dialogs')"""
+        indexing_service = IndexingService()
+        total = 0
+        for source in queryset.filter(source_type='dialogs'):
+            try:
+                indexing_service.reindex_object(source)
+                total += 1
+            except Exception as e:
+                messages.error(request, f"Помилка індексації діалогу {source}: {e}")
+        if total:
+            messages.success(request, f"Проіндексовано {total} джерел діалогів")
+        else:
+            messages.info(request, "Немає обраних KnowledgeSource з типом 'dialogs'")
 
 
 @admin.register(RAGAnalytics)

@@ -1353,6 +1353,20 @@ class IndexingService:
                     for target in targets:
                         for lang in languages:
                             self.embedding_service.create_embedding_for_object(target, lang)
+                elif src_type == 'pricing':
+                    # Індексувати ціни сервісів
+                    try:
+                        from pricing.models import ServicePricing
+                        pricing_targets = ServicePricing.objects.filter(is_active=True)
+                        for target in pricing_targets:
+                            for lang in languages:
+                                self.embedding_service.create_embedding_for_object(target, lang)
+                    except Exception as e:
+                        logger.error(f"Індексація pricing помилка: {e}")
+                elif src_type == 'dialogs':
+                    # Індексувати успішні діалоги як manual записи (вимагає контент у KnowledgeSource)
+                    for lang in languages:
+                        self.embedding_service.create_embedding_for_object(obj, lang)
                 elif src_type == 'project':
                     for target in Project.objects.all():
                         for lang in languages:

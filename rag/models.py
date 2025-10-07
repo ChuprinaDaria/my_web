@@ -186,6 +186,8 @@ class KnowledgeSource(models.Model):
         ('service', 'Сервіси'),
         ('project', 'Проєкти'),
         ('faq', 'FAQ'),
+        ('pricing', 'Прайсинг'),
+        ('dialogs', 'Успішні діалоги'),
         ('manual', 'Ручний контент'),
     ]
     
