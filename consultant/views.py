@@ -158,6 +158,10 @@ def _send_proposal_email(to_email, subject, html_body, pdf_bytes=None):
             to=[to_email],
             bcc=[admin_email] if admin_email else None,
         )
+        try:
+            email.charset = 'utf-8'
+        except Exception:
+            pass
         # reply-to як брендова адреса, якщо доступна
         try:
             brand = _get_company_brand_context()
@@ -350,7 +354,7 @@ def request_quote_from_chat(request):
     
     try:
         data = json.loads(request.body)
-        language = data.get('language')
+        language = (data.get('language') or '').lower()
         
         # Валідація
         required_fields = ['client_name', 'client_email', 'message']
@@ -367,6 +371,16 @@ def request_quote_from_chat(request):
                 chat_session = ChatSession.objects.get(id=session_id)
             except ChatSession.DoesNotExist:
                 pass
+        # Якщо мова не передана — беремо з системного повідомлення сесії
+        if (not language) and chat_session:
+            try:
+                sys_msg = chat_session.messages.filter(role='system', content__startswith='language:').order_by('-created_at').first()
+                if sys_msg and ':' in sys_msg.content:
+                    language = sys_msg.content.split(':', 1)[1].strip().lower()
+            except Exception:
+                pass
+        if language not in ('uk', 'pl', 'en'):
+            language = 'uk'
         
         # Визначаємо сервіс з контексту чату
         detected_service = None
@@ -401,19 +415,23 @@ def request_quote_from_chat(request):
                 pricing_qs = pricing_qs.filter(service_category=detected_service)
             pricing_qs = pricing_qs.select_related('service_category', 'tier').order_by('tier__order', 'order')
             for sp in list(pricing_qs[:3]):
+                # Локалізація назв
+                lang = (language or 'uk').lower()
+                service_title = getattr(sp.service_category, f'title_{lang}', getattr(sp.service_category, 'title_en', str(sp.service_category)))
+                tier_name = getattr(sp.tier, f'display_name_{lang}', getattr(sp.tier, 'display_name_en', str(sp.tier)))
                 if getattr(sp, 'price_to', None) and sp.price_to and sp.price_to != sp.price_from:
                     price_str = f"{int(sp.price_from)}-{int(sp.price_to)}"
                 else:
                     price_str = f"{int(sp.price_from)}"
                 features = []
                 try:
-                    features = sp.get_features_list(lang='uk')[:3]
+                    features = sp.get_features_list(lang=lang)[:5]
                 except Exception:
                     pass
                 assumptions = "; ".join(features) if features else ''
                 items.append({
-                    'title': getattr(sp.service_category, 'title_uk', str(sp.service_category)),
-                    'pkg': getattr(sp.tier, 'display_name_uk', str(sp.tier)),
+                    'title': service_title,
+                    'pkg': tier_name,
                     'price': price_str,
                     'currency': 'USD',
                     'assumptions': assumptions
@@ -434,6 +452,9 @@ def request_quote_from_chat(request):
                     brand_logo_url = site_url.rstrip('/') + logo_url
         except Exception:
             pass
+        # URL на календар (RAG_SETTINGS або CONSULTATION_CALENDAR_URL)
+        calendly_url = getattr(settings, 'RAG_SETTINGS', {}).get('CONSULTATION_CALENDAR_URL') or getattr(settings, 'CONSULTATION_CALENDAR_URL', '')
+
         ctx = {
             'brand': brand,
             'brand_logo_url': brand_logo_url,
@@ -442,14 +463,22 @@ def request_quote_from_chat(request):
             'email': data['client_email'],
             'company': data.get('client_company', ''),
             'notes': data.get('message', ''),
-            'items': items
+            'items': items,
+            'language': (language or 'uk').lower(),
+            'calendly_url': calendly_url
         }
         html, pdf_bytes = _render_proposal_pdf(ctx)
         
+        # Локалізована тема листа
+        subj_map = {
+            'uk': 'Комерційна пропозиція',
+            'pl': 'Oferta handlowa',
+            'en': 'Commercial Proposal',
+        }
         # Відправляємо на email клієнта
         sent_ok = _send_proposal_email(
             to_email=data['client_email'],
-            subject="Комерційна пропозиція",
+            subject=subj_map.get(language, 'Commercial Proposal'),
             html_body=html,
             pdf_bytes=pdf_bytes
         )
