@@ -146,18 +146,37 @@ def _render_proposal_pdf(context):
 
 
 def _send_proposal_email(to_email, subject, html_body, pdf_bytes=None):
-    email = EmailMessage(
-        subject=subject,
-        body=html_body,
-        from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@localhost'),
-        to=[to_email]
-    )
-    email.content_subtype = 'html'
-    if pdf_bytes:
-        email.attach('proposal.pdf', pdf_bytes, 'application/pdf')
-    else:
-        email.attach('proposal.html', html_body.encode('utf-8'), 'text/html')
-    email.send(fail_silently=False)
+    """Надсилає пропозицію клієнту; повертає True/False, логує помилки, дублює адміну."""
+    try:
+        admin_email = getattr(settings, 'SALES_EMAIL', None) or getattr(settings, 'DEFAULT_FROM_EMAIL', None)
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@localhost')
+
+        email = EmailMessage(
+            subject=subject,
+            body=html_body,
+            from_email=from_email,
+            to=[to_email],
+            bcc=[admin_email] if admin_email else None,
+        )
+        # reply-to як брендова адреса, якщо доступна
+        try:
+            brand = _get_company_brand_context()
+            reply_to = [getattr(brand, 'email', None)] if getattr(brand, 'email', None) else []
+            if reply_to:
+                email.reply_to = reply_to
+        except Exception:
+            pass
+
+        email.content_subtype = 'html'
+        if pdf_bytes:
+            email.attach('proposal.pdf', pdf_bytes, 'application/pdf')
+        else:
+            email.attach('proposal.html', html_body.encode('utf-8'), 'text/html')
+        email.send(fail_silently=False)
+        return True
+    except Exception as e:
+        logger.error(f"Email send failed: {e}")
+        return False
 
 
 def consultant_chat(request):
@@ -428,7 +447,7 @@ def request_quote_from_chat(request):
         html, pdf_bytes = _render_proposal_pdf(ctx)
         
         # Відправляємо на email клієнта
-        _send_proposal_email(
+        sent_ok = _send_proposal_email(
             to_email=data['client_email'],
             subject="Комерційна пропозиція",
             html_body=html,
@@ -436,7 +455,7 @@ def request_quote_from_chat(request):
         )
         # Оновлюємо статус запиту
         try:
-            quote_request.email_sent = True
+            quote_request.email_sent = bool(sent_ok)
             quote_request.pdf_generated = bool(pdf_bytes)
             quote_request.status = 'quoted'
             quote_request.save(update_fields=['email_sent', 'pdf_generated', 'status'])
@@ -494,8 +513,9 @@ def request_quote_from_chat(request):
         
         return JsonResponse({
             'success': True,
-            'message': 'Запит отримано. Надіслали комерційну пропозицію на ваш email.',
-            'quote_id': quote_request.id
+            'message': 'Запит отримано. Надіслали комерційну пропозицію на ваш email.' if sent_ok else 'Запит отримано. Сталася проблема з відправкою email — ми надішлемо пропозицію вручну найближчим часом.',
+            'quote_id': quote_request.id,
+            'email_sent': bool(sent_ok)
         })
         
     except Exception as e:
