@@ -137,10 +137,13 @@ def home(request):
     except Exception:
         hero = None
 
+    # Нормалізуємо до списку для шаблону та прапорця наявності
+    latest_articles_list = list(latest_articles)
+
     context = {
-        'latest_articles': latest_articles,
-        'top_news': latest_articles,  # Для сумісності з шаблоном
-        'news_available': latest_articles.exists(),  # Перевірка наявності новин
+        'latest_articles': latest_articles_list,
+        'top_news': latest_articles_list,  # Для сумісності з шаблоном
+        'news_available': bool(latest_articles_list),  # Перевірка наявності новин
         'daily_digest': daily_digest,  # Дайджест новин
         'featured_projects': featured_projects,
         'services': services,

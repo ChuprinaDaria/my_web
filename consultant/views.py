@@ -116,7 +116,21 @@ def _ensure_items(items):
 
 
 def _render_proposal_pdf(context):
-    html = render_to_string('quotes/proposal.html', context)
+    try:
+        html = render_to_string('quotes/proposal.html', context)
+    except Exception:
+        # Fallback мінімальний HTML, якщо шаблон відсутній
+        html = f"""
+        <html><body>
+          <h1>Комерційна пропозиція</h1>
+          <p>Клієнт: {context.get('name')}</p>
+          <p>Email: {context.get('email')}</p>
+          <ul>
+            {''.join([f"<li>{it.get('title')} — {it.get('pkg')} — {it.get('price')} {it.get('currency')}</li>" for it in context.get('items', [])])}
+          </ul>
+          <p>{context.get('notes','')}</p>
+        </body></html>
+        """
     pdf_bytes = None
     try:
         import importlib
