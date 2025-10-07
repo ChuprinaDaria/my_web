@@ -226,7 +226,17 @@ class ArticleDetailView(DetailView):
         context['page_description'] = article.get_meta_description(language) or article.get_summary(language)[:160]
         context['og_title'] = article.get_title(language)
         context['og_description'] = article.get_summary(language)[:200]
-        context['og_image'] = article.ai_image_url
+        # Абсолютний URL для OG зображення
+        if article.ai_image_url:
+            try:
+                if article.ai_image_url.startswith('http'):
+                    context['og_image'] = article.ai_image_url
+                else:
+                    context['og_image'] = self.request.build_absolute_uri(article.ai_image_url)
+            except Exception:
+                context['og_image'] = article.ai_image_url
+        else:
+            context['og_image'] = ''
         context['og_url'] = self.request.build_absolute_uri()
 
         # Localized content for template
