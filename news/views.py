@@ -313,6 +313,8 @@ class ArticleDetailView(DetailView):
         if article.ai_image_url:
             context['structured_data']['image'] = article.ai_image_url
 
+        context['structured_data_json'] = json.dumps(context['structured_data'], ensure_ascii=False)
+
         # Sidebar data identical to NewsListView
         context['categories'] = NewsCategory.objects.filter(
             is_active=True
