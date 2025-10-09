@@ -112,26 +112,7 @@
   }
   </script>
 
-  {% if faqs %}
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {% for faq in faqs %}
-      {
-        "@type": "Question",
-        "name": "{% if CURRENT_LANG == 'uk' and faq.question_uk %}{{ faq.question_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and faq.question_pl %}{{ faq.question_pl|escapejs }}{% else %}{{ faq.question_en|escapejs }}{% endif %}",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "{% if CURRENT_LANG == 'uk' and faq.answer_uk %}{{ faq.answer_uk|striptags|escapejs }}{% elif CURRENT_LANG == 'pl' and faq.answer_pl %}{{ faq.answer_pl|striptags|escapejs }}{% else %}{{ faq.answer_en|striptags|escapejs }}{% endif %}"
-        }
-      }{% if not forloop.last %},{% endif %}
-      {% endfor %}
-    ]
-  }
-  </script>
-  {% endif %}
+  
 {% endblock %}
 
 {% block breadcrumbs %}

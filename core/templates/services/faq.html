@@ -36,22 +36,5 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>window.addEventListener("load", () => lucide.createIcons());</script>
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {% for faq in faqs %}
-      {
-        "@type": "Question",
-        "name": "{{ faq.question|escapejs }}",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "{{ faq.answer|escapejs }}"
-        }
-      }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-  ]
-}
-</script>
+ 
 {% endblock %}

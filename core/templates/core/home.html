@@ -275,26 +275,7 @@
     });
   </script>
 
-  {% if faqs %}
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {% for faq in faqs %}
-      {
-        "@type": "Question",
-        "name": "{{ faq.question|escapejs }}",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "{{ faq.answer|striptags|escapejs }}"
-        }
-      }{% if not forloop.last %},{% endif %}
-      {% endfor %}
-    ]
-  }
-  </script>
-  {% endif %}
+  
 
   {% include 'components/language_selector.html' %}
 {% endblock %}
