@@ -9,6 +9,7 @@
 {% block og_image %}{% endblock %}
 
 {% block extra_meta %}
+  {{ block.super }}
   <link rel="canonical" href="https://lazysoft.pl/{{ CURRENT_LANG }}/faq/" />
   <link rel="alternate" href="https://lazysoft.pl/en/faq/" hreflang="en" />
   <link rel="alternate" href="https://lazysoft.pl/uk/faq/" hreflang="uk" />

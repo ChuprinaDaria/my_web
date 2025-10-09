@@ -82,7 +82,7 @@
           "@type": "Service",
           "position": {{ forloop.counter }},
           "name": "{{ service.title|escapejs }}",
-          "description": "{{ service.short|striptags|escapejs|truncatechars:200 }}",
+          "description": "{{ service.short|striptags|truncatechars:200|escapejs }}",
           "provider": {
             "@type": "Organization",
             "name": "Lazysoft",
