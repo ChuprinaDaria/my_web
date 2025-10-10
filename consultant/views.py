@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import EmailMessage
+from django.utils.translation import gettext as _
 import json
 import uuid
 import time
@@ -17,6 +18,8 @@ from .models import ChatSession, Message, ConsultantProfile, KnowledgeBase, Chat
 from services.asana_service import asana_service
 from news.services.telegram import _tg_request
 from .rag_integration import enhanced_consultant
+from emails.pdf_generator import generate_quote_pdf
+from emails.utils import render_quote_email_bodies, send_email_with_pdf
 
 # Імпортуємо pricing моделі якщо доступні
 try:
@@ -39,7 +42,7 @@ def _get_company_brand_context():
         logger.warning(f"CompanyInfo not available: {e}")
     class Fallback:
         company_name = "LAZYSOFT"
-        website = "lazysoft.dev"
+        website = "https://lazysoft.pl"
         logo = None
         address_line1 = "Edwarda Dembowskiego 98/1"
         city = "Wrocław"
@@ -47,7 +50,8 @@ def _get_company_brand_context():
         country = "Poland"
         email = "info@lazysoft.pl"
         phone = "+48 727 842 737"
-        tax_id = ""
+        tax_id = "8982319083"  # NIP
+        regon = "541390054"
         authorized_person = "Daria Chuprina"
     return Fallback()
 # Трек кліку на консультацію: створюємо таск в Asana і надсилаємо в Telegram
@@ -468,20 +472,51 @@ def request_quote_from_chat(request):
             'language': (language or 'uk').lower(),
             'calendly_url': calendly_url
         }
-        html, pdf_bytes = _render_proposal_pdf(ctx)
+        # Генеруємо PDF пропозицію (HTML для PDF = шаблон proposal)
+        html, pdf_bytes = generate_quote_pdf(ctx)
+        # Готуємо тіла листа (HTML + TXT) через окремий email-шаблон
+        email_ctx = {
+            'brand': brand,
+            'brand_logo_url': brand_logo_url,
+            'name': data['client_name'],
+            'language': (language or 'uk').lower(),
+            'calendly_url': calendly_url,
+            # Короткий опис пакету (спрощено з першого елемента)
+            'package_summary': None,
+        }
+        if items:
+            first = items[0]
+            try:
+                price_label = f"{first.get('price')} {first.get('currency','').strip()}".strip()
+            except Exception:
+                price_label = "—"
+            if email_ctx['language'] == 'pl':
+                email_ctx['package_summary'] = f"Pakiet: {first.get('title')} — {first.get('pkg')} — {price_label}."
+            elif email_ctx['language'] == 'en':
+                email_ctx['package_summary'] = f"Package: {first.get('title')} — {first.get('pkg')} — {price_label}."
+            else:
+                email_ctx['package_summary'] = f"Пакет: {first.get('title')} — {first.get('pkg')} — {price_label}."
+        email_html, email_txt = render_quote_email_bodies(email_ctx)
         
         # Локалізована тема листа
-        subj_map = {
-            'uk': 'Комерційна пропозиція',
-            'pl': 'Oferta handlowa',
-            'en': 'Commercial Proposal',
-        }
-        # Відправляємо на email клієнта
-        sent_ok = _send_proposal_email(
+        # Локалізована тема листа через gettext
+        subject = _('Комерційна пропозиція')
+        # Reply-To з брендової адреси
+        reply_to = []
+        try:
+            if getattr(brand, 'email', None):
+                reply_to = [brand.email]
+        except Exception:
+            reply_to = []
+        # Відправляємо на email клієнта (HTML + TXT + PDF)
+        sent_ok = send_email_with_pdf(
             to_email=data['client_email'],
-            subject=subj_map.get(language, 'Commercial Proposal'),
-            html_body=html,
-            pdf_bytes=pdf_bytes
+            subject=subject,
+            html_body=email_html,
+            text_body=email_txt,
+            pdf_bytes=pdf_bytes,
+            reply_to=reply_to,
+            bcc_admin=True,
         )
         # Оновлюємо статус запиту
         try:

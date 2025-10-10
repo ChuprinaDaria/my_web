@@ -1,0 +1,11 @@
+{% load i18n %}
+<div style="margin-top:14px;color:#64748b;font-size:12px;line-height:1.5;text-align:center">
+  <p style="margin:6px 0">
+    {% trans "Ви отримали цей лист, оскільки зверталися за прорахунком на сайті." %}
+  </p>
+  <p style="margin:6px 0">
+    <a href="{{ brand.website|default:'https://lazysoft.pl' }}/privacy" style="color:#64748b">{% trans "Політика конфіденційності" %}</a>
+    |
+    <a href="{{ brand.website|default:'https://lazysoft.pl' }}/terms" style="color:#64748b">{% trans "Умови користування" %}</a>
+  </p>
+</div>

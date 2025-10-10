@@ -65,6 +65,7 @@
         {% if brand.address_line1 %}<p><strong>{% if language == 'uk' %}Адреса{% elif language == 'pl' %}Adres{% else %}Address{% endif %}:</strong> {{ brand.address_line1 }}{% if brand.city %}, {{ brand.city }}{% endif %}{% if brand.postal_code %} {{ brand.postal_code }}{% endif %}</p>{% endif %}
         {% if brand.country %}<p><strong>{% if language == 'uk' %}Країна{% elif language == 'pl' %}Kraj{% else %}Country{% endif %}:</strong> {{ brand.country }}</p>{% endif %}
         {% if brand.tax_id %}<p><strong>NIP/VAT:</strong> {{ brand.tax_id }}</p>{% endif %}
+        {% if brand.regon %}<p><strong>REGON:</strong> {{ brand.regon }}</p>{% endif %}
         {% if brand.website %}<p><strong>URL:</strong> {{ brand.website }}</p>{% endif %}
         {% if brand.phone %}<p><strong>{% if language == 'uk' %}Телефон{% elif language == 'pl' %}Telefon{% else %}Phone{% endif %}:</strong> {{ brand.phone }}</p>{% endif %}
         {% if brand.email %}<p><strong>Email:</strong> {{ brand.email }}</p>{% endif %}

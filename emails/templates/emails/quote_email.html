@@ -1,0 +1,84 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="{{ language|default:'uk' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% trans "Комерційна пропозиція" %}</title>
+  <style>
+    :root{--text:#0f172a;--muted:#64748b;--bg:#ffffff;--line:#e2e8f0;--brand:#198754}
+    body{margin:0;padding:0;background:var(--bg);color:var(--text);-webkit-text-size-adjust:100%;font-family:Arial,Helvetica,sans-serif}
+    .container{max-width:680px;margin:0 auto;padding:20px 16px}
+    .header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .brand-logo{height:36px;max-width:160px;object-fit:contain}
+    .card{border:1px solid var(--line);border-radius:10px;padding:16px;background:#fff}
+    h1{font-size:18px;margin:12px 0}
+    p{line-height:1.5;margin:10px 0}
+    .cta{margin:18px 0;padding:14px;border:1px solid #d1fae5;background:#ecfdf5;border-radius:10px}
+    .btn{display:inline-block;background:var(--brand);color:#fff !important;text-decoration:none;padding:12px 16px;border-radius:8px;font-weight:600}
+    .muted{color:var(--muted);font-size:12px}
+    .contact{font-size:13px;border-top:1px solid var(--line);margin-top:18px;padding-top:12px}
+    .kv{margin:4px 0}
+    .note{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:16px}
+    .note h3{margin:0 0 8px 0;font-size:14px}
+    .note ul{margin:6px 0 0 18px;padding:0}
+    @media (max-width:560px){h1{font-size:17px}.container{padding:16px 12px}.btn{display:block;text-align:center}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    {% include "emails/components/header.html" %}
+
+    <div class="card">
+      <h1>{% trans "Комерційна пропозиція" %}</h1>
+      <p>
+        {% blocktrans %}Привіт {{ name }}!{% endblocktrans %}
+      </p>
+      <p>
+        {% trans "Дякуємо за ваш інтерес до наших послуг. У вкладенні ви знайдете детальний прорахунок вашого проєкту у форматі PDF." %}
+      </p>
+      {% if package_summary %}
+      <p>{{ package_summary }}</p>
+      {% endif %}
+      <p class="muted">
+        {% trans "Важливо: Ціни в прорахунку є орієнтовними і можуть змінюватись в залежності від специфіки вашого проєкту." %}
+      </p>
+
+      {% if calendly_url %}
+      <div class="cta">
+        <p style="margin-top:0">
+          {% trans "Під час консультації ми:" %}
+        </p>
+        <ul style="margin:8px 0 14px 18px;padding:0">
+          <li>{% trans "Детально обговоримо ваші потреби" %}</li>
+          <li>{% trans "Уточнимо технічні деталі" %}</li>
+          <li>{% trans "Підготуємо фінальну пропозицію" %}</li>
+        </ul>
+        {% include "emails/components/button.html" with href=calendly_url label=_("Записатися на консультацію") %}
+      </div>
+      {% endif %}
+
+      <div class="contact">
+        <p><strong>{{ brand.company_name|default:"Lazysoft" }}</strong></p>
+        <p class="kv">Email: {{ brand.email|default:"info@lazysoft.pl" }}</p>
+        <p class="kv">NIP: {{ brand.tax_id|default:"8982319083" }}</p>
+        <p class="kv">REGON: {{ brand.regon|default:"541390054" }}</p>
+        <p class="kv">Web: {{ brand.website|default:"https://lazysoft.pl" }}</p>
+      </div>
+
+      <div class="note">
+        <h3>Інструкція для Cursor AI</h3>
+        <p><strong>ЗАВДАННЯ:</strong> Створити email-систему для відправки PDF прорахунків клієнтам з професійним оформленням.</p>
+        <p><strong>ВИМОГИ:</strong></p>
+        <ul>
+          <li><strong>Багатомовність (i18n Django):</strong> мова листа = мова запиту (uk/en/pl); всі тексти через gettext.</li>
+          <li><strong>Email Template Structure:</strong> HTML email з inline CSS, mobile-first, plain text fallback.</li>
+          <li><strong>Структура Email:</strong> логотип, привітання, опис пакету, попередження про орієнтовність, кнопка консультації, контакти, футер.</li>
+        </ul>
+      </div>
+    </div>
+
+    {% include "emails/components/footer.html" %}
+  </div>
+</body>
+</html>

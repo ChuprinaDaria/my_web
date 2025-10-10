@@ -1,0 +1,13 @@
+{% load i18n %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px">
+  <tr>
+    <td style="vertical-align:middle">
+      {% if brand_logo_url %}
+        <img src="{{ brand_logo_url }}" alt="Logo" style="height:36px;max-width:160px;object-fit:contain" />
+      {% endif %}
+    </td>
+    <td style="text-align:right;color:#64748b;font-size:12px">
+      {% trans "Комерційна пропозиція" %}
+    </td>
+  </tr>
+</table>

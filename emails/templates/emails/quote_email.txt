@@ -1,0 +1,16 @@
+{% load i18n %}
+{% blocktrans %}Привіт {{ name }}!{% endblocktrans %}
+
+{% trans "Дякуємо за ваш інтерес до наших послуг. У вкладенні ви знайдете детальний прорахунок вашого проєкту у форматі PDF." %}
+
+{% if package_summary %}{{ package_summary }}{% endif %}
+
+{% trans "Важливо: Ціни в прорахунку є орієнтовними і можуть змінюватись в залежності від специфіки вашого проєкту." %}
+
+{% if calendly_url %}{% trans "Записатися на консультацію" %}: {{ calendly_url }}{% endif %}
+
+{{ brand.company_name|default:"Lazysoft" }}
+Email: {{ brand.email|default:"info@lazysoft.pl" }}
+NIP: {{ brand.tax_id|default:"8982319083" }}
+REGON: {{ brand.regon|default:"541390054" }}
+Web: {{ brand.website|default:"https://lazysoft.pl" }}
