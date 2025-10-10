@@ -468,8 +468,10 @@ def request_quote_from_chat(request):
                     brand_logo_url = site_url.rstrip('/') + logo_url
         except Exception:
             pass
-        # URL на календар (RAG_SETTINGS або CONSULTATION_CALENDAR_URL)
+        # URL на календар (RAG_SETTINGS або CONSULTATION_CALENDAR_URL) з фолбеком на Calendly
         calendly_url = getattr(settings, 'RAG_SETTINGS', {}).get('CONSULTATION_CALENDAR_URL') or getattr(settings, 'CONSULTATION_CALENDAR_URL', '')
+        if not calendly_url:
+            calendly_url = 'https://calendly.com/dchuprina-lazysoft/free-consultation-1h'
 
         ctx = {
             'brand': brand,
