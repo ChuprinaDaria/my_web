@@ -27,8 +27,10 @@
     .kv p { margin: 4px 0; }
     .kv strong { display: inline-block; min-width: 120px; }
     table { width:100%; border-collapse: collapse; margin: 10px 0 12px; }
-    th, td { border: 1px solid var(--line); padding: 10px 10px; text-align: left; vertical-align: top; font-size: 13px; }
+    th, td { border: 1px solid var(--line); padding: 10px 10px; text-align: left; vertical-align: top; font-size: 12px; }
     th { background: var(--soft); font-weight: 600; }
+    thead th { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; }
+    tfoot td { background: #fafafa; }
     .price { white-space: nowrap; font-weight: 600; }
     .total { font-weight: 700; background: #fefefe; }
     .cta { display:block; margin: 18px 0; padding: 14px; background: #f4fbf0; border: 1px solid #d6f0c2; border-radius: 8px; }
@@ -123,22 +125,14 @@
       </tfoot>
     </table>
 
-    {% if calendly_url %}
     <div class="cta">
       <p style="margin-top: 0">
-        {% if language == 'uk' %}
-          Запросіть безкоштовну 30-хв консультацію для детального аналізу вашого запиту.
-        {% elif language == 'pl' %}
-          Umów bezpłatną 30-min konsultację w celu szczegółowej analizy Twojego zapytania.
-        {% else %}
-          Book a free 30-min consultation for a detailed analysis of your request.
-        {% endif %}
+        Book a free 1-hour consultation for a detailed analysis of your request.
       </p>
-      <a href="{{ calendly_url }}" target="_blank" rel="noopener">
-        {% if language == 'uk' %}Записатися на консультацію{% elif language == 'pl' %}Umów konsultację{% else %}Schedule consultation{% endif %}
+      <a href="https://calendly.com/dchuprina-lazysoft/free-consultation-1h" target="_blank" rel="noopener">
+        Schedule consultation
       </a>
     </div>
-    {% endif %}
 
     <div class="foot">
       <p>

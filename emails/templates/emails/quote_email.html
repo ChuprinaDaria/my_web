@@ -19,9 +19,6 @@
     .muted{color:var(--muted);font-size:12px}
     .contact{font-size:13px;border-top:1px solid var(--line);margin-top:18px;padding-top:12px}
     .kv{margin:4px 0}
-    .note{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:16px}
-    .note h3{margin:0 0 8px 0;font-size:14px}
-    .note ul{margin:6px 0 0 18px;padding:0}
     @media (max-width:560px){h1{font-size:17px}.container{padding:16px 12px}.btn{display:block;text-align:center}}
   </style>
 </head>
@@ -63,19 +60,9 @@
         <p class="kv">Email: {{ brand.email|default:"info@lazysoft.pl" }}</p>
         <p class="kv">NIP: {{ brand.tax_id|default:"8982319083" }}</p>
         <p class="kv">REGON: {{ brand.regon|default:"541390054" }}</p>
-        <p class="kv">Web: {{ brand.website|default:"https://lazysoft.pl" }}</p>
+        <p class="kv">Web: {% if brand.website %}{{ brand.website }}{% else %}https://lazysoft.pl{% endif %}</p>
       </div>
 
-      <div class="note">
-        <h3>Інструкція для Cursor AI</h3>
-        <p><strong>ЗАВДАННЯ:</strong> Створити email-систему для відправки PDF прорахунків клієнтам з професійним оформленням.</p>
-        <p><strong>ВИМОГИ:</strong></p>
-        <ul>
-          <li><strong>Багатомовність (i18n Django):</strong> мова листа = мова запиту (uk/en/pl); всі тексти через gettext.</li>
-          <li><strong>Email Template Structure:</strong> HTML email з inline CSS, mobile-first, plain text fallback.</li>
-          <li><strong>Структура Email:</strong> логотип, привітання, опис пакету, попередження про орієнтовність, кнопка консультації, контакти, футер.</li>
-        </ul>
-      </div>
     </div>
 
     {% include "emails/components/footer.html" %}
