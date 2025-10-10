@@ -101,12 +101,22 @@ def _ensure_items(items):
         for it in items:
             if not isinstance(it, dict):
                 continue
+            assumptions_value = it.get('assumptions', '')
+            assumptions_list = []
+            try:
+                if isinstance(assumptions_value, str) and assumptions_value.strip():
+                    assumptions_list = [s.strip() for s in assumptions_value.split(';') if s.strip()]
+                elif isinstance(assumptions_value, list):
+                    assumptions_list = [str(s).strip() for s in assumptions_value if str(s).strip()]
+            except Exception:
+                assumptions_list = []
             safe_items.append({
                 'title': it.get('title', 'Послуга'),
                 'pkg': it.get('pkg', ''),
                 'price': it.get('price', '-'),
                 'currency': it.get('currency', ''),
-                'assumptions': it.get('assumptions', '')
+                'assumptions': assumptions_value if isinstance(assumptions_value, str) else '',
+                'assumptions_list': assumptions_list
             })
     if not safe_items:
         safe_items = [{
@@ -114,7 +124,8 @@ def _ensure_items(items):
             'pkg': '',
             'price': '-',
             'currency': '',
-            'assumptions': ''
+            'assumptions': '',
+            'assumptions_list': []
         }]
     return safe_items
 
@@ -438,7 +449,8 @@ def request_quote_from_chat(request):
                     'pkg': tier_name,
                     'price': price_str,
                     'currency': 'USD',
-                    'assumptions': assumptions
+                    'assumptions': assumptions,
+                    'assumptions_list': features
                 })
         except Exception as e:
             logger.warning(f"Не вдалося побудувати items з ServicePricing: {e}")

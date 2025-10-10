@@ -99,12 +99,14 @@
           <td>{{ it.pkg }}</td>
           <td class="price">{{ it.price }} {{ it.currency }}</td>
           <td>
-            {% if it.assumptions %}
+            {% if it.assumptions_list %}
               <ul>
-                {% for f in it.assumptions.split(';') %}
-                  {% if f.strip %}<li>{{ f|trim }}</li>{% endif %}
+                {% for f in it.assumptions_list %}
+                  {% if f %}<li>{{ f }}</li>{% endif %}
                 {% endfor %}
               </ul>
+            {% elif it.assumptions %}
+              {{ it.assumptions }}
             {% else %}
               —
             {% endif %}
