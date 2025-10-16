@@ -8,7 +8,8 @@ from .views import (
     
     ROIDashboardView, NewsWidgetView, SocialMediaStatsView, NewsAnalyticsAPIView, ProcessedArticle, RawArticle
 )
-from .views_sitemap import GoogleNewsSitemapView
+from .sitemaps import NewsUkrainianSitemap, NewsPolishSitemap, NewsEnglishSitemap
+from django.contrib.sitemaps.views import sitemap
 from .views import NewsByDateView
 
 app_name = 'news'
@@ -36,9 +37,9 @@ urlpatterns = [
     path('rss.xml', TemplateView.as_view(template_name='news/rss_feed.xml', content_type='application/rss+xml'), name='rss_feed'),
     
     # Google News Sitemaps - окремі для кожної мови
-    path('news-sitemap-uk.xml', GoogleNewsSitemapView('uk'), name='google_news_sitemap_uk'),
-    path('news-sitemap-pl.xml', GoogleNewsSitemapView('pl'), name='google_news_sitemap_pl'),
-    path('news-sitemap-en.xml', GoogleNewsSitemapView('en'), name='google_news_sitemap_en'),
+    path('news-sitemap-uk.xml', sitemap, {'sitemaps': {'news': NewsUkrainianSitemap}}, name='news-sitemap-uk'),
+    path('news-sitemap-pl.xml', sitemap, {'sitemaps': {'news': NewsPolishSitemap}}, name='news-sitemap-pl'),
+    path('news-sitemap-en.xml', sitemap, {'sitemaps': {'news': NewsEnglishSitemap}}, name='news-sitemap-en'),
 
     # === НОВІ API ENDPOINTS ===
     

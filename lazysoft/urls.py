@@ -19,7 +19,7 @@ try:
         NewsSitemap,
         NewsCategorySitemap
     )
-    from news.views_sitemap import GoogleNewsSitemapView
+    from news.sitemaps import NewsUkrainianSitemap, NewsPolishSitemap, NewsEnglishSitemap
     SITEMAPS_AVAILABLE = True
 except ImportError:
     SITEMAPS_AVAILABLE = False
@@ -73,9 +73,9 @@ if SITEMAPS_AVAILABLE:
         path('sitemap-news.xml', sitemap, {'sitemaps': {'news': NewsSitemap}}, name='news_sitemap'),
         path('sitemap-categories.xml', sitemap, {'sitemaps': {'news_categories': NewsCategorySitemap}}, name='categories_sitemap'),
         # Google News Sitemaps - окремі для кожної мови
-        path('news-sitemap-uk.xml', GoogleNewsSitemapView('uk'), name='google_news_sitemap_uk'),
-        path('news-sitemap-pl.xml', GoogleNewsSitemapView('pl'), name='google_news_sitemap_pl'),
-        path('news-sitemap-en.xml', GoogleNewsSitemapView('en'), name='google_news_sitemap_en'),
+        path('news-sitemap-uk.xml', sitemap, {'sitemaps': {'news': NewsUkrainianSitemap}}, name='news-sitemap-uk'),
+        path('news-sitemap-pl.xml', sitemap, {'sitemaps': {'news': NewsPolishSitemap}}, name='news-sitemap-pl'),
+        path('news-sitemap-en.xml', sitemap, {'sitemaps': {'news': NewsEnglishSitemap}}, name='news-sitemap-en'),
     ]
 
 # robots.txt (без i18n) - ВІДКЛЮЧЕНО НА DEV

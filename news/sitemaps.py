@@ -6,14 +6,13 @@ from datetime import timedelta
 from .models import ProcessedArticle
 
 
-class GoogleNewsSitemap(Sitemap):
-    """Google News Sitemap з правильними тегами для Google News"""
-    priority = 0.8
-    changefreq = 'hourly'  # Google News перевіряє частіше
-    i18n = True
-    
+class NewsUkrainianSitemap(Sitemap):
+    """Sitemap для українських новин за останні 2 дні"""
+    # Прибираємо changefreq та priority для Google News
+    i18n = False  # Окремий sitemap для однієї мови
+
     def items(self):
-        """Повертає QuerySet новин за останні 2 дні"""
+        """Тільки українські новини за останні 2 дні"""
         try:
             two_days_ago = timezone.now() - timedelta(days=2)
             return ProcessedArticle.objects.filter(
@@ -21,33 +20,84 @@ class GoogleNewsSitemap(Sitemap):
                 published_at__gte=two_days_ago
             ).order_by('-published_at')
         except Exception as e:
-            print(f"GoogleNewsSitemap: не вдалося завантажити статті: {e}")
+            print(f"NewsUkrainianSitemap: не вдалося завантажити статті: {e}")
             return []
-    
+
     def lastmod(self, obj):
-        """Повертає дату публікації"""
-        return obj.published_at or obj.updated_at
-    
+        """Повертає дату публікації в UTC"""
+        lastmod = obj.published_at or obj.updated_at
+        if lastmod:
+            return lastmod.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        return timezone.now().astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
     def location(self, obj):
-        """URL детальної сторінки статті"""
-        # Використовуємо метод get_absolute_url з явною мовою
+        """URL детальної сторінки статті українською"""
         if hasattr(obj, 'get_absolute_url'):
-            return obj.get_absolute_url(language='uk')  # Українська як основна
+            return obj.get_absolute_url(language='uk')
         else:
             return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
-    
-    def get_urls(self, page=1, site=None, protocol=None):
-        """Перевизначаємо для додавання Google News тегів"""
-        urls = super().get_urls(page, site, protocol)
-        
-        # Додаємо Google News namespace
-        for url in urls:
-            if hasattr(url, 'location'):
-                if not hasattr(url, 'namespaces'):
-                    url.namespaces = {}
-                url.namespaces['news'] = 'http://www.google.com/schemas/sitemap-news/0.9'
-        
-        return urls
+
+
+class NewsPolishSitemap(Sitemap):
+    """Sitemap для польських новин за останні 2 дні"""
+    i18n = False
+
+    def items(self):
+        """Тільки польські новини за останні 2 дні"""
+        try:
+            two_days_ago = timezone.now() - timedelta(days=2)
+            return ProcessedArticle.objects.filter(
+                status='published',
+                published_at__gte=two_days_ago
+            ).order_by('-published_at')
+        except Exception as e:
+            print(f"NewsPolishSitemap: не вдалося завантажити статті: {e}")
+            return []
+
+    def lastmod(self, obj):
+        """Повертає дату публікації в UTC"""
+        lastmod = obj.published_at or obj.updated_at
+        if lastmod:
+            return lastmod.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        return timezone.now().astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    def location(self, obj):
+        """URL детальної сторінки статті польською"""
+        if hasattr(obj, 'get_absolute_url'):
+            return obj.get_absolute_url(language='pl')
+        else:
+            return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
+
+
+class NewsEnglishSitemap(Sitemap):
+    """Sitemap для англійських новин за останні 2 дні"""
+    i18n = False
+
+    def items(self):
+        """Тільки англійські новини за останні 2 дні"""
+        try:
+            two_days_ago = timezone.now() - timedelta(days=2)
+            return ProcessedArticle.objects.filter(
+                status='published',
+                published_at__gte=two_days_ago
+            ).order_by('-published_at')
+        except Exception as e:
+            print(f"NewsEnglishSitemap: не вдалося завантажити статті: {e}")
+            return []
+
+    def lastmod(self, obj):
+        """Повертає дату публікації в UTC"""
+        lastmod = obj.published_at or obj.updated_at
+        if lastmod:
+            return lastmod.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+        return timezone.now().astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    def location(self, obj):
+        """URL детальної сторінки статті англійською"""
+        if hasattr(obj, 'get_absolute_url'):
+            return obj.get_absolute_url(language='en')
+        else:
+            return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
 
 
 class NewsSitemap(Sitemap):
@@ -55,7 +105,7 @@ class NewsSitemap(Sitemap):
     priority = 0.7
     changefreq = 'daily'
     i18n = True
-    
+
     def items(self):
         """Повертає QuerySet всіх опублікованих новин"""
         try:
@@ -63,11 +113,11 @@ class NewsSitemap(Sitemap):
         except Exception as e:
             print(f"NewsSitemap: не вдалося завантажити статті: {e}")
             return []
-    
+
     def lastmod(self, obj):
         """Повертає дату останньої модифікації"""
         return obj.updated_at or obj.published_at
-    
+
     def location(self, obj):
         """URL детальної сторінки статті"""
         if hasattr(obj, 'get_absolute_url'):
