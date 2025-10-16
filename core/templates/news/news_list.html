@@ -176,14 +176,29 @@
             console.log('Found SWG object:', swg);
 
             // Спробуємо показати форму
-            swg.showOffers({
-              isClosable: true
-            }).then(result => {
-              console.log('RRM form opened successfully:', result);
-            }).catch(error => {
-              console.error('Error opening RRM form:', error);
-              alert('Помилка при відкритті форми: ' + error.message);
-            });
+            if (typeof swg.showOffers === 'function') {
+              swg.showOffers({
+                isClosable: true
+              }).then(result => {
+                console.log('RRM form opened successfully:', result);
+              }).catch(error => {
+                console.error('Error opening RRM form:', error);
+                alert('Помилка при відкритті форми: ' + error.message);
+              });
+            } else {
+              console.log('Available methods on SWG object:', Object.keys(swg));
+              console.log('SWG object structure:', swg);
+              
+              // Спробуємо альтернативні методи
+              if (typeof swg.show === 'function') {
+                swg.show();
+              } else if (typeof swg.open === 'function') {
+                swg.open();
+              } else {
+                console.error('No suitable method found on SWG object');
+                alert('SWG об\'єкт не має методу showOffers. Доступні методи: ' + Object.keys(swg).join(', '));
+              }
+            }
           } else {
             console.error('No SWG object found');
             alert('SWG об\'єкт не знайдено. Переконайтеся, що домен lazysoft.pl правильно налаштовано в Google Publisher Center.');
