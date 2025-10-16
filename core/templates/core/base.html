@@ -151,13 +151,6 @@
     {% endif %}
     
     {% block extra_head %}{% endblock %}
-    
-    <!-- Google AdSense - тільки на продакшн домені -->
-    {% if request.get_host == 'lazysoft.pl' %}
-    <script async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6019798421433475"
-      crossorigin="anonymous"></script>
-    {% endif %}
   </head>
   
   <body data-current-lang="{{ CURRENT_LANG }}" class="{% block body_class %}{% endblock %}">
