@@ -44,8 +44,8 @@
       <meta property="fb:pages" content="{% block fb_pages %}{% endblock %}">
       
       <meta name="twitter:card" content="summary_large_image">
-      <meta name="twitter:site" content="@lazysoft_dev">
-      <meta name="twitter:creator" content="@lazysoft_dev">
+      <meta name="twitter:site" content="@lazysoft_pl">
+      <meta name="twitter:creator" content="@lazysoft_pl">
       <meta name="twitter:title" content="{% block twitter_title %}{% if article %}{{ article.get_title }}{% else %}{{ page_title|default:'Lazysoft' }}{% endif %}{% endblock %}">
       <meta name="twitter:description" content="{% block twitter_description %}{% if article %}{{ article.get_meta_description|default:article.get_summary|truncatewords:25 }}{% else %}{{ page_description|default:'Explore automation, bots and digital systems by Lazysoft.' }}{% endif %}{% endblock %}">
       <meta name="twitter:image" content="{% block twitter_image %}{% if article and article.ai_image_url %}{{ article.ai_image_url }}{% else %}{% static 'images/og-default.jpg' %}{% endif %}{% endblock %}">
