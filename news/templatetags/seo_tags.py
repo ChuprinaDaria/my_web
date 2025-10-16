@@ -48,7 +48,7 @@ def news_json_ld(context, article):
             "name": "LazySoft",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://lazysoft.pl/logo.svg",  # Логотип LazySoft
+                "url": "https://lazysoft.pl/static/images/logo.svg",  # Логотип LazySoft
                 "width": 600,
                 "height": 60
             }
