@@ -31,10 +31,13 @@
     console.log('RRM: Current domain:', window.location.hostname);
     console.log('RRM: Current language:', '{{ CURRENT_LANG|default:"en" }}');
 
-    (self.SWG_BASIC = self.SWG_BASIC || []).push(basic => {
+    if (!self.SWG_BASIC) {
+      self.SWG_BASIC = {};
+    }
+    self.SWG_BASIC.init = basic => {
       console.log('RRM: SWG Basic loaded, initializing...');
 
-      // Спробуємо альтернативну конфігурацію
+      // Спробуємо основну конфігурацію
       try {
         basic.init({
           type: "Product",
@@ -45,11 +48,11 @@
             lang: "{{ CURRENT_LANG|default:'en' }}"
           }
         });
-        console.log('RRM: SWG Basic initialized successfully');
+        console.log('RRM: SWG Basic initialized with CAown-DCDA:openaccess');
       } catch (error) {
-        console.error('RRM: Error initializing SWG Basic:', error);
+        console.error('RRM: Error with openaccess config:', error);
 
-        // Спробуємо альтернативну конфігурацію
+        // Спробуємо альтернативну конфігурацію з :default
         try {
           basic.init({
             type: "Product",
@@ -60,12 +63,28 @@
               lang: "{{ CURRENT_LANG|default:'en' }}"
             }
           });
-          console.log('RRM: SWG Basic initialized with alternative config');
+          console.log('RRM: SWG Basic initialized with CAown-DCDA:default');
         } catch (altError) {
-          console.error('RRM: Alternative config also failed:', altError);
+          console.error('RRM: Error with default config:', altError);
+
+          // Спробуємо без двокрапки
+          try {
+            basic.init({
+              type: "Product",
+              isPartOfType: ["Product"],
+              isPartOfProductId: "CAown-DCDA",
+              clientOptions: {
+                theme: "dark",
+                lang: "{{ CURRENT_LANG|default:'en' }}"
+              }
+            });
+            console.log('RRM: SWG Basic initialized with CAown-DCDA');
+          } catch (finalError) {
+            console.error('RRM: All configurations failed:', finalError);
+          }
         }
       }
-    });
+    };
 
     // Обробка помилок
     window.addEventListener('error', function(e) {
@@ -131,7 +150,7 @@
       document.getElementById('debug-config-id').textContent = '0a3bd8ef-990d-4253-bcbe-c9c3de0ca2bc';
 
       // Слухаємо зміни статусу SWG
-      if (typeof self.SWG_BASIC !== 'undefined') {
+      if (typeof self.SWG_BASIC !== 'undefined' && self.SWG_BASIC.init) {
         document.getElementById('debug-status').textContent = 'SWG Basic loaded';
       }
     });
@@ -148,12 +167,12 @@
 
         // Спробуємо показати форму підписки
         try {
-          console.log('SWG_BASIC array:', self.SWG_BASIC);
-          console.log('SWG_BASIC length:', self.SWG_BASIC ? self.SWG_BASIC.length : 'undefined');
+          console.log('SWG_BASIC object:', self.SWG_BASIC);
 
           // Спробуємо знайти SWG об'єкт
-          if (self.SWG_BASIC && self.SWG_BASIC.length > 0) {
-            const swg = self.SWG_BASIC[self.SWG_BASIC.length - 1];
+          if (self.SWG_BASIC) {
+            // SWG_BASIC тепер об'єкт, а не масив
+            const swg = self.SWG_BASIC;
             console.log('Found SWG object:', swg);
 
             // Спробуємо показати форму
