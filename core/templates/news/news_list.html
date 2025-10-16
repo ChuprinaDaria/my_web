@@ -22,6 +22,20 @@
   <script type="application/ld+json">
   {{ structured_data|safe }}
   </script>
+  
+  <!-- Google News Publisher Center -->
+  <script async type="application/javascript"
+          src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
+  <script>
+    (self.SWG_BASIC = self.SWG_BASIC || []).push( basicSubscriptions => {
+      basicSubscriptions.init({
+        type: "NewsArticle",
+        isPartOfType: ["Product"],
+        isPartOfProductId: "CAown-DCDA:openaccess",
+        clientOptions: { theme: "light", lang: "{{ CURRENT_LANG|default:'en' }}" },
+      });
+    });
+  </script>
 {% endblock %}
 
 {% block content %}

@@ -10,6 +10,20 @@
 {% block og_image %}{{ og_image }}{% endblock %}
 {% block extra_meta %}
 {% news_json_ld article %}
+
+<!-- Google News Publisher Center -->
+<script async type="application/javascript"
+        src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
+<script>
+  (self.SWG_BASIC = self.SWG_BASIC || []).push( basicSubscriptions => {
+    basicSubscriptions.init({
+      type: "NewsArticle",
+      isPartOfType: ["Product"],
+      isPartOfProductId: "CAown-DCDA:openaccess",
+      clientOptions: { theme: "light", lang: "{{ CURRENT_LANG|default:'en' }}" },
+    });
+  });
+</script>
 {% endblock %}
 {% block content %}
 <article class="news-detail-page">
