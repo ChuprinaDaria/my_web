@@ -9,11 +9,12 @@ from .models import ProcessedArticle
 class GoogleNewsSitemapView:
     """Кастомний view для Google News sitemap з правильними тегами"""
     
-    def __init__(self):
+    def __init__(self, language='uk'):
+        self.language = language
         self.sitemap = GoogleNewsSitemap()
     
     def __call__(self, request):
-        """Обробляє запит до Google News sitemap"""
+        """Обробляє запит до Google News sitemap для конкретної мови"""
         try:
             # Отримуємо статті за останні 2 дні
             two_days_ago = timezone.now() - timedelta(days=2)
@@ -25,26 +26,32 @@ class GoogleNewsSitemapView:
             # Підготовляємо дані для template
             urlset = []
             for article in articles:
-                # Отримуємо URL статті
+                # Отримуємо URL статті для конкретної мови
                 if hasattr(article, 'get_absolute_url'):
-                    location = article.get_absolute_url(language='uk')
+                    location = article.get_absolute_url(language=self.language)
                 else:
                     from django.urls import reverse
                     location = reverse('news:article_detail', kwargs={'uuid': article.uuid})
                 
+                # Конвертуємо дату в UTC
+                lastmod = article.published_at or article.updated_at
+                if lastmod:
+                    lastmod_utc = lastmod.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+                else:
+                    lastmod_utc = timezone.now().astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+                
                 # Підготовляємо метадані для Google News
                 urlset.append({
                     'location': request.build_absolute_uri(location),
-                    'lastmod': article.published_at or article.updated_at,
-                    'changefreq': 'hourly',
-                    'priority': 0.8,
-                    'news_title': article.get_title('uk'),
-                    'news_keywords': self._get_keywords(article),
+                    'lastmod': lastmod_utc,
+                    'news_title': article.get_title(self.language),
+                    'news_keywords': self._get_keywords(article, self.language),
                 })
             
             # Рендеримо template
             content = render_to_string('news/google_news_sitemap.xml', {
-                'urlset': urlset
+                'urlset': urlset,
+                'language': self.language
             })
             
             return HttpResponse(content, content_type='application/xml')
@@ -58,17 +65,17 @@ class GoogleNewsSitemapView:
 </urlset>'''
             return HttpResponse(empty_content, content_type='application/xml')
     
-    def _get_keywords(self, article):
-        """Отримує ключові слова для статті"""
+    def _get_keywords(self, article, language='uk'):
+        """Отримує ключові слова для статті на конкретній мові"""
         keywords = []
         
         # Додаємо категорію
         if article.category:
-            keywords.append(article.category.get_name('uk'))
+            keywords.append(article.category.get_name(language))
         
         # Додаємо теги
         if hasattr(article, 'tags') and article.tags.exists():
-            keywords.extend([tag.get_name('uk') for tag in article.tags.all()])
+            keywords.extend([tag.get_name(language) for tag in article.tags.all()])
         
         # Додаємо ключові слова з RSS категорії
         if hasattr(article, 'raw_article') and article.raw_article.source:
@@ -76,7 +83,35 @@ class GoogleNewsSitemapView:
             if rss_category:
                 keywords.append(rss_category)
         
-        return ', '.join(keywords[:10])  # Максимум 10 ключових слів
+        # Додаємо специфічні ключові слова на основі контенту
+        content_keywords = self._extract_content_keywords(article, language)
+        keywords.extend(content_keywords)
+        
+        # Видаляємо дублікати та обмежуємо кількість
+        unique_keywords = list(dict.fromkeys(keywords))[:8]  # Максимум 8 ключових слів
+        return ', '.join(unique_keywords)
+    
+    def _extract_content_keywords(self, article, language='uk'):
+        """Витягує ключові слова з контенту статті"""
+        keywords = []
+        
+        # Аналізуємо заголовок та контент
+        title = article.get_title(language).lower()
+        content = article.get_summary(language).lower()
+        
+        # Специфічні ключові слова для технологій
+        tech_keywords = {
+            'uk': ['AI', 'штучний інтелект', 'автоматизація', 'технології', 'бізнес', 'розробка', 'інновації'],
+            'pl': ['AI', 'sztuczna inteligencja', 'automatyzacja', 'technologie', 'biznes', 'rozwój', 'innowacje'],
+            'en': ['AI', 'artificial intelligence', 'automation', 'technology', 'business', 'development', 'innovation']
+        }
+        
+        # Шукаємо ключові слова в контенті
+        for keyword in tech_keywords.get(language, tech_keywords['uk']):
+            if keyword.lower() in title or keyword.lower() in content:
+                keywords.append(keyword)
+        
+        return keywords
 
 
 class GoogleNewsSitemap(Sitemap):

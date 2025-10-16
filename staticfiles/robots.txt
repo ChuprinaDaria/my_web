@@ -11,7 +11,9 @@ Allow: /
 
 # Sitemaps
 Sitemap: https://lazysoft.pl/sitemap.xml
-Sitemap: https://lazysoft.pl/news-sitemap.xml
+Sitemap: https://lazysoft.pl/news-sitemap-uk.xml
+Sitemap: https://lazysoft.pl/news-sitemap-pl.xml
+Sitemap: https://lazysoft.pl/news-sitemap-en.xml
 Sitemap: https://lazysoft.pl/sitemap-static.xml
 Sitemap: https://lazysoft.pl/sitemap-services.xml
 Sitemap: https://lazysoft.pl/sitemap-projects.xml

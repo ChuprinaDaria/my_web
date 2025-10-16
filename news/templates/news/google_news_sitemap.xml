@@ -4,15 +4,13 @@
 {% for item in urlset %}
   <url>
     <loc>{{ item.location }}</loc>
-    <lastmod>{{ item.lastmod|date:"c" }}</lastmod>
-    <changefreq>{{ item.changefreq }}</changefreq>
-    <priority>{{ item.priority }}</priority>
+    <lastmod>{{ item.lastmod }}</lastmod>
     <news:news>
       <news:publication>
         <news:name>LazySoft</news:name>
-        <news:language>uk</news:language>
+        <news:language>{{ language }}</news:language>
       </news:publication>
-      <news:publication_date>{{ item.lastmod|date:"c" }}</news:publication_date>
+      <news:publication_date>{{ item.lastmod }}</news:publication_date>
       <news:title>{{ item.news_title|escape }}</news:title>
       {% if item.news_keywords %}
       <news:keywords>{{ item.news_keywords|escape }}</news:keywords>

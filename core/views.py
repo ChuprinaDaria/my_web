@@ -228,7 +228,9 @@ Allow: /
 
 # Sitemaps
 Sitemap: {site_url}/sitemap.xml
-Sitemap: {site_url}/news-sitemap.xml
+Sitemap: {site_url}/news-sitemap-uk.xml
+Sitemap: {site_url}/news-sitemap-pl.xml
+Sitemap: {site_url}/news-sitemap-en.xml
 Sitemap: {site_url}/sitemap-static.xml
 Sitemap: {site_url}/sitemap-services.xml
 Sitemap: {site_url}/sitemap-projects.xml

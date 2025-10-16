@@ -72,8 +72,10 @@ if SITEMAPS_AVAILABLE:
         path('sitemap-articles.xml', sitemap, {'sitemaps': {'articles': ArticleDetailSitemap}}, name='articles_sitemap'),
         path('sitemap-news.xml', sitemap, {'sitemaps': {'news': NewsSitemap}}, name='news_sitemap'),
         path('sitemap-categories.xml', sitemap, {'sitemaps': {'news_categories': NewsCategorySitemap}}, name='categories_sitemap'),
-        # Google News Sitemap
-        path('news-sitemap.xml', GoogleNewsSitemapView(), name='google_news_sitemap'),
+        # Google News Sitemaps - окремі для кожної мови
+        path('news-sitemap-uk.xml', GoogleNewsSitemapView('uk'), name='google_news_sitemap_uk'),
+        path('news-sitemap-pl.xml', GoogleNewsSitemapView('pl'), name='google_news_sitemap_pl'),
+        path('news-sitemap-en.xml', GoogleNewsSitemapView('en'), name='google_news_sitemap_en'),
     ]
 
 # robots.txt (без i18n) - ВІДКЛЮЧЕНО НА DEV
