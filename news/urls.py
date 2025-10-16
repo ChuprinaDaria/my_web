@@ -8,6 +8,7 @@ from .views import (
     
     ROIDashboardView, NewsWidgetView, SocialMediaStatsView, NewsAnalyticsAPIView, ProcessedArticle, RawArticle
 )
+from .views_sitemap import GoogleNewsSitemapView
 from .views import NewsByDateView
 
 app_name = 'news'
@@ -33,6 +34,9 @@ urlpatterns = [
     
     # RSS фід
     path('rss.xml', TemplateView.as_view(template_name='news/rss_feed.xml', content_type='application/rss+xml'), name='rss_feed'),
+    
+    # Google News Sitemap
+    path('news-sitemap.xml', GoogleNewsSitemapView(), name='google_news_sitemap'),
 
     # === НОВІ API ENDPOINTS ===
     

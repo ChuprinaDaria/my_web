@@ -15,12 +15,12 @@ class StaticViewSitemap(Sitemap):
         """Список статичних URL з перевіркою, щоб уникнути 500 у разі NoReverseMatch"""
         candidates = [
             'core:home',                 # core/urls.py (namespaced)
-            'about',                     # about/urls.py (без namespace у include)
+            'about:about',               # about/urls.py (namespaced)
             'services:services_list',    # services/urls.py (namespaced)
             'projects',                  # projects/urls.py (без namespace у include)
-            'contact_page',              # contacts/urls.py (без namespace у include)
+            'contacts:contact_page',     # contacts/urls.py (namespaced)
             'news:news_list',            # news/urls.py (namespaced)
-            'chat',                      # consultant/urls.py (без namespace у include)
+            'consultant:chat',           # consultant/urls.py (namespaced)
         ]
 
         valid = []
@@ -101,7 +101,11 @@ class ArticleDetailSitemap(Sitemap):
     
     def location(self, obj):
         """URL детальної сторінки статті"""
-        return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
+        # Використовуємо метод get_absolute_url з явною мовою для уникнення i18n проблем
+        if hasattr(obj, 'get_absolute_url'):
+            return obj.get_absolute_url(language='pl')  # Дефолтна мова
+        else:
+            return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
     
     def lastmod(self, obj):
         """Дата останньої модифікації"""
@@ -109,23 +113,53 @@ class ArticleDetailSitemap(Sitemap):
 
 
 class NewsSitemap(Sitemap):
-    """Sitemap для новин"""
+    """Sitemap для новин з підтримкою Google News"""
     priority = 0.7
     changefreq = 'daily'
     i18n = True
     
     def items(self):
+        """Повертає QuerySet новин за останні 2 дні"""
         try:
             from news.models import ProcessedArticle
-            return ProcessedArticle.objects.filter(status='published')
-        except ImportError:
+            from django.utils import timezone
+            from datetime import timedelta
+            
+            two_days_ago = timezone.now() - timedelta(days=2)
+            return ProcessedArticle.objects.filter(
+                status='published',
+                published_at__gte=two_days_ago
+            ).order_by('-published_at')
+        except (ImportError, Exception) as e:
+            # Якщо база даних недоступна або інша помилка, повертаємо порожній список
+            print(f"NewsSitemap: не вдалося завантажити статті: {e}")
             return []
     
-    def location(self, obj):
-        return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
-    
     def lastmod(self, obj):
-        return obj.published_at or obj.created_at
+        """Повертає updated_at або published_at кожної статті"""
+        return obj.updated_at or obj.published_at
+    
+    def location(self, obj):
+        """URL детальної сторінки статті"""
+        # Використовуємо метод get_absolute_url з явною мовою для уникнення i18n проблем
+        if hasattr(obj, 'get_absolute_url'):
+            return obj.get_absolute_url(language='pl')  # Дефолтна мова
+        else:
+            return reverse('news:article_detail', kwargs={'uuid': obj.uuid})
+    
+    def get_urls(self, page=1, site=None, protocol=None):
+        """Перевизначаємо для додавання namespace Google News"""
+        urls = super().get_urls(page, site, protocol)
+        
+        # Додаємо namespace для Google News
+        for url in urls:
+            if hasattr(url, 'location'):
+                # Додаємо xmlns:news namespace до URL
+                if not hasattr(url, 'namespaces'):
+                    url.namespaces = {}
+                url.namespaces['news'] = 'http://www.google.com/schemas/sitemap-news/0.9'
+        
+        return urls
 
 
 class NewsCategorySitemap(Sitemap):
