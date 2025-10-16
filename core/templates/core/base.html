@@ -25,10 +25,20 @@
       <meta property="og:image:width" content="1200">
       <meta property="og:image:height" content="630">
       <meta property="og:image:alt" content="{% block og_image_alt %}Lazysoft - Automation & Development{% endblock %}">
-      <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+      <meta property="og:type" content="{% block og_type %}article{% endblock %}">
       <meta property="og:url" content="{{ SITE_URL }}{{ request.get_full_path }}">
       <meta property="og:site_name" content="Lazysoft">
       <meta property="og:locale" content="{% if CURRENT_LANG == 'uk' %}uk_UA{% elif CURRENT_LANG == 'pl' %}pl_PL{% else %}en_US{% endif %}">
+      
+      {# Article specific meta tags #}
+      {% if article %}
+      <meta property="article:published_time" content="{{ article.published_at|date:'c'|default:article.created_at|date:'c' }}">
+      <meta property="article:modified_time" content="{{ article.updated_at|date:'c' }}">
+      <meta property="article:author" content="LazySoft">
+      {% if article.category %}
+      <meta property="article:section" content="{{ article.category.get_name }}">
+      {% endif %}
+      {% endif %}
       
       <meta property="fb:app_id" content="{% block fb_app_id %}{% endblock %}">
       <meta property="fb:pages" content="{% block fb_pages %}{% endblock %}">
@@ -36,40 +46,40 @@
       <meta name="twitter:card" content="summary_large_image">
       <meta name="twitter:site" content="@lazysoft_dev">
       <meta name="twitter:creator" content="@lazysoft_dev">
-      <meta name="twitter:title" content="{% block twitter_title %}Lazysoft{% endblock %}">
-      <meta name="twitter:description" content="{% block twitter_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
-      <meta name="twitter:image" content="{% block twitter_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
+      <meta name="twitter:title" content="{% block twitter_title %}{% if article %}{{ article.get_title }}{% else %}{{ page_title|default:'Lazysoft' }}{% endif %}{% endblock %}">
+      <meta name="twitter:description" content="{% block twitter_description %}{% if article %}{{ article.get_meta_description|default:article.get_summary|truncatewords:25 }}{% else %}{{ page_description|default:'Explore automation, bots and digital systems by Lazysoft.' }}{% endif %}{% endblock %}">
+      <meta name="twitter:image" content="{% block twitter_image %}{% if article and article.ai_image_url %}{{ article.ai_image_url }}{% else %}{% static 'images/og-default.jpg' %}{% endif %}{% endblock %}">
       <meta name="twitter:image:alt" content="{% block twitter_image_alt %}Lazysoft - Automation & Development{% endblock %}">
       
       <meta name="instagram:card" content="summary_large_image">
-      <meta name="instagram:title" content="{% block instagram_title %}Lazysoft{% endblock %}">
-      <meta name="instagram:description" content="{% block instagram_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
-      <meta name="instagram:image" content="{% block instagram_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
+      <meta name="instagram:title" content="{% block instagram_title %}{% if article %}{{ article.get_title }}{% else %}{{ page_title|default:'Lazysoft' }}{% endif %}{% endblock %}">
+      <meta name="instagram:description" content="{% block instagram_description %}{% if article %}{{ article.get_meta_description|default:article.get_summary|truncatewords:25 }}{% else %}{{ page_description|default:'Explore automation, bots and digital systems by Lazysoft.' }}{% endif %}{% endblock %}">
+      <meta name="instagram:image" content="{% block instagram_image %}{% if article and article.ai_image_url %}{{ article.ai_image_url }}{% else %}{% static 'images/og-default.jpg' %}{% endif %}{% endblock %}">
       <meta property="instapp:owner_user_id" content="{% block instagram_user_id %}{% endblock %}">
       
       <meta name="threads:card" content="summary_large_image">
       <meta name="threads:site" content="{% block threads_site %}@lazysoft_threads{% endblock %}">
       <meta name="threads:creator" content="{% block threads_creator %}@lazysoft_threads{% endblock %}">
-      <meta name="threads:title" content="{% block threads_title %}Lazysoft{% endblock %}">
-      <meta name="threads:description" content="{% block threads_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
-      <meta name="threads:image" content="{% block threads_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
+      <meta name="threads:title" content="{% block threads_title %}{% if article %}{{ article.get_title }}{% else %}{{ page_title|default:'Lazysoft' }}{% endif %}{% endblock %}">
+      <meta name="threads:description" content="{% block threads_description %}{% if article %}{{ article.get_meta_description|default:article.get_summary|truncatewords:25 }}{% else %}{{ page_description|default:'Explore automation, bots and digital systems by Lazysoft.' }}{% endif %}{% endblock %}">
+      <meta name="threads:image" content="{% block threads_image %}{% if article and article.ai_image_url %}{{ article.ai_image_url }}{% else %}{% static 'images/og-default.jpg' %}{% endif %}{% endblock %}">
       
       <meta name="linkedin:card" content="summary_large_image">
-      <meta name="linkedin:title" content="{% block linkedin_title %}Lazysoft{% endblock %}">
-      <meta name="linkedin:description" content="{% block linkedin_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
-      <meta name="linkedin:image" content="{% block linkedin_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
+      <meta name="linkedin:title" content="{% block linkedin_title %}{% if article %}{{ article.get_title }}{% else %}{{ page_title|default:'Lazysoft' }}{% endif %}{% endblock %}">
+      <meta name="linkedin:description" content="{% block linkedin_description %}{% if article %}{{ article.get_meta_description|default:article.get_summary|truncatewords:25 }}{% else %}{{ page_description|default:'Explore automation, bots and digital systems by Lazysoft.' }}{% endif %}{% endblock %}">
+      <meta name="linkedin:image" content="{% block linkedin_image %}{% if article and article.ai_image_url %}{{ article.ai_image_url }}{% else %}{% static 'images/og-default.jpg' %}{% endif %}{% endblock %}">
       <meta property="article:author" content="https://linkedin.com/in/daria-chuprina">
       <meta property="article:publisher" content="https://linkedin.com/company/lazysoft">
       
       <meta name="telegram:channel" content="@Lazysoft_news">
       <meta name="telegram:card" content="summary_large_image">
-      <meta name="telegram:title" content="{% block telegram_title %}Lazysoft{% endblock %}">
-      <meta name="telegram:description" content="{% block telegram_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
-      <meta name="telegram:image" content="{% block telegram_image %}{% static 'images/og-default.jpg' %}{% endblock %}">
+      <meta name="telegram:title" content="{% block telegram_title %}{% if article %}{{ article.get_title }}{% else %}{{ page_title|default:'Lazysoft' }}{% endif %}{% endblock %}">
+      <meta name="telegram:description" content="{% block telegram_description %}{% if article %}{{ article.get_meta_description|default:article.get_summary|truncatewords:25 }}{% else %}{{ page_description|default:'Explore automation, bots and digital systems by Lazysoft.' }}{% endif %}{% endblock %}">
+      <meta name="telegram:image" content="{% block telegram_image %}{% if article and article.ai_image_url %}{{ article.ai_image_url }}{% else %}{% static 'images/og-default.jpg' %}{% endif %}{% endblock %}">
       
       <meta name="tiktok:app_id" content="{% block tiktok_app_id %}{% endblock %}">
-      <meta name="tiktok:title" content="{% block tiktok_title %}Lazysoft{% endblock %}">
-      <meta name="tiktok:description" content="{% block tiktok_description %}Explore automation, bots and digital systems by Lazysoft.{% endblock %}">
+      <meta name="tiktok:title" content="{% block tiktok_title %}{% if article %}{{ article.get_title }}{% else %}{{ page_title|default:'Lazysoft' }}{% endif %}{% endblock %}">
+      <meta name="tiktok:description" content="{% block tiktok_description %}{% if article %}{{ article.get_meta_description|default:article.get_summary|truncatewords:25 }}{% else %}{{ page_description|default:'Explore automation, bots and digital systems by Lazysoft.' }}{% endif %}{% endblock %}">
       
       <meta name="msapplication-TileColor" content="#66ff00">
       <meta name="msapplication-TileImage" content="{% static 'images/mstile-144x144.png' %}">
