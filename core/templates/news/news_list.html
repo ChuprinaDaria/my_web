@@ -23,16 +23,15 @@
   {{ structured_data|safe }}
   </script>
   
-  <!-- Google News Reader Revenue Manager - підписка на новини -->
-  <script async type="application/javascript"
-          src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
+  <!-- Google News Reader Revenue Manager - тільки на сторінці новин -->
+  <script data-cfasync="false" async src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
   <script>
-    (self.SWG_BASIC = self.SWG_BASIC || []).push( basicSubscriptions => {
-      basicSubscriptions.init({
-        type: "NewsArticle",
+    (self.SWG_BASIC = self.SWG_BASIC || []).push(basic => {
+      basic.init({
+        type: "Product",
         isPartOfType: ["Product"],
         isPartOfProductId: "CAown-DCDA:openaccess",
-        clientOptions: { theme: "light", lang: "{{ CURRENT_LANG|default:'en' }}" },
+        clientOptions: { theme: "dark", lang: "{{ CURRENT_LANG|default:'en' }}" }
       });
     });
   </script>
