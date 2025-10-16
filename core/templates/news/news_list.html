@@ -33,13 +33,38 @@
 
     (self.SWG_BASIC = self.SWG_BASIC || []).push(basic => {
       console.log('RRM: SWG Basic loaded, initializing...');
-      basic.init({
-        type: "Product",
-        isPartOfType: ["Product"],
-        isPartOfProductId: "CAown-DCDA:openaccess",
-        clientOptions: { theme: "dark", lang: "{{ CURRENT_LANG|default:'en' }}" }
-      });
-      console.log('RRM: SWG Basic initialized successfully');
+
+      // Спробуємо альтернативну конфігурацію
+      try {
+        basic.init({
+          type: "Product",
+          isPartOfType: ["Product"],
+          isPartOfProductId: "CAown-DCDA:openaccess",
+          clientOptions: {
+            theme: "dark",
+            lang: "{{ CURRENT_LANG|default:'en' }}"
+          }
+        });
+        console.log('RRM: SWG Basic initialized successfully');
+      } catch (error) {
+        console.error('RRM: Error initializing SWG Basic:', error);
+
+        // Спробуємо альтернативну конфігурацію
+        try {
+          basic.init({
+            type: "Product",
+            isPartOfType: ["Product"],
+            isPartOfProductId: "CAown-DCDA:default",
+            clientOptions: {
+              theme: "light",
+              lang: "{{ CURRENT_LANG|default:'en' }}"
+            }
+          });
+          console.log('RRM: SWG Basic initialized with alternative config');
+        } catch (altError) {
+          console.error('RRM: Alternative config also failed:', altError);
+        }
+      }
     });
 
     // Обробка помилок
