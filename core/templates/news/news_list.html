@@ -26,70 +26,20 @@
   <!-- Google News Reader Revenue Manager - тільки на сторінці новин -->
   <script data-cfasync="false" async src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
   <script>
-    // Діагностика для налагодження
-    console.log('RRM: Initializing SWG Basic...');
-    console.log('RRM: Current domain:', window.location.hostname);
-    console.log('RRM: Current language:', '{{ CURRENT_LANG|default:"en" }}');
 
-    // Правильна ініціалізація SWG Basic
+    // Google News Reader Revenue Manager
     (self.SWG_BASIC = self.SWG_BASIC || []).push(basic => {
-      console.log('RRM: SWG Basic loaded, initializing...');
-
-      // Спробуємо основну конфігурацію
-      try {
-        basic.init({
-          type: "Product",
-          isPartOfType: ["Product"],
-          isPartOfProductId: "CAown-DCDA:openaccess",
-          clientOptions: {
-            theme: "dark",
-            lang: "{{ CURRENT_LANG|default:'en' }}"
-          }
-        });
-        console.log('RRM: SWG Basic initialized with CAown-DCDA:openaccess');
-      } catch (error) {
-        console.error('RRM: Error with openaccess config:', error);
-
-        // Спробуємо альтернативну конфігурацію з :default
-        try {
-          basic.init({
-            type: "Product",
-            isPartOfType: ["Product"],
-            isPartOfProductId: "CAown-DCDA:default",
-            clientOptions: {
-              theme: "light",
-              lang: "{{ CURRENT_LANG|default:'en' }}"
-            }
-          });
-          console.log('RRM: SWG Basic initialized with CAown-DCDA:default');
-        } catch (altError) {
-          console.error('RRM: Error with default config:', altError);
-
-          // Спробуємо без двокрапки
-          try {
-            basic.init({
-              type: "Product",
-              isPartOfType: ["Product"],
-              isPartOfProductId: "CAown-DCDA",
-              clientOptions: {
-                theme: "dark",
-                lang: "{{ CURRENT_LANG|default:'en' }}"
-              }
-            });
-            console.log('RRM: SWG Basic initialized with CAown-DCDA');
-          } catch (finalError) {
-            console.error('RRM: All configurations failed:', finalError);
-          }
+      basic.init({
+        type: "Product",
+        isPartOfType: ["Product"],
+        isPartOfProductId: "CAown-DCDA:openaccess",
+        clientOptions: {
+          theme: "dark",
+          lang: "{{ CURRENT_LANG|default:'en' }}"
         }
-      }
+      });
     });
 
-    // Обробка помилок
-    window.addEventListener('error', function(e) {
-      if (e.message.includes('swg') || e.message.includes('SWG')) {
-        console.error('RRM Error:', e.message, e.filename, e.lineno);
-      }
-    });
   </script>
 {% endblock %}
 
@@ -121,95 +71,10 @@
         <p>Get field notes from the AI & automation frontier. Sent daily. Opt out anytime.</p>
         <div id="rrm-signup"></div>
 
-        <!-- Діагностична інформація для налагодження -->
-        <div id="rrm-debug" style="margin-top: 1rem; padding: 1rem; background: rgba(255,255,255,0.1); border-radius: 8px; font-family: monospace; font-size: 12px; text-align: left;">
-          <strong>RRM Debug:</strong><br>
-          Domain: <span id="debug-domain"></span><br>
-          Language: <span id="debug-lang"></span><br>
-          Product ID: <span id="debug-product-id"></span><br>
-          Configuration ID: <span id="debug-config-id"></span><br>
-          Status: <span id="debug-status">Waiting for SWG...</span>
-        </div>
-
-        <!-- Тестова кнопка для перевірки RRM -->
-        <button id="test-rrm-btn" onclick="testRRM()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
-          Тестувати RRM форму
-        </button>
       </div>
     </div>
   </section>
 
-  <script>
-    // Заповнимо діагностичну інформацію
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('debug-domain').textContent = window.location.hostname;
-      document.getElementById('debug-lang').textContent = '{{ CURRENT_LANG|default:"en" }}';
-      document.getElementById('debug-product-id').textContent = 'CAown-DCDA:openaccess';
-      document.getElementById('debug-config-id').textContent = '0a3bd8ef-990d-4253-bcbe-c9c3de0ca2bc';
-
-      // Слухаємо зміни статусу SWG
-      if (typeof self.SWG_BASIC !== 'undefined' && Array.isArray(self.SWG_BASIC)) {
-        document.getElementById('debug-status').textContent = 'SWG Basic loaded';
-      }
-    });
-
-    // Функція для тестування RRM
-    function testRRM() {
-      console.log('Testing RRM form...');
-
-      if (typeof self.SWG_BASIC === 'undefined') {
-        console.error('SWG Basic not loaded');
-        alert('SWG Basic не завантажено. Спробуйте перезавантажити сторінку.');
-        return;
-      }
-
-        // Спробуємо показати форму підписки
-        try {
-          console.log('SWG_BASIC array:', self.SWG_BASIC);
-          console.log('SWG_BASIC length:', self.SWG_BASIC ? self.SWG_BASIC.length : 'undefined');
-
-          // Спробуємо знайти SWG об'єкт
-          if (self.SWG_BASIC && self.SWG_BASIC.length > 0) {
-            // SWG_BASIC - це масив функцій, беремо останню
-            const swgFunction = self.SWG_BASIC[self.SWG_BASIC.length - 1];
-            console.log('Found SWG function:', swgFunction);
-            
-            // Викликаємо функцію, щоб отримати SWG об'єкт
-            if (typeof swgFunction === 'function') {
-              // Передаємо basic об'єкт, який має методи для роботи з RRM
-              swgFunction((basic) => {
-                console.log('SWG Basic object received:', basic);
-                console.log('Available methods on basic:', Object.keys(basic));
-                
-                // Тепер спробуємо показати форму
-                if (typeof basic.showOffers === 'function') {
-                  basic.showOffers({
-                    isClosable: true
-                  }).then(result => {
-                    console.log('RRM form opened successfully:', result);
-                  }).catch(error => {
-                    console.error('Error opening RRM form:', error);
-                    alert('Помилка при відкритті форми: ' + error.message);
-                  });
-                } else {
-                  console.log('Basic object methods:', Object.keys(basic));
-                  alert('Basic об\'єкт не має методу showOffers. Доступні методи: ' + Object.keys(basic).join(', '));
-                }
-              });
-            } else {
-              console.error('SWG function is not a function:', typeof swgFunction);
-              alert('SWG функція не є функцією');
-            }
-          } else {
-            console.error('No SWG object found');
-            alert('SWG об\'єкт не знайдено. Переконайтеся, що домен lazysoft.pl правильно налаштовано в Google Publisher Center.');
-          }
-      } catch (error) {
-        console.error('Error in testRRM:', error);
-        alert('Помилка тестування: ' + error.message);
-      }
-    }
-  </script>
 
   <section class="news-main-section">
     <div class="container">
