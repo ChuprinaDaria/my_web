@@ -1,0 +1,49 @@
+# Google News Bot - special rules for news indexing
+User-agent: Googlebot-News
+Allow: /news/
+Allow: /uk/news/
+Allow: /pl/news/
+Allow: /en/news/
+
+# General crawlers
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://lazysoft.pl/sitemap.xml
+Sitemap: https://lazysoft.pl/news-sitemap.xml
+Sitemap: https://lazysoft.pl/sitemap-static.xml
+Sitemap: https://lazysoft.pl/sitemap-services.xml
+Sitemap: https://lazysoft.pl/sitemap-projects.xml
+Sitemap: https://lazysoft.pl/sitemap-articles.xml
+Sitemap: https://lazysoft.pl/sitemap-news.xml
+Sitemap: https://lazysoft.pl/sitemap-categories.xml
+
+# Disallow admin and control panels
+Disallow: /admin/
+Disallow: /control/
+Disallow: /account/
+Disallow: /api/
+
+# Allow important pages
+Allow: /en/
+Allow: /uk/
+Allow: /pl/
+Allow: /services/
+Allow: /projects/
+Allow: /news/
+Allow: /about/
+Allow: /contacts/
+Allow: /consultant/
+
+# Disallow static files that don't need indexing
+Disallow: /static/admin/
+Disallow: /static/ckeditor/
+Disallow: /media/ai_images/
+Disallow: /media/company/
+Disallow: /media/contacts/
+Disallow: /media/projects/
+Disallow: /media/services/
+
+# Crawl delay
+Crawl-delay: 1

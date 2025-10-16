@@ -215,11 +215,20 @@ def robots_txt(request):
     
     site_url = getattr(settings, 'SITE_URL', 'https://lazysoft.pl')
     
-    content = f"""User-agent: *
+    content = f"""# Google News Bot - special rules for news indexing
+User-agent: Googlebot-News
+Allow: /news/
+Allow: /uk/news/
+Allow: /pl/news/
+Allow: /en/news/
+
+# General crawlers
+User-agent: *
 Allow: /
 
 # Sitemaps
 Sitemap: {site_url}/sitemap.xml
+Sitemap: {site_url}/news-sitemap.xml
 Sitemap: {site_url}/sitemap-static.xml
 Sitemap: {site_url}/sitemap-services.xml
 Sitemap: {site_url}/sitemap-projects.xml

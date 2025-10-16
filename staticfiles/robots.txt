@@ -1,8 +1,17 @@
+# Google News Bot - special rules for news indexing
+User-agent: Googlebot-News
+Allow: /news/
+Allow: /uk/news/
+Allow: /pl/news/
+Allow: /en/news/
+
+# General crawlers
 User-agent: *
 Allow: /
 
 # Sitemaps
 Sitemap: https://lazysoft.pl/sitemap.xml
+Sitemap: https://lazysoft.pl/news-sitemap.xml
 Sitemap: https://lazysoft.pl/sitemap-static.xml
 Sitemap: https://lazysoft.pl/sitemap-services.xml
 Sitemap: https://lazysoft.pl/sitemap-projects.xml
