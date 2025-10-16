@@ -113,6 +113,11 @@
           Configuration ID: <span id="debug-config-id"></span><br>
           Status: <span id="debug-status">Waiting for SWG...</span>
         </div>
+
+        <!-- Тестова кнопка для перевірки RRM -->
+        <button id="test-rrm-btn" onclick="testRRM()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          Тестувати RRM форму
+        </button>
       </div>
     </div>
   </section>
@@ -130,6 +135,42 @@
         document.getElementById('debug-status').textContent = 'SWG Basic loaded';
       }
     });
+
+    // Функція для тестування RRM
+    function testRRM() {
+      console.log('Testing RRM form...');
+
+      if (typeof self.SWG_BASIC === 'undefined') {
+        console.error('SWG Basic not loaded');
+        alert('SWG Basic не завантажено. Спробуйте перезавантажити сторінку.');
+        return;
+      }
+
+      // Спробуємо показати форму підписки
+      try {
+        // Спробуємо знайти SWG об'єкт
+        const swg = self.SWG_BASIC[0];
+        if (swg) {
+          console.log('Found SWG object, trying to show signup form...');
+
+          // Спробуємо показати форму
+          swg.showOffers({
+            isClosable: true
+          }).then(result => {
+            console.log('RRM form opened successfully:', result);
+          }).catch(error => {
+            console.error('Error opening RRM form:', error);
+            alert('Помилка при відкритті форми: ' + error.message);
+          });
+        } else {
+          console.error('No SWG object found');
+          alert('SWG об\'єкт не знайдено');
+        }
+      } catch (error) {
+        console.error('Error in testRRM:', error);
+        alert('Помилка тестування: ' + error.message);
+      }
+    }
   </script>
 
   <section class="news-main-section">
