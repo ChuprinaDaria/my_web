@@ -146,26 +146,29 @@
         return;
       }
 
-      // Спробуємо показати форму підписки
-      try {
-        // Спробуємо знайти SWG об'єкт
-        const swg = self.SWG_BASIC[0];
-        if (swg) {
-          console.log('Found SWG object, trying to show signup form...');
+        // Спробуємо показати форму підписки
+        try {
+          console.log('SWG_BASIC array:', self.SWG_BASIC);
+          console.log('SWG_BASIC length:', self.SWG_BASIC ? self.SWG_BASIC.length : 'undefined');
 
-          // Спробуємо показати форму
-          swg.showOffers({
-            isClosable: true
-          }).then(result => {
-            console.log('RRM form opened successfully:', result);
-          }).catch(error => {
-            console.error('Error opening RRM form:', error);
-            alert('Помилка при відкритті форми: ' + error.message);
-          });
-        } else {
-          console.error('No SWG object found');
-          alert('SWG об\'єкт не знайдено');
-        }
+          // Спробуємо знайти SWG об'єкт
+          if (self.SWG_BASIC && self.SWG_BASIC.length > 0) {
+            const swg = self.SWG_BASIC[self.SWG_BASIC.length - 1];
+            console.log('Found SWG object:', swg);
+
+            // Спробуємо показати форму
+            swg.showOffers({
+              isClosable: true
+            }).then(result => {
+              console.log('RRM form opened successfully:', result);
+            }).catch(error => {
+              console.error('Error opening RRM form:', error);
+              alert('Помилка при відкритті форми: ' + error.message);
+            });
+          } else {
+            console.error('No SWG object found');
+            alert('SWG об\'єкт не знайдено. Переконайтеся, що домен lazysoft.pl правильно налаштовано в Google Publisher Center.');
+          }
       } catch (error) {
         console.error('Error in testRRM:', error);
         alert('Помилка тестування: ' + error.message);
