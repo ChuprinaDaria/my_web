@@ -39,6 +39,30 @@
   gap: 25px;
 }
 
+/* 🎨 Hero заголовок з логотипом */
+.hero-title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-logo {
+  height: clamp(5rem, 11vw, 7rem); /* трохи більше за H1 */
+  width: auto;
+  display: flex;
+  align-items: center;
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-logo svg {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+
 /* 🎨 Hero заголовок H1 */
 /* Typography styles use base/typography.css */
 
@@ -195,6 +219,15 @@
   
   .hero-content {
     gap: 20px;
+  }
+  
+  .hero-title-wrapper {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .hero-logo {
+    height: clamp(4rem, 10vw, 5.5rem);
   }
   
   /* Typography styles use base/typography.css */
