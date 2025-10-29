@@ -51,11 +51,26 @@ def generate_contract_pdf(contract):
     
     # Налаштовуємо base_url для WeasyPrint (для доступу до зображень)
     from django.conf import settings
-    base_url = settings.MEDIA_ROOT if hasattr(settings, 'MEDIA_ROOT') else None
+    from pathlib import Path
+    
+    # Конвертуємо Path в абсолютний рядок шляху
+    base_url = None
+    if hasattr(settings, 'MEDIA_ROOT') and settings.MEDIA_ROOT:
+        media_path = Path(settings.MEDIA_ROOT)
+        if media_path.exists():
+            base_url = str(media_path.absolute())
     
     # Генеруємо PDF
-    html = HTML(string=html_string, base_url=base_url)
-    pdf_file = html.write_pdf()
+    try:
+        if base_url:
+            html = HTML(string=html_string, base_url=base_url)
+        else:
+            html = HTML(string=html_string)
+        pdf_file = html.write_pdf()
+    except Exception as e:
+        # Якщо є помилка з base_url, спробуємо без нього
+        html = HTML(string=html_string)
+        pdf_file = html.write_pdf()
     
     # Зберігаємо PDF
     filename = f"zlecenie_{contract.employee.full_name.replace(' ', '_')}_{timezone.now().strftime('%Y%m%d')}.pdf"
@@ -134,8 +149,27 @@ def generate_timesheet_pdf(contract, month=None, year=None):
     html_string = render_to_string('hr/timesheet_template.html', context)
     
     # Генеруємо PDF
-    html = HTML(string=html_string)
-    pdf_file = html.write_pdf()
+    from django.conf import settings
+    from pathlib import Path
+    
+    # Конвертуємо Path в абсолютний рядок шляху
+    base_url = None
+    if hasattr(settings, 'MEDIA_ROOT') and settings.MEDIA_ROOT:
+        media_path = Path(settings.MEDIA_ROOT)
+        if media_path.exists():
+            base_url = str(media_path.absolute())
+    
+    # Генеруємо PDF
+    try:
+        if base_url:
+            html = HTML(string=html_string, base_url=base_url)
+        else:
+            html = HTML(string=html_string)
+        pdf_file = html.write_pdf()
+    except Exception as e:
+        # Якщо є помилка з base_url, спробуємо без нього
+        html = HTML(string=html_string)
+        pdf_file = html.write_pdf()
     
     # Зберігаємо
     filename = f"timesheet_{contract.employee.full_name.replace(' ', '_')}_{month:02d}_{year}.pdf"

@@ -115,6 +115,21 @@ class Contract(models.Model):
             return self.hourly_rate_brutto * self.weekly_hours * 4.33
         return self.salary_brutto or 0
     
+    def calculate_hourly_rate(self):
+        """Автоматично рахує ставку за годину з місячної зарплати"""
+        if self.salary_brutto and self.weekly_hours:
+            # salary_brutto / (weekly_hours * 4.33 тижнів в місяці)
+            from decimal import Decimal
+            monthly_hours = Decimal(self.weekly_hours) * Decimal('4.33')
+            return self.salary_brutto / monthly_hours
+        return None
+    
+    def save(self, *args, **kwargs):
+        """Автоматично рахує ставку за годину якщо вона не вказана але є місячна зарплата"""
+        if not self.hourly_rate_brutto and self.salary_brutto and self.weekly_hours:
+            self.hourly_rate_brutto = self.calculate_hourly_rate()
+        super().save(*args, **kwargs)
+    
     def __str__(self):
         return f"{self.employee.full_name} - {self.position} ({self.get_contract_type_display()})"
 
