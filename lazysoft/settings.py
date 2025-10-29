@@ -102,7 +102,7 @@ INSTALLED_APPS = [
     'rag',
     'pgvector',
     'emails',
-
+    'hr',  # 👔 HR Панель
 ]
 
 SITE_ID = 1
@@ -572,3 +572,17 @@ os.makedirs(BASE_DIR / 'media', exist_ok=True)
 os.makedirs(BASE_DIR / 'staticfiles', exist_ok=True)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# === 👥 HR Settings ===
+CRYPTOGRAPHY_KEY = config('CRYPTOGRAPHY_KEY', default='Ih3AYPpozACFlZqUlTTly0z2gBmMEBwIvsCJSKIJ19w=')
+CRYPTOGRAPHY_SALT = config('CRYPTOGRAPHY_SALT', default='hr-encryption-salt')
+
+# Папка для підпису
+HR_SIGNATURE_PATH = os.path.join(MEDIA_ROOT, 'hr', 'signature.png')
+
+# Папка для згенерованих договорів
+HR_CONTRACTS_PATH = os.path.join(MEDIA_ROOT, 'hr', 'contracts')
+
+# Створюємо директорії для HR
+os.makedirs(HR_CONTRACTS_PATH, exist_ok=True)
+os.makedirs(os.path.dirname(HR_SIGNATURE_PATH), exist_ok=True)

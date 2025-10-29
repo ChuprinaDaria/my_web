@@ -104,3 +104,8 @@ tzdata==2025.2
 django-redis==5.4.0
 
 PyJWT==2.8.0
+
+# HR System
+django-cryptography==1.1
+weasyprint==61.2
+Pillow==10.4.0
