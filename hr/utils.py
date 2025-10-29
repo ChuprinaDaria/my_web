@@ -30,16 +30,25 @@ def generate_contract_pdf(contract):
     from datetime import timedelta
     end_date = contract.start_date + timedelta(days=30)
     
-    # Підготовка шляхів для зображень (WeasyPrint потребує абсолютних шляхів)
-    from django.conf import settings
+    # Підготовка шляхів для зображень з перевіркою наявності файлів (WeasyPrint потребує абсолютних шляхів)
     logo_path = None
     signature_path = None
     
-    if company.logo:
-        logo_path = company.logo.path  # Абсолютний шлях до файлу
+    try:
+        if company.logo and hasattr(company.logo, 'path'):
+            logo_path = company.logo.path  # Абсолютний шлях до файлу
+            if not os.path.exists(logo_path):
+                logo_path = None  # Файл не існує
+    except (AttributeError, ValueError, Exception):
+        logo_path = None
     
-    if company.signature:
-        signature_path = company.signature.path  # Абсолютний шлях до підпису
+    try:
+        if company.signature and hasattr(company.signature, 'path'):
+            signature_path = company.signature.path  # Абсолютний шлях до підпису
+            if not os.path.exists(signature_path):
+                signature_path = None  # Файл не існує
+    except (AttributeError, ValueError, Exception):
+        signature_path = None
     
     # Контекст для шаблону
     context = {
@@ -53,12 +62,18 @@ def generate_contract_pdf(contract):
     }
     
     # Рендеримо HTML
-    html_string = render_to_string('hr/zlecenie_template.html', context)
+    try:
+        html_string = render_to_string('hr/zlecenie_template.html', context)
+    except Exception as e:
+        raise ValueError(f"Помилка рендерингу шаблону: {str(e)}")
     
     # Генеруємо PDF (використовуємо простий підхід без base_url через проблеми з WeasyPrint 61.2)
     # Зображення передаються через абсолютні шляхи у шаблоні (file://)
-    html = HTML(string=html_string)
-    pdf_file = html.write_pdf()
+    try:
+        html = HTML(string=html_string)
+        pdf_file = html.write_pdf()
+    except Exception as e:
+        raise ValueError(f"Помилка генерації PDF (WeasyPrint): {str(e)}")
     
     # Зберігаємо PDF та оновлюємо контракт (разом з розрахованою ставкою якщо була)
     filename = f"zlecenie_{contract.employee.full_name.replace(' ', '_')}_{timezone.now().strftime('%Y%m%d')}.pdf"
@@ -134,11 +149,17 @@ def generate_timesheet_pdf(contract, month=None, year=None):
     }
     
     # Рендеримо HTML
-    html_string = render_to_string('hr/timesheet_template.html', context)
+    try:
+        html_string = render_to_string('hr/timesheet_template.html', context)
+    except Exception as e:
+        raise ValueError(f"Помилка рендерингу шаблону табелю: {str(e)}")
     
     # Генеруємо PDF
-    html = HTML(string=html_string)
-    pdf_file = html.write_pdf()
+    try:
+        html = HTML(string=html_string)
+        pdf_file = html.write_pdf()
+    except Exception as e:
+        raise ValueError(f"Помилка генерації PDF табелю (WeasyPrint): {str(e)}")
     
     # Зберігаємо
     filename = f"timesheet_{contract.employee.full_name.replace(' ', '_')}_{month:02d}_{year}.pdf"

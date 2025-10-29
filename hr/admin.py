@@ -84,6 +84,8 @@ class ContractAdmin(admin.ModelAdmin):
     def generate_contract_view(self, request, contract_id):
         """View для генерації договору"""
         from django.shortcuts import get_object_or_404
+        import traceback
+        
         contract = get_object_or_404(Contract, id=contract_id)
         
         try:
@@ -93,8 +95,15 @@ class ContractAdmin(admin.ModelAdmin):
             # send_contract_email(contract)
             
             messages.success(request, f"Договір для {contract.employee.full_name} згенеровано успішно!")
+        except ValueError as e:
+            messages.error(request, f"Помилка налаштувань: {str(e)}")
         except Exception as e:
-            messages.error(request, f"Помилка генерації: {str(e)}")
+            error_msg = f"Помилка генерації: {str(e)}"
+            messages.error(request, error_msg)
+            # Логування деталей помилки для діагностики
+            import logging
+            logger = logging.getLogger('hr')
+            logger.error(f"PDF generation error for contract {contract_id}: {traceback.format_exc()}")
         
         return HttpResponseRedirect(reverse('admin:hr_contract_change', args=[contract_id]))
     
