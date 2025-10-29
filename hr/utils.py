@@ -14,6 +14,12 @@ def generate_contract_pdf(contract):
     """Генерує PDF договору для працівника"""
     from contacts.models import CompanyInfo
     
+    # Автоматично розраховуємо ставку за годину якщо потрібно (без збереження)
+    if not contract.hourly_rate_brutto and contract.salary_brutto and contract.weekly_hours:
+        hourly_rate = contract.calculate_hourly_rate()
+        if hourly_rate:
+            contract.hourly_rate_brutto = hourly_rate
+    
     # Отримуємо дані компанії
     company = CompanyInfo.objects.filter(is_active=True).first()
     
@@ -49,34 +55,16 @@ def generate_contract_pdf(contract):
     # Рендеримо HTML
     html_string = render_to_string('hr/zlecenie_template.html', context)
     
-    # Налаштовуємо base_url для WeasyPrint (для доступу до зображень)
-    from django.conf import settings
-    from pathlib import Path
+    # Генеруємо PDF (використовуємо простий підхід без base_url через проблеми з WeasyPrint 61.2)
+    # Зображення передаються через абсолютні шляхи у шаблоні (file://)
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf()
     
-    # Конвертуємо Path в абсолютний рядок шляху
-    base_url = None
-    if hasattr(settings, 'MEDIA_ROOT') and settings.MEDIA_ROOT:
-        media_path = Path(settings.MEDIA_ROOT)
-        if media_path.exists():
-            base_url = str(media_path.absolute())
-    
-    # Генеруємо PDF
-    try:
-        if base_url:
-            html = HTML(string=html_string, base_url=base_url)
-        else:
-            html = HTML(string=html_string)
-        pdf_file = html.write_pdf()
-    except Exception as e:
-        # Якщо є помилка з base_url, спробуємо без нього
-        html = HTML(string=html_string)
-        pdf_file = html.write_pdf()
-    
-    # Зберігаємо PDF
+    # Зберігаємо PDF та оновлюємо контракт (разом з розрахованою ставкою якщо була)
     filename = f"zlecenie_{contract.employee.full_name.replace(' ', '_')}_{timezone.now().strftime('%Y%m%d')}.pdf"
     contract.pdf_file.save(filename, ContentFile(pdf_file), save=False)
     contract.generated_at = timezone.now()
-    contract.save()
+    contract.save()  # Зберігаємо контракт разом з розрахованою ставкою та інформацією про PDF
     
     return contract.pdf_file.path
 
@@ -149,27 +137,8 @@ def generate_timesheet_pdf(contract, month=None, year=None):
     html_string = render_to_string('hr/timesheet_template.html', context)
     
     # Генеруємо PDF
-    from django.conf import settings
-    from pathlib import Path
-    
-    # Конвертуємо Path в абсолютний рядок шляху
-    base_url = None
-    if hasattr(settings, 'MEDIA_ROOT') and settings.MEDIA_ROOT:
-        media_path = Path(settings.MEDIA_ROOT)
-        if media_path.exists():
-            base_url = str(media_path.absolute())
-    
-    # Генеруємо PDF
-    try:
-        if base_url:
-            html = HTML(string=html_string, base_url=base_url)
-        else:
-            html = HTML(string=html_string)
-        pdf_file = html.write_pdf()
-    except Exception as e:
-        # Якщо є помилка з base_url, спробуємо без нього
-        html = HTML(string=html_string)
-        pdf_file = html.write_pdf()
+    html = HTML(string=html_string)
+    pdf_file = html.write_pdf()
     
     # Зберігаємо
     filename = f"timesheet_{contract.employee.full_name.replace(' ', '_')}_{month:02d}_{year}.pdf"
