@@ -4,10 +4,13 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.core.files.base import ContentFile
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
 from calendar import monthrange
 import locale
 import os
+import logging
+
+logger = logging.getLogger('hr')
 
 
 def generate_contract_pdf(contract):
@@ -27,28 +30,52 @@ def generate_contract_pdf(contract):
         raise ValueError("Дані компанії не налаштовані! Перевірте CompanyInfo в адмін панелі.")
     
     # Рахуємо дату закінчення (1 місяць від старту)
-    from datetime import timedelta
     end_date = contract.start_date + timedelta(days=30)
     
     # Підготовка шляхів для зображень з перевіркою наявності файлів (WeasyPrint потребує абсолютних шляхів)
     logo_path = None
     signature_path = None
     
-    try:
-        if company.logo and hasattr(company.logo, 'path'):
-            logo_path = company.logo.path  # Абсолютний шлях до файлу
-            if not os.path.exists(logo_path):
-                logo_path = None  # Файл не існує
-    except (AttributeError, ValueError, Exception):
-        logo_path = None
+    # Безпечний доступ до шляхів файлів (може не працювати на S3 або віддалених сховищах)
+    if company.logo:
+        try:
+            # Перевіряємо чи є метод path (локальне сховище)
+            if hasattr(company.logo, 'path'):
+                try:
+                    logo_path = company.logo.path
+                    # Перевіряємо чи файл реально існує
+                    if logo_path and os.path.exists(logo_path):
+                        logo_path = logo_path
+                    else:
+                        logo_path = None
+                        logger.warning(f"Logo file path not found: {logo_path}")
+                except (ValueError, AttributeError) as e:
+                    logger.warning(f"Cannot access logo.path: {e}")
+                    logo_path = None
+        except Exception as e:
+            logger.warning(f"Error accessing logo: {e}")
+            logo_path = None
     
-    try:
-        if company.signature and hasattr(company.signature, 'path'):
-            signature_path = company.signature.path  # Абсолютний шлях до підпису
-            if not os.path.exists(signature_path):
-                signature_path = None  # Файл не існує
-    except (AttributeError, ValueError, Exception):
-        signature_path = None
+    if company.signature:
+        try:
+            # Перевіряємо чи є метод path (локальне сховище)
+            if hasattr(company.signature, 'path'):
+                try:
+                    signature_path = company.signature.path
+                    # Перевіряємо чи файл реально існує
+                    if signature_path and os.path.exists(signature_path):
+                        signature_path = signature_path
+                    else:
+                        signature_path = None
+                        logger.warning(f"Signature file path not found: {signature_path}")
+                except (ValueError, AttributeError) as e:
+                    logger.warning(f"Cannot access signature.path: {e}")
+                    signature_path = None
+        except Exception as e:
+            logger.warning(f"Error accessing signature: {e}")
+            signature_path = None
+    
+    logger.info(f"Logo path: {logo_path}, Signature path: {signature_path}")
     
     # Контекст для шаблону
     context = {
@@ -64,24 +91,41 @@ def generate_contract_pdf(contract):
     # Рендеримо HTML
     try:
         html_string = render_to_string('hr/zlecenie_template.html', context)
+        logger.debug(f"HTML template rendered successfully, length: {len(html_string)}")
     except Exception as e:
-        raise ValueError(f"Помилка рендерингу шаблону: {str(e)}")
+        error_msg = f"Помилка рендерингу шаблону: {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        raise ValueError(error_msg)
     
     # Генеруємо PDF (використовуємо простий підхід без base_url через проблеми з WeasyPrint 61.2)
     # Зображення передаються через абсолютні шляхи у шаблоні (file://)
     try:
+        logger.debug("Starting PDF generation with WeasyPrint...")
         html = HTML(string=html_string)
         pdf_file = html.write_pdf()
+        logger.info(f"PDF generated successfully, size: {len(pdf_file)} bytes")
     except Exception as e:
-        raise ValueError(f"Помилка генерації PDF (WeasyPrint): {str(e)}")
+        error_msg = f"Помилка генерації PDF (WeasyPrint): {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        raise ValueError(error_msg)
     
     # Зберігаємо PDF та оновлюємо контракт (разом з розрахованою ставкою якщо була)
-    filename = f"zlecenie_{contract.employee.full_name.replace(' ', '_')}_{timezone.now().strftime('%Y%m%d')}.pdf"
-    contract.pdf_file.save(filename, ContentFile(pdf_file), save=False)
-    contract.generated_at = timezone.now()
-    contract.save()  # Зберігаємо контракт разом з розрахованою ставкою та інформацією про PDF
-    
-    return contract.pdf_file.path
+    try:
+        filename = f"zlecenie_{contract.employee.full_name.replace(' ', '_')}_{timezone.now().strftime('%Y%m%d')}.pdf"
+        contract.pdf_file.save(filename, ContentFile(pdf_file), save=False)
+        contract.generated_at = timezone.now()
+        contract.save()  # Зберігаємо контракт разом з розрахованою ставкою та інформацією про PDF
+        logger.info(f"PDF saved successfully: {filename}")
+        
+        # Повертаємо шлях або URL залежно від типу сховища
+        try:
+            return contract.pdf_file.path
+        except (AttributeError, ValueError):
+            return contract.pdf_file.url
+    except Exception as e:
+        error_msg = f"Помилка збереження PDF: {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        raise ValueError(error_msg)
 
 
 def generate_timesheet_pdf(contract, month=None, year=None):

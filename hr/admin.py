@@ -5,6 +5,10 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .models import Employee, Contract, WorkLog
 from .utils import generate_contract_pdf, generate_timesheet_pdf
+import logging
+import traceback
+
+logger = logging.getLogger('hr')
 
 
 class ContractInline(admin.TabularInline):
@@ -89,6 +93,7 @@ class ContractAdmin(admin.ModelAdmin):
         contract = get_object_or_404(Contract, id=contract_id)
         
         try:
+            logger.info(f"Starting contract PDF generation for contract {contract_id}, employee: {contract.employee.full_name}")
             generate_contract_pdf(contract)
             
             # Відправка на email (додамо далі)
@@ -96,14 +101,13 @@ class ContractAdmin(admin.ModelAdmin):
             
             messages.success(request, f"Договір для {contract.employee.full_name} згенеровано успішно!")
         except ValueError as e:
-            messages.error(request, f"Помилка налаштувань: {str(e)}")
+            error_msg = f"Помилка налаштувань: {str(e)}"
+            logger.error(f"ValueError during PDF generation for contract {contract_id}: {error_msg}", exc_info=True)
+            messages.error(request, error_msg)
         except Exception as e:
             error_msg = f"Помилка генерації: {str(e)}"
+            logger.error(f"Exception during PDF generation for contract {contract_id}: {traceback.format_exc()}")
             messages.error(request, error_msg)
-            # Логування деталей помилки для діагностики
-            import logging
-            logger = logging.getLogger('hr')
-            logger.error(f"PDF generation error for contract {contract_id}: {traceback.format_exc()}")
         
         return HttpResponseRedirect(reverse('admin:hr_contract_change', args=[contract_id]))
     
