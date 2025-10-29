@@ -101,9 +101,11 @@ INSTALLED_APPS = [
     'terms',
     'rag',
     'pgvector',
+    'emails',
+
 ]
 
-SITE_ID = 2
+SITE_ID = 1
 
 # === 🔧 MIDDLEWARE ===
 MIDDLEWARE = [
@@ -122,6 +124,7 @@ MIDDLEWARE = [
     'core.middleware.security.AdminJWTMiddleware',
     'core.middleware.cookie_consent.CookieConsentMiddleware',
     'core.middleware.security.LinusSecurityMiddleware',
+    'core.middleware.sitemap_robots.SitemapRobotsMiddleware',
 ]
 
 ROOT_URLCONF = 'lazysoft.urls'
@@ -130,7 +133,7 @@ ROOT_URLCONF = 'lazysoft.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'core'/'templates'],
+        'DIRS': [BASE_DIR / 'core'/'templates', BASE_DIR / 'emails' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -191,8 +194,8 @@ RAG_SETTINGS = {
     "CONSULTANT_NAME": "Julie",
     "CONSULTANT_PERSONALITY": "Дружелюбна IT-експертка, яка допомагає з технічними рішеннями",
     "DEFAULT_LANGUAGE": "uk",
-    "CONSULTATION_CALENDAR_URL": "https://calendar.google.com/",
-    "CONSULTATION_URL": "https://calendar.google.com/",
+    "CONSULTATION_CALENDAR_URL": "https://calendly.com/dchuprina-lazysoft/free-consultation-1h",
+    "CONSULTATION_URL": "https://calendly.com/dchuprina-lazysoft/free-consultation-1h",
 }
 
 # === 📦 CELERY ===
@@ -320,7 +323,7 @@ OPENAI_API_KEY = config('OPENAI_API_KEY', default=None)
 OPENAI_ORG_ID = config("OPENAI_ORG_ID", default="")
 OPENAI_PROJECT_ID = config("OPENAI_PROJECT_ID", default="")
 
-AI_PREFERRED_MODEL = config('AI_PREFERRED_MODEL', default='gemini')
+AI_PREFERRED_MODEL = config('AI_PREFERRED_MODEL', default='openai')
 AI_BACKUP_MODEL = config('AI_BACKUP_MODEL', default='openai')
 AI_MAX_TOKENS = config('AI_MAX_TOKENS', default=2000, cast=int)
 AI_TEMPERATURE = config('AI_TEMPERATURE', default=0.7, cast=float)

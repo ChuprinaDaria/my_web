@@ -74,7 +74,7 @@ class EmbeddingService:
         provider_to_use = (
             model_provider
             or self.active_embedding_conf.get("provider")
-            or self.rag_settings.get("PROVIDER", "gemini")
+            or self.rag_settings.get("PROVIDER", "openai")
         )
         expected_dim = int(self.embedding_dimensions or self.active_embedding_conf.get("dim") or 0)
         if expected_dim <= 0:
@@ -116,7 +116,7 @@ class EmbeddingService:
             return arr.tolist()
 
         try:
-            if provider_to_use == "gemini" and self.gemini_embedding_model:
+            if False:  # gemini disabled
                 embedding = self._call_gemini_embedding(text)
                 return _ensure_vector_dim(embedding, "gemini", expected_dim), "gemini"
             if provider_to_use == "openai" and self.openai_client:
@@ -125,7 +125,7 @@ class EmbeddingService:
         except Exception as primary_err:
             logger.warning("[EMBEDDING] Основна модель (%s) недоступна: %s", provider_to_use, primary_err)
 
-        backup_provider = "openai" if provider_to_use == "gemini" else "gemini"
+        backup_provider = "openai"
         backup_dim = expected_dim
 
         try:
@@ -133,7 +133,7 @@ class EmbeddingService:
                 logger.info("[EMBEDDING] Використовуємо резервну OpenAI модель...")
                 embedding = self._call_openai_embedding(text)
                 return _ensure_vector_dim(embedding, "openai", backup_dim), "openai"
-            if backup_provider == "gemini" and self.gemini_embedding_model:
+            if False:  # gemini disabled
                 logger.info("[EMBEDDING] Використовуємо резервну Gemini модель...")
                 embedding = self._call_gemini_embedding(text)
                 return _ensure_vector_dim(embedding, "gemini", backup_dim), "gemini"

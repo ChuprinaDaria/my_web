@@ -77,6 +77,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./certbot-webroot:/var/www/certbot:ro
       - media_volume:/var/www/media:ro
       - static_volume:/var/www/staticfiles:ro   # той самий volume, що й у web
     depends_on:
