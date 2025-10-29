@@ -17,17 +17,28 @@ def generate_contract_pdf(contract):
     """Генерує PDF договору для працівника"""
     from contacts.models import CompanyInfo
     
+    try:
+        # Перевіряємо чи існує модель CompanyInfo
+        company = CompanyInfo.objects.filter(is_active=True).first()
+        
+        if not company:
+            error_msg = "Дані компанії не налаштовані! Перевірте CompanyInfo в адмін панелі (contacts). Створіть запис з is_active=True."
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+    except ImportError as e:
+        error_msg = f"Помилка імпорту CompanyInfo: {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        raise ValueError(error_msg)
+    except Exception as e:
+        error_msg = f"Помилка отримання даних компанії: {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        raise ValueError(error_msg)
+    
     # Автоматично розраховуємо ставку за годину якщо потрібно (без збереження)
     if not contract.hourly_rate_brutto and contract.salary_brutto and contract.weekly_hours:
         hourly_rate = contract.calculate_hourly_rate()
         if hourly_rate:
             contract.hourly_rate_brutto = hourly_rate
-    
-    # Отримуємо дані компанії
-    company = CompanyInfo.objects.filter(is_active=True).first()
-    
-    if not company:
-        raise ValueError("Дані компанії не налаштовані! Перевірте CompanyInfo в адмін панелі.")
     
     # Рахуємо дату закінчення (1 місяць від старту)
     end_date = contract.start_date + timedelta(days=30)
@@ -93,7 +104,7 @@ def generate_contract_pdf(contract):
         html_string = render_to_string('hr/zlecenie_template.html', context)
         logger.debug(f"HTML template rendered successfully, length: {len(html_string)}")
     except Exception as e:
-        error_msg = f"Помилка рендерингу шаблону: {str(e)}"
+        error_msg = f"Помилка рендерингу шаблону hr/zlecenie_template.html: {str(e)}"
         logger.error(error_msg, exc_info=True)
         raise ValueError(error_msg)
     
@@ -132,10 +143,22 @@ def generate_timesheet_pdf(contract, month=None, year=None):
     """Генерує заповнений табель годин для працівника"""
     from contacts.models import CompanyInfo
     
-    company = CompanyInfo.objects.filter(is_active=True).first()
-    
-    if not company:
-        raise ValueError("Дані компанії не налаштовані!")
+    try:
+        # Перевіряємо чи існує модель CompanyInfo
+        company = CompanyInfo.objects.filter(is_active=True).first()
+        
+        if not company:
+            error_msg = "Дані компанії не налаштовані! Перевірте CompanyInfo в адмін панелі (contacts). Створіть запис з is_active=True."
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+    except ImportError as e:
+        error_msg = f"Помилка імпорту CompanyInfo: {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        raise ValueError(error_msg)
+    except Exception as e:
+        error_msg = f"Помилка отримання даних компанії: {str(e)}"
+        logger.error(error_msg, exc_info=True)
+        raise ValueError(error_msg)
     
     # Якщо місяць не вказаний - беремо поточний
     if not month or not year:

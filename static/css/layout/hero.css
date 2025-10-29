@@ -50,17 +50,24 @@
 }
 
 .hero-logo {
+  /* SVG має пропорції 221x194, тому ширина трохи більша за висоту */
   height: clamp(5rem, 11vw, 7rem); /* трохи більше за H1 */
   width: auto;
+  aspect-ratio: 221 / 194; /* зберігаємо пропорції SVG */
   display: flex;
   align-items: center;
+  justify-content: center;
   animation: fadeInUp 1s ease-out;
 }
 
 .hero-logo svg {
+  width: 100%;
   height: 100%;
-  width: auto;
   display: block;
+  object-fit: contain; /* щоб весь SVG влізав без обрізання */
+  margin: 0 auto; /* центрування по горизонталі */
+  /* Дозволяємо SVG відображати всі елементи включаючи маски та градієнти */
+  overflow: visible;
 }
 
 /* 🎨 Hero заголовок H1 */

@@ -94,6 +94,16 @@ class ContractAdmin(admin.ModelAdmin):
         
         try:
             logger.info(f"Starting contract PDF generation for contract {contract_id}, employee: {contract.employee.full_name}")
+            
+            # Перевірка наявності CompanyInfo перед генерацією
+            from contacts.models import CompanyInfo
+            company = CompanyInfo.objects.filter(is_active=True).first()
+            if not company:
+                error_msg = "Дані компанії не налаштовані! Перевірте CompanyInfo в адмін панелі (contacts)."
+                logger.error(f"CompanyInfo not found for contract {contract_id}")
+                messages.error(request, error_msg)
+                return HttpResponseRedirect(reverse('admin:hr_contract_change', args=[contract_id]))
+            
             generate_contract_pdf(contract)
             
             # Відправка на email (додамо далі)
@@ -104,23 +114,46 @@ class ContractAdmin(admin.ModelAdmin):
             error_msg = f"Помилка налаштувань: {str(e)}"
             logger.error(f"ValueError during PDF generation for contract {contract_id}: {error_msg}", exc_info=True)
             messages.error(request, error_msg)
+        except NotImplementedError as e:
+            error_msg = f"Функція тимчасово недоступна: {str(e)}"
+            logger.warning(f"NotImplementedError during PDF generation for contract {contract_id}: {error_msg}")
+            messages.warning(request, error_msg)
         except Exception as e:
             error_msg = f"Помилка генерації: {str(e)}"
-            logger.error(f"Exception during PDF generation for contract {contract_id}: {traceback.format_exc()}")
-            messages.error(request, error_msg)
+            logger.error(f"Exception during PDF generation for contract {contract_id}: {traceback.format_exc()}", exc_info=True)
+            messages.error(request, f"Помилка: {str(e)}")
         
         return HttpResponseRedirect(reverse('admin:hr_contract_change', args=[contract_id]))
     
     def generate_timesheet_view(self, request, contract_id):
         """View для генерації табелю"""
-        contract = self.get_object(request, contract_id)
+        from django.shortcuts import get_object_or_404
+        import traceback
+        
+        contract = get_object_or_404(Contract, id=contract_id)
         
         try:
-            # Можна додати вибір місяця, поки що поточний
+            logger.info(f"Starting timesheet PDF generation for contract {contract_id}, employee: {contract.employee.full_name}")
+            
+            # Перевірка наявності CompanyInfo перед генерацією
+            from contacts.models import CompanyInfo
+            company = CompanyInfo.objects.filter(is_active=True).first()
+            if not company:
+                error_msg = "Дані компанії не налаштовані! Перевірте CompanyInfo в адмін панелі (contacts)."
+                logger.error(f"CompanyInfo not found for timesheet generation contract {contract_id}")
+                messages.error(request, error_msg)
+                return HttpResponseRedirect(reverse('admin:hr_contract_change', args=[contract_id]))
+            
             generate_timesheet_pdf(contract)
             messages.success(request, f"Табель для {contract.employee.full_name} згенеровано!")
+        except ValueError as e:
+            error_msg = f"Помилка налаштувань: {str(e)}"
+            logger.error(f"ValueError during timesheet generation for contract {contract_id}: {error_msg}", exc_info=True)
+            messages.error(request, error_msg)
         except Exception as e:
-            messages.error(request, f"Помилка генерації табелю: {str(e)}")
+            error_msg = f"Помилка генерації табелю: {str(e)}"
+            logger.error(f"Exception during timesheet generation for contract {contract_id}: {traceback.format_exc()}", exc_info=True)
+            messages.error(request, error_msg)
         
         return HttpResponseRedirect(reverse('admin:hr_contract_change', args=[contract_id]))
     
@@ -170,23 +203,28 @@ class ContractAdmin(admin.ModelAdmin):
     status_badge.short_description = 'Статус'
     
     def actions_column(self, obj):
-        buttons = []
-        
-        # Кнопка договору
-        if not obj.pdf_file:
-            url = reverse('admin:hr_contract_generate', args=[obj.pk])
-            buttons.append(format_html('<a class="button" href="{}">📄 Договір</a>', url))
-        else:
-            buttons.append(format_html('<a class="button" href="{}" target="_blank">📥 Договір</a>', obj.pdf_file.url))
-        
-        # Кнопка табелю
-        timesheet_url = reverse('admin:hr_contract_timesheet', args=[obj.pk])
-        if obj.timesheet_pdf:
-            buttons.append(format_html('<a class="button" href="{}" target="_blank">📊 Табель</a>', obj.timesheet_pdf.url))
-        else:
-            buttons.append(format_html('<a class="button" href="{}">📊 Генерувати табель</a>', timesheet_url))
-        
-        return format_html(' | '.join(buttons))
+        """Стовпець з кнопками дій"""
+        try:
+            buttons = []
+            
+            # Кнопка договору
+            if not obj.pdf_file:
+                url = reverse('admin:hr_contract_generate', args=[obj.pk])
+                buttons.append(format_html('<a class="button" href="{}">📄 Договір</a>', url))
+            else:
+                buttons.append(format_html('<a class="button" href="{}" target="_blank">📥 Договір</a>', obj.pdf_file.url))
+            
+            # Кнопка табелю
+            timesheet_url = reverse('admin:hr_contract_timesheet', args=[obj.pk])
+            if obj.timesheet_pdf:
+                buttons.append(format_html('<a class="button" href="{}" target="_blank">📊 Табель</a>', obj.timesheet_pdf.url))
+            else:
+                buttons.append(format_html('<a class="button" href="{}">📊 Генерувати табель</a>', timesheet_url))
+            
+            return format_html(' | '.join(buttons))
+        except Exception as e:
+            logger.error(f"Error in actions_column for contract {obj.pk}: {str(e)}", exc_info=True)
+            return format_html('<span style="color: red;">Помилка</span>')
     actions_column.short_description = 'Дії'
 
 
