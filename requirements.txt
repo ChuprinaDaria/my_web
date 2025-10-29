@@ -76,7 +76,7 @@ google-generativeai==0.8.5
 requests==2.31.0
 
 # Image Processing
-Pillow==10.1.0
+Pillow>=10.0
 
 # Web Parsing & RSS
 beautifulsoup4==4.13.4
@@ -108,4 +108,4 @@ PyJWT==2.8.0
 # HR System
 django-cryptography==1.1
 weasyprint==61.2
-Pillow==10.4.0
+
