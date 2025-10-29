@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Umowa zlecenia</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            font-size: 16pt;
+            margin-bottom: 30px;
+        }
+        h3 {
+            font-size: 12pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .contract-date {
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .signature-block {
+            margin-top: 80px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature {
+            text-align: center;
+            width: 45%;
+        }
+        .signature img {
+            max-width: 150px;
+            height: auto;
+        }
+        .underline {
+            border-bottom: 1px dotted #000;
+            display: inline-block;
+            min-width: 200px;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Umowa zlecenia</h1>
+    
+    <div class="contract-date">
+        Zawarta w dniu <strong>{{ contract_date }}</strong> w <strong>{{ company.city }}</strong>
+    </div>
+    
+    <div class="section">
+        <p>1. <strong>{{ company.company_name }}</strong><br>
+        {% if company.tax_id %}NIP: {{ company.tax_id }}{% endif %}<br>
+        {{ company.address_line1 }}, {{ company.postal_code }} {{ company.city }}<br>
+        reprezentowanym przez <strong>{{ company.authorized_person }}</strong>, zwanym dalej <strong>Zleceniodawcą</strong>
+        </p>
+        
+        <p>a</p>
+        
+        <p>2. <strong>{{ employee.full_name }}</strong><br>
+        zam. {{ employee.address }}<br>
+        legitymującym się dowodem osobistym seria i nr ....................., zwanym dalej <strong>Zleceniobiorcą</strong>.
+        </p>
+    </div>
+    
+    <div class="section">
+        <h3>§ 1</h3>
+        <p>Na podstawie niniejszej umowy Zleceniodawca zleca a Zleceniobiorca zobowiązuje się do wykonania następujących czynności:</p>
+        <p><strong>{{ contract.position }}</strong></p>
+    </div>
+    
+    <div class="section">
+        <h3>§ 2</h3>
+        {% if contract.hourly_rate_brutto %}
+        <p>1. Za wykonanie prac określonych w § 1 Zleceniobiorca otrzyma wynagrodzenie w wysokości <strong>{{ contract.hourly_rate_brutto }} zł brutto za godzinę</strong>.</p>
+        <p>2. Zleceniobiorca zobowiązuje się do pracy przez <strong>{{ contract.weekly_hours }} godzin tygodniowo</strong>.</p>
+        <p>3. Wynagrodzenie płatne jest na podstawie rachunku przedstawionego przez Zleceniobiorcę.</p>
+        {% else %}
+        <p>1. Za wykonanie prac określonych w § 1 Zleceniobiorca otrzyma po ich wykonaniu wynagrodzenie w wysokości {% if contract.salary_brutto %}<strong>{{ contract.salary_brutto }} zł brutto</strong>{% elif contract.salary_netto %}<strong>{{ contract.salary_netto }} zł netto</strong>{% endif %}.</p>
+        <p>2. Wynagrodzenie płatne jest na podstawie rachunku przedstawionego przez Zleceniobiorcę.</p>
+        {% endif %}
+    </div>
+    
+    <div class="section">
+        <h3>§ 3</h3>
+        <p>Zleceniobiorca nie może powierzyć prac wymienionych w § 1 innym osobom bez zgody Zleceniodawcy.</p>
+    </div>
+    
+    <div class="section">
+        <h3>§ 4</h3>
+        <p>Umowa została zawarta na czas od <strong>{{ contract_date }}</strong>{% if end_date %} do <strong>{{ end_date }}</strong>{% endif %}.</p>
+    </div>
+    
+    <div class="section">
+        <h3>§ 5</h3>
+        <p>W sprawach nieuregulowanych niniejszą umową mają zastosowanie przepisy Kodeksu Cywilnego.</p>
+    </div>
+    
+    <div class="section">
+        <h3>§ 6</h3>
+        <p>Umowa została sporządzona w 2 jednobrzmiących egzemplarzach – po 1 dla każdej ze stron.</p>
+    </div>
+    
+    <div class="signature-block">
+        <div class="signature">
+            {% if signature_path %}
+            <img src="file://{{ signature_path }}" alt="Podpis" style="max-width: 200px; height: auto; margin-bottom: 10px;">
+            {% else %}
+            <p>_____________________</p>
+            {% endif %}
+            <p><strong>{{ company.authorized_person }}</strong><br>(Zleceniodawca)</p>
+        </div>
+        
+        <div class="signature">
+            <p>_____________________</p>
+            <p><strong>{{ employee.full_name }}</strong><br>(Zleceniobiorca)</p>
+        </div>
+    </div>
+</body>
+</html>
+

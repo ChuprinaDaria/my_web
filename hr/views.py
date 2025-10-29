@@ -45,13 +45,19 @@ def employee_detail(request, pk):
 
 
 @staff_member_required
-@require_http_methods(["POST"])
 def generate_contract_pdf(request, contract_id):
     """Генерація PDF договору"""
+    from .utils import generate_contract_pdf
+    
     contract = get_object_or_404(Contract, id=contract_id)
     
-    # TODO: Реалізувати генерацію PDF за допомогою WeasyPrint
-    # contract.generate_pdf()
+    try:
+        pdf_path = generate_contract_pdf(contract)
+        messages.success(request, f'Договір для {contract.employee.full_name} успішно згенеровано!')
+    except ValueError as e:
+        messages.error(request, f'Помилка: {str(e)}')
+    except Exception as e:
+        messages.error(request, f'Помилка генерації PDF: {str(e)}')
     
-    messages.success(request, f'Договір для {contract.employee.full_name} згенеровано!')
+    # Редірект на admin сторінку договору
     return redirect('admin:hr_contract_change', contract.id)

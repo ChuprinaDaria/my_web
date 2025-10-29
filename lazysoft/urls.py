@@ -116,6 +116,7 @@ urlpatterns += i18n_patterns(
     path('contacts/', include('contacts.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('legal/', include('terms.urls')),
+    path('hr/', include('hr.urls')),
     prefix_default_language=False,  # Тимчасово для діагностики
 )
 

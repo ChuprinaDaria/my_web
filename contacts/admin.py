@@ -215,7 +215,7 @@ class CompanyInfoAdmin(admin.ModelAdmin):
             'fields': ('email', 'phone')
         }),
         ('Юридичні дані', {
-            'fields': ('tax_id', 'authorized_person')
+            'fields': ('tax_id', 'authorized_person', 'signature')
         }),
         ('Статус', {
             'fields': ('is_active',)

@@ -321,6 +321,12 @@ class CompanyInfo(models.Model):
     
     # Підпис
     authorized_person = models.CharField(max_length=255, default="Daria Chuprina")
+    signature = models.ImageField(
+        upload_to='company/signatures/', 
+        blank=True, 
+        null=True, 
+        help_text="Підпис для документів (PNG)"
+    )
     
     # Статус
     is_active = models.BooleanField(default=True)

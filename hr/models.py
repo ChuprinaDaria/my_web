@@ -56,14 +56,25 @@ class Contract(models.Model):
     )
     
     # Зарплата
+    hourly_rate_brutto = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Ставка за годину (brutto PLN)"
+    )
     salary_netto = models.DecimalField(
         max_digits=10, 
-        decimal_places=2, 
+        decimal_places=2,
+        null=True,
+        blank=True,
         verbose_name="Зарплата нетто (PLN)"
     )
     salary_brutto = models.DecimalField(
         max_digits=10, 
-        decimal_places=2, 
+        decimal_places=2,
+        null=True,
+        blank=True,
         verbose_name="Зарплата брутто (PLN)"
     )
     
@@ -80,6 +91,14 @@ class Contract(models.Model):
         verbose_name="PDF договору"
     )
     
+    # Табель робочого часу
+    timesheet_pdf = models.FileField(
+        upload_to='hr/timesheets/', 
+        null=True, 
+        blank=True,
+        verbose_name="PDF табелю"
+    )
+    
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -88,6 +107,13 @@ class Contract(models.Model):
         verbose_name = "Договір"
         verbose_name_plural = "Договори"
         ordering = ['-start_date']
+    
+    def calculate_total_salary(self):
+        """Рахує загальну зарплату якщо є погодинна ставка"""
+        if self.hourly_rate_brutto and self.weekly_hours:
+            # Приблизно 4.33 тижні в місяці
+            return self.hourly_rate_brutto * self.weekly_hours * 4.33
+        return self.salary_brutto or 0
     
     def __str__(self):
         return f"{self.employee.full_name} - {self.position} ({self.get_contract_type_display()})"
