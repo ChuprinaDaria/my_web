@@ -5,10 +5,6 @@ from .ai_processor_base import AINewsProcessor
 
 class AIProcessorDatabase:
     """Модуль для збереження оброблених статей в базу даних"""
-    processor = AINewsProcessor()
-    print("CLASS:", processor.__class__)
-    print("MRO:", [c.__name__ for c in processor.__class__.__mro__])
-    print("HAS SAVE:", hasattr(processor, "_save_processed_article"))
 
     def _save_processed_article(self, raw_article: RawArticle, content: Union[Dict, Any]) -> ProcessedArticle:
         """
@@ -16,14 +12,23 @@ class AIProcessorDatabase:
         Якщо валідація не проходить – автоматичний fallback у _create_processed_article_dict.
         """
 
-        # 1) Сконструювати словник з валідацією (використовує _validate_content_before_save)
-        article_data = self._create_processed_article_dict(raw_article, content)
+        try:
+            # 1) Сконструювати словник з валідацією (використовує _validate_content_before_save)
+            self.logger.info("[SAVE] Створення словника article_data...")
+            article_data = self._create_processed_article_dict(raw_article, content)
+            self.logger.info(f"[SAVE] article_data створено з {len(article_data)} полями")
 
-        # 2) Створити запис (article_data вже містить усі фолбеки та коректні значення)
-        processed_article = ProcessedArticle.objects.create(**article_data)
+            # 2) Створити запис (article_data вже містить усі фолбеки та коректні значення)
+            self.logger.info("[SAVE] Створення ProcessedArticle в БД...")
+            processed_article = ProcessedArticle.objects.create(**article_data)
 
-        self.logger.info(f"[SAVE] ProcessedArticle створено: ID {processed_article.id}")
-        return processed_article
+            self.logger.info(f"[SAVE] ✅ ProcessedArticle створено: ID {processed_article.id}")
+            return processed_article
+
+        except Exception as save_error:
+            self.logger.exception(f"[SAVE] ❌ КРИТИЧНА ПОМИЛКА при збереженні ProcessedArticle: {save_error}")
+            self.logger.error(f"[SAVE] article_data keys: {list(article_data.keys()) if 'article_data' in locals() else 'NOT CREATED'}")
+            raise
     def _attach_featured_image_from_url(self, article, url: str):
         if not url or not hasattr(article, "featured_image"):
             return
@@ -93,6 +98,12 @@ class AIProcessorDatabase:
             )
             article_data[f'business_insight_{lang}'] = self._safe_get_value(
                 content, f"business_insight_{lang}", ""
+            )
+            article_data[f'business_opportunities_{lang}'] = self._safe_get_value(
+                content, f"business_opportunities_{lang}", ""
+            )
+            article_data[f'lazysoft_recommendations_{lang}'] = self._safe_get_value(
+                content, f"lazysoft_recommendations_{lang}", ""
             )
             article_data[f'local_context_{lang}'] = self._safe_get_value(
                 content, f"local_context_{lang}", ""
