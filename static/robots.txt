@@ -1,3 +1,6 @@
+# Canonical domain (no www)
+Host: lazysoft.pl
+
 # Google News Bot - special rules for news indexing
 User-agent: Googlebot-News
 Allow: /news/
