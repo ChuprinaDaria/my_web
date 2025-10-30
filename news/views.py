@@ -124,7 +124,23 @@ class NewsListView(ListView):
         
         # Structured data для Google
         context['structured_data'] = self._get_structured_data(context['articles'])
-        
+
+        # Breadcrumbs для structured data
+        breadcrumbs = [
+            {
+                'name': 'News' if language == 'en' else ('Новини' if language == 'uk' else 'Wiadomości'),
+                'url': f'/{language}/news/' if language != 'en' else '/news/'
+            }
+        ]
+        if category_slug:
+            category = context.get('current_category')
+            if category:
+                breadcrumbs.append({
+                    'name': category.get_name(language),
+                    'url': self.request.path
+                })
+        context['breadcrumbs'] = breadcrumbs
+
         return context
     
     def _get_structured_data(self, articles):
@@ -351,6 +367,18 @@ class ArticleDetailView(DetailView):
             ]
         except Exception:
             context['related_services'] = []
+
+        # Breadcrumbs для structured data
+        context['breadcrumbs'] = [
+            {
+                'name': 'News' if language == 'en' else ('Новини' if language == 'uk' else 'Wiadomości'),
+                'url': f'/{language}/news/' if language != 'en' else '/news/'
+            },
+            {
+                'name': article.get_title(language),
+                'url': self.request.path
+            }
+        ]
 
         return context
 

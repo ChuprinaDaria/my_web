@@ -84,5 +84,12 @@ def about_page(request):
         'og_description': og_description,
         'og_image': og_image_url,
         'og_url': request.build_absolute_uri(),
+        # Breadcrumbs для structured data
+        'breadcrumbs': [
+            {
+                'name': getattr(about, f'title_{current_language}') or about.title_en or 'About',
+                'url': request.path
+            }
+        ]
     }
     return render(request, 'about/about.html', context)

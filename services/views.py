@@ -106,7 +106,7 @@ def services_list(request):
         })
 
     return render(request, "services/services_list.html", {
-        "services": services, 
+        "services": services,
         "faqs": localized_faqs,
         "related_projects": localized_projects,
         "related_articles": related_articles,
@@ -114,7 +114,14 @@ def services_list(request):
         "overview_title": overview_title,
         "overview_description": overview_description,
         "lang": lang,
-        "debug_faqs": localized_faqs
+        "debug_faqs": localized_faqs,
+        # Breadcrumbs для structured data
+        "breadcrumbs": [
+            {
+                'name': 'Services' if lang == 'en' else ('Послуги' if lang == 'uk' else 'Usługi'),
+                'url': request.path
+            }
+        ]
     })
 
 def service_detail(request, slug):
@@ -251,6 +258,17 @@ def service_detail(request, slug):
         "og_description": og_description,
         "og_image": og_image_url,
         "og_url": request.build_absolute_uri(),
+        # Breadcrumbs для structured data
+        "breadcrumbs": [
+            {
+                'name': 'Services' if lang == 'en' else ('Послуги' if lang == 'uk' else 'Usługi'),
+                'url': f'/{lang}/services/' if lang != 'en' else '/services/'
+            },
+            {
+                'name': service_category.get_title(lang),
+                'url': request.path
+            }
+        ]
     })
 
 def faq_list(request):
