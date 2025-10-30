@@ -109,6 +109,7 @@ SITE_ID = 1
 
 # === 🔧 MIDDLEWARE ===
 MIDDLEWARE = [
+    'core.middleware.security.WWWRedirectMiddleware',  # Редірект www → non-www (ПЕРШИЙ!)
     'core.middleware.error_pages.ErrorPagesMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

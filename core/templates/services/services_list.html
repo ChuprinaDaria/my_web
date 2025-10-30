@@ -5,11 +5,11 @@
 {% block body_class %}services-list{% endblock %}
 
 {% block title %}
-  {{ seo_title|default:"{% trans 'Lazysoft Services — AI Automation, Custom Chatbots & Software Development' %}" }}
+  {% if seo_title %}{{ seo_title }}{% else %}{% trans 'Lazysoft Services — AI Automation, Custom Chatbots & Software Development' %}{% endif %}
 {% endblock %}
 
 {% block meta_description %}
-  {{ seo_description|default:"{% trans 'Comprehensive AI automation services: custom chatbot development, business process automation, web development, and seamless integrations. Transform your business with Lazysoft.' %}" }}
+  {% if seo_description %}{{ seo_description }}{% else %}{% trans 'Comprehensive AI automation services: custom chatbot development, business process automation, web development, and seamless integrations. Transform your business with Lazysoft.' %}{% endif %}
 {% endblock %}
 
 {% block meta_keywords %}

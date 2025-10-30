@@ -124,7 +124,23 @@ class NewsListView(ListView):
         
         # Structured data для Google
         context['structured_data'] = self._get_structured_data(context['articles'])
-        
+
+        # Breadcrumbs для structured data
+        breadcrumbs = [
+            {
+                'name': 'News' if language == 'en' else ('Новини' if language == 'uk' else 'Wiadomości'),
+                'url': f'/{language}/news/' if language != 'en' else '/news/'
+            }
+        ]
+        if category_slug:
+            category = context.get('current_category')
+            if category:
+                breadcrumbs.append({
+                    'name': category.get_name(language),
+                    'url': self.request.path
+                })
+        context['breadcrumbs'] = breadcrumbs
+
         return context
     
     def _get_structured_data(self, articles):
@@ -152,8 +168,8 @@ class NewsListView(ListView):
                     }
                 }
             })
-        
-        return {
+
+        structured_dict = {
             "@context": "https://schema.org",
             "@type": "ItemList",
             "itemListElement": [
@@ -165,6 +181,9 @@ class NewsListView(ListView):
                 for i, article_data in enumerate(articles_data)
             ]
         }
+
+        # Конвертуємо в JSON для правильного форматування
+        return json.dumps(structured_dict, ensure_ascii=False)
 
 class NewsByDateView(ListView):
     model = ProcessedArticle
@@ -289,7 +308,7 @@ class ArticleDetailView(DetailView):
         )
 
         # Structured data
-        context['structured_data'] = {
+        structured_dict = {
             "@context": "https://schema.org",
             "@type": "NewsArticle",
             "headline": article.get_title(language),
@@ -311,9 +330,10 @@ class ArticleDetailView(DetailView):
         }
 
         if article.ai_image_url:
-            context['structured_data']['image'] = article.ai_image_url
+            structured_dict['image'] = article.ai_image_url
 
-        context['structured_data_json'] = json.dumps(context['structured_data'], ensure_ascii=False)
+        # Конвертуємо в JSON для правильного форматування
+        context['structured_data'] = json.dumps(structured_dict, ensure_ascii=False)
 
         # Sidebar data identical to NewsListView
         context['categories'] = NewsCategory.objects.filter(
@@ -352,6 +372,18 @@ class ArticleDetailView(DetailView):
         except Exception:
             context['related_services'] = []
 
+        # Breadcrumbs для structured data
+        context['breadcrumbs'] = [
+            {
+                'name': 'News' if language == 'en' else ('Новини' if language == 'uk' else 'Wiadomości'),
+                'url': f'/{language}/news/' if language != 'en' else '/news/'
+            },
+            {
+                'name': article.get_title(language),
+                'url': self.request.path
+            }
+        ]
+
         return context
 
 
@@ -368,24 +400,28 @@ def news_digest_view(request, date=None):
     
     digest = get_object_or_404(DailyDigest, date=target_date, is_published=True)
     language = get_language() or 'uk'
-    
+
+    # Structured data як dict
+    structured_dict = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": digest.get_title(language),
+        "description": digest.get_summary(language),
+        "datePublished": digest.published_at.isoformat() if digest.published_at else digest.created_at.isoformat(),
+        "author": {
+            "@type": "Organization",
+            "name": "LAZYSOFT"
+        }
+    }
+
     context = {
         'digest': digest,
         'page_title': f"Дайджест новин {digest.date} | LAZYSOFT",
         'page_description': digest.get_summary(language)[:160],
-        'structured_data': {
-            "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": digest.get_title(language),
-            "description": digest.get_summary(language),
-            "datePublished": digest.published_at.isoformat() if digest.published_at else digest.created_at.isoformat(),
-            "author": {
-                "@type": "Organization",
-                "name": "LAZYSOFT"
-            }
-        }
+        # Конвертуємо в JSON для правильного форматування
+        'structured_data': json.dumps(structured_dict, ensure_ascii=False)
     }
-    
+
     return render(request, 'news/digest_detail.html', context)
 
 

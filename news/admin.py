@@ -172,14 +172,28 @@ class SimpleArticleAdmin(admin.ModelAdmin):
         return custom_urls + urls
     
     def run_pipeline(self, request):
-        """Запускає повний пайплайн новин"""
+        """Запускає повний пайплайн новин асинхронно через Celery"""
         try:
-            # Запускаємо management command
-            call_command('daily_news_pipeline', '--full-pipeline', '--auto-publish', verbosity=1)
-            messages.success(request, '✅ Пайплайн успішно запущено! Перевірте логи для деталей.')
+            # Запускаємо через Celery task для асинхронного виконання
+            from news.tasks import run_full_daily_pipeline
+            result = run_full_daily_pipeline.delay(auto_publish=True, skip_rss=False, dry_run=False)
+            messages.success(request, f'✅ Пайплайн успішно запущено в фоновому режимі! Task ID: {result.id}. Перевірте логи для деталей.')
+        except ImportError:
+            # Fallback якщо Celery не налаштований - запускаємо в subprocess
+            import subprocess
+            try:
+                subprocess.Popen(
+                    ['python', 'manage.py', 'daily_news_pipeline', '--full-pipeline', '--auto-publish'],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    start_new_session=True
+                )
+                messages.success(request, '✅ Пайплайн успішно запущено в фоновому процесі! Перевірте логи для деталей.')
+            except Exception as e:
+                messages.error(request, f'❌ Помилка запуску пайплайну: {str(e)}')
         except Exception as e:
             messages.error(request, f'❌ Помилка запуску пайплайну: {str(e)}')
-        
+
         return redirect('..')
     
     def changelist_view(self, request, extra_context=None):

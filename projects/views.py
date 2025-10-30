@@ -277,6 +277,13 @@ def projects_list(request):
         }.get(lang, ""),
         
         "lang": lang,
+        # Breadcrumbs для structured data
+        "breadcrumbs": [
+            {
+                'name': 'Projects' if lang == 'en' else ('Проєкти' if lang == 'uk' else 'Projekty'),
+                'url': request.path
+            }
+        ]
     }
 
     print(f"🎯 Оптимізація: {total_projects} проєктів у {categories_count} категоріях (пусті відфільтровані)")
@@ -512,6 +519,17 @@ def project_detail(request, slug):
         "og_description": og_description,
         "og_image": og_image_url,
         "og_url": request.build_absolute_uri(),
+        # Breadcrumbs для structured data
+        "breadcrumbs": [
+            {
+                'name': 'Projects' if current_lang == 'en' else ('Проєкти' if current_lang == 'uk' else 'Projekty'),
+                'url': f'/{current_lang}/projects/' if current_lang != 'en' else '/projects/'
+            },
+            {
+                'name': title,
+                'url': request.path
+            }
+        ]
     })
 
     return render(request, "projects/project_detail.html", context)

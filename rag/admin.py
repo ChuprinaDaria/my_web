@@ -107,19 +107,45 @@ class EmbeddingModelAdmin(admin.ModelAdmin):
     actions = ['reindex_selected', 'run_index_knowledge']
     
     def reindex_selected(self, request, queryset):
-        """Переіндексує обрані об'єкти"""
-        indexing_service = IndexingService()
-        count = 0
-        
-        for embedding in queryset:
-            if embedding.content_object:
-                try:
-                    indexing_service.reindex_object(embedding.content_object)
-                    count += 1
-                except Exception as e:
-                    messages.error(request, f"Помилка переіндексації {embedding}: {e}")
-        
-        messages.success(request, f"Переіндексовано {count} об'єктів")
+        """Переіндексує обрані об'єкти асинхронно через Celery"""
+        embedding_ids = list(queryset.values_list('id', flat=True))
+        count = len(embedding_ids)
+
+        if count == 0:
+            messages.warning(request, "Не обрано жодного об'єкта для переіндексації")
+            return
+
+        try:
+            # Спроба запустити через Celery
+            from rag.tasks import bulk_reindex_embeddings
+            result = bulk_reindex_embeddings.delay(embedding_ids)
+            messages.success(
+                request,
+                f"✅ Переіндексація {count} об'єктів запущена в фоновому режимі! Task ID: {result.id}. Перевірте логи для деталей."
+            )
+        except ImportError:
+            # Fallback: виконуємо синхронно для невеликої кількості або попереджуємо про затримку
+            if count > 10:
+                messages.warning(
+                    request,
+                    f"⚠️ Celery не налаштований. Переіндексація {count} об'єктів може зайняти багато часу..."
+                )
+
+            indexing_service = IndexingService()
+            success_count = 0
+
+            for embedding in queryset:
+                if embedding.content_object:
+                    try:
+                        indexing_service.reindex_object(embedding.content_object)
+                        success_count += 1
+                    except Exception as e:
+                        messages.error(request, f"Помилка переіндексації {embedding}: {e}")
+
+            messages.success(request, f"Переіндексовано {success_count} об'єктів")
+        except Exception as e:
+            messages.error(request, f"❌ Помилка запуску переіндексації: {str(e)}")
+
     reindex_selected.short_description = "🔄 Переіндексувати обрані"
 
     def run_index_knowledge(self, request, queryset):
