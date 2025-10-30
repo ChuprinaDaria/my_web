@@ -86,12 +86,12 @@
             <tr {% if not day_info.hours %}class="weekend"{% endif %}>
                 <td>{{ day_info.day }}.</td>
                 <td>{{ day_info.hours }}</td>
+                <td></td>
                 <td class="cell-signature">
                     {% if signature_path and day_info.hours %}
                     <img src="file://{{ signature_path }}" alt="Podpis">
                     {% endif %}
                 </td>
-                <td></td>
             </tr>
             {% endfor %}
             <tr class="total-row">

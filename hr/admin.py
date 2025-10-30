@@ -80,19 +80,20 @@ class ContractAdmin(admin.ModelAdmin):
             buttons = []
 
             # Кнопка договору
+            contract_url = reverse('admin:hr_contract_generate', args=[obj.pk])
             if not obj.pdf_file:
-                url = reverse('admin:hr_contract_generate', args=[obj.pk])
-                buttons.append(format_html('<a class="button" href="{}">📄 Договір</a>', url))
+                buttons.append(format_html('<a class="button" href="{}">📄 Договір</a>', contract_url))
             else:
                 try:
                     # Перевіряємо чи файл існує перед отриманням URL
                     pdf_url = obj.pdf_file.url
                     buttons.append(format_html('<a class="button" href="{}" target="_blank">📥 Договір</a>', pdf_url))
+                    # Кнопка регенерації договору (аналогічно табелю)
+                    buttons.append(format_html('<a class="button" href="{}" style="background: #17a2b8;">♻️ Регенерувати договір</a>', contract_url))
                 except (ValueError, FileNotFoundError, AttributeError) as e:
                     # Якщо файл не існує або є проблема з доступом, показуємо кнопку регенерації
                     logger.warning(f"PDF file exists in DB but not accessible for contract {obj.pk}: {str(e)}")
-                    url = reverse('admin:hr_contract_generate', args=[obj.pk])
-                    buttons.append(format_html('<a class="button" href="{}" style="background: #ffc107;">⚠️ Регенерувати</a>', url))
+                    buttons.append(format_html('<a class="button" href="{}" style="background: #ffc107;">⚠️ Регенерувати договір</a>', contract_url))
 
             # Кнопка табелю
             timesheet_url = reverse('admin:hr_contract_timesheet', args=[obj.pk])
@@ -115,9 +116,26 @@ class ContractAdmin(admin.ModelAdmin):
             return format_html('<span style="color: red;">Помилка</span>')
     actions_column.short_description = 'Дії'
 
-    actions = ['regenerate_timesheets']
+    actions = ['regenerate_contracts', 'regenerate_timesheets']
+
+    def regenerate_contracts(self, request, queryset):
+        """Масова регенерація договорів"""
+        regenerated = 0
+        for contract in queryset:
+            try:
+                from .utils import generate_contract_pdf
+                generate_contract_pdf(contract)
+                regenerated += 1
+            except Exception as e:
+                logger.error(f"Failed to regenerate contract for contract {contract.pk}: {e}")
+        if regenerated:
+            self.message_user(request, f"Перегенеровано договорів: {regenerated}")
+        else:
+            self.message_user(request, "Не вдалося перегенерувати договори", level=messages.WARNING)
+    regenerate_contracts.short_description = '♻️ Регенерувати договори для вибраних'
 
     def regenerate_timesheets(self, request, queryset):
+        """Масова регенерація табелів"""
         regenerated = 0
         for contract in queryset:
             try:
