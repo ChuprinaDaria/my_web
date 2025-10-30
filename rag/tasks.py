@@ -71,7 +71,7 @@ def reindex_approved_patterns():
     try:
         indexing_service = IndexingService()
         patterns_to_index = LearningPattern.objects.filter(status='approved')
-        
+
         indexed_count = 0
         for pattern in patterns_to_index:
             try:
@@ -85,3 +85,34 @@ def reindex_approved_patterns():
 
     except Exception as e:
         logger.error(f"Error in reindex_approved_patterns task: {e}", exc_info=True)
+
+@shared_task(name="rag.bulk_reindex_embeddings")
+def bulk_reindex_embeddings(embedding_ids):
+    """
+    Асинхронно переіндексує список embeddings по ID
+    """
+    from .models import EmbeddingModel
+    from .services import IndexingService
+
+    try:
+        indexing_service = IndexingService()
+        embeddings = EmbeddingModel.objects.filter(id__in=embedding_ids)
+
+        success_count = 0
+        error_count = 0
+
+        for embedding in embeddings:
+            if embedding.content_object:
+                try:
+                    indexing_service.reindex_object(embedding.content_object)
+                    success_count += 1
+                except Exception as e:
+                    error_count += 1
+                    logger.error(f"Failed to reindex embedding {embedding.id}: {e}", exc_info=True)
+
+        logger.info(f"Bulk reindexing completed: {success_count} успішно, {error_count} помилок")
+        return {"success": success_count, "errors": error_count}
+
+    except Exception as e:
+        logger.error(f"Error in bulk_reindex_embeddings task: {e}", exc_info=True)
+        return {"success": 0, "errors": len(embedding_ids)}
