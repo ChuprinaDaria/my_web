@@ -177,6 +177,7 @@ class ContractAdmin(admin.ModelAdmin):
         }),
     )
     
+    @admin.display(description='💰 Зарплата')
     def salary_display(self, obj):
         if obj.hourly_rate_brutto:
             total = obj.calculate_total_salary()
@@ -190,7 +191,6 @@ class ContractAdmin(admin.ModelAdmin):
         elif obj.salary_netto:
             return f"{obj.salary_netto} PLN/міс (netto)"
         return "-"
-    salary_display.short_description = '💰 Зарплата'
     
     def status_badge(self, obj):
         if obj.pdf_file:
