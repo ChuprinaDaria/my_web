@@ -35,7 +35,7 @@ class EmployeeAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Основна інформація', {
-            'fields': ('full_name', 'email', 'phone')
+            'fields': ('full_name', 'email', 'phone', 'id_series', 'id_number')
         }),
         ('Персональні дані (зашифровано)', {
             'fields': ('pesel', 'birth_date', 'address'),

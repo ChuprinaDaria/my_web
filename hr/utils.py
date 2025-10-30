@@ -160,6 +160,19 @@ def generate_timesheet_pdf(contract, month=None, year=None):
         logger.error(error_msg, exc_info=True)
         raise ValueError(error_msg)
     
+    # Підпис компанії для клітинок табелю
+    signature_path = None
+    try:
+        if company and getattr(company, 'signature', None) and hasattr(company.signature, 'path'):
+            try:
+                sp = company.signature.path
+                if sp and os.path.exists(sp):
+                    signature_path = sp
+            except Exception:
+                signature_path = None
+    except Exception:
+        signature_path = None
+
     # Якщо місяць не вказаний - беремо поточний
     if not month or not year:
         now = datetime.now()
@@ -213,6 +226,7 @@ def generate_timesheet_pdf(contract, month=None, year=None):
         'days_data': days_data,
         'total_hours': f"{total_hours:.1f}",
         'month_year': f"{month_names_pl[month]} {year}",
+        'signature_path': signature_path,
     }
     
     # Рендеримо HTML
