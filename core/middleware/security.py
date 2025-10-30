@@ -1,12 +1,27 @@
 import time
 from django.core.cache import cache
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from news.services.telegram import send_security_alert
 from core.services.cloudflare_api import auto_cloudflare_protection
 import logging
 
 logger = logging.getLogger('security')
+
+
+class WWWRedirectMiddleware:
+    """Редірект з www на non-www версію (канонічна)"""
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        host = request.get_host().lower()
+        if host.startswith('www.'):
+            # Редірект на non-www версію
+            new_host = host[4:]  # Видаляємо 'www.'
+            new_url = f"{request.scheme}://{new_host}{request.get_full_path()}"
+            return redirect(new_url, permanent=True)
+        return self.get_response(request)
 
 class LinusSecurityMiddleware:
     def __init__(self, get_response):
