@@ -212,20 +212,32 @@ class AINewsProcessor:
 
 
 
-    def _call_openai(self, prompt: str, max_tokens: int, temperature: float, is_fallback: bool = False) -> str:
-        """Виклик OpenAI GPT (оновлена модель)."""
+    def _call_openai(self, prompt: str, max_tokens: int, temperature: float, is_fallback: bool = False, **kwargs) -> str:
+        """Виклик OpenAI GPT (оновлена модель) з підтримкою kwargs."""
         model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')
         if is_fallback:
             model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')
-        
+
         self.logger.info(f"[OPENAI] Відправляємо запит до моделі {model_name} довжиною {len(prompt)} символів...")
+
+        # Формуємо параметри для API виклику
+        api_params = {
+            "model": model_name,
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+        }
+
+        # Додаємо response_format якщо він переданий і модель його підтримує
+        if "response_format" in kwargs:
+            try:
+                api_params["response_format"] = kwargs["response_format"]
+                self.logger.debug(f"[OPENAI] Додано response_format: {kwargs['response_format']}")
+            except Exception as e:
+                self.logger.warning(f"[OPENAI] Не вдалося додати response_format: {e}")
+
         try:
-            resp = self.openai_client.chat.completions.create(
-                model=model_name,
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=max_tokens,
-                temperature=temperature,
-            )
+            resp = self.openai_client.chat.completions.create(**api_params)
             self.logger.info(f"[OPENAI] Успішна відповідь від {model_name}: {len(resp.choices[0].message.content)} символів")
             return resp.choices[0].message.content
         except Exception as e:
