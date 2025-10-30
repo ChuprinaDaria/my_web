@@ -450,6 +450,12 @@ LOGGING = {
             'level': 'INFO',
             'propagate': False,
         },
+        # ⬇️ Додай це
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
     },
 }
 
