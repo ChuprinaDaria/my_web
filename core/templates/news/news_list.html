@@ -26,35 +26,58 @@
   <!-- Google News Reader Revenue Manager - тільки на сторінці новин -->
   <script data-cfasync="false" async src="https://news.google.com/swg/js/v1/swg-basic.js"></script>
   <script>
+    // Debug logging for Google RRM
+    console.log('[RRM] Initializing Google News Reader Revenue Manager');
 
     // Google News Reader Revenue Manager
     (self.SWG_BASIC = self.SWG_BASIC || []).push(basic => {
-      basic.init({
-        type: "Product",
-        isPartOfType: ["Product"],
-        isPartOfProductId: "CAown-DCDA:openaccess",
-        clientOptions: {
-          theme: "dark",
-          lang: "{{ CURRENT_LANG|default:'en' }}"
-        }
-      });
+      console.log('[RRM] SWG_BASIC loaded successfully', basic);
 
-      // Рендеримо кнопку підписки після завантаження сторінки
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-          basic.subscribeButton({
-            container: document.getElementById('rrm-signup'),
-            lang: "{{ CURRENT_LANG|default:'en' }}",
-            theme: "dark"
-          });
+      try {
+        basic.init({
+          type: "Product",
+          isPartOfType: ["Product"],
+          isPartOfProductId: "CAown-DCDA:openaccess",
+          clientOptions: {
+            theme: "dark",
+            lang: "{{ CURRENT_LANG|default:'en' }}"
+          }
         });
-      } else {
-        // DOM вже завантажений
-        basic.subscribeButton({
-          container: document.getElementById('rrm-signup'),
+        console.log('[RRM] Initialized with config:', {
+          productId: "CAown-DCDA:openaccess",
           lang: "{{ CURRENT_LANG|default:'en' }}",
           theme: "dark"
         });
+      } catch (error) {
+        console.error('[RRM] Initialization error:', error);
+      }
+
+      // Рендеримо кнопку підписки після завантаження сторінки
+      function renderSubscribeButton() {
+        const container = document.getElementById('rrm-signup');
+        if (!container) {
+          console.error('[RRM] Container #rrm-signup not found');
+          return;
+        }
+
+        console.log('[RRM] Container found, rendering subscribe button...');
+        try {
+          basic.subscribeButton({
+            container: container,
+            lang: "{{ CURRENT_LANG|default:'en' }}",
+            theme: "dark"
+          });
+          console.log('[RRM] Subscribe button rendered successfully');
+        } catch (error) {
+          console.error('[RRM] Error rendering subscribe button:', error);
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', renderSubscribeButton);
+      } else {
+        // DOM вже завантажений
+        renderSubscribeButton();
       }
     });
 
