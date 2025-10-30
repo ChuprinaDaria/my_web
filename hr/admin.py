@@ -54,6 +54,66 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 @admin.register(Contract)
 class ContractAdmin(admin.ModelAdmin):
+    @admin.display(description='Зарплата (₴)')
+    def salary_display(self, obj):
+        try:
+            total = obj.calculate_total_salary()
+            if total is None:
+                return "—"
+            return f"{total:.2f} ₴"
+        except Exception as e:
+            return f"— ({e})"
+
+    def status_badge(self, obj):
+        if obj.pdf_file:
+            return format_html(
+                '<span style="background: #28a745; color: white; padding: 3px 8px; border-radius: 10px;">✅ Згенеровано</span>'
+            )
+        return format_html(
+            '<span style="background: #dc3545; color: white; padding: 3px 8px; border-radius: 10px;">❌ Не згенеровано</span>'
+        )
+    status_badge.short_description = 'Статус'
+
+    def actions_column(self, obj):
+        """Стовпець з кнопками дій"""
+        try:
+            buttons = []
+
+            # Кнопка договору
+            if not obj.pdf_file:
+                url = reverse('admin:hr_contract_generate', args=[obj.pk])
+                buttons.append(format_html('<a class="button" href="{}">📄 Договір</a>', url))
+            else:
+                try:
+                    # Перевіряємо чи файл існує перед отриманням URL
+                    pdf_url = obj.pdf_file.url
+                    buttons.append(format_html('<a class="button" href="{}" target="_blank">📥 Договір</a>', pdf_url))
+                except (ValueError, FileNotFoundError, AttributeError) as e:
+                    # Якщо файл не існує або є проблема з доступом, показуємо кнопку регенерації
+                    logger.warning(f"PDF file exists in DB but not accessible for contract {obj.pk}: {str(e)}")
+                    url = reverse('admin:hr_contract_generate', args=[obj.pk])
+                    buttons.append(format_html('<a class="button" href="{}" style="background: #ffc107;">⚠️ Регенерувати</a>', url))
+
+            # Кнопка табелю
+            timesheet_url = reverse('admin:hr_contract_timesheet', args=[obj.pk])
+            if obj.timesheet_pdf:
+                try:
+                    # Перевіряємо чи файл існує перед отриманням URL
+                    timesheet_pdf_url = obj.timesheet_pdf.url
+                    buttons.append(format_html('<a class="button" href="{}" target="_blank">📊 Табель</a>', timesheet_pdf_url))
+                except (ValueError, FileNotFoundError, AttributeError) as e:
+                    # Якщо файл не існує, показуємо кнопку регенерації
+                    logger.warning(f"Timesheet PDF file exists in DB but not accessible for contract {obj.pk}: {str(e)}")
+                    buttons.append(format_html('<a class="button" href="{}" style="background: #ffc107;">⚠️ Табель</a>', timesheet_url))
+            else:
+                buttons.append(format_html('<a class="button" href="{}">📊 Генерувати табель</a>', timesheet_url))
+
+            return format_html(' | '.join(buttons))
+        except Exception as e:
+            logger.error(f"Error in actions_column for contract {obj.pk}: {str(e)}", exc_info=True)
+            return format_html('<span style="color: red;">Помилка</span>')
+    actions_column.short_description = 'Дії'
+
     list_display = (
         'employee',
         'position',
@@ -63,12 +123,32 @@ class ContractAdmin(admin.ModelAdmin):
         'status_badge',
         'actions_column'
     )
-    
+
     list_filter = ('contract_type', 'start_date')
     search_fields = ('employee__full_name', 'position')
-    
+
     readonly_fields = ('generated_at', 'pdf_file', 'timesheet_pdf')
-    
+
+    fieldsets = (
+        ('Працівник', {
+            'fields': ('employee',)
+        }),
+        ('Умови праці', {
+            'fields': ('position', 'contract_type', 'start_date', 'weekly_hours')
+        }),
+        ('Зарплата', {
+            'fields': ('hourly_rate_brutto', 'salary_netto', 'salary_brutto')
+        }),
+        ('Договір', {
+            'fields': ('generated_at', 'pdf_file'),
+            'classes': ('collapse',)
+        }),
+        ('Табель робочого часу', {
+            'fields': ('timesheet_pdf',),
+            'classes': ('collapse',)
+        }),
+    )
+
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
@@ -157,85 +237,6 @@ class ContractAdmin(admin.ModelAdmin):
         
         return HttpResponseRedirect(reverse('admin:hr_contract_change', args=[contract_id]))
     
-    fieldsets = (
-        ('Працівник', {
-            'fields': ('employee',)
-        }),
-        ('Умови праці', {
-            'fields': ('position', 'contract_type', 'start_date', 'weekly_hours')
-        }),
-        ('Зарплата', {
-            'fields': ('hourly_rate_brutto', 'salary_netto', 'salary_brutto')
-        }),
-        ('Договір', {
-            'fields': ('generated_at', 'pdf_file'),
-            'classes': ('collapse',)
-        }),
-        ('Табель робочого часу', {
-            'fields': ('timesheet_pdf',),
-            'classes': ('collapse',)
-        }),
-    )
-    
-    @admin.display(description='Зарплата (₴)')
-    def salary_display(self, obj):
-        try:
-            total = obj.calculate_total_salary()
-            if total is None:
-                return "—"
-            return f"{total:.2f} ₴"
-        except Exception as e:
-            return f"— ({e})"
-    
-    def status_badge(self, obj):
-        if obj.pdf_file:
-            return format_html(
-                '<span style="background: #28a745; color: white; padding: 3px 8px; border-radius: 10px;">✅ Згенеровано</span>'
-            )
-        return format_html(
-            '<span style="background: #dc3545; color: white; padding: 3px 8px; border-radius: 10px;">❌ Не згенеровано</span>'
-        )
-    status_badge.short_description = 'Статус'
-    
-    def actions_column(self, obj):
-        """Стовпець з кнопками дій"""
-        try:
-            buttons = []
-
-            # Кнопка договору
-            if not obj.pdf_file:
-                url = reverse('admin:hr_contract_generate', args=[obj.pk])
-                buttons.append(format_html('<a class="button" href="{}">📄 Договір</a>', url))
-            else:
-                try:
-                    # Перевіряємо чи файл існує перед отриманням URL
-                    pdf_url = obj.pdf_file.url
-                    buttons.append(format_html('<a class="button" href="{}" target="_blank">📥 Договір</a>', pdf_url))
-                except (ValueError, FileNotFoundError, AttributeError) as e:
-                    # Якщо файл не існує або є проблема з доступом, показуємо кнопку регенерації
-                    logger.warning(f"PDF file exists in DB but not accessible for contract {obj.pk}: {str(e)}")
-                    url = reverse('admin:hr_contract_generate', args=[obj.pk])
-                    buttons.append(format_html('<a class="button" href="{}" style="background: #ffc107;">⚠️ Регенерувати</a>', url))
-
-            # Кнопка табелю
-            timesheet_url = reverse('admin:hr_contract_timesheet', args=[obj.pk])
-            if obj.timesheet_pdf:
-                try:
-                    # Перевіряємо чи файл існує перед отриманням URL
-                    timesheet_pdf_url = obj.timesheet_pdf.url
-                    buttons.append(format_html('<a class="button" href="{}" target="_blank">📊 Табель</a>', timesheet_pdf_url))
-                except (ValueError, FileNotFoundError, AttributeError) as e:
-                    # Якщо файл не існує, показуємо кнопку регенерації
-                    logger.warning(f"Timesheet PDF file exists in DB but not accessible for contract {obj.pk}: {str(e)}")
-                    buttons.append(format_html('<a class="button" href="{}" style="background: #ffc107;">⚠️ Табель</a>', timesheet_url))
-            else:
-                buttons.append(format_html('<a class="button" href="{}">📊 Генерувати табель</a>', timesheet_url))
-
-            return format_html(' | '.join(buttons))
-        except Exception as e:
-            logger.error(f"Error in actions_column for contract {obj.pk}: {str(e)}", exc_info=True)
-            return format_html('<span style="color: red;">Помилка</span>')
-    actions_column.short_description = 'Дії'
 
 
 @admin.register(WorkLog)
