@@ -168,10 +168,6 @@ DATABASES = {
 RAG_SETTINGS = {
     "PROVIDER": "openai",
     "EMBEDDING_MODELS": {
-        "gemini": {
-            "name": "models/embedding-001",
-            "dim": 768,
-        },
         "openai": {
             "name": "text-embedding-3-small",
             "dim": 1536,

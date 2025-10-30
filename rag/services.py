@@ -7,7 +7,6 @@ from django.conf import settings
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
 from pgvector.django import CosineDistance
-import google.generativeai as genai
 from openai import OpenAI
 from django.utils import timezone
 import numpy as np
@@ -25,43 +24,29 @@ class EmbeddingService:
     """Сервіс для генерації та управління embedding'ами"""
     
     def __init__(self):
-        self.gemini_api_key = getattr(settings, 'GEMINI_API_KEY', None)
         self.openai_api_key = getattr(settings, 'OPENAI_API_KEY', None)
-        
+
         # Налаштування з settings
         self.rag_settings = getattr(settings, 'RAG_SETTINGS', {})
-        
+
         # Отримуємо конфігурацію активної моделі embeddings
         self.active_embedding_conf = get_active_embedding_conf()
         self.embedding_model_name = self.active_embedding_conf["name"]
         self.embedding_dimensions = self.active_embedding_conf["dim"]
-        
-        # Ініціалізація AI клієнтів
+
+        # Ініціалізація AI клієнтів - тільки OpenAI
         self.openai_client = None
-        self.gemini_embedding_model = None
-        
+
         self._init_embedding_clients()
     
     def _init_embedding_clients(self):
-        # Ініціалізація Gemini клієнта
-        if self.gemini_api_key:
-            try:
-                genai.configure(api_key=self.gemini_api_key)
-                # Модель для Gemini може бути встановлена незалежно від активного провайдера
-                self.gemini_embedding_model = self.rag_settings.get('GEMINI_EMBEDDING_MODEL', 'models/embedding-001')
-                logger.info(f"Gemini embedding клієнт ініціалізовано: {self.gemini_embedding_model}")
-            except Exception as e:
-                logger.error(f"❌ Помилка ініціалізації Gemini embedding клієнта: {e}")
-        else:
-            logger.warning("Gemini API ключ для embedding не встановлено.")
-            
-        # Ініціалізація OpenAI клієнта
+        # Ініціалізація OpenAI клієнта - тільки OpenAI
         if self.openai_api_key:
             try:
                 self.openai_client = OpenAI(api_key=self.openai_api_key)
                 logger.info("OpenAI embedding клієнт ініціалізовано")
             except Exception as e:
-                self.openai_client = None # Забезпечуємо, що клієнт None у випадку помилки
+                self.openai_client = None
                 logger.error(f"❌ Помилка ініціалізації OpenAI embedding клієнта: {e}")
         else:
             logger.warning("OpenAI API ключ для embedding не встановлено.")
@@ -115,58 +100,16 @@ class EmbeddingService:
 
             return arr.tolist()
 
+        # Використовуємо тільки OpenAI
         try:
-            if False:  # gemini disabled
-                embedding = self._call_gemini_embedding(text)
-                return _ensure_vector_dim(embedding, "gemini", expected_dim), "gemini"
-            if provider_to_use == "openai" and self.openai_client:
+            if self.openai_client:
                 embedding = self._call_openai_embedding(text)
                 return _ensure_vector_dim(embedding, "openai", expected_dim), "openai"
-        except Exception as primary_err:
-            logger.warning("[EMBEDDING] Основна модель (%s) недоступна: %s", provider_to_use, primary_err)
-
-        backup_provider = "openai"
-        backup_dim = expected_dim
-
-        try:
-            if backup_provider == "openai" and self.openai_client:
-                logger.info("[EMBEDDING] Використовуємо резервну OpenAI модель...")
-                embedding = self._call_openai_embedding(text)
-                return _ensure_vector_dim(embedding, "openai", backup_dim), "openai"
-            if False:  # gemini disabled
-                logger.info("[EMBEDDING] Використовуємо резервну Gemini модель...")
-                embedding = self._call_gemini_embedding(text)
-                return _ensure_vector_dim(embedding, "gemini", backup_dim), "gemini"
-        except Exception as backup_err:
-            logger.error("[EMBEDDING] Резервна embedding модель (%s) теж недоступна: %s", backup_provider, backup_err)
-            raise
-    
-        raise Exception("Немає доступних embedding моделей.")
-    
-    def _call_gemini_embedding(self, text: str) -> List[float]:
-        """Генерація embedding через Gemini"""
-        # Завжди використовуємо налаштування активної моделі для Gemini, якщо вона активна
-        if self.active_embedding_conf["provider"] == "gemini":
-            model_name = self.embedding_model_name
-            expected_dim = self.embedding_dimensions
-        else:
-            # Якщо Gemini не активний провайдер, беремо дефолтні налаштування для Gemini
-            model_name = self.rag_settings.get('GEMINI_EMBEDDING_MODEL', 'models/embedding-001')
-            expected_dim = self.rag_settings.get('GEMINI_EMBEDDING_DIMENSIONS', 768)
-        
-        response = genai.embed_content(
-            model=model_name,
-            content=text,
-            task_type="retrieval_document"
-        )
-        
-        embedding = response['embedding']
-        # Доповнюємо або обрізаємо embedding до потрібної розмірності
-        if len(embedding) < expected_dim:
-            embedding.extend([0.0] * (expected_dim - len(embedding)))
-        elif len(embedding) > expected_dim:
-            embedding = embedding[:expected_dim]
-        return embedding
+            else:
+                raise Exception("OpenAI клієнт не ініціалізовано")
+        except Exception as e:
+            logger.error("[EMBEDDING] Помилка OpenAI embedding: %s", e)
+            raise Exception("OpenAI embedding модель недоступна")
     
     def _call_openai_embedding(self, text: str) -> List[float]:
         """Генерація embedding через OpenAI"""
@@ -555,31 +498,29 @@ class VectorSearchService:
 
 class RAGConsultantService:
     """Головний RAG консультант"""
-    
+
     def __init__(self):
         self.vector_search = VectorSearchService()
         self.embedding_service = EmbeddingService()
         self.rag_settings = getattr(settings, 'RAG_SETTINGS', {})
-        
-        # AI клієнт для генерації відповідей
+
+        # AI клієнт для генерації відповідей - тільки OpenAI
         self.openai_client = None
-        self.gemini_model = None
-        
-        self.preferred_model = getattr(settings, 'AI_PREFERRED_MODEL', 'gemini')
-        self.backup_model = getattr(settings, 'AI_BACKUP_MODEL', 'openai')
-        
+
+        self.preferred_model = 'openai'
+        self.backup_model = None
+
         # Додаємо API ключі для генеративних моделей
-        self.gemini_api_key = getattr(settings, 'GEMINI_API_KEY', None)
         self.openai_api_key = getattr(settings, 'OPENAI_API_KEY', None)
-        
+
         self._init_generative_clients()
 
     def _init_generative_clients(self):
-        # OpenAI
+        # Тільки OpenAI
         org = getattr(settings, "OPENAI_ORG_ID", "") or None
         proj = getattr(settings, "OPENAI_PROJECT_ID", "") or None
         api_key = getattr(settings, "OPENAI_API_KEY", "")
-        
+
         if api_key:
             try:
                 self.openai_client = OpenAI(
@@ -593,59 +534,37 @@ class RAGConsultantService:
                 logger.error("RAG OpenAI клієнт не ініціалізувався: %s", e)
         else:
             logger.warning("RAG OpenAI API ключ не встановлено.")
-        
-        # Google Gemini
-        if self.gemini_api_key:
-            try:
-                genai.configure(api_key=self.gemini_api_key)
-                self.gemini_model = genai.GenerativeModel(getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash'))
-                logger.info("RAG Gemini клієнт ініціалізовано")
-            except Exception as e:
-                logger.error(f"❌ Помилка ініціалізації RAG Gemini: {e}")
-        else:
-            logger.warning("RAG Gemini API ключ не встановлено.")
 
     def _call_generative_ai_model(self, prompt: str, max_tokens: int) -> Tuple[str, str]:
-        """Універсальний виклик AI для генерації з фолбеком."""
+        """Універсальний виклик AI для генерації - тільки OpenAI."""
         temperature = getattr(settings, 'AI_TEMPERATURE', 0.7)
         max_output_tokens = getattr(settings, 'AI_MAX_TOKENS', 1000)
-        
-        # 1) Основна модель
+
+        # Використовуємо OpenAI
         try:
-            if self.preferred_model == "gemini" and self.gemini_model:
-                logger.info(f"[RAG AI] Використовуємо Gemini ({getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')})...")
-                response = self._call_gemini_generative(prompt, max_output_tokens, temperature)
-                return response, 'gemini'
-            elif self.preferred_model == "openai" and self.openai_client:
+            if self.openai_client:
                 logger.info(f"[RAG AI] Використовуємо OpenAI ({getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')})...")
                 response = self._call_openai_generative(prompt, max_output_tokens, temperature)
                 return response, 'openai'
+            else:
+                raise Exception("OpenAI клієнт не ініціалізовано")
         except Exception as e:
-            logger.warning(f"[RAG AI] Основна генеративна модель ({self.preferred_model}) недоступна: {e}")
-            
-        # 2) Резервна модель
-        if self.backup_model:
-            logger.info(f"[RAG AI] Спробуємо резервну генеративну модель ({self.backup_model})...")
+            logger.error(f"[RAG AI] Помилка OpenAI: {e}")
+            # Спробуємо fallback модель
             try:
-                if self.backup_model == "openai" and self.openai_client:
-                    logger.info(f"[RAG AI] Використовуємо OpenAI Fallback ({getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')})...")
-                    response = self._call_openai_generative(prompt, max_output_tokens, temperature, is_fallback=True)
-                    return response, 'openai'
-                elif self.backup_model == "gemini" and self.gemini_model:
-                    logger.info(f"[RAG AI] Використовуємо Gemini Fallback ({getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')})...")
-                    response = self._call_gemini_generative(prompt, max_output_tokens, temperature)
-                    return response, 'gemini'
-            except Exception as e:
-                logger.error(f"❌ RAG Резервна генеративна модель ({self.backup_model}) теж недоступна: {e}")
-                
-        raise Exception("❌ Жодна генеративна AI модель недоступна для RAG.")
+                logger.info(f"[RAG AI] Спробуємо OpenAI Fallback ({getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')})...")
+                response = self._call_openai_generative(prompt, max_output_tokens, temperature, is_fallback=True)
+                return response, 'openai'
+            except Exception as fallback_e:
+                logger.error(f"❌ RAG OpenAI Fallback теж недоступна: {fallback_e}")
+                raise Exception("❌ OpenAI модель недоступна для RAG.")
 
     def _call_openai_generative(self, prompt: str, max_tokens: int, temperature: float, is_fallback: bool = False) -> str:
         """Виклик OpenAI GPT для генерації."""
         model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL', 'gpt-4o')
         if is_fallback:
             model_name = getattr(settings, 'AI_OPENAI_GENERATIVE_MODEL_FALLBACK', 'gpt-4o-mini')
-        
+
         logger.info(f"[RAG OpenAI] Відправляємо запит до моделі {model_name} довжиною {len(prompt)} символів...")
         try:
             resp = self.openai_client.chat.completions.create(
@@ -658,26 +577,6 @@ class RAGConsultantService:
             return resp.choices[0].message.content
         except Exception as e:
             logger.error(f"[RAG OpenAI] Помилка від {model_name}: {e}")
-            raise
-            
-    def _call_gemini_generative(self, prompt: str, max_tokens: int, temperature: float) -> str:
-        """Виклик Google Gemini для генерації."""
-        model_name = getattr(settings, 'AI_GEMINI_GENERATIVE_MODEL', 'gemini-1.5-flash')
-        logger.info(f"[RAG Gemini] Відправляємо запит до моделі {model_name} довжиною {len(prompt)} символів...")
-        try:
-            response = self.gemini_model.generate_content(
-                prompt,
-                generation_config=genai.types.GenerationConfig(
-                    max_output_tokens=max_tokens,
-                    temperature=temperature,
-                ),
-            )
-            if not getattr(response, "text", None):
-                raise Exception("Gemini повернув пустий response.text")
-            logger.info(f"[RAG Gemini] Успішна відповідь від {model_name}: {len(response.text)} символів")
-            return response.text
-        except Exception as e:
-            logger.error(f"[RAG Gemini] Помилка від {model_name}: {e}")
             raise
 
     def _contains_pricing_keywords(self, text: str) -> bool:
