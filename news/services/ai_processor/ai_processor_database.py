@@ -76,14 +76,32 @@ class AIProcessorDatabase:
             try:
                 category = NewsCategory.objects.get(slug=slug)
             except NewsCategory.DoesNotExist:
-                category = NewsCategory.objects.get(slug="general")
-        except NewsCategory.DoesNotExist:
+                # Падаємо назад на 'general'; якщо її немає — створимо мінімально необхідну
+                try:
+                    category = NewsCategory.objects.get(slug="general")
+                except NewsCategory.DoesNotExist:
+                    category, _ = NewsCategory.objects.get_or_create(
+                        slug="general",
+                        defaults={
+                            "name_en": "General",
+                            "name_pl": "Ogólne",
+                            "name_uk": "Загальне",
+                            "description_en": "General technology news",
+                            "description_pl": "Ogólne wiadomości technologiczne",
+                            "description_uk": "Загальні технологічні новини",
+                        },
+                    )
+        except Exception:
+            # Абсолютний fallback на випадок інших помилок
             category, _ = NewsCategory.objects.get_or_create(
                 slug="general",
                 defaults={
-                    "title_en": "General",
-                    "title_pl": "Ogólne",
-                    "title_uk": "Загальне",
+                    "name_en": "General",
+                    "name_pl": "Ogólne",
+                    "name_uk": "Загальне",
+                    "description_en": "General technology news",
+                    "description_pl": "Ogólne wiadomości technologiczne",
+                    "description_uk": "Загальні технологічні новини",
                 },
             )
         
