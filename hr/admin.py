@@ -177,20 +177,15 @@ class ContractAdmin(admin.ModelAdmin):
         }),
     )
     
-    @admin.display(description='💰 Зарплата')
+    @admin.display(description='Зарплата (₴)')
     def salary_display(self, obj):
-        if obj.hourly_rate_brutto:
+        try:
             total = obj.calculate_total_salary()
-            return format_html(
-                '<strong>{:.2f} PLN/год</strong><br><small>≈ {:.2f} PLN/міс</small>',
-                obj.hourly_rate_brutto,
-                total
-            )
-        elif obj.salary_brutto:
-            return f"{obj.salary_brutto} PLN/міс (brutto)"
-        elif obj.salary_netto:
-            return f"{obj.salary_netto} PLN/міс (netto)"
-        return "-"
+            if total is None:
+                return "—"
+            return f"{total:.2f} ₴"
+        except Exception as e:
+            return f"— ({e})"
     
     def status_badge(self, obj):
         if obj.pdf_file:
