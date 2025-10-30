@@ -106,226 +106,53 @@ class LinusSecurityMiddleware:
         return False
 
     def is_google_ip(self, ip):
-        """Перевіряємо чи IP справді з Google (IPv4 та IPv6)"""
-        # IPv6 Google ranges
-        google_ipv6_ranges = [
-            '2001:4860:',  # Основний діапазон Google IPv6
-            '2404:6800:',  # Google Азія
-            '2607:f8b0:',  # Google США
-            '2800:3f0:',   # Google Латинська Америка
-            '2a00:1450:',  # Google Європа
-            '2c0f:fb50:',  # Google Африка
-        ]
+        """Перевіряємо чи IP справді з Google через reverse DNS"""
+        import socket
 
-        # Перевірка IPv6
-        if ':' in ip:
-            # Нормалізуємо IPv6 (видаляємо зайві нулі)
-            ip_normalized = ip.lower().replace(':0000:', ':0:').replace(':::', '::')
-            return any(ip_normalized.startswith(prefix.lower()) for prefix in google_ipv6_ranges)
+        try:
+            # Спочатку швидка перевірка IPv6
+            if ':' in ip:
+                google_ipv6_ranges = [
+                    '2001:4860:',  # Основний діапазон Google IPv6
+                    '2404:6800:',  # Google Азія
+                    '2607:f8b0:',  # Google США
+                    '2800:3f0:',   # Google Латинська Америка
+                    '2a00:1450:',  # Google Європа
+                    '2c0f:fb50:',  # Google Африка
+                ]
+                ip_normalized = ip.lower().replace(':0000:', ':0:').replace(':::', '::')
+                if any(ip_normalized.startswith(prefix.lower()) for prefix in google_ipv6_ranges):
+                    return True
 
-        # IPv4 Google ranges (оригінальна логіка)
-        google_ranges = [
-            '66.249.',  # Googlebot IP ranges
-            '64.233.',
-            '72.14.',
-            '74.125.',
-            '209.85.',
-            '216.239.',
-            '192.178.',  # Додаємо діапазон з заблокованого IP
-            '34.64.',
-            '34.65.',
-            '34.66.',
-            '34.67.',
-            '34.68.',
-            '34.69.',
-            '34.70.',
-            '34.71.',
-            '34.72.',
-            '34.73.',
-            '34.74.',
-            '34.75.',
-            '34.76.',
-            '34.77.',
-            '34.78.',
-            '34.79.',
-            '34.80.',
-            '34.81.',
-            '34.82.',
-            '34.83.',
-            '34.84.',
-            '34.85.',
-            '34.86.',
-            '34.87.',
-            '34.88.',
-            '34.89.',
-            '34.90.',
-            '34.91.',
-            '34.92.',
-            '34.93.',
-            '34.94.',
-            '34.95.',
-            '34.96.',
-            '34.97.',
-            '34.98.',
-            '34.99.',
-            '34.100.',
-            '34.101.',
-            '34.102.',
-            '34.103.',
-            '34.104.',
-            '34.105.',
-            '34.106.',
-            '34.107.',
-            '34.108.',
-            '34.109.',
-            '34.110.',
-            '34.111.',
-            '34.112.',
-            '34.113.',
-            '34.114.',
-            '34.115.',
-            '34.116.',
-            '34.117.',
-            '34.118.',
-            '34.119.',
-            '34.120.',
-            '34.121.',
-            '34.122.',
-            '34.123.',
-            '34.124.',
-            '34.125.',
-            '34.126.',
-            '34.127.',
-            '34.128.',
-            '34.129.',
-            '34.130.',
-            '34.131.',
-            '34.132.',
-            '34.133.',
-            '34.134.',
-            '34.135.',
-            '34.136.',
-            '34.137.',
-            '34.138.',
-            '34.139.',
-            '34.140.',
-            '34.141.',
-            '34.142.',
-            '34.143.',
-            '34.144.',
-            '34.145.',
-            '34.146.',
-            '34.147.',
-            '34.148.',
-            '34.149.',
-            '34.150.',
-            '34.151.',
-            '34.152.',
-            '34.153.',
-            '34.154.',
-            '34.155.',
-            '34.156.',
-            '34.157.',
-            '34.158.',
-            '34.159.',
-            '34.160.',
-            '34.161.',
-            '34.162.',
-            '34.163.',
-            '34.164.',
-            '34.165.',
-            '34.166.',
-            '34.167.',
-            '34.168.',
-            '34.169.',
-            '34.170.',
-            '34.171.',
-            '34.172.',
-            '34.173.',
-            '34.174.',
-            '34.175.',
-            '34.176.',
-            '34.177.',
-            '34.178.',
-            '34.179.',
-            '34.180.',
-            '34.181.',
-            '34.182.',
-            '34.183.',
-            '34.184.',
-            '34.185.',
-            '34.186.',
-            '34.187.',
-            '34.188.',
-            '34.189.',
-            '34.190.',
-            '34.191.',
-            '34.192.',
-            '34.193.',
-            '34.194.',
-            '34.195.',
-            '34.196.',
-            '34.197.',
-            '34.198.',
-            '34.199.',
-            '34.200.',
-            '34.201.',
-            '34.202.',
-            '34.203.',
-            '34.204.',
-            '34.205.',
-            '34.206.',
-            '34.207.',
-            '34.208.',
-            '34.209.',
-            '34.210.',
-            '34.211.',
-            '34.212.',
-            '34.213.',
-            '34.214.',
-            '34.215.',
-            '34.216.',
-            '34.217.',
-            '34.218.',
-            '34.219.',
-            '34.220.',
-            '34.221.',
-            '34.222.',
-            '34.223.',
-            '34.224.',
-            '34.225.',
-            '34.226.',
-            '34.227.',
-            '34.228.',
-            '34.229.',
-            '34.230.',
-            '34.231.',
-            '34.232.',
-            '34.233.',
-            '34.234.',
-            '34.235.',
-            '34.236.',
-            '34.237.',
-            '34.238.',
-            '34.239.',
-            '34.240.',
-            '34.241.',
-            '34.242.',
-            '34.243.',
-            '34.244.',
-            '34.245.',
-            '34.246.',
-            '34.247.',
-            '34.248.',
-            '34.249.',
-            '34.250.',
-            '34.251.',
-            '34.252.',
-            '34.253.',
-            '34.254.',
-            '34.255.',
-        ]
-        return any(ip.startswith(range_prefix) for range_prefix in google_ranges)
+            # Reverse DNS lookup - найнадійніший метод для Google
+            # Google каже: перевіряйте через reverse DNS lookup
+            hostname, _, _ = socket.gethostbyaddr(ip)
+
+            # Перевіряємо чи hostname закінчується на .googlebot.com або .google.com
+            if hostname.endswith('.googlebot.com') or hostname.endswith('.google.com'):
+                # Додаткова перевірка: forward DNS lookup
+                forward_ip = socket.gethostbyname(hostname)
+                return forward_ip == ip
+
+            return False
+
+        except (socket.herror, socket.gaierror, socket.timeout):
+            # Якщо reverse DNS не працює, fallback на IP ranges
+            # Але це небезпечно, тому логуємо
+            logger.info(f"Reverse DNS lookup failed for {ip}, using IP range fallback")
+
+            # Fallback: базові Google IP ranges
+            # УВАГА: Це НЕ 100% надійно, краще використовувати reverse DNS
+            google_ranges = [
+                '66.249.',   # Основні Googlebot IP
+                '64.233.',   # Google infrastructure
+                '72.14.',    # Google services
+                '74.125.',   # Google services
+                '209.85.',   # Google services
+                '216.239.',  # Google services
+                '192.178.',  # Google Cloud (verified bots використовують)
+            ]
+            return any(ip.startswith(range_prefix) for range_prefix in google_ranges)
 
     def is_ddos_attack(self, request, ip):
         cache_key = f'ddos_requests_{ip}'
@@ -500,37 +327,47 @@ class AdminJWTMiddleware:
         return False
 
     def is_google_ip(self, ip):
-        """Перевіряємо чи IP справді з Google (IPv4 та IPv6)"""
-        # IPv6 Google ranges
-        google_ipv6_ranges = [
-            '2001:4860:',  # Основний діапазон Google IPv6
-            '2404:6800:',  # Google Азія
-            '2607:f8b0:',  # Google США
-            '2800:3f0:',   # Google Латинська Америка
-            '2a00:1450:',  # Google Європа
-            '2c0f:fb50:',  # Google Африка
-        ]
+        """Перевіряємо чи IP справді з Google через reverse DNS (duplicate method - should use the one above)"""
+        import socket
 
-        # Перевірка IPv6
-        if ':' in ip:
-            # Нормалізуємо IPv6 (видаляємо зайві нулі)
-            ip_normalized = ip.lower().replace(':0000:', ':0:').replace(':::', '::')
-            return any(ip_normalized.startswith(prefix.lower()) for prefix in google_ipv6_ranges)
+        try:
+            # Спочатку швидка перевірка IPv6
+            if ':' in ip:
+                google_ipv6_ranges = [
+                    '2001:4860:',  # Основний діапазон Google IPv6
+                    '2404:6800:',  # Google Азія
+                    '2607:f8b0:',  # Google США
+                    '2800:3f0:',   # Google Латинська Америка
+                    '2a00:1450:',  # Google Європа
+                    '2c0f:fb50:',  # Google Африка
+                ]
+                ip_normalized = ip.lower().replace(':0000:', ':0:').replace(':::', '::')
+                if any(ip_normalized.startswith(prefix.lower()) for prefix in google_ipv6_ranges):
+                    return True
 
-        # IPv4 Google ranges
-        google_ranges = [
-            '66.249.',  # Googlebot IP ranges
-            '64.233.',
-            '72.14.',
-            '74.125.',
-            '209.85.',
-            '216.239.',
-            '192.178.',
-            '34.64.', '34.65.', '34.66.', '34.67.', '34.68.', '34.69.',
-            '34.70.', '34.71.', '34.72.', '34.73.', '34.74.', '34.75.',
-            # Решту діапазонів можна додати якщо потрібно
-        ]
-        return any(ip.startswith(range_prefix) for range_prefix in google_ranges)
+            # Reverse DNS lookup - найнадійніший метод для Google
+            hostname, _, _ = socket.gethostbyaddr(ip)
+
+            # Перевіряємо чи hostname закінчується на .googlebot.com або .google.com
+            if hostname.endswith('.googlebot.com') or hostname.endswith('.google.com'):
+                # Додаткова перевірка: forward DNS lookup
+                forward_ip = socket.gethostbyname(hostname)
+                return forward_ip == ip
+
+            return False
+
+        except (socket.herror, socket.gaierror, socket.timeout):
+            # Fallback на IP ranges якщо DNS не працює
+            google_ranges = [
+                '66.249.',   # Основні Googlebot IP
+                '64.233.',   # Google infrastructure
+                '72.14.',    # Google services
+                '74.125.',   # Google services
+                '209.85.',   # Google services
+                '216.239.',  # Google services
+                '192.178.',  # Google Cloud (verified bots використовують)
+            ]
+            return any(ip.startswith(range_prefix) for range_prefix in google_ranges)
 
     def is_ddos_attack(self, request, ip):
         """Детекція DDoS атак - більше 1000 запитів за хвилину"""

@@ -57,8 +57,7 @@ class Command(BaseCommand):
                 "cta_description_pl": "Przekształć swój biznes dzięki automatyzacji AI",
                 "cta_button_text_en": "Get AI Audit",
                 "cta_button_text_uk": "Отримати AI аудит",
-                "cta_button_text_pl": "Otrzymać audyt AI",
-                "cta_link": "/services/ai-automation/"
+                "cta_button_text_pl": "Otrzymać audyt AI"
             },
             {
                 "slug": "automation",
@@ -78,8 +77,7 @@ class Command(BaseCommand):
                 "cta_description_pl": "Usprawniaj operacje dzięki automatyzacji",
                 "cta_button_text_en": "Start Automation",
                 "cta_button_text_uk": "Почати автоматизацію",
-                "cta_button_text_pl": "Rozpocząć automatyzację",
-                "cta_link": "/services/business-automation/"
+                "cta_button_text_pl": "Rozpocząć automatyzację"
             },
             {
                 "slug": "crm",
@@ -93,8 +91,7 @@ class Command(BaseCommand):
                 "color": "#FF6B35",
                 "cta_title_en": "Optimize Your CRM",
                 "cta_title_uk": "Оптимізувати CRM систему",
-                "cta_title_pl": "Zoptymalizować system CRM",
-                "cta_link": "/services/crm-optimization/"
+                "cta_title_pl": "Zoptymalizować system CRM"
             },
             {
                 "slug": "seo",
@@ -108,8 +105,7 @@ class Command(BaseCommand):
                 "color": "#9B59B6",
                 "cta_title_en": "Boost Your SEO",
                 "cta_title_uk": "Покращити SEO",
-                "cta_title_pl": "Ulepszyć SEO",
-                "cta_link": "/services/seo-optimization/"
+                "cta_title_pl": "Ulepszyć SEO"
             },
             {
                 "slug": "social",
@@ -123,8 +119,7 @@ class Command(BaseCommand):
                 "color": "#E91E63",
                 "cta_title_en": "Automate Social Media",
                 "cta_title_uk": "Автоматизувати соцмережі",
-                "cta_title_pl": "Zautomatyzować media społecznościowe",
-                "cta_link": "/services/social-media-automation/"
+                "cta_title_pl": "Zautomatyzować media społecznościowe"
             },
             {
                 "slug": "chatbots",
@@ -138,8 +133,7 @@ class Command(BaseCommand):
                 "color": "#00BCD4",
                 "cta_title_en": "Build Smart Chatbots",
                 "cta_title_uk": "Створити розумні чат-боти",
-                "cta_title_pl": "Stworzyć inteligentne chatboty",
-                "cta_link": "/services/chatbot-development/"
+                "cta_title_pl": "Stworzyć inteligentne chatboty"
             },
             {
                 "slug": "ecommerce",
@@ -153,8 +147,7 @@ class Command(BaseCommand):
                 "color": "#FF9800",
                 "cta_title_en": "Launch Your Online Store",
                 "cta_title_uk": "Запустити онлайн-магазин",
-                "cta_title_pl": "Uruchomić sklep internetowy",
-                "cta_link": "/services/ecommerce-development/"
+                "cta_title_pl": "Uruchomić sklep internetowy"
             },
             {
                 "slug": "fintech",
@@ -168,8 +161,7 @@ class Command(BaseCommand):
                 "color": "#4CAF50",
                 "cta_title_en": "Modernize Financial Operations",
                 "cta_title_uk": "Модернізувати фінансові операції",
-                "cta_title_pl": "Zmodernizować operacje finansowe",
-                "cta_link": "/services/fintech-solutions/"
+                "cta_title_pl": "Zmodernizować operacje finansowe"
             },
             {
                 "slug": "corporate",
@@ -183,8 +175,7 @@ class Command(BaseCommand):
                 "color": "#607D8B",
                 "cta_title_en": "Enterprise IT Solutions",
                 "cta_title_uk": "Корпоративні IT рішення",
-                "cta_title_pl": "Rozwiązania IT dla przedsiębiorstw",
-                "cta_link": "/services/enterprise-solutions/"
+                "cta_title_pl": "Rozwiązania IT dla przedsiębiorstw"
             },
             {
                 "slug": "general",
@@ -198,8 +189,7 @@ class Command(BaseCommand):
                 "color": "#795548",
                 "cta_title_en": "Stay Updated with Tech",
                 "cta_title_uk": "Залишатися в курсі технологій",
-                "cta_title_pl": "Być na bieżąco z technologią",
-                "cta_link": "/services/"
+                "cta_title_pl": "Być na bieżąco z technologią"
             }
         ]
         
