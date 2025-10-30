@@ -20,14 +20,20 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
         try:
             # 0) НОВИЙ КРОК: Збагачення FiveFilters ПЕРЕД AI обробкою
             enhanced_content = self._enhance_with_fivefilters(raw_article)
-            
+
             # 1) Аналіз + категоризація (тепер на збагаченому контенті)
+            self.logger.info("[AI] Початок категоризації...")
             category_info = self._categorize_article(raw_article)
             self.logger.info(f"[AI] Категорія визначена: {category_info['category']}")
 
             # 2) Тримовний контент (використовує збагачений контент або переданий full_content)
-            processed_content = self._create_multilingual_content(raw_article, category_info, full_content)
-            self.logger.info("[AI] Тримовний контент створено ✅")
+            self.logger.info("[AI] Початок генерації тримовного контенту...")
+            try:
+                processed_content = self._create_multilingual_content(raw_article, category_info, full_content)
+                self.logger.info("[AI] Тримовний контент створено ✅")
+            except Exception as content_error:
+                self.logger.exception(f"[AI] КРИТИЧНА ПОМИЛКА при створенні тримовного контенту: {content_error}")
+                raise
 
             # 3) Стокові зображення замість AI генерації (як ти хотіла)
             from news.services.stock_image_service import stock_image_service
@@ -130,7 +136,7 @@ class AINewsProcessor(AIContentProcessor, AIProcessorHelpers, AIProcessorDatabas
             raw_article.save(update_fields=["processing_attempts", "error_message"])
 
             self._log_ai_processing(raw_article, "error", {"error": error_msg})
-            self.logger.error(f"[ERROR] Помилка обробки статті: {error_msg}")
+            self.logger.exception(f"[ERROR] ❌ ДЕТАЛЬНА ПОМИЛКА обробки статті '{raw_article.title[:60]}...': {error_msg}")
             return None
 
     

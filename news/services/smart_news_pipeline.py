@@ -242,10 +242,21 @@ class SmartNewsPipeline:
 
             # 2) Основна AI-обробка з повним контентом (генерація всіх полів включаючи інсайти)
             logger.info("🎨 AI обробка та генерація контенту з повним текстом...")
-            processed_article = self.ai_processor.process_article(raw_article, full_content=full_content)
+            logger.info(f"[PIPELINE] Викликаю ai_processor.process_article для '{raw_article.title[:60]}...'")
+            logger.info(f"[PIPELINE] full_content довжина: {len(full_content) if full_content else 0}")
+
+            try:
+                processed_article = self.ai_processor.process_article(raw_article, full_content=full_content)
+                logger.info(f"[PIPELINE] process_article повернув: {processed_article}")
+            except Exception as proc_err:
+                logger.exception(f"[PIPELINE] ❌ EXCEPTION в process_article: {proc_err}")
+                processed_article = None
+
             if not processed_article:
                 logger.error("❌ AI процесор не зміг обробити статтю")
                 return None
+
+            logger.info(f"[PIPELINE] ✅ Стаття оброблена успішно: {processed_article.id}")
 
             # 3) Повний контент тепер генерується в ai_processor_main.py
 
