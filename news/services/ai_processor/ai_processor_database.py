@@ -72,9 +72,20 @@ class AIProcessorDatabase:
         
         # Категорія
         try:
-            category = NewsCategory.objects.get(slug=self._safe_get_value(content, "category_slug", "general"))
+            slug = self._safe_get_value(content, "category_slug", "general")
+            try:
+                category = NewsCategory.objects.get(slug=slug)
+            except NewsCategory.DoesNotExist:
+                category = NewsCategory.objects.get(slug="general")
         except NewsCategory.DoesNotExist:
-            category = NewsCategory.objects.get(slug="general")
+            category, _ = NewsCategory.objects.get_or_create(
+                slug="general",
+                defaults={
+                    "title_en": "General",
+                    "title_pl": "Ogólne",
+                    "title_uk": "Загальне",
+                },
+            )
         
         # Створюємо словник з усіма полями
         article_data = {
