@@ -2,6 +2,7 @@
 
 from django.template.loader import render_to_string
 from weasyprint import HTML
+from decimal import Decimal, ROUND_DOWN
 from django.core.files.base import ContentFile
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -184,13 +185,25 @@ def generate_timesheet_pdf(contract, month=None, year=None):
     
     # Години на день (weekly_hours / 5 робочих днів)
     if contract.weekly_hours:
-        hours_per_day = contract.weekly_hours / 5
+        hours_per_day_dec = (Decimal(contract.weekly_hours) / Decimal(5))
     else:
-        hours_per_day = 8  # За замовчуванням
+        hours_per_day_dec = Decimal('8')  # За замовчуванням
+
+    # Ліміт годин на місяць згідно з бюджетом salary_brutto та погодинною ставкою
+    monthly_hours_cap = None
+    try:
+        if contract.hourly_rate_brutto and contract.salary_brutto:
+            rate = Decimal(contract.hourly_rate_brutto)
+            budget = Decimal(contract.salary_brutto)
+            if rate > 0:
+                monthly_hours_cap = (budget / rate)
+    except Exception:
+        monthly_hours_cap = None
     
     # Генеруємо дні з годинами
     days_data = []
-    total_hours = 0
+    total_hours_dec = Decimal('0')
+    remaining_cap = monthly_hours_cap
     
     try:
         locale.setlocale(locale.LC_TIME, 'pl_PL.UTF-8')
@@ -203,8 +216,21 @@ def generate_timesheet_pdf(contract, month=None, year=None):
         
         # Робочі дні: Пн-Пт (0-4)
         if weekday < 5:
-            hours = hours_per_day
-            total_hours += hours
+            if remaining_cap is None:
+                assigned = hours_per_day_dec
+            else:
+                if remaining_cap <= Decimal('0'):
+                    assigned = Decimal('0')
+                else:
+                    assigned = hours_per_day_dec if hours_per_day_dec <= remaining_cap else remaining_cap
+                remaining_cap -= assigned
+            # Округляємо до 0.1 години вниз, бо у шаблоні показуємо з однією цифрою
+            assigned = assigned.quantize(Decimal('0.1'), rounding=ROUND_DOWN)
+            if assigned > Decimal('0'):
+                total_hours_dec += assigned
+                hours = float(assigned)
+            else:
+                hours = None
         else:
             hours = None  # Вихідний
         
@@ -224,7 +250,7 @@ def generate_timesheet_pdf(contract, month=None, year=None):
         'employee': contract.employee,
         'company': company,
         'days_data': days_data,
-        'total_hours': f"{total_hours:.1f}",
+        'total_hours': f"{float(total_hours_dec):.1f}",
         'month_year': f"{month_names_pl[month]} {year}",
         'signature_path': signature_path,
     }

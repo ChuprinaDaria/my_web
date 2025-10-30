@@ -101,6 +101,7 @@ class ContractAdmin(admin.ModelAdmin):
                     # Перевіряємо чи файл існує перед отриманням URL
                     timesheet_pdf_url = obj.timesheet_pdf.url
                     buttons.append(format_html('<a class="button" href="{}" target="_blank">📊 Табель</a>', timesheet_pdf_url))
+                    buttons.append(format_html('<a class="button" href="{}" style="background: #17a2b8;">♻️ Регенерувати табель</a>', timesheet_url))
                 except (ValueError, FileNotFoundError, AttributeError) as e:
                     # Якщо файл не існує, показуємо кнопку регенерації
                     logger.warning(f"Timesheet PDF file exists in DB but not accessible for contract {obj.pk}: {str(e)}")
@@ -113,6 +114,23 @@ class ContractAdmin(admin.ModelAdmin):
             logger.error(f"Error in actions_column for contract {obj.pk}: {str(e)}", exc_info=True)
             return format_html('<span style="color: red;">Помилка</span>')
     actions_column.short_description = 'Дії'
+
+    actions = ['regenerate_timesheets']
+
+    def regenerate_timesheets(self, request, queryset):
+        regenerated = 0
+        for contract in queryset:
+            try:
+                from .utils import generate_timesheet_pdf
+                generate_timesheet_pdf(contract)
+                regenerated += 1
+            except Exception as e:
+                logger.error(f"Failed to regenerate timesheet for contract {contract.pk}: {e}")
+        if regenerated:
+            self.message_user(request, f"Перегенеровано табелі: {regenerated}")
+        else:
+            self.message_user(request, "Не вдалося перегенерувати табелі", level=messages.WARNING)
+    regenerate_timesheets.short_description = '♻️ Перегенерувати табелі для вибраних'
 
     list_display = (
         'employee',
@@ -236,7 +254,6 @@ class ContractAdmin(admin.ModelAdmin):
             messages.error(request, error_msg)
         
         return HttpResponseRedirect(reverse('admin:hr_contract_change', args=[contract_id]))
-    
 
 
 @admin.register(WorkLog)
