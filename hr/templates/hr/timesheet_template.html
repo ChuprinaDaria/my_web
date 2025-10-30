@@ -56,6 +56,11 @@
             text-align: center;
             color: #666;
         }
+        .cell-signature img {
+            max-width: 100%;
+            max-height: 24px;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -81,7 +86,11 @@
             <tr {% if not day_info.hours %}class="weekend"{% endif %}>
                 <td>{{ day_info.day }}.</td>
                 <td>{{ day_info.hours }}</td>
-                <td></td>
+                <td class="cell-signature">
+                    {% if signature_path and day_info.hours %}
+                    <img src="file://{{ signature_path }}" alt="Podpis">
+                    {% endif %}
+                </td>
                 <td></td>
             </tr>
             {% endfor %}

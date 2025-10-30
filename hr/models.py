@@ -13,6 +13,8 @@ class Employee(models.Model):
     birth_date = models.DateField(verbose_name="Дата народження")
     address = models.TextField(verbose_name="Адреса")
     phone = models.CharField(max_length=20, verbose_name="Телефон")
+    id_series = models.CharField(max_length=16, null=True, blank=True, verbose_name="Серія документа")
+    id_number = models.CharField(max_length=32, null=True, blank=True, verbose_name="Номер документа")
     
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -80,6 +82,13 @@ class Contract(models.Model):
     )
     
     # Договір
+    contract_number = models.CharField(
+        max_length=32,
+        unique=True,
+        null=True,
+        blank=True,
+        verbose_name="Номер договору"
+    )
     generated_at = models.DateTimeField(
         null=True, 
         blank=True, 
@@ -129,7 +138,12 @@ class Contract(models.Model):
         """Автоматично рахує ставку за годину якщо вона не вказана але є місячна зарплата"""
         if not self.hourly_rate_brutto and self.salary_brutto and self.weekly_hours:
             self.hourly_rate_brutto = self.calculate_hourly_rate()
+        creating = self.pk is None
         super().save(*args, **kwargs)
+        if (creating or not self.contract_number) and self.pk and not self.contract_number:
+            date_part = (self.start_date or timezone.now().date()).strftime('%Y%m')
+            self.contract_number = f"ZL-{date_part}-{self.pk:06d}"
+            super().save(update_fields=["contract_number"])
     
     def __str__(self):
         return f"{self.employee.full_name} - {self.position} ({self.get_contract_type_display()})"

@@ -70,7 +70,7 @@
         
         <p>2. <strong>{{ employee.full_name }}</strong><br>
         zam. {{ employee.address }}<br>
-        legitymującym się dowodem osobistym seria i nr ....................., zwanym dalej <strong>Zleceniobiorcą</strong>.
+        legitymującym się dowodem osobistym seria i nr {{ employee.id_series|default:'............' }} {{ employee.id_number|default:'............' }}, zwanym dalej <strong>Zleceniobiorcą</strong>.
         </p>
     </div>
     
