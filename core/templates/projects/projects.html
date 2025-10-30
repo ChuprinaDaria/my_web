@@ -2,8 +2,8 @@
 {% load static i18n %}
 {% get_current_language as CURRENT_LANG %}
 
-{% block title %}{{ seo_title|default:"{% trans 'Projects - LazySoft' %}" }}{% endblock %}
-{% block meta_description %}{{ seo_description|default:"{% trans 'Discover our portfolio of automation and AI projects' %}" }}{% endblock %}
+{% block title %}{% if seo_title %}{{ seo_title }}{% else %}{% trans 'Projects - LazySoft' %}{% endif %}{% endblock %}
+{% block meta_description %}{% if seo_description %}{{ seo_description }}{% else %}{% trans 'Discover our portfolio of automation and AI projects' %}{% endif %}{% endblock %}
 
 {% block extra_meta %}
   <link rel="canonical" href="https://lazysoft.pl/{{ CURRENT_LANG }}/projects/" />
@@ -11,15 +11,15 @@
   <link rel="alternate" href="https://lazysoft.pl/uk/projects/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.pl/pl/projects/" hreflang="pl">
   
-  <meta property="og:title" content="{{ seo_title|default:'{% trans "Projects - LazySoft" %}' }}">
-  <meta property="og:description" content="{{ seo_description|default:'{% trans "Discover our portfolio of automation and AI projects" %}' }}">
+  <meta property="og:title" content="{% if seo_title %}{{ seo_title }}{% else %}{% trans 'Projects - LazySoft' %}{% endif %}">
+  <meta property="og:description" content="{% if seo_description %}{{ seo_description }}{% else %}{% trans 'Discover our portfolio of automation and AI projects' %}{% endif %}">
   <meta property="og:image" content="{{ og_image|default:'' }}">
   <meta property="og:url" content="https://lazysoft.pl/{{ CURRENT_LANG }}/projects/">
   <meta property="og:type" content="website">
-  
+
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{ seo_title|default:'{% trans "Projects - LazySoft" %}' }}">
-  <meta name="twitter:description" content="{{ seo_description|default:'{% trans "Discover our portfolio of automation and AI projects" %}' }}">
+  <meta name="twitter:title" content="{% if seo_title %}{{ seo_title }}{% else %}{% trans 'Projects - LazySoft' %}{% endif %}">
+  <meta name="twitter:description" content="{% if seo_description %}{{ seo_description }}{% else %}{% trans 'Discover our portfolio of automation and AI projects' %}{% endif %}">
   <meta name="twitter:image" content="{{ og_image|default:'' }}">
 {% endblock %}
 
