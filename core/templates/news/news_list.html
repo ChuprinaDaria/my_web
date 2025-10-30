@@ -30,23 +30,24 @@
     console.log('[RRM] Initializing Google News Reader Revenue Manager');
 
     // Google News Reader Revenue Manager
-    (self.SWG_BASIC = self.SWG_BASIC || []).push(basic => {
-      console.log('[RRM] SWG_BASIC loaded successfully', basic);
+    (self.SWG_BASIC = self.SWG_BASIC || []).push(basicSubscriptions => {
+      console.log('[RRM] SWG_BASIC loaded successfully', basicSubscriptions);
 
       try {
-        basic.init({
-          type: "Product",
+        basicSubscriptions.init({
+          type: "NewsArticle",
           isPartOfType: ["Product"],
           isPartOfProductId: "CAown-DCDA:openaccess",
           clientOptions: {
-            theme: "dark",
+            theme: "light",
             lang: "{{ CURRENT_LANG|default:'en' }}"
           }
         });
         console.log('[RRM] Initialized with config:', {
+          type: "NewsArticle",
           productId: "CAown-DCDA:openaccess",
           lang: "{{ CURRENT_LANG|default:'en' }}",
-          theme: "dark"
+          theme: "light"
         });
       } catch (error) {
         console.error('[RRM] Initialization error:', error);
@@ -62,10 +63,10 @@
 
         console.log('[RRM] Container found, rendering subscribe button...');
         try {
-          basic.subscribeButton({
+          basicSubscriptions.subscribeButton({
             container: container,
             lang: "{{ CURRENT_LANG|default:'en' }}",
-            theme: "dark"
+            theme: "light"
           });
           console.log('[RRM] Subscribe button rendered successfully');
         } catch (error) {
