@@ -91,8 +91,24 @@ class LinusSecurityMiddleware:
         return False
 
     def is_google_ip(self, ip):
-        """Перевіряємо чи IP справді з Google"""
-        # Розширені Google IP ranges для кращої підтримки Google ботів
+        """Перевіряємо чи IP справді з Google (IPv4 та IPv6)"""
+        # IPv6 Google ranges
+        google_ipv6_ranges = [
+            '2001:4860:',  # Основний діапазон Google IPv6
+            '2404:6800:',  # Google Азія
+            '2607:f8b0:',  # Google США
+            '2800:3f0:',   # Google Латинська Америка
+            '2a00:1450:',  # Google Європа
+            '2c0f:fb50:',  # Google Африка
+        ]
+
+        # Перевірка IPv6
+        if ':' in ip:
+            # Нормалізуємо IPv6 (видаляємо зайві нулі)
+            ip_normalized = ip.lower().replace(':0000:', ':0:').replace(':::', '::')
+            return any(ip_normalized.startswith(prefix.lower()) for prefix in google_ipv6_ranges)
+
+        # IPv4 Google ranges (оригінальна логіка)
         google_ranges = [
             '66.249.',  # Googlebot IP ranges
             '64.233.',
@@ -467,7 +483,40 @@ class AdminJWTMiddleware:
             # Перевіряємо чи IP справді з Google ranges
             return not self.is_google_ip(ip)
         return False
-    
+
+    def is_google_ip(self, ip):
+        """Перевіряємо чи IP справді з Google (IPv4 та IPv6)"""
+        # IPv6 Google ranges
+        google_ipv6_ranges = [
+            '2001:4860:',  # Основний діапазон Google IPv6
+            '2404:6800:',  # Google Азія
+            '2607:f8b0:',  # Google США
+            '2800:3f0:',   # Google Латинська Америка
+            '2a00:1450:',  # Google Європа
+            '2c0f:fb50:',  # Google Африка
+        ]
+
+        # Перевірка IPv6
+        if ':' in ip:
+            # Нормалізуємо IPv6 (видаляємо зайві нулі)
+            ip_normalized = ip.lower().replace(':0000:', ':0:').replace(':::', '::')
+            return any(ip_normalized.startswith(prefix.lower()) for prefix in google_ipv6_ranges)
+
+        # IPv4 Google ranges
+        google_ranges = [
+            '66.249.',  # Googlebot IP ranges
+            '64.233.',
+            '72.14.',
+            '74.125.',
+            '209.85.',
+            '216.239.',
+            '192.178.',
+            '34.64.', '34.65.', '34.66.', '34.67.', '34.68.', '34.69.',
+            '34.70.', '34.71.', '34.72.', '34.73.', '34.74.', '34.75.',
+            # Решту діапазонів можна додати якщо потрібно
+        ]
+        return any(ip.startswith(range_prefix) for range_prefix in google_ranges)
+
     def is_ddos_attack(self, request, ip):
         """Детекція DDoS атак - більше 1000 запитів за хвилину"""
         cache_key = f'ddos_requests_{ip}'
