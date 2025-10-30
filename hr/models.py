@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal
 from django.utils import timezone
 
 
@@ -112,7 +113,7 @@ class Contract(models.Model):
         """Рахує загальну зарплату якщо є погодинна ставка"""
         if self.hourly_rate_brutto and self.weekly_hours:
             # Приблизно 4.33 тижні в місяці
-            return self.hourly_rate_brutto * self.weekly_hours * 4.33
+            return self.hourly_rate_brutto * self.weekly_hours * Decimal('4.33')
         return self.salary_brutto or 0
     
     def calculate_hourly_rate(self):
