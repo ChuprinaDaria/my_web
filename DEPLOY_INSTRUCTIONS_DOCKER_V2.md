@@ -7,12 +7,16 @@ cd /opt/lazysoft && \
 git fetch origin && \
 git checkout claude/fix-newscategory-migrations-011CUdgW3VWKspXwY1DYaVEt && \
 git pull origin claude/fix-newscategory-migrations-011CUdgW3VWKspXwY1DYaVEt && \
-docker compose down && \
-docker compose build --no-cache web celery && \
-docker compose up -d && \
+docker compose -f docker-compose.prod.yml down && \
+docker compose -f docker-compose.prod.yml build --no-cache web celery && \
+docker compose -f docker-compose.prod.yml up -d && \
 sleep 15 && \
-docker compose exec web python manage.py migrate && \
-docker compose logs --tail=100 web celery
+docker compose -f docker-compose.prod.yml exec web pip install --no-cache-dir "pydyf==0.10.0" && \
+docker compose -f docker-compose.prod.yml restart web && \
+sleep 10 && \
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate hr 0005_contract_contract_number_employee_id_number_and_more --fake && \
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate && \
+docker compose -f docker-compose.prod.yml logs --tail=100 web celery
 ```
 
 ---
@@ -43,35 +47,50 @@ docker compose build --no-cache web celery
 
 ### 5. Запустити контейнери
 ```bash
-docker compose up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
-### 6. Почекати 10-15 секунд
+### 6. Почекати 10-15 секунд і встановити pydyf
 ```bash
 sleep 15
+
+# ВАЖЛИВО: Встановити pydyf для PDF генерації
+docker compose -f docker-compose.prod.yml exec web pip install --no-cache-dir "pydyf==0.10.0"
+
+# Перезапустити web після встановлення
+docker compose -f docker-compose.prod.yml restart web
+
+# Почекати після рестарту
+sleep 10
 ```
 
-### 7. Застосувати міграції
+### 7. Виправити конфлікт hr міграцій (fake-apply)
+```bash
+# Колонка contract_number вже є в БД, тому fake-apply
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate hr 0005_contract_contract_number_employee_id_number_and_more --fake
+```
+
+### 8. Застосувати міграції
 ```bash
 # Всі міграції разом
-docker compose exec web python manage.py migrate
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate
 
 # Або окремо по app:
-docker compose exec web python manage.py migrate hr
-docker compose exec web python manage.py migrate rag
-docker compose exec web python manage.py migrate news
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate hr
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate rag
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate news
 ```
 
-### 8. Перевірити статус
+### 9. Перевірити статус
 ```bash
 # Статус контейнерів
-docker compose ps
+docker compose -f docker-compose.prod.yml ps
 
 # Логи web
-docker compose logs -f --tail=100 web
+docker compose -f docker-compose.prod.yml logs -f --tail=100 web
 
 # Логи celery
-docker compose logs -f --tail=100 celery
+docker compose -f docker-compose.prod.yml logs -f --tail=100 celery
 ```
 
 ---
@@ -80,13 +99,13 @@ docker compose logs -f --tail=100 celery
 
 ### 1. Перевірити міграції
 ```bash
-docker compose exec web python manage.py showmigrations | grep "\[ \]"
+docker compose -f docker-compose.prod.yml exec web python manage.py showmigrations | grep "\[ \]"
 ```
 **Очікується**: порожній вивід (всі міграції застосовані)
 
 ### 2. Перевірити NewsCategory помилки
 ```bash
-docker compose logs celery | grep -i "newscategory\|fielderror" | tail -20
+docker compose -f docker-compose.prod.yml logs celery | grep -i "newscategory\|fielderror" | tail -20
 ```
 **Очікується**: немає помилок про title_en, title_pl, title_uk
 
@@ -120,42 +139,42 @@ curl https://lazysoft.pl/sitemap.xml | head -20
 ### Перегляд логів в реальному часі
 ```bash
 # Web логи
-docker compose logs -f web
+docker compose -f docker-compose.prod.yml logs -f web
 
 # Celery логи
-docker compose logs -f celery
+docker compose -f docker-compose.prod.yml logs -f celery
 
 # Обидва разом
-docker compose logs -f web celery
+docker compose -f docker-compose.prod.yml logs -f web celery
 ```
 
 ### Перевірка міграцій
 ```bash
 # Всі міграції
-docker compose exec web python manage.py showmigrations
+docker compose -f docker-compose.prod.yml exec web python manage.py showmigrations
 
 # Тільки news app
-docker compose exec web python manage.py showmigrations news
+docker compose -f docker-compose.prod.yml exec web python manage.py showmigrations news
 
 # Тільки незастосовані
-docker compose exec web python manage.py showmigrations | grep "\[ \]"
+docker compose -f docker-compose.prod.yml exec web python manage.py showmigrations | grep "\[ \]"
 ```
 
 ### Перезапуск конкретного сервісу
 ```bash
 # Перезапустити тільки web
-docker compose restart web
+docker compose -f docker-compose.prod.yml restart web
 
 # Перезапустити тільки celery
-docker compose restart celery
+docker compose -f docker-compose.prod.yml restart celery
 
 # Перезапустити все
-docker compose restart
+docker compose -f docker-compose.prod.yml restart
 ```
 
 ### Django shell для тестування
 ```bash
-docker compose exec web python manage.py shell
+docker compose -f docker-compose.prod.yml exec web python manage.py shell
 ```
 
 ```python
@@ -172,19 +191,19 @@ print(cats.first().__dict__)
 
 ### Проблема 1: "Error response from daemon: No such container"
 ```bash
-docker compose ps
-docker compose up -d
+docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ### Проблема 2: Міграції не застосовуються
 ```bash
 # Перевірте чи контейнер запущений
-docker compose ps | grep web
+docker compose -f docker-compose.prod.yml ps | grep web
 
 # Перезапустіть контейнер
-docker compose restart web
+docker compose -f docker-compose.prod.yml restart web
 sleep 10
-docker compose exec web python manage.py migrate
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate
 ```
 
 ### Проблема 3: Port already in use
@@ -193,16 +212,30 @@ docker compose exec web python manage.py migrate
 sudo lsof -i :8000
 
 # Або зупиніть все
-docker compose down
+docker compose -f docker-compose.prod.yml down
 docker stop $(docker ps -aq)
-docker compose up -d
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ### Проблема 4: Build fails
 ```bash
 # Очистіть кеш Docker
 docker system prune -a
-docker compose build --no-cache web celery
+docker compose -f docker-compose.prod.yml build --no-cache web celery
+```
+
+### Проблема 5: pydyf ImportError або PDF не генерується
+```bash
+# Встановіть pydyf
+docker compose -f docker-compose.prod.yml exec web pip install --no-cache-dir "pydyf==0.10.0"
+docker compose -f docker-compose.prod.yml restart web
+```
+
+### Проблема 6: hr_contract migration conflict
+```bash
+# Fake-apply якщо колонка вже існує
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate hr 0005_contract_contract_number_employee_id_number_and_more --fake
+docker compose -f docker-compose.prod.yml exec web python manage.py migrate
 ```
 
 ---
