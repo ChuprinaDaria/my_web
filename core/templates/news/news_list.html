@@ -38,6 +38,24 @@
           lang: "{{ CURRENT_LANG|default:'en' }}"
         }
       });
+
+      // Рендеримо кнопку підписки після завантаження сторінки
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          basic.subscribeButton({
+            container: document.getElementById('rrm-signup'),
+            lang: "{{ CURRENT_LANG|default:'en' }}",
+            theme: "dark"
+          });
+        });
+      } else {
+        // DOM вже завантажений
+        basic.subscribeButton({
+          container: document.getElementById('rrm-signup'),
+          lang: "{{ CURRENT_LANG|default:'en' }}",
+          theme: "dark"
+        });
+      }
     });
 
   </script>
