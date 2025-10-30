@@ -206,21 +206,36 @@ class ContractAdmin(admin.ModelAdmin):
         """Стовпець з кнопками дій"""
         try:
             buttons = []
-            
+
             # Кнопка договору
             if not obj.pdf_file:
                 url = reverse('admin:hr_contract_generate', args=[obj.pk])
                 buttons.append(format_html('<a class="button" href="{}">📄 Договір</a>', url))
             else:
-                buttons.append(format_html('<a class="button" href="{}" target="_blank">📥 Договір</a>', obj.pdf_file.url))
-            
+                try:
+                    # Перевіряємо чи файл існує перед отриманням URL
+                    pdf_url = obj.pdf_file.url
+                    buttons.append(format_html('<a class="button" href="{}" target="_blank">📥 Договір</a>', pdf_url))
+                except (ValueError, FileNotFoundError, AttributeError) as e:
+                    # Якщо файл не існує або є проблема з доступом, показуємо кнопку регенерації
+                    logger.warning(f"PDF file exists in DB but not accessible for contract {obj.pk}: {str(e)}")
+                    url = reverse('admin:hr_contract_generate', args=[obj.pk])
+                    buttons.append(format_html('<a class="button" href="{}" style="background: #ffc107;">⚠️ Регенерувати</a>', url))
+
             # Кнопка табелю
             timesheet_url = reverse('admin:hr_contract_timesheet', args=[obj.pk])
             if obj.timesheet_pdf:
-                buttons.append(format_html('<a class="button" href="{}" target="_blank">📊 Табель</a>', obj.timesheet_pdf.url))
+                try:
+                    # Перевіряємо чи файл існує перед отриманням URL
+                    timesheet_pdf_url = obj.timesheet_pdf.url
+                    buttons.append(format_html('<a class="button" href="{}" target="_blank">📊 Табель</a>', timesheet_pdf_url))
+                except (ValueError, FileNotFoundError, AttributeError) as e:
+                    # Якщо файл не існує, показуємо кнопку регенерації
+                    logger.warning(f"Timesheet PDF file exists in DB but not accessible for contract {obj.pk}: {str(e)}")
+                    buttons.append(format_html('<a class="button" href="{}" style="background: #ffc107;">⚠️ Табель</a>', timesheet_url))
             else:
                 buttons.append(format_html('<a class="button" href="{}">📊 Генерувати табель</a>', timesheet_url))
-            
+
             return format_html(' | '.join(buttons))
         except Exception as e:
             logger.error(f"Error in actions_column for contract {obj.pk}: {str(e)}", exc_info=True)
