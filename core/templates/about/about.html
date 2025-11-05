@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-{% load static i18n %}
+{% load static i18n video_filters %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/sections/about.css' %}">
@@ -85,7 +85,7 @@
         
         <div class="video-container glass">
           {% if about.video_url %}
-            <iframe src="{{ about.video_url }}" frameborder="0" allowfullscreen></iframe>
+            <iframe src="{{ about.video_url|youtube_embed }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
           {% elif about.video_file %}
             <video controls>
               <source src="{{ about.video_file.url }}" type="video/mp4">

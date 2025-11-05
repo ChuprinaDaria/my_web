@@ -17,6 +17,7 @@ class StaticViewSitemap(Sitemap):
             'core:home',                 # core/urls.py (namespaced)
             'about:about',               # about/urls.py (namespaced)
             'services:services_list',    # services/urls.py (namespaced)
+            'products:product_list',     # products/urls.py (namespaced)
             'projects',                  # projects/urls.py (без namespace у include)
             'contacts:contact_page',     # contacts/urls.py (namespaced)
             'news:news_list',            # news/urls.py (namespaced)
@@ -39,12 +40,35 @@ class StaticViewSitemap(Sitemap):
         return reverse(item)
 
 
+class ProductDetailSitemap(Sitemap):
+    """Sitemap для детальних сторінок продуктів"""
+    priority = 0.9
+    changefreq = 'weekly'
+    i18n = True
+
+    def items(self):
+        """Отримуємо всі активні продукти"""
+        try:
+            from products.models import Product
+            return Product.objects.filter(is_active=True)
+        except ImportError:
+            return []
+
+    def location(self, obj):
+        """URL детальної сторінки продукту"""
+        return reverse('products:product_detail', kwargs={'slug': obj.slug})
+
+    def lastmod(self, obj):
+        """Дата останньої модифікації"""
+        return obj.date_updated
+
+
 class ServiceDetailSitemap(Sitemap):
     """Sitemap для детальних сторінок послуг"""
     priority = 0.8
     changefreq = 'weekly'
     i18n = True
-    
+
     def items(self):
         """Отримуємо всі активні послуги"""
         try:

@@ -507,3 +507,7 @@ msgid "News"
 msgstr "News"
 
 
+
+#: consultant/views.py:560
+msgid "Комерційна пропозиція"
+msgstr "Commercial Proposal"

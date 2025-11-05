@@ -1,7 +1,8 @@
 #!/bin/bash
 # 🚀 Production Deployment Script for lazysoft.pl
-# Branch: claude/fix-newscategory-migrations-011CUdgW3VWKspXwY1DYaVEt
-# Date: 2025-10-30
+# Branch: claude/fix-sitemap-errors-011CUkuSrCKWt9huYiMNouuS
+# Date: 2025-11-04
+# Fix: Sitemap errors (example.com -> lazysoft.pl, remove script tags)
 
 set -e  # Exit on error
 
@@ -16,8 +17,8 @@ echo "✅ Changed to /opt/lazysoft"
 echo ""
 echo "📥 Fetching latest changes from Git..."
 git fetch origin
-git checkout claude/fix-newscategory-migrations-011CUdgW3VWKspXwY1DYaVEt
-git pull origin claude/fix-newscategory-migrations-011CUdgW3VWKspXwY1DYaVEt
+git checkout claude/fix-sitemap-errors-011CUkuSrCKWt9huYiMNouuS
+git pull origin claude/fix-sitemap-errors-011CUkuSrCKWt9huYiMNouuS
 echo "✅ Git changes pulled"
 
 # Stop containers

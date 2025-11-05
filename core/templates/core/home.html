@@ -150,14 +150,16 @@
 
 {% include "includes/ai_metrics_widget.html" %}
 
+{% include "includes/product_card_featured.html" %}
+
 <section id="services-categories" class="services-categories">
   <div class="container">
     <h2>{% trans "Our Services" %}</h2>
-    
+
     <div class="services-layout">
       {% include 'includes/services_grid.html' %}
-      
-     
+
+
     </div>
   </div>
 </section>
@@ -175,14 +177,36 @@
   </div>
 </section>
 
+{% if about_card %}
+<section class="about-preview">
+  <div class="about-card clickable"
+       data-href="{% if CURRENT_LANG == 'uk' %}/uk{{ about_card.url }}{% elif CURRENT_LANG == 'pl' %}/pl{{ about_card.url }}{% else %}{{ about_card.url }}{% endif %}">
+    {% if about_card.image %}
+      <img src="{{ about_card.image.url }}"
+           alt="{{ about_card.get_title }}"
+           class="about-image"
+           loading="lazy" />
+    {% else %}
+      <img src="{% static 'images/about-preview-optimized.jpg' %}"
+           alt="{% trans 'About Lazysoft' %}"
+           class="about-image"
+           loading="lazy" />
+    {% endif %}
+    <div class="about-text">
+      <h3>{{ about_card.get_title }}</h3>
+      <p>{{ about_card.get_description }}</p>
+    </div>
+  </div>
+</section>
+{% else %}
 <section class="about-preview">
   <div class="about-card clickable"
        data-href="{% if CURRENT_LANG == 'uk' %}/uk/about/{% elif CURRENT_LANG == 'pl' %}/pl/about/{% else %}/about/{% endif %}">
-    <img src="{% static 'images/about-preview-optimized.jpg' %}" 
-         alt="{% trans 'About Lazysoft' %}" 
-         class="about-image" 
+    <img src="{% static 'images/about-preview-optimized.jpg' %}"
+         alt="{% trans 'About Lazysoft' %}"
+         class="about-image"
          loading="lazy"
-         width="600" 
+         width="600"
          height="400" />
     <div class="about-text">
       <h3>{% trans "Born to automate. Fired for it." %}</h3>
@@ -190,6 +214,7 @@
     </div>
   </div>
 </section>
+{% endif %}
 
 
 <section id="news" class="projects">
@@ -265,6 +290,7 @@
 {% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/components/about_card.css' %}?v=1.0">
 <link rel="stylesheet" href="{% static 'css/components/news_digest.css' %}?v=1.2">
 {% endblock %}
 

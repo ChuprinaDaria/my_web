@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext as _, override, activate
 import json
 import uuid
 import time
@@ -429,28 +429,71 @@ def request_quote_from_chat(request):
             if detected_service:
                 pricing_qs = pricing_qs.filter(service_category=detected_service)
             pricing_qs = pricing_qs.select_related('service_category', 'tier').order_by('tier__order', 'order')
-            for sp in list(pricing_qs[:3]):
-                # Локалізація назв
-                lang = (language or 'uk').lower()
+
+            # Визначаємо релевантний пакет з запиту клієнта
+            query_lower = data['message'].lower()
+            relevant_package_idx = None
+
+            # Ключові слова для визначення пакету
+            tier_keywords = {
+                'starter': ['базов', 'простий', 'стартов', 'мінімальн', 'starter', 'basic', 'początkowy', 'prosty'],
+                'standard': ['стандарт', 'середн', 'звичайн', 'standard', 'średni'],
+                'premium': ['преміум', 'профі', 'максимальн', 'повн', 'premium', 'pro', 'advanced', 'pełny']
+            }
+
+            all_packages = list(pricing_qs)
+
+            # Локалізація назв та пошук релевантного пакету
+            lang = (language or 'uk').lower()
+            for idx, sp in enumerate(all_packages):
+                tier_slug = getattr(sp.tier, 'slug', '').lower()
+                tier_name = getattr(sp.tier, f'display_name_{lang}', getattr(sp.tier, 'display_name_en', '')).lower()
+
+                # Перевіряємо чи запит клієнта містить ключові слова цього пакету
+                for tier_key, keywords in tier_keywords.items():
+                    if tier_key in tier_slug or tier_key in tier_name:
+                        if any(kw in query_lower for kw in keywords):
+                            relevant_package_idx = idx
+                            break
+
+                if relevant_package_idx is not None:
+                    break
+
+            # Якщо релевантний пакет знайдений - показуємо його першим
+            if relevant_package_idx is not None:
+                # Переміщуємо релевантний пакет на початок
+                relevant_pkg = all_packages.pop(relevant_package_idx)
+                all_packages.insert(0, relevant_pkg)
+
+            # Формуємо items (релевантний + ще 2)
+            for sp in all_packages[:3]:
                 service_title = getattr(sp.service_category, f'title_{lang}', getattr(sp.service_category, 'title_en', str(sp.service_category)))
                 tier_name = getattr(sp.tier, f'display_name_{lang}', getattr(sp.tier, 'display_name_en', str(sp.tier)))
+
                 if getattr(sp, 'price_to', None) and sp.price_to and sp.price_to != sp.price_from:
                     price_str = f"{int(sp.price_from)}-{int(sp.price_to)}"
                 else:
                     price_str = f"{int(sp.price_from)}"
+
                 features = []
                 try:
                     features = sp.get_features_list(lang=lang)[:5]
                 except Exception:
                     pass
+
                 assumptions = "; ".join(features) if features else ''
+
+                # Позначаємо перший (релевантний) пакет
+                is_recommended = (sp == all_packages[0] and relevant_package_idx is not None)
+
                 items.append({
                     'title': service_title,
                     'pkg': tier_name,
                     'price': price_str,
                     'currency': 'USD',
                     'assumptions': assumptions,
-                    'assumptions_list': features
+                    'assumptions_list': features,
+                    'is_recommended': is_recommended
                 })
         except Exception as e:
             logger.warning(f"Не вдалося побудувати items з ServicePricing: {e}")
@@ -511,10 +554,10 @@ def request_quote_from_chat(request):
             else:
                 email_ctx['package_summary'] = f"Пакет: {first.get('title')} — {first.get('pkg')} — {price_label}."
         email_html, email_txt = render_quote_email_bodies(email_ctx)
-        
-        # Локалізована тема листа
-        # Локалізована тема листа через gettext
-        subject = _('Комерційна пропозиція')
+
+        # Локалізована тема листа через gettext з активацією мови
+        with override(language):
+            subject = _('Комерційна пропозиція')
         # Reply-To з брендової адреси
         reply_to = []
         try:

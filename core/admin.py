@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from .models import Tag, HomeHero
+from .models import Tag, HomeHero, AboutCard
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.conf import settings
@@ -50,6 +50,39 @@ class HomeHeroAdmin(admin.ModelAdmin):
         ('CTA додаткова', {'fields': ('cta_secondary_label_uk','cta_secondary_label_pl','cta_secondary_label_en','cta_secondary_url')}),
         ('Службове', {'fields': ('updated_at',)}),
     )
+    readonly_fields = ['updated_at']
+
+
+@admin.register(AboutCard)
+class AboutCardAdmin(admin.ModelAdmin):
+    list_display = ['title_en', 'is_active', 'order', 'updated_at']
+    list_display_links = ['title_en']
+    list_editable = ['is_active', 'order']
+
+    fieldsets = (
+        ('📋 Статус', {
+            'fields': ('is_active', 'order')
+        }),
+        ('📝 Заголовки', {
+            'fields': ('title_uk', 'title_pl', 'title_en')
+        }),
+        ('📖 Описи', {
+            'fields': ('description_uk', 'description_pl', 'description_en')
+        }),
+        ('🖼️ Зображення', {
+            'fields': ('image',),
+            'description': 'Рекомендований розмір: 600x400px'
+        }),
+        ('🔗 URL', {
+            'fields': ('url',),
+            'description': 'URL сторінки About (буде додано префікс мови автоматично)'
+        }),
+        ('📅 Службове', {
+            'fields': ('updated_at',),
+            'classes': ('collapse',)
+        }),
+    )
+
     readonly_fields = ['updated_at']
 
 

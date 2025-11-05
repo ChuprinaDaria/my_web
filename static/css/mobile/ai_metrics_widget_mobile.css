@@ -85,67 +85,67 @@
         margin: 15px;
         padding: 16px;
     }
-    
+
     .widget-header {
         margin-bottom: 20px;
     }
-    
+
     .widget-title {
         font-size: 1.4rem;
     }
-    
+
     .widget-subtitle {
         font-size: 0.85rem;
     }
-    
+
     .metrics-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 12px;
         margin-bottom: 20px;
     }
-    
+
     .metric-card {
         padding: 16px 12px;
         border-radius: 10px;
     }
-    
+
     .metric-label {
         font-size: 0.75rem;
         margin-bottom: 6px;
     }
-    
+
     .metric-value {
         font-size: clamp(1.3rem, 10vw, 1.8rem);
         margin: 6px 0;
     }
-    
+
     .metric-unit {
         font-size: 0.5em;
     }
-    
+
     .metric-description {
         font-size: 0.75rem;
         margin-top: 4px;
         line-height: 1.3;
     }
-    
+
     .cta-button {
         padding: 12px 28px;
         font-size: 0.9rem;
         border-radius: 35px;
         letter-spacing: 0.5px;
     }
-    
+
     .last-updated {
         font-size: 0.65rem;
         margin-top: 12px;
     }
-    
+
     /* Зменшуємо анімації на мобільних */
     .metric-card:hover {
         transform: translateY(-2px);
     }
-    
+
     .cta-button:hover {
         transform: translateY(-1px);
     }
@@ -183,18 +183,18 @@
 /* 📱 ЛАНДСКЕЙП ОРІЄНТАЦІЯ */
 @media (max-width: 768px) and (orientation: landscape) {
     .metrics-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: 1fr 1fr;
         gap: 10px;
     }
-    
+
     .metric-card {
         padding: 12px 8px;
     }
-    
+
     .metric-value {
         font-size: 1.2rem;
     }
-    
+
     .metric-description {
         font-size: 0.7rem;
     }

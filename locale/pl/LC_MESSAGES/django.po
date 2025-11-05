@@ -649,3 +649,6 @@ msgstr "Galeria usługi"
 #: core/templates/services/service_detail.html
 msgid "Visual examples of our work"
 msgstr "Wizualne przykłady naszej pracy"
+#: consultant/views.py:560
+msgid "Комерційна пропозиція"
+msgstr "Propozycja komercyjna"
