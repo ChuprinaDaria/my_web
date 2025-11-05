@@ -45,14 +45,6 @@
             <p class="metric-description">{% trans "Згенеровано AI статей цього місяця" %}</p>
         </div>
 
-        <div class="metric-card efficiency">
-            <h3>{% trans "Зростання Ефективності" %}</h3>
-            <p class="metric-value live">
-                +{{ dashboard_data.key_kpis.ai_efficiency.efficiency_score|default:"340" }}<span class="metric-unit">%</span>
-            </p>
-            <p class="metric-description">{% trans "Покращення продуктивності процесів" %}</p>
-        </div>
-
         <div class="metric-card ai-spend">
             <h3>{% trans "Витрати на AI" %}</h3>
             <p class="metric-value live" id="aiCostValue">
@@ -148,21 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 articlesElement.setAttribute('data-real-value', 'true');
             }
         }
-        
-        const efficiencyElement = document.querySelector('.efficiency .metric-value');
-        if (efficiencyElement) {
-            let efficiencyValue = 99;
-            
-            if (data.data.key_kpis && data.data.key_kpis.ai_efficiency && data.data.key_kpis.ai_efficiency.efficiency_score) {
-                efficiencyValue = data.data.key_kpis.ai_efficiency.efficiency_score;
-            } else if (data.data.roi_analysis && data.data.roi_analysis.efficiency_score) {
-                efficiencyValue = data.data.roi_analysis.efficiency_score;
-            }
-            
-            efficiencyElement.innerHTML = `+${Math.round(efficiencyValue)}<span class="metric-unit">%</span>`;
-            efficiencyElement.setAttribute('data-real-value', 'true');
-        }
-        
+
         if (typeof data.data.ai_spend_usd !== 'undefined') {
             const aiCostElement = document.getElementById('aiCostValue');
             if (aiCostElement) {
