@@ -31,6 +31,9 @@
     th { background: var(--soft); font-weight: 600; }
     thead th { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; }
     tfoot td { background: #fafafa; }
+    tr.recommended { background: #f4fbf0; border: 2px solid var(--brand); }
+    tr.recommended td { font-weight: 600; }
+    .badge-recommended { display: inline-block; background: var(--brand); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 10px; margin-left: 8px; }
     .price { white-space: nowrap; font-weight: 600; }
     .total { font-weight: 700; background: #fefefe; }
     .cta { display:block; margin: 18px 0; padding: 14px; background: #f4fbf0; border: 1px solid #d6f0c2; border-radius: 8px; }
@@ -95,8 +98,8 @@
       </thead>
       <tbody>
         {% for it in items %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
+        <tr{% if it.is_recommended %} class="recommended"{% endif %}>
+          <td>{{ forloop.counter }}{% if it.is_recommended %}<span class="badge-recommended">{% if language == 'uk' %}РЕКОМЕНДОВАНО{% elif language == 'pl' %}POLECANE{% else %}RECOMMENDED{% endif %}</span>{% endif %}</td>
           <td>{{ it.title }}</td>
           <td>{{ it.pkg }}</td>
           <td class="price">{{ it.price }} {{ it.currency }}</td>
