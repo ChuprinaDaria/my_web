@@ -15,6 +15,7 @@ from .models import EmbeddingModel, ChatSession, ChatMessage, RAGAnalytics, Know
 from services.models import ServiceCategory, FAQ
 from projects.models import Project
 from pricing.models import ServicePricing
+from products.models import Product
 from .utils import get_active_embedding_conf # Імпортуємо утиліту
 
 logger = logging.getLogger(__name__)
@@ -245,7 +246,40 @@ class EmbeddingService:
                 text_parts.append(f"Джерело: {title}")
             if lang_content:
                 text_parts.append(lang_content)
-        
+
+        elif isinstance(obj, Product):
+            # Продукт (products.Product)
+            title = getattr(obj, f'title_{language}', obj.title_en)
+            short_desc = getattr(obj, f'short_description_{language}', obj.short_description_en) or ''
+            description = getattr(obj, f'description_{language}', obj.description_en) or ''
+            target_audience = getattr(obj, f'target_audience_{language}', obj.target_audience_en) or ''
+            features = getattr(obj, f'features_{language}', obj.features_en) or ''
+            how_it_works = getattr(obj, f'how_it_works_{language}', obj.how_it_works_en) or ''
+
+            if title:
+                text_parts.append(f"Продукт: {title}")
+            if short_desc:
+                text_parts.append(short_desc)
+            if description:
+                text_parts.append(description)
+            if target_audience:
+                text_parts.append(f"Для кого: {target_audience}")
+            if features:
+                text_parts.append(f"Можливості: {features}")
+            if how_it_works:
+                text_parts.append(f"Як це працює: {how_it_works}")
+
+            # Додаємо інформацію про пакети цін, якщо вони є
+            pricing_packages = obj.pricing_packages.filter(is_active=True).order_by('price')
+            if pricing_packages.exists():
+                packages_info = []
+                for pkg in pricing_packages[:3]:  # Беремо перші 3 пакети
+                    pkg_name = getattr(pkg, f'name_{language}', pkg.name_en)
+                    pkg_price = f"${pkg.price}/{pkg.get_billing_period_display()}"
+                    packages_info.append(f"{pkg_name}: {pkg_price}")
+                if packages_info:
+                    text_parts.append(f"Пакети: {'; '.join(packages_info)}")
+
         elif isinstance(obj, ServicePricing):
             # 💰 Витягуємо дані про ціни з реальної моделі pricing.ServicePricing
             service_category = getattr(obj, 'service_category', None)
@@ -299,6 +333,8 @@ class EmbeddingService:
             return getattr(obj, f'title_{language}', getattr(obj, 'title_en', 'About'))
         if isinstance(obj, KnowledgeSource):
             return getattr(obj, 'title', str(obj))
+        if isinstance(obj, Product):
+            return getattr(obj, f'title_{language}', obj.title_en)
         if isinstance(obj, ServicePricing):
             # Заголовок для ціни: Назва пакета + сервіс
             service_category = getattr(obj, 'service_category', None)
@@ -325,6 +361,8 @@ class EmbeddingService:
             return 'service'
         elif isinstance(obj, Project):
             return 'project'
+        elif isinstance(obj, Product):
+            return 'product'
         elif isinstance(obj, FAQ):
             return 'faq'
         elif isinstance(obj, ServicePricing):

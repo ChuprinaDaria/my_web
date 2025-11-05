@@ -182,6 +182,7 @@ RAG_SETTINGS = {
     "INDEXABLE_MODELS": [
         "services.ServiceCategory",
         "projects.Project",
+        "products.Product",
         "services.FAQ",
         "rag.KnowledgeSource",
         "pricing.ServicePricing",
