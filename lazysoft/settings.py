@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'blog',
     'news',
     'projects',
+    'products',
     'pricing',
     'services',
     'contacts.apps.ContactsConfig',

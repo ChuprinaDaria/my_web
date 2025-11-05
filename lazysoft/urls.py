@@ -12,9 +12,10 @@ from django.http import HttpResponse
 # 📰 Імпортуємо sitemaps для SEO
 try:
     from core.sitemaps import (
-        StaticViewSitemap, 
-        ServiceDetailSitemap, 
-        ProjectDetailSitemap, 
+        StaticViewSitemap,
+        ServiceDetailSitemap,
+        ProductDetailSitemap,
+        ProjectDetailSitemap,
         ArticleDetailSitemap,
         NewsSitemap,
         NewsCategorySitemap
@@ -59,6 +60,7 @@ if SITEMAPS_AVAILABLE:
     sitemaps = {
         'static': StaticViewSitemap,
         'services': ServiceDetailSitemap,
+        'products': ProductDetailSitemap,
         'projects': ProjectDetailSitemap,
         'articles': ArticleDetailSitemap,
         'news': NewsSitemap,
@@ -68,6 +70,7 @@ if SITEMAPS_AVAILABLE:
         path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
         path('sitemap-static.xml', sitemap, {'sitemaps': {'static': StaticViewSitemap}}, name='static_sitemap'),
         path('sitemap-services.xml', sitemap, {'sitemaps': {'services': ServiceDetailSitemap}}, name='services_sitemap'),
+        path('sitemap-products.xml', sitemap, {'sitemaps': {'products': ProductDetailSitemap}}, name='products_sitemap'),
         path('sitemap-projects.xml', sitemap, {'sitemaps': {'projects': ProjectDetailSitemap}}, name='projects_sitemap'),
         path('sitemap-articles.xml', sitemap, {'sitemaps': {'articles': ArticleDetailSitemap}}, name='articles_sitemap'),
         path('sitemap-news.xml', sitemap, {'sitemaps': {'news': NewsSitemap}}, name='news_sitemap'),
@@ -110,6 +113,7 @@ urlpatterns += i18n_patterns(
     path('', include('lazysoft.dashboard_urls')),
     path('projects/', include('projects.urls')),
     path('services/', include(('services.urls', 'services'), namespace='services')),
+    path('products/', include(('products.urls', 'products'), namespace='products')),
     path('about/', include('about.urls')),
     path('news/', include(('news.urls', 'news'), namespace='news')),
     path('consultant/', include('consultant.urls')),

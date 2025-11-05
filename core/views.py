@@ -137,6 +137,17 @@ def home(request):
     except Exception:
         hero = None
 
+    # Отримуємо featured product для відображення на головній
+    featured_product = None
+    try:
+        from products.models import Product
+        featured_product = Product.objects.filter(
+            is_active=True,
+            is_featured=True
+        ).order_by('-priority', '-date_created').first()
+    except Exception:
+        pass
+
     # Нормалізуємо до списку для шаблону та прапорця наявності
     latest_articles_list = list(latest_articles)
 
@@ -148,8 +159,9 @@ def home(request):
         'featured_projects': featured_projects,
         'services': services,
         'home_hero': hero,
+        'featured_product': featured_product,  # Додано для ProductCard
     }
-    
+
     return render(request, 'core/home.html', context)
 
 class WidgetMetricsAPIView(TemplateView):
