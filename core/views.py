@@ -148,6 +148,14 @@ def home(request):
     except Exception:
         pass
 
+    # Отримуємо AboutCard для відображення на головній
+    about_card = None
+    try:
+        from .models import AboutCard
+        about_card = AboutCard.objects.filter(is_active=True).order_by('order', '-updated_at').first()
+    except Exception:
+        pass
+
     # Нормалізуємо до списку для шаблону та прапорця наявності
     latest_articles_list = list(latest_articles)
 
@@ -160,6 +168,7 @@ def home(request):
         'services': services,
         'home_hero': hero,
         'featured_product': featured_product,  # Додано для ProductCard
+        'about_card': about_card,  # Додано для AboutCard
     }
 
     return render(request, 'core/home.html', context)
