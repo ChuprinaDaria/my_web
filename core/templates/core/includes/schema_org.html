@@ -458,11 +458,10 @@
       "@type": "ListItem",
       "position": {{ forloop.counter }},
       "item": {
-        "@type": "SoftwareApplication",
+        "@type": "Thing",
         "name": "{{ prod.title|escapejs }}",
         "description": "{{ prod.short_description|truncatechars:160|escapejs }}",
-        "url": "{{ SITE_URL }}{{ prod.url }}",
-        "applicationCategory": "BusinessApplication"{% if prod.image %},
+        "url": "{{ SITE_URL }}{{ prod.url }}"{% if prod.image %},
         "image": "{{ SITE_URL }}{{ prod.image.url }}"{% endif %}
       }
     }{% if not forloop.last %},{% endif %}
