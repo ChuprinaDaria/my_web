@@ -100,9 +100,18 @@ class LinusSecurityMiddleware:
         return any(pattern in post_data.lower() for pattern in dangerous_patterns)
 
     def is_fake_bot(self, request, ua):
+        """
+        Детекція фейкових ботів.
+
+        ВАЖЛИВО: для Googlebot ми НІЧОГО не блокуємо, тільки логуємо підозрілі IP,
+        щоб ніколи випадково не відрізати справжнього Googlebot / індексацію.
+        """
         if 'googlebot' in ua.lower():
             ip = self.get_client_ip(request)
-            return not self.is_google_ip(ip)
+            if not self.is_google_ip(ip):
+                logger.warning(f"Suspicious Googlebot UA from {ip}: {ua[:200]}")
+            # НІКОЛИ не блокуємо Googlebot – навіть якщо IP виглядає підозрілим
+            return False
         return False
 
     def is_google_ip(self, ip):
@@ -319,11 +328,16 @@ class AdminJWTMiddleware:
         return any(pattern in post_data.lower() for pattern in dangerous_patterns)
     
     def is_fake_bot(self, request, ua):
-        """Детекція фейкових ботів"""
+        """Детекція фейкових ботів.
+
+        Для Googlebot діє та сама політика: нічого не блокуємо, тільки логуємо,
+        щоб не ризикувати SEO / індексацією.
+        """
         if 'googlebot' in ua.lower():
             ip = self.get_client_ip(request)
-            # Перевіряємо чи IP справді з Google ranges
-            return not self.is_google_ip(ip)
+            if not self.is_google_ip(ip):
+                logger.warning(f"Suspicious Googlebot UA (AdminJWT) from {ip}: {ua[:200]}")
+            return False
         return False
 
     def is_google_ip(self, ip):
