@@ -285,3 +285,11 @@
   color: var(--text-secondary);
 }
 
+/* 📱 MOBILE: вирівнюємо розмір зображення продукту з карткою сервісу */
+@media (max-width: 768px) {
+  .product-image,
+  .product-icon {
+    height: 100px;
+  }
+}
+
