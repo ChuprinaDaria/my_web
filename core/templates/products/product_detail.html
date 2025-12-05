@@ -31,19 +31,19 @@
 {% endblock %}
 
 {% block content %}
-<article class="product-detail-page service-detail-container" itemscope itemtype="https://schema.org/Product">
+<article class="product-detail-page service-detail-container">
 
   <section class="product-hero">
     <div class="container">
       <div class="product-hero-content">
         <div class="product-hero-text">
-          <h1 itemprop="name">{{ title }}</h1>
+          <h1>{{ title }}</h1>
           {% if short_description %}
-            <div class="product-tagline" itemprop="description">{{ short_description|safe }}</div>
+            <div class="product-tagline">{{ short_description|safe }}</div>
           {% endif %}
 
           <div class="product-hero-cta">
-            <a href="{{ product.cta_url }}" class="cta-button cta-primary" target="_blank" rel="noopener" aria-label="{{ cta_text }} - {{ title|striptags }}" itemprop="url">
+            <a href="{{ product.cta_url }}" class="cta-button cta-primary" target="_blank" rel="noopener" aria-label="{{ cta_text }} - {{ title|striptags }}">
               <i data-lucide="rocket" aria-hidden="true"></i>
               {{ cta_text }}
             </a>
@@ -64,10 +64,7 @@
   {% if product.featured_image %}
   <section class="project-featured-image">
       <div class="container">
-      <img src="{{ product.featured_image.url }}" alt="{{ title|striptags }} - {% trans 'Main Product Image' %}" loading="lazy" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
-      <meta itemprop="url" content="https://lazysoft.pl{{ product.featured_image.url }}">
-      <meta itemprop="width" content="1200">
-      <meta itemprop="height" content="800">
+      <img src="{{ product.featured_image.url }}" alt="{{ title|striptags }} - {% trans 'Main Product Image' %}" loading="lazy">
       </div>
     </section>
   {% endif %}
@@ -87,7 +84,7 @@
               </div>
               <h2>{% trans "Product Overview" %}</h2>
             </div>
-            <div class="content-section-body" itemprop="description">
+            <div class="content-section-body">
               {{ description|safe }}
             </div>
           </div>
@@ -101,7 +98,7 @@
               </div>
               <h2>{% trans "Key Features" %}</h2>
             </div>
-            <div class="content-section-body" itemprop="additionalProperty">
+            <div class="content-section-body">
               {{ features|safe }}
             </div>
           </div>
@@ -252,7 +249,7 @@
           {% else %}Pricing Plans{% endif %}
         </h2>
 
-        <div class="pricing-grid" itemprop="offers" itemscope itemtype="https://schema.org/AggregateOffer">
+        <div class="pricing-grid">
           {% for package_data in pricing_packages %}
             <div class="pricing-card {% if package_data.is_recommended %}recommended{% endif %}">
               {% if package_data.is_recommended %}
@@ -332,7 +329,7 @@
           {% else %}Reviews{% endif %}
         </h2>
 
-        <div class="reviews-grid" itemprop="review" itemscope itemtype="https://schema.org/Review">
+        <div class="reviews-grid">
           {% for review_data in reviews %}
             <div class="review-card">
               <div class="review-rating">
