@@ -418,16 +418,16 @@
     "name": "Lazysoft",
     "url": "https://lazysoft.pl",
     "logo": "https://lazysoft.pl/static/images/logo.svg"
-  }{% if pricing_packages and low_price and high_price %},
+  },
   "offers": {
     "@type": "AggregateOffer",
-    "priceCurrency": "{{ price_currency }}",
+    "priceCurrency": "{{ price_currency|default:'USD' }}",
     "lowPrice": "{{ low_price }}",
     "highPrice": "{{ high_price }}",
-    "offerCount": "{{ pricing_packages|length }}",
+    "offerCount": "{{ pricing_packages|length|default:1 }}",
     "availability": "https://schema.org/InStock",
     "url": "{{ product.cta_url }}"
-  }{% endif %}{% if reviews %},
+  }{% if reviews %},
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "{{ aggregate_rating|default:5.0 }}",

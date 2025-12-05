@@ -59,8 +59,10 @@ class ProductDetailSitemap(Sitemap):
         return reverse('products:product_detail', kwargs={'slug': obj.slug})
 
     def lastmod(self, obj):
-        """Дата останньої модифікації"""
-        return obj.date_updated
+        """Дата останньої модифікації (захищено від відсутніх/Null полів)"""
+        # Деякі старі записи можуть не мати date_updated або воно може бути Null після міграцій
+        date = getattr(obj, "date_updated", None) or getattr(obj, "date_created", None)
+        return date
 
 
 class ServiceDetailSitemap(Sitemap):
