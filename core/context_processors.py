@@ -43,6 +43,8 @@ def seo_settings(request):
         page_type = 'projects'
     elif '/services/' in path:
         page_type = 'services'
+    elif '/products/' in path:
+        page_type = 'products'
     elif '/contact' in path:
         page_type = 'contact'
     elif '/about' in path:
@@ -72,6 +74,11 @@ def seo_settings(request):
         breadcrumbs.append({
             'name': 'Services' if current_lang == 'en' else ('Послуги' if current_lang == 'uk' else 'Usługi'),
             'url': f'/{current_lang}/services/' if current_lang != 'en' else '/services/'
+        })
+    elif page_type == 'products':
+        breadcrumbs.append({
+            'name': 'Products' if current_lang == 'en' else ('Продукти' if current_lang == 'uk' else 'Produkty'),
+            'url': f'/{current_lang}/products/' if current_lang != 'en' else '/products/'
         })
     
     return {

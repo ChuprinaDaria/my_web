@@ -249,6 +249,7 @@ def service_detail(request, slug):
     
     return render(request, "services/service_detail.html", {
         "service": service_data,
+        "service_category": service_category,  # Для JSON-LD схеми
         "related_projects": related_projects,
         "related_articles": related_articles,
         "cross_promotion_content": cross_promotion_content,

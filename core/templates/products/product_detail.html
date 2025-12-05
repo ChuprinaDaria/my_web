@@ -50,10 +50,10 @@
             {% if pricing_packages %}
               <a href="#pricing" class="cta-button cta-secondary" aria-label="{% trans 'View pricing plans' %}">
                 <i data-lucide="dollar-sign" aria-hidden="true"></i>
-                {% if CURRENT_LANG == 'uk' %}Переглянути ціни
-                {% elif CURRENT_LANG == 'pl' %}Zobacz ceny
-                {% else %}View Pricing{% endif %}
-              </a>
+              {% if CURRENT_LANG == 'uk' %}Переглянути ціни
+              {% elif CURRENT_LANG == 'pl' %}Zobacz ceny
+              {% else %}View Pricing{% endif %}
+            </a>
             {% endif %}
           </div>
         </div>
@@ -63,13 +63,13 @@
 
   {% if product.featured_image %}
   <section class="project-featured-image">
-    <div class="container">
+      <div class="container">
       <img src="{{ product.featured_image.url }}" alt="{{ title|striptags }} - {% trans 'Main Product Image' %}" loading="lazy" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
       <meta itemprop="url" content="https://lazysoft.pl{{ product.featured_image.url }}">
       <meta itemprop="width" content="1200">
       <meta itemprop="height" content="800">
-    </div>
-  </section>
+      </div>
+    </section>
   {% endif %}
 
   
@@ -91,9 +91,9 @@
               {{ description|safe }}
             </div>
           </div>
-          {% endif %}
+  {% endif %}
 
-          {% if features %}
+  {% if features %}
           <div class="content-section">
             <div class="content-section-header">
               <div class="section-icon">
@@ -161,8 +161,8 @@
                     {% elif product.priority >= 3 %}{% trans "Normal" %}
                     {% else %}{% trans "Low" %}{% endif %}
                   </span>
-                </div>
-              {% endif %}
+      </div>
+  {% endif %}
               
               {% if product.date_created %}
                 <div class="info-item">
@@ -418,24 +418,19 @@
     "name": "Lazysoft",
     "url": "https://lazysoft.pl",
     "logo": "https://lazysoft.pl/static/images/logo.svg"
-  }{% if pricing_packages %},
-  "offers": [
-    {% for package_data in pricing_packages %}
-    {
-      "@type": "Offer",
-      "name": "{{ package_data.name|escapejs }}",
-      "price": "{{ package_data.object.price }}",
-      "priceCurrency": "{{ package_data.object.currency }}",
-      "url": "{{ product.cta_url }}",
-      "availability": "https://schema.org/InStock",
-      "priceValidUntil": "2025-12-31"{% if package_data.description %},
-      "description": "{{ package_data.description|striptags|escapejs|truncatewords:30 }}"{% endif %}
-    }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-  ]{% endif %}{% if reviews %},
+  }{% if pricing_packages and low_price and high_price %},
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "{{ price_currency }}",
+    "lowPrice": "{{ low_price }}",
+    "highPrice": "{{ high_price }}",
+    "offerCount": "{{ pricing_packages|length }}",
+    "availability": "https://schema.org/InStock",
+    "url": "{{ product.cta_url }}"
+  }{% endif %}{% if reviews %},
   "aggregateRating": {
     "@type": "AggregateRating",
-    "ratingValue": "{% widthratio reviews|length reviews|length 5 %}",
+    "ratingValue": "{{ aggregate_rating|default:5.0 }}",
     "reviewCount": "{{ reviews|length }}",
     "bestRating": "5",
     "worstRating": "1"

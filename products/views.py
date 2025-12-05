@@ -26,7 +26,16 @@ def product_list(request):
     context = {
         'products': products_data,
         'products_raw': products,
+        'products_list': products,  # Для JSON-LD ItemList схеми
         'CURRENT_LANG': lang,
+        
+        # Breadcrumbs для schema.org
+        'breadcrumbs': [
+            {
+                'name': 'Products' if lang == 'en' else ('Продукти' if lang == 'uk' else 'Produkty'),
+                'url': request.path
+            }
+        ]
     }
 
     return render(request, 'products/product_list.html', context)
@@ -120,8 +129,42 @@ def product_detail(request, slug):
     # Галерея
     gallery_images = product.get_gallery_images()
 
+    # Обчислюємо середній рейтинг для aggregateRating
+    aggregate_rating = None
+    if reviews_data:
+        total_rating = sum(review['rating'] for review in reviews_data)
+        avg_rating = total_rating / len(reviews_data) if reviews_data else 5.0
+        aggregate_rating = round(avg_rating, 1)
+
+    # Обчислюємо lowPrice та highPrice для AggregateOffer
+    low_price = None
+    high_price = None
+    price_currency = None
+    if packages_data:
+        # Збираємо всі ціни (price_from та price_to якщо є)
+        prices = []
+        for pkg in packages_data:
+            pkg_obj = pkg['object']
+            if hasattr(pkg_obj, 'price_from') and pkg_obj.price_from:
+                prices.append(float(pkg_obj.price_from))
+            if hasattr(pkg_obj, 'price_to') and pkg_obj.price_to:
+                prices.append(float(pkg_obj.price_to))
+            # Якщо немає price_from/price_to, спробуємо price
+            elif hasattr(pkg_obj, 'price') and pkg_obj.price:
+                prices.append(float(pkg_obj.price))
+        
+        if prices:
+            low_price = min(prices)
+            high_price = max(prices)
+            # Отримуємо валюту з першого пакету
+            first_pkg = packages_data[0]['object']
+            if hasattr(first_pkg, 'currency'):
+                price_currency = first_pkg.currency
+            else:
+                price_currency = 'USD'  # fallback
+
     context = {
-        'product': product,
+        'product': product,  # Передаємо product для JSON-LD схеми
         'CURRENT_LANG': lang,
 
         # Переклади
@@ -138,9 +181,15 @@ def product_detail(request, slug):
 
         # Ціни та пакети
         'pricing_packages': packages_data,
+        'low_price': low_price,
+        'high_price': high_price,
+        'price_currency': price_currency,
 
         # Відгуки
         'reviews': reviews_data,
+        'reviews_raw': reviews,  # Для JSON-LD
+        'aggregate_rating': aggregate_rating,
+        'reviews_count': len(reviews_data),  # Для JSON-LD
 
         # Пов'язаний контент (локалізований)
         'related_services': related_services_data,
@@ -151,6 +200,18 @@ def product_detail(request, slug):
         'seo_title': product.get_seo_title(lang),
         'seo_description': product.get_seo_description(lang),
         'og_image': product.og_image,
+        
+        # Breadcrumbs для schema.org
+        'breadcrumbs': [
+            {
+                'name': 'Products' if lang == 'en' else ('Продукти' if lang == 'uk' else 'Produkty'),
+                'url': f'/{lang}/products/' if lang != 'en' else '/products/'
+            },
+            {
+                'name': product.get_title(lang),
+                'url': product.get_absolute_url(lang)
+            }
+        ]
     }
 
     return render(request, 'products/product_detail.html', context)

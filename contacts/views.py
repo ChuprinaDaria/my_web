@@ -35,6 +35,13 @@ class ContactView(TemplateView):
             'page_title': contact_info.title_uk,  # Або згідно поточної мови
             'seo_title': contact_info.seo_title_uk or contact_info.title_uk,
             'seo_description': contact_info.seo_description_uk,
+            # Breadcrumbs для schema.org
+            'breadcrumbs': [
+                {
+                    'name': 'Contact' if self.request.LANGUAGE_CODE == 'en' else ('Контакти' if self.request.LANGUAGE_CODE == 'uk' else 'Kontakt'),
+                    'url': self.request.path
+                }
+            ]
         })
         
         return context
