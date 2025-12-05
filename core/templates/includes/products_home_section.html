@@ -1,0 +1,244 @@
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+<section class="products-home-section" id="products">
+  <div class="container">
+    <header class="section-header">
+      <h2 class="section-title">
+        {% if CURRENT_LANG == 'uk' %}Наші Продукти
+        {% elif CURRENT_LANG == 'pl' %}Nasze Produkty
+        {% else %}Our Products{% endif %}
+      </h2>
+      <p class="section-subtitle">
+        {% if CURRENT_LANG == 'uk' %}Інноваційні AI рішення для вашого бізнесу
+        {% elif CURRENT_LANG == 'pl' %}Innowacyjne rozwiązania AI dla Twojego biznesu
+        {% else %}Innovative AI solutions for your business{% endif %}
+      </p>
+    </header>
+
+    <div class="products-home-grid">
+      {% for product_data in featured_products %}
+        <article class="product-card-home clickable" 
+                 data-href="{{ product_data.url }}" 
+                 onclick="window.location.href=this.dataset.href;"
+                 {% if product_data.is_featured %}data-featured="true"{% endif %}
+                 itemscope 
+                 itemtype="https://schema.org/Product">
+          
+          {% if product_data.is_top %}
+            <div class="product-badge-home">
+              🔥 {% if CURRENT_LANG == 'uk' %}ТОП
+              {% elif CURRENT_LANG == 'pl' %}TOP
+              {% else %}TOP{% endif %}
+            </div>
+          {% endif %}
+          
+          {% if product_data.image %}
+            <div class="product-icon-home product-icon--cover">
+              <img src="{{ product_data.image.url }}" 
+                   alt="{{ product_data.title|striptags }} - {% trans 'Product Image' %}" 
+                   loading="lazy"
+                   itemprop="image">
+            </div>
+          {% elif product_data.icon %}
+            <div class="product-icon-home product-icon--contain">
+              <img src="{{ product_data.icon.url }}" 
+                   alt="{{ product_data.title|striptags }} - {% trans 'Product Icon' %}" 
+                   loading="lazy"
+                   itemprop="image">
+            </div>
+          {% endif %}
+          
+          <div class="product-content-home">
+            <h3 itemprop="name">{{ product_data.title|safe }}</h3>
+            
+            <p class="product-description-home" itemprop="description">
+              {{ product_data.short_description|striptags|truncatewords:30 }}
+            </p>
+            
+            {% if product_data.tags %}
+              <div class="product-tags-home">
+                {% for tag in product_data.tags %}
+                  <span class="product-tag-home">{{ tag.name }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <div class="product-metrics-home">
+              {% if product_data.is_featured %}
+                <span class="metric-home featured">
+                  <i data-lucide="star" aria-hidden="true"></i>
+                  {% if CURRENT_LANG == 'uk' %}Рекомендовано
+                  {% elif CURRENT_LANG == 'pl' %}Polecane
+                  {% else %}Featured{% endif %}
+                </span>
+              {% endif %}
+              
+              {% if product_data.priority >= 4 %}
+                <span class="metric-home priority">
+                  <i data-lucide="zap" aria-hidden="true"></i>
+                  {% if CURRENT_LANG == 'uk' %}Пріоритет
+                  {% elif CURRENT_LANG == 'pl' %}Priorytet
+                  {% else %}Priority{% endif %}
+                </span>
+              {% endif %}
+              
+              {% if product_data.packages_count > 0 %}
+                <span class="metric-home packages" itemprop="offers" itemscope itemtype="https://schema.org/AggregateOffer">
+                  <i data-lucide="package" aria-hidden="true"></i>
+                  <meta itemprop="offerCount" content="{{ product_data.packages_count }}">
+                  {{ product_data.packages_count }} 
+                  {% if CURRENT_LANG == 'uk' %}пакети
+                  {% elif CURRENT_LANG == 'pl' %}pakiety
+                  {% else %}packages{% endif %}
+                </span>
+              {% endif %}
+            </div>
+            
+            <div class="product-cta-home" role="button" aria-label="{% trans 'View' %} {{ product_data.title|striptags }}">
+              <span class="cta-text-home">{{ product_data.cta_text }}</span>
+              <i data-lucide="arrow-right" class="cta-arrow-home" aria-hidden="true"></i>
+            </div>
+          </div>
+          
+          <div class="product-glow-effect-home"></div>
+        </article>
+      {% empty %}
+        <div class="empty-state">
+          <p>
+            {% if CURRENT_LANG == 'uk' %}Продукти скоро з'являться
+            {% elif CURRENT_LANG == 'pl' %}Produkty wkrótce dostępne
+            {% else %}Products coming soon{% endif %}
+          </p>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="section-footer">
+      <a href="{% url 'products:product_list' %}" class="btn-view-all">
+        {% if CURRENT_LANG == 'uk' %}Переглянути всі продукти
+        {% elif CURRENT_LANG == 'pl' %}Zobacz wszystkie produkty
+        {% else %}View All Products{% endif %}
+        <i data-lucide="arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+/* 🎯 Products Home Section */
+.products-home-section {
+  padding: var(--spacing-3xl) 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, transparent 100%);
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+}
+
+.section-title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  margin-bottom: var(--spacing-md);
+  background: linear-gradient(135deg, var(--accent-green), var(--accent-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.products-home-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-footer {
+  text-align: center;
+  margin-top: var(--spacing-3xl);
+}
+
+.btn-view-all {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  background: linear-gradient(135deg, var(--accent-green), #80ff40);
+  color: #000;
+  text-decoration: none;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(158, 255, 0, 0.3);
+}
+
+.btn-view-all:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 48px rgba(158, 255, 0, 0.5);
+}
+
+.btn-view-all i {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+.btn-view-all:hover i {
+  transform: translateX(5px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-3xl);
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+}
+
+.empty-state p {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width: 768px) {
+  .products-home-section {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .section-header {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .products-home-grid {
+    gap: var(--spacing-lg);
+  }
+
+  .btn-view-all {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+}
+</style>
+

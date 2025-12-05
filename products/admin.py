@@ -81,7 +81,7 @@ class ProductAdmin(admin.ModelAdmin):
                 'seo_description_en', 'seo_description_uk', 'seo_description_pl'
             )
         }),
-        ('🏷️ Зв'язки', {
+        ('🏷️ Звʼязки', {
             'fields': ('related_services', 'tags')
         }),
         ('📅 Дати', {

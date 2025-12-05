@@ -15,6 +15,20 @@
   <link rel="alternate" href="https://lazysoft.pl/uk/services/{{ service.slug }}/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.pl/pl/services/{{ service.slug }}/" hreflang="pl">
   
+  <meta property="og:site_name" content="LAZYSOFT">
+  <meta property="og:type" content="service">
+  <meta property="og:url" content="https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/">
+  {% if og_image or service.main_image %}<meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">{% endif %}
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ og_title|default:service.title|striptags }}">
+  <meta name="twitter:description" content="{{ og_description|default:service.short|striptags|truncatewords:30 }}">
+  {% if og_image %}<meta name="twitter:image" content="{{ og_image }}">
+  {% elif service.main_image %}<meta name="twitter:image" content="https://lazysoft.pl{{ service.main_image.url }}">{% endif %}
+  
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -24,11 +38,41 @@
     "provider": {
       "@type": "Organization",
       "name": "Lazysoft",
-      "url": "https://lazysoft.pl"
+      "url": "https://lazysoft.pl",
+      "logo": "https://lazysoft.pl/static/images/logo.svg"
     },
     "areaServed": "Worldwide",
     {% if service.main_image %}"image": "https://lazysoft.pl{{ service.main_image.url }}",{% endif %}
-    "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
+    "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/",
+    "serviceType": "{{ service.title|escapejs }}",
+    "inLanguage": "{{ CURRENT_LANG }}"
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "{% trans 'Home' %}",
+        "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "{% trans 'Services' %}",
+        "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/services/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "{{ service.title|striptags|escapejs }}",
+        "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
+      }
+    ]
   }
   </script>
 {% endblock %}
@@ -38,9 +82,10 @@
 {% endblock %}
 
 {% block content %}
-<article class="service-detail-container">
+<article class="service-detail-container" itemscope itemtype="https://schema.org/Service">
+  <meta itemprop="inLanguage" content="{{ CURRENT_LANG }}">
   
-  <section class="service-hero-section">
+  <section class="service-hero-section" aria-labelledby="service-title">
     <div class="container">
       <div class="hero-content">
         
@@ -48,7 +93,7 @@
 
         
 
-        <h1>{{ service.title|safe }}</h1>
+        <h1 id="service-title" itemprop="name">{{ service.title|safe }}</h1>
         
         <p>
           {% if service.short %}

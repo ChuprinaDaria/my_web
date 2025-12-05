@@ -26,28 +26,45 @@
   <link rel="alternate" href="https://lazysoft.pl/en/projects/{{ project.slug }}/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.pl/uk/projects/{{ project.slug }}/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.pl/pl/projects/{{ project.slug }}/" hreflang="pl">
+  
+  <meta property="og:site_name" content="LAZYSOFT">
+  <meta property="og:type" content="article">
+  {% if og_image %}<meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">{% endif %}
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ og_title|default:project.title_uk|default:project.title_en|striptags }}">
+  <meta name="twitter:description" content="{{ og_description|default:project.short_description_uk|default:project.short_description_en|striptags|truncatewords:30 }}">
+  {% if og_image %}<meta name="twitter:image" content="{{ og_image }}">
+  {% elif project.featured_image %}<meta name="twitter:image" content="https://lazysoft.pl{{ project.featured_image.url }}">{% endif %}
+  
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 {% endblock %}
 
 {% block content %}
-<article class="project-detail-container">
+<article class="project-detail-container" itemscope itemtype="https://schema.org/CreativeWork">
+  <meta itemprop="inLanguage" content="{{ CURRENT_LANG }}">
   
   {% include 'includes/project_hero.html' with project=project %}
 
   {% if project.featured_image %}
     <section class="project-featured-image">
       <div class="container">
-        <div class="featured-image-container">
+        <div class="featured-image-container" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
           <img src="{{ project.featured_image.url }}" 
-               alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl }}{% else %}{{ project.title_en }}{% endif %}" 
+               alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags }}{% else %}{{ project.title_en|striptags }}{% endif %} - {% trans 'Project Image' %}" 
                class="main-project-image" 
-               loading="lazy">
+               loading="lazy"
+               itemprop="url">
+          <meta itemprop="width" content="1200">
+          <meta itemprop="height" content="800">
           <div class="image-overlay-gradient"></div>
         </div>
       </div>
     </section>
   {% endif %}
 
-  <section class="project-main-content">
+  <section class="project-main-content" aria-labelledby="project-content">
     <div class="container">
       <div class="content-grid">
         
@@ -76,35 +93,35 @@
   </section>
 
   {% if project.gallery_image_1 or project.gallery_image_2 or project.gallery_image_3 %}
-    <section class="project-gallery-section">
+    <section class="project-gallery-section" aria-labelledby="gallery-heading">
       <div class="container">
         <header class="gallery-header">
-          <h2>{% trans "Project Gallery" %}</h2>
+          <h2 id="gallery-heading">{% trans "Project Gallery" %}</h2>
           <p>{% trans "Visual overview of the implementation process" %}</p>
         </header>
         
-        <div class="gallery-grid">
+        <div class="gallery-grid" role="list">
           {% if project.gallery_image_1 %}
-            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_1.url }}')">
-              <img src="{{ project.gallery_image_1.url }}" alt="Gallery Image 1" loading="lazy">
+            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_1.url }}')" role="listitem" tabindex="0" aria-label="{% trans 'Open gallery image' %} 1">
+              <img src="{{ project.gallery_image_1.url }}" alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags }}{% else %}{{ project.title_en|striptags }}{% endif %} - {% trans 'Gallery Image' %} 1" loading="lazy" itemprop="image">
               <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
+                <i data-lucide="zoom-in" aria-hidden="true"></i>
               </div>
             </div>
           {% endif %}
           {% if project.gallery_image_2 %}
-            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_2.url }}')">
-              <img src="{{ project.gallery_image_2.url }}" alt="Gallery Image 2" loading="lazy">
+            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_2.url }}')" role="listitem" tabindex="0" aria-label="{% trans 'Open gallery image' %} 2">
+              <img src="{{ project.gallery_image_2.url }}" alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags }}{% else %}{{ project.title_en|striptags }}{% endif %} - {% trans 'Gallery Image' %} 2" loading="lazy" itemprop="image">
               <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
+                <i data-lucide="zoom-in" aria-hidden="true"></i>
               </div>
             </div>
           {% endif %}
           {% if project.gallery_image_3 %}
-            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_3.url }}')">
-              <img src="{{ project.gallery_image_3.url }}" alt="Gallery Image 3" loading="lazy">
+            <div class="gallery-item" onclick="openLightbox('{{ project.gallery_image_3.url }}')" role="listitem" tabindex="0" aria-label="{% trans 'Open gallery image' %} 3">
+              <img src="{{ project.gallery_image_3.url }}" alt="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags }}{% else %}{{ project.title_en|striptags }}{% endif %} - {% trans 'Gallery Image' %} 3" loading="lazy" itemprop="image">
               <div class="gallery-overlay">
-                <i data-lucide="zoom-in"></i>
+                <i data-lucide="zoom-in" aria-hidden="true"></i>
               </div>
             </div>
           {% endif %}
@@ -183,14 +200,84 @@
   "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/{{ project.slug }}/",
   "inLanguage": "{{ CURRENT_LANG }}",
   "dateCreated": "{{ project.project_date|date:'c' }}",
-  {% if project.featured_image %}"image": "https://lazysoft.pl{{ project.featured_image.url }}",{% endif %}
+  "dateModified": "{{ project.date_updated|date:'c' }}",
+  {% if project.featured_image %}"image": [
+    "https://lazysoft.pl{{ project.featured_image.url }}"{% if project.gallery_image_1 %},
+    "https://lazysoft.pl{{ project.gallery_image_1.url }}"{% endif %}{% if project.gallery_image_2 %},
+    "https://lazysoft.pl{{ project.gallery_image_2.url }}"{% endif %}
+  ],{% endif %}
   {% if project.technologies_used %}"keywords": "{{ project.technologies_used }}",{% endif %}
   {% if project.project_url %}"workExample": "{{ project.project_url }}",{% endif %}
   "creator": {
     "@type": "Organization",
     "name": "Lazysoft",
-    "url": "https://lazysoft.pl"
-  }
+    "url": "https://lazysoft.pl",
+    "logo": "https://lazysoft.pl/static/images/logo.svg"
+  }{% if project.category %},
+  "about": {
+    "@type": "Thing",
+    "name": "{% if CURRENT_LANG == 'uk' and project.category.title_uk %}{{ project.category.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.category.title_pl %}{{ project.category.title_pl|escapejs }}{% else %}{{ project.category.title_en|escapejs }}{% endif %}"
+  }{% endif %}
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "{% trans 'Home' %}",
+      "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{% trans 'Projects' %}",
+      "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags|escapejs }}{% else %}{{ project.title_en|striptags|escapejs }}{% endif %}",
+      "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/{{ project.slug }}/"
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "{% trans 'What was the client request for' %} {% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags|escapejs }}{% else %}{{ project.title_en|striptags|escapejs }}{% endif %}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% if CURRENT_LANG == 'uk' and project.client_request_uk %}{{ project.client_request_uk|striptags|escapejs|truncatewords:50 }}{% elif CURRENT_LANG == 'pl' and project.client_request_pl %}{{ project.client_request_pl|striptags|escapejs|truncatewords:50 }}{% else %}{{ project.client_request_en|striptags|escapejs|truncatewords:50 }}{% endif %}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{% trans 'What technologies were used' %}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ project.technologies_used|default:'AI, Automation, Custom Development' }}"
+      }
+    }{% if project.results_uk or project.results_en %},
+    {
+      "@type": "Question",
+      "name": "{% trans 'What were the results' %}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% if CURRENT_LANG == 'uk' and project.results_uk %}{{ project.results_uk|striptags|escapejs|truncatewords:50 }}{% elif CURRENT_LANG == 'pl' and project.results_pl %}{{ project.results_pl|striptags|escapejs|truncatewords:50 }}{% else %}{{ project.results_en|striptags|escapejs|truncatewords:50 }}{% endif %}"
+      }
+    }{% endif %}
+  ]
 }
 </script>
 

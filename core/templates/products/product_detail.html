@@ -1,0 +1,441 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}{{ seo_title }}{% endblock %}
+{% block meta_description %}{{ seo_description }}{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/{{ product.slug }}/" />
+  <link rel="alternate" href="https://lazysoft.pl/products/{{ product.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/uk/products/{{ product.slug }}/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.pl/pl/products/{{ product.slug }}/" hreflang="pl">
+
+  <meta property="og:title" content="{{ seo_title }}">
+  <meta property="og:description" content="{{ seo_description }}">
+  {% if og_image %}<meta property="og:image" content="https://lazysoft.pl{{ og_image.url }}">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">{% endif %}
+  <meta property="og:type" content="product">
+  <meta property="og:url" content="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/{{ product.slug }}/">
+  <meta property="og:site_name" content="LAZYSOFT">
+  <meta property="product:price:amount" content="{% if pricing_packages %}{{ pricing_packages.0.object.price }}{% endif %}">
+  <meta property="product:price:currency" content="{% if pricing_packages %}{{ pricing_packages.0.object.currency }}{% endif %}">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ seo_title }}">
+  <meta name="twitter:description" content="{{ seo_description }}">
+  {% if og_image %}<meta name="twitter:image" content="https://lazysoft.pl{{ og_image.url }}">{% endif %}
+  
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+{% endblock %}
+
+{% block content %}
+<article class="product-detail-page" itemscope itemtype="https://schema.org/Product">
+
+  <section class="product-hero">
+    <div class="container">
+      <div class="product-hero-content">
+        <div class="product-hero-text">
+          <h1 itemprop="name">{{ title }}</h1>
+          {% if short_description %}
+            <div class="product-tagline" itemprop="description">{{ short_description|safe }}</div>
+          {% endif %}
+
+          <div class="product-hero-cta">
+            <a href="{{ product.cta_url }}" class="cta-button cta-primary" target="_blank" rel="noopener" aria-label="{{ cta_text }} - {{ title|striptags }}" itemprop="url">
+              <i data-lucide="rocket" aria-hidden="true"></i>
+              {{ cta_text }}
+            </a>
+            {% if pricing_packages %}
+              <a href="#pricing" class="cta-button cta-secondary" aria-label="{% trans 'View pricing plans' %}">
+                <i data-lucide="dollar-sign" aria-hidden="true"></i>
+                {% if CURRENT_LANG == 'uk' %}Переглянути ціни
+                {% elif CURRENT_LANG == 'pl' %}Zobacz ceny
+                {% else %}View Pricing{% endif %}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if product.featured_image %}
+          <div class="product-hero-image" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+            <img src="{{ product.featured_image.url }}" alt="{{ title|striptags }} - {% trans 'Main Product Image' %}" loading="lazy" itemprop="url">
+            <meta itemprop="width" content="1200">
+            <meta itemprop="height" content="800">
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  {% if description %}
+    <section class="product-description-section" aria-labelledby="about-heading">
+      <div class="container">
+        <h2 id="about-heading">
+          {% if CURRENT_LANG == 'uk' %}Про продукт
+          {% elif CURRENT_LANG == 'pl' %}O produkcie
+          {% else %}About Product{% endif %}
+        </h2>
+        <div class="content-block" itemprop="description">{{ description|safe }}</div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if features %}
+    <section class="product-features-section" aria-labelledby="features-heading">
+      <div class="container">
+        <h2 id="features-heading">
+          {% if CURRENT_LANG == 'uk' %}Ключові можливості
+          {% elif CURRENT_LANG == 'pl' %}Kluczowe funkcje
+          {% else %}Key Features{% endif %}
+        </h2>
+        <div class="features-content" itemprop="additionalProperty">{{ features|safe }}</div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if pricing_packages %}
+    <section class="product-pricing-section" id="pricing" aria-labelledby="pricing-heading">
+      <div class="container">
+        <h2 id="pricing-heading">
+          {% if CURRENT_LANG == 'uk' %}Тарифні плани
+          {% elif CURRENT_LANG == 'pl' %}Plany cenowe
+          {% else %}Pricing Plans{% endif %}
+        </h2>
+
+        <div class="pricing-grid" itemprop="offers" itemscope itemtype="https://schema.org/AggregateOffer">
+          {% for package_data in pricing_packages %}
+            <div class="pricing-card {% if package_data.is_recommended %}recommended{% endif %}">
+              {% if package_data.is_recommended %}
+                <div class="recommended-badge">
+                  {% if CURRENT_LANG == 'uk' %}Рекомендовано
+                  {% elif CURRENT_LANG == 'pl' %}Polecane
+                  {% else %}Recommended{% endif %}
+                </div>
+              {% endif %}
+
+              <h3>{{ package_data.name|capfirst }}</h3>
+
+              <div class="price">
+                <span class="price-value">{{ package_data.price_display }}</span>
+                <span class="price-period">/{{ package_data.billing_period }}</span>
+              </div>
+
+              {% if package_data.description %}
+                <div class="package-description">{{ package_data.description|safe }}</div>
+              {% endif %}
+
+              {% if package_data.features %}
+                <div class="package-features">{{ package_data.features|safe }}</div>
+              {% endif %}
+
+              {% if package_data.has_trial %}
+                <div class="trial-badge">
+                  🎁 {% if CURRENT_LANG == 'uk' %}{{ package_data.trial_days }} днів безкоштовно
+                  {% elif CURRENT_LANG == 'pl' %}{{ package_data.trial_days }} dni za darmo
+                  {% else %}{{ package_data.trial_days }} days free{% endif %}
+                </div>
+              {% endif %}
+
+              <a href="{{ product.cta_url }}" class="package-cta-btn" target="_blank" rel="noopener">
+                {% if package_data.has_trial %}
+                  {% if CURRENT_LANG == 'uk' %}Спробувати безкоштовно
+                  {% elif CURRENT_LANG == 'pl' %}Wypróbuj za darmo
+                  {% else %}Try Free{% endif %}
+                {% else %}
+                  {% if CURRENT_LANG == 'uk' %}Почати
+                  {% elif CURRENT_LANG == 'pl' %}Rozpocznij
+                  {% else %}Get Started{% endif %}
+                {% endif %}
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if target_audience %}
+    <section class="product-target-section">
+      <div class="container">
+        <h2>
+          {% if CURRENT_LANG == 'uk' %}Для кого цей продукт
+          {% elif CURRENT_LANG == 'pl' %}Dla kogo jest ten produkt
+          {% else %}Who is this for{% endif %}
+        </h2>
+        <div class="content-block">{{ target_audience|safe }}</div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if gallery_images %}
+    <section class="product-gallery-section" aria-labelledby="gallery-heading">
+      <div class="container">
+        <h2 id="gallery-heading">
+          {% if CURRENT_LANG == 'uk' %}Галерея
+          {% elif CURRENT_LANG == 'pl' %}Galeria
+          {% else %}Gallery{% endif %}
+        </h2>
+        <div class="gallery-grid" role="list">
+          {% for image in gallery_images %}
+            <div class="gallery-item" onclick="openLightbox('{{ image.url }}')" role="listitem" tabindex="0" aria-label="{% trans 'Open gallery image' %} {{ forloop.counter }}">
+              <img src="{{ image.url }}" alt="{{ title|striptags }} - {% trans 'Gallery Image' %} {{ forloop.counter }}" loading="lazy" itemprop="image">
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if reviews %}
+    <section class="product-reviews-section" aria-labelledby="reviews-heading">
+      <div class="container">
+        <h2 id="reviews-heading">
+          {% if CURRENT_LANG == 'uk' %}Відгуки
+          {% elif CURRENT_LANG == 'pl' %}Opinie
+          {% else %}Reviews{% endif %}
+        </h2>
+
+        <div class="reviews-grid" itemprop="review" itemscope itemtype="https://schema.org/Review">
+          {% for review_data in reviews %}
+            <div class="review-card">
+              <div class="review-rating">
+                {% for i in "12345" %}
+                  {% if forloop.counter <= review_data.rating %}⭐{% endif %}
+                {% endfor %}
+              </div>
+
+              <div class="review-text">{{ review_data.review_text|safe }}</div>
+
+              <div class="review-author">
+                {% if review_data.author_avatar %}
+                  <img src="{{ review_data.author_avatar.url }}" alt="{{ review_data.author_name }}" class="author-avatar">
+                {% endif %}
+                <div class="author-info">
+                  <strong>{{ review_data.author_name }}</strong>
+                  {% if review_data.author_position %}
+                    <span>{{ review_data.author_position }}</span>
+                  {% endif %}
+                  {% if review_data.author_company %}
+                    <span>{{ review_data.author_company }}</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if related_services or related_projects or related_articles %}
+    <section class="related-content-section">
+      <div class="container">
+        <h2>
+          {% if CURRENT_LANG == 'uk' %}Пов'язаний контент
+          {% elif CURRENT_LANG == 'pl' %}Powiązana treść
+          {% else %}Related Content{% endif %}
+        </h2>
+
+        <div class="related-grid">
+          {% for service in related_services %}
+            <a href="{% url 'services:service_detail' slug=service.slug %}" class="related-card">
+              <span class="related-type">{% trans "Service" %}</span>
+              <h3>{{ service.get_title }}</h3>
+            </a>
+          {% endfor %}
+
+          {% for project in related_projects %}
+            <a href="{{ project.get_absolute_url }}" class="related-card">
+              <span class="related-type">{% trans "Project" %}</span>
+              <h3>{{ project.title_uk }}</h3>
+            </a>
+          {% endfor %}
+
+          {% for article in related_articles %}
+            <a href="{{ article.get_absolute_url }}" class="related-card">
+              <span class="related-type">{% trans "Article" %}</span>
+              <h3>{{ article.get_title }}</h3>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  <section class="product-final-cta">
+    <div class="container">
+      <h2>
+        {% if CURRENT_LANG == 'uk' %}Готові почати?
+        {% elif CURRENT_LANG == 'pl' %}Gotowy zacząć?
+        {% else %}Ready to get started?{% endif %}
+      </h2>
+      <a href="{{ product.cta_url }}" class="cta-button cta-primary cta-large" target="_blank" rel="noopener">
+        <i data-lucide="rocket"></i>
+        {{ cta_text }}
+      </a>
+    </div>
+  </section>
+
+  {% include 'includes/social_share.html' %}
+
+</article>
+
+<div id="lightbox" class="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-content">
+    <img id="lightbox-image" src="" alt="{{ title }} - {% trans 'Gallery' %}">
+    <button class="lightbox-close" onclick="closeLightbox()" aria-label="{% trans 'Close gallery' %}">
+      <i data-lucide="x"></i>
+    </button>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/sections/product_detail_custom.css' %}?v=1.0">
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ title|escapejs }}",
+  "description": "{{ seo_description|escapejs }}",
+  "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/{{ product.slug }}/",
+  "inLanguage": "{{ CURRENT_LANG }}",
+  {% if og_image %}"image": "https://lazysoft.pl{{ og_image.url }}",{% endif %}
+  {% if product.featured_image %}"image": [
+    "https://lazysoft.pl{{ product.featured_image.url }}"{% if og_image %},
+    "https://lazysoft.pl{{ og_image.url }}"{% endif %}
+  ],{% endif %}
+  "brand": {
+    "@type": "Organization",
+    "name": "Lazysoft",
+    "url": "https://lazysoft.pl",
+    "logo": "https://lazysoft.pl/static/images/logo.svg"
+  }{% if pricing_packages %},
+  "offers": [
+    {% for package_data in pricing_packages %}
+    {
+      "@type": "Offer",
+      "name": "{{ package_data.name|escapejs }}",
+      "price": "{{ package_data.object.price }}",
+      "priceCurrency": "{{ package_data.object.currency }}",
+      "url": "{{ product.cta_url }}",
+      "availability": "https://schema.org/InStock",
+      "priceValidUntil": "2025-12-31"{% if package_data.description %},
+      "description": "{{ package_data.description|striptags|escapejs|truncatewords:30 }}"{% endif %}
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]{% endif %}{% if reviews %},
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{% widthratio reviews|length reviews|length 5 %}",
+    "reviewCount": "{{ reviews|length }}",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
+  "review": [
+    {% for review_data in reviews %}
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "{{ review_data.author_name|escapejs }}"
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "{{ review_data.rating }}",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "reviewBody": "{{ review_data.review_text|striptags|escapejs|truncatewords:50 }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]{% endif %}
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "{% trans 'Home' %}",
+      "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "{% trans 'Products' %}",
+      "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ title|escapejs }}",
+      "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/{{ product.slug }}/"
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "{% trans 'What is' %} {{ title|escapejs }}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ description|striptags|escapejs|truncatewords:50 }}"
+      }
+    }{% if pricing_packages %},
+    {
+      "@type": "Question",
+      "name": "{% trans 'How much does' %} {{ title|escapejs }} {% trans 'cost' %}?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{% trans 'Pricing starts from' %} {{ pricing_packages.0.price_display }} {{ pricing_packages.0.billing_period }}. {% trans 'Multiple packages available' %}."
+      }
+    }{% endif %}
+  ]
+}
+</script>
+
+<script>
+function openLightbox(imageSrc) {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightbox-image');
+  lightboxImage.src = imageSrc;
+  lightbox.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  lightbox.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeLightbox();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+});
+</script>
+{% endblock %}

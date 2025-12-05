@@ -139,12 +139,35 @@ def home(request):
 
     # Отримуємо featured product для відображення на головній
     featured_product = None
+    featured_products = []
     try:
         from products.models import Product
         featured_product = Product.objects.filter(
             is_active=True,
             is_featured=True
         ).order_by('-priority', '-date_created').first()
+        
+        # Отримуємо всі featured products для секції
+        featured_products_qs = Product.objects.filter(
+            is_active=True,
+            is_featured=True
+        ).order_by('-priority', 'order')[:3]  # Топ-3 продукти
+        
+        # Підготовка даних для шаблону
+        for product in featured_products_qs:
+            featured_products.append({
+                'url': product.get_absolute_url(language),
+                'title': product.get_title(language),
+                'short_description': product.get_short_description(language) or '',
+                'image': product.featured_image,
+                'icon': product.icon,
+                'cta_text': product.get_cta_text(language),
+                'is_featured': product.is_featured,
+                'is_top': product.priority >= 5,
+                'priority': product.priority,
+                'packages_count': product.pricing_packages.filter(is_active=True).count(),
+                'tags': list(product.tags.filter(is_active=True)[:3]) if hasattr(product, 'tags') else [],
+            })
     except Exception:
         pass
 
@@ -167,7 +190,8 @@ def home(request):
         'featured_projects': featured_projects,
         'services': services,
         'home_hero': hero,
-        'featured_product': featured_product,  # Додано для ProductCard
+        'featured_product': featured_product,  # Додано для ProductCard (один)
+        'featured_products': featured_products,  # Додано для Products Home Section (список)
         'about_card': about_card,  # Додано для AboutCard
     }
 

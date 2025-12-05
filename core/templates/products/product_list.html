@@ -1,0 +1,245 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}
+  {% if CURRENT_LANG == 'uk' %}Продукти - LAZYSOFT
+  {% elif CURRENT_LANG == 'pl' %}Produkty - LAZYSOFT
+  {% else %}Products - LAZYSOFT{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+  {% if CURRENT_LANG == 'uk' %}Досліджуйте наші інноваційні AI продукти та рішення
+  {% elif CURRENT_LANG == 'pl' %}Poznaj nasze innowacyjne produkty i rozwiązania AI
+  {% else %}Explore our innovative AI products and solutions{% endif %}
+{% endblock %}
+
+{% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/" />
+  <link rel="alternate" href="https://lazysoft.pl/products/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/uk/products/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.pl/pl/products/" hreflang="pl">
+
+  <meta property="og:title" content="{% trans 'Products - LAZYSOFT' %}">
+  <meta property="og:description" content="{% trans 'Explore our innovative AI products and solutions' %}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/">
+  <meta property="og:site_name" content="LAZYSOFT">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% trans 'Products - LAZYSOFT' %}">
+  <meta name="twitter:description" content="{% trans 'Explore our innovative AI products and solutions' %}">
+  
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+{% endblock %}
+
+{% block content %}
+<main class="products-page">
+
+  <section class="products-hero-section">
+    <div class="container">
+      <div class="hero-content">
+      <h1>
+        {% if CURRENT_LANG == 'uk' %}Наші Продукти
+        {% elif CURRENT_LANG == 'pl' %}Nasze Produkty
+        {% else %}Our Products{% endif %}
+      </h1>
+        
+        <p class="products-subtitle">
+        {% if CURRENT_LANG == 'uk' %}Інноваційні AI рішення для вашого бізнесу
+        {% elif CURRENT_LANG == 'pl' %}Innowacyjne rozwiązania AI dla Twojego biznesu
+        {% else %}Innovative AI solutions for your business{% endif %}
+      </p>
+
+        <div class="products-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ products|length }}+</span>
+            <span class="stat-label">
+              {% if CURRENT_LANG == 'uk' %}Продуктів
+              {% elif CURRENT_LANG == 'pl' %}Produktów
+              {% else %}Products{% endif %}
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">
+              {% if CURRENT_LANG == 'uk' %}AI-Powered
+              {% elif CURRENT_LANG == 'pl' %}AI-Powered
+              {% else %}AI-Powered{% endif %}
+            </span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">
+              {% if CURRENT_LANG == 'uk' %}Підтримка
+              {% elif CURRENT_LANG == 'pl' %}Wsparcie
+              {% else %}Support{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="products-grid-section">
+    <div class="container">
+      <div class="products-layout">
+        
+        <div class="products-main">
+      <div class="products-grid">
+        {% for product_data in products %}
+              <article class="product-card clickable" data-href="{{ product_data.url }}" onclick="window.location.href=this.dataset.href;" itemscope itemtype="https://schema.org/Product">
+            {% if product_data.image %}
+              <div class="product-image">
+                    <img src="{{ product_data.image.url }}" alt="{{ product_data.title|striptags }} - {% trans 'Product Image' %}" loading="lazy" itemprop="image">
+              </div>
+            {% elif product_data.icon %}
+              <div class="product-icon">
+                    <img src="{{ product_data.icon.url }}" alt="{{ product_data.title|striptags }} - {% trans 'Product Icon' %}" loading="lazy" itemprop="image">
+              </div>
+            {% endif %}
+
+            <div class="product-content">
+                  <h3 itemprop="name">{{ product_data.title|safe }}</h3>
+                  
+                  <div class="product-description" itemprop="description">
+                    {{ product_data.short_description|striptags|truncatewords:25 }}
+                  </div>
+
+              {% if product_data.packages_count > 0 %}
+                    <div class="product-packages-badge" itemprop="offers" itemscope itemtype="https://schema.org/AggregateOffer">
+                      <meta itemprop="offerCount" content="{{ product_data.packages_count }}">
+                  {{ product_data.packages_count }}
+                  {% if CURRENT_LANG == 'uk' %}пакети
+                  {% elif CURRENT_LANG == 'pl' %}pakiety
+                  {% else %}packages{% endif %}
+                </div>
+              {% endif %}
+
+                  <div class="product-cta" role="button" aria-label="{% trans 'View' %} {{ product_data.title|striptags }}">
+                <span class="cta-primary-btn">{{ product_data.cta_text }}</span>
+                    <span class="arrow-icon" aria-hidden="true">→</span>
+              </div>
+            </div>
+          </article>
+        {% empty %}
+              <div class="empty-state">
+                <p>
+                  {% if CURRENT_LANG == 'uk' %}Наразі продукти недоступні
+                  {% elif CURRENT_LANG == 'pl' %}Obecnie brak dostępnych produktów
+                  {% else %}No products available at the moment{% endif %}
+                </p>
+              </div>
+        {% endfor %}
+          </div>
+        </div>
+
+        <aside class="products-sidebar">
+          <div class="sidebar-section glass card cta-sidebar">
+            <h3>
+              <i data-lucide="sparkles"></i>
+              {% if CURRENT_LANG == 'uk' %}Потрібна консультація?
+              {% elif CURRENT_LANG == 'pl' %}Potrzebujesz konsultacji?
+              {% else %}Need Consultation?{% endif %}
+            </h3>
+            <p class="cta-description">
+              {% if CURRENT_LANG == 'uk' %}Давайте обговоримо, який продукт найкраще підходить для вашого бізнесу
+              {% elif CURRENT_LANG == 'pl' %}Porozmawiajmy o tym, który produkt najlepiej pasuje do Twojego biznesu
+              {% else %}Let's discuss which product best fits your business needs{% endif %}
+            </p>
+            <button class="sidebar-cta-button" 
+                    onclick="window.ctaModal && window.ctaModal.show('products_list', 'Консультація по продуктах');">
+              <i data-lucide="message-circle"></i>
+              {% if CURRENT_LANG == 'uk' %}Замовити консультацію
+              {% elif CURRENT_LANG == 'pl' %}Zamów konsultację
+              {% else %}Get Consultation{% endif %}
+            </button>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  {% include 'includes/social_share.html' %}
+
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/sections/products.css' %}?v=1.0">
+<link rel="stylesheet" href="{% static 'css/sidebar_desktop.css' %}?v=1.3">
+<link rel="stylesheet" href="{% static 'css/sidebar_mobile.css' %}?v=1.3">
+{% endblock %}
+
+{% block extra_scripts %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "{% if CURRENT_LANG == 'uk' %}Продукти - LAZYSOFT{% elif CURRENT_LANG == 'pl' %}Produkty - LAZYSOFT{% else %}Products - LAZYSOFT{% endif %}",
+  "description": "{% if CURRENT_LANG == 'uk' %}Досліджуйте наші інноваційні AI продукти{% elif CURRENT_LANG == 'pl' %}Poznaj nasze innowacyjne produkty AI{% else %}Explore our innovative AI products{% endif %}",
+  "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/",
+  "inLanguage": "{{ CURRENT_LANG }}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "{% trans 'Home' %}",
+        "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "{% trans 'Products' %}",
+        "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/"
+      }
+    ]
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "numberOfItems": {{ products|length }},
+    "itemListElement": [
+      {% for product_data in products %}
+      {
+        "@type": "Product",
+        "position": {{ forloop.counter }},
+        "name": "{{ product_data.title|escapejs }}",
+        "description": "{{ product_data.short_description|striptags|escapejs|truncatewords:30 }}",
+        "url": "https://lazysoft.pl{{ product_data.url }}",
+        {% if product_data.image %}"image": "https://lazysoft.pl{{ product_data.image.url }}",{% endif %}
+        "brand": {
+          "@type": "Organization",
+          "name": "Lazysoft"
+        },
+        "offers": {
+          "@type": "AggregateOffer",
+          "priceCurrency": "USD",
+          "offerCount": "{{ product_data.packages_count }}",
+          "availability": "https://schema.org/InStock"
+        }
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Lazysoft",
+  "url": "https://lazysoft.pl",
+  "logo": "https://lazysoft.pl/static/images/logo.svg",
+  "description": "{% if CURRENT_LANG == 'uk' %}Інноваційні AI рішення для бізнесу{% elif CURRENT_LANG == 'pl' %}Innowacyjne rozwiązania AI dla biznesu{% else %}Innovative AI solutions for business{% endif %}",
+  "sameAs": [
+    "https://www.linkedin.com/company/lazysoft",
+    "https://twitter.com/lazysoft",
+    "https://www.facebook.com/lazysoft"
+  ]
+}
+</script>
+{% endblock %}

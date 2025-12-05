@@ -65,6 +65,16 @@
   {{ block.super }}
   
   <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/" />
+  <link rel="alternate" href="https://lazysoft.pl/services/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/uk/services/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.pl/pl/services/" hreflang="pl">
+  
+  <meta property="og:site_name" content="LAZYSOFT">
+  <meta property="og:url" content="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   
   <script type="application/ld+json">
   {

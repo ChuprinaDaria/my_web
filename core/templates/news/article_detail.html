@@ -9,15 +9,39 @@
 {% block og_description %}{{ og_description|default:page_description }}{% endblock %}
 {% block og_image %}{{ og_image }}{% endblock %}
 {% block extra_meta %}
+  <link rel="canonical" href="https://lazysoft.pl{{ request.path }}" />
+  
+  <link rel="alternate" href="https://lazysoft.pl/en/news/{{ article.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/uk/news/{{ article.slug }}/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.pl/pl/news/{{ article.slug }}/" hreflang="pl">
+  
+  <meta property="og:site_name" content="LAZYSOFT">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://lazysoft.pl{{ request.path }}">
+  {% if og_image %}<meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">{% endif %}
+  <meta property="article:published_time" content="{{ article.published_at|date:'c' }}">
+  <meta property="article:modified_time" content="{{ article.date_updated|date:'c' }}">
+  {% if article.category %}<meta property="article:section" content="{{ article.category.get_name }}">{% endif %}
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ og_title|default:page_title }}">
+  <meta name="twitter:description" content="{{ og_description|default:page_description }}">
+  {% if og_image %}<meta name="twitter:image" content="{{ og_image }}">{% endif %}
+  
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
 {% news_json_ld article %}
 {% endblock %}
 {% block content %}
-<article class="news-detail-page">
-  <section class="news-hero hero compact">
+<article class="news-detail-page" itemscope itemtype="https://schema.org/NewsArticle">
+  <meta itemprop="inLanguage" content="{{ CURRENT_LANG }}">
+  
+  <section class="news-hero hero compact" aria-labelledby="article-title">
     <div class="container">
       <div class="hero-content">
         
-        <h1 class="article-title">
+        <h1 id="article-title" class="article-title" itemprop="headline">
           {{ article_title|safe }}
         </h1>
 
@@ -35,9 +59,10 @@
         </div>
 
         <div class="article-info">
-          <time datetime="{{ article.published_at|date:'c' }}" class="publish-date">
+          <time datetime="{{ article.published_at|date:'c' }}" class="publish-date" itemprop="datePublished">
             📅 {{ article.published_at|date:'j F Y' }}
           </time>
+          <meta itemprop="dateModified" content="{{ article.date_updated|date:'c' }}">
           <span class="reading-time">⏱️ {{ article.get_reading_time }} {% trans "min" %}</span>
           <span class="views-count">👁️ {{ article.get_total_views }} {% trans "views" %}</span>
           {% if article.original_source_url and article.original_source_name %}

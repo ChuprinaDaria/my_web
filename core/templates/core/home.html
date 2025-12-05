@@ -59,24 +59,109 @@
   <link rel="alternate" href="https://lazysoft.pl/pl/" hreflang="pl">
   <link rel="alternate" href="https://lazysoft.pl/" hreflang="x-default">
   
+  <meta property="og:site_name" content="LAZYSOFT">
+  <meta property="og:url" content="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  
   <link rel="stylesheet" href="{% static 'css/components/home_news_carousel_fix.css' %}">
   
   <meta name="apple-itunes-app" content="app-id=lazysoft-app">
   <meta name="google-play-app" content="app-id=com.lazysoft.app">
   
-  <!-- Schema.org is now handled by the centralized include -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Lazysoft",
+    "url": "https://lazysoft.pl",
+    "logo": "https://lazysoft.pl/static/images/logo.svg",
+    "description": "{% if CURRENT_LANG == 'uk' %}Провідна компанія з ШІ автоматизації та розробки програмного забезпечення{% elif CURRENT_LANG == 'pl' %}Wiodąca firma automatyzacji AI i rozwoju oprogramowania{% else %}Leading AI automation and custom software development company{% endif %}",
+    "foundingDate": "2020",
+    "email": "contact@lazysoft.pl",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "PL"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/company/lazysoft",
+      "https://twitter.com/lazysoft",
+      "https://www.facebook.com/lazysoft",
+      "https://github.com/lazysoft"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Customer Service",
+      "availableLanguage": ["English", "Ukrainian", "Polish"]
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Lazysoft",
+    "url": "https://lazysoft.pl",
+    "description": "{% if CURRENT_LANG == 'uk' %}ШІ автоматизація та кастомна розробка софту{% elif CURRENT_LANG == 'pl' %}Automatyzacja AI i niestandardowy rozwój oprogramowania{% else %}AI automation and custom software development{% endif %}",
+    "inLanguage": ["en", "uk", "pl"],
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://lazysoft.pl/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "{% trans 'What services does Lazysoft provide?' %}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{% trans 'Lazysoft provides AI automation services, custom chatbot development, business process automation, web development, and seamless integrations. We specialize in creating intelligent solutions that drive business growth and efficiency.' %}"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "{% trans 'How can AI automation help my business?' %}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{% trans 'AI automation can streamline your business processes, reduce operational costs, improve customer service with chatbots, and provide data-driven insights for better decision making.' %}"
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "{% trans 'What technologies does Lazysoft use?' %}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{% trans 'We use cutting-edge technologies including Python, JavaScript, React, OpenAI GPT, TensorFlow, Node.js, and various APIs for Telegram, WhatsApp, and business integrations.' %}"
+        }
+      }
+    ]
+  }
+  </script>
 {% endblock %}
 
 {% block content %}
 
-<section id="home" class="hero">
+<section id="home" class="hero" itemscope itemtype="https://schema.org/Organization">
+  <meta itemprop="name" content="Lazysoft">
+  <meta itemprop="url" content="https://lazysoft.pl">
+  
   <div class="container">
     <div class="hero-content">
       <div class="hero-title-wrapper">
         <div class="hero-logo">
-          <img src="{% static 'images/Group.svg' %}" alt="Lazysoft" width="221" height="194">
+          <img src="{% static 'images/Group.svg' %}" alt="Lazysoft - {% trans 'AI Automation Company Logo' %}" width="221" height="194" itemprop="logo">
         </div>
-        <h1>Lazysoft</h1>
+        <h1 itemprop="name">Lazysoft</h1>
       </div>
       {% if home_hero %}
         {% get_current_language as CURRENT_LANG %}
@@ -150,7 +235,7 @@
 
 {% include "includes/ai_metrics_widget.html" %}
 
-{% include "includes/product_card_featured.html" %}
+{% include "includes/products_home_section.html" %}
 
 <section id="services-categories" class="services-categories">
   <div class="container">
@@ -292,6 +377,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/components/about_card.css' %}?v=1.0">
 <link rel="stylesheet" href="{% static 'css/components/news_digest.css' %}?v=1.2">
+<link rel="stylesheet" href="{% static 'css/components/product_card_home.css' %}?v=1.0">
 {% endblock %}
 
 {% block extra_scripts %}
