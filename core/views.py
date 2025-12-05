@@ -267,9 +267,20 @@ Allow: /uk/news/
 Allow: /pl/news/
 Allow: /en/news/
 
+# Google Image Bot - allow images for Rich Results
+User-agent: Googlebot-Image
+Allow: /media/projects/
+Allow: /media/services/
+Allow: /media/products/
+Allow: /static/images/
+
 # General crawlers
 User-agent: *
 Allow: /
+Allow: /media/projects/
+Allow: /media/services/
+Allow: /media/products/
+Allow: /static/images/
 
 # Sitemaps
 Sitemap: {site_url}/sitemap.xml
@@ -289,25 +300,23 @@ Disallow: /control/
 Disallow: /account/
 Disallow: /api/
 
-# Allow important pages
+# Allow important pages and media
 Allow: /en/
 Allow: /uk/
 Allow: /pl/
 Allow: /services/
 Allow: /projects/
+Allow: /products/
 Allow: /news/
 Allow: /about/
 Allow: /contacts/
 Allow: /consultant/
 
-# Disallow static files that don't need indexing
+# Disallow only sensitive files
 Disallow: /static/admin/
 Disallow: /static/ckeditor/
-Disallow: /media/ai_images/
 Disallow: /media/company/
 Disallow: /media/contacts/
-Disallow: /media/projects/
-Disallow: /media/services/
 
 # Crawl delay
 Crawl-delay: 1

@@ -11,13 +11,21 @@ def news_json_ld(context, article):
     """
     request = context.get('request')
     
-    # Формуємо абсолютний URL зображення
+    # Формуємо абсолютний URL зображення (завжди потрібен для схеми)
     image_url = ""
     if hasattr(article, 'ai_image_url') and article.ai_image_url:
         if request:
             image_url = request.build_absolute_uri(article.ai_image_url)
         else:
             image_url = article.ai_image_url  # ai_image_url вже містить повний URL
+    elif hasattr(article, 'featured_image') and article.featured_image:
+        if request:
+            image_url = request.build_absolute_uri(article.featured_image.url)
+        else:
+            image_url = f"https://lazysoft.pl{article.featured_image.url}"
+    else:
+        # Fallback до default зображення
+        image_url = "https://lazysoft.pl/static/images/default-news.png"
     
     # Формуємо абсолютний URL статті
     article_url = ""
@@ -40,16 +48,18 @@ def news_json_ld(context, article):
         "dateModified": article.updated_at.isoformat(),
         "author": {
             "@type": "Organization",
-            "name": "LazySoft",
-            "url": "https://lazysoft.pl"
+            "name": "LAZYSOFT",
+            "url": "https://lazysoft.pl",
+            "@id": "https://lazysoft.pl/#organization"
         },
         "publisher": {
             "@type": "Organization",
-            "name": "LazySoft",
+            "name": "LAZYSOFT",
+            "url": "https://lazysoft.pl",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://lazysoft.pl/static/images/logo.svg",  # Логотип LazySoft
-                "width": 600,
+                "url": "https://lazysoft.pl/static/images/logo.png",
+                "width": 200,
                 "height": 60
             }
         },
@@ -59,9 +69,14 @@ def news_json_ld(context, article):
         }
     }
     
-    # Додаємо зображення якщо є
-    if image_url:
-        schema["image"] = [image_url]
+    # Додаємо зображення (завжди обов'язкове для NewsArticle)
+    schema["image"] = image_url
+    
+    # Додаємо URL статті
+    schema["url"] = article_url
+    
+    # Додаємо мову
+    schema["inLanguage"] = current_language
     
     # Додаємо опис якщо є
     meta_description = article.get_meta_description(current_language)

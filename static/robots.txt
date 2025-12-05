@@ -1,16 +1,62 @@
 # Canonical domain (no www)
 Host: lazysoft.pl
 
-# Google News Bot - special rules for news indexing
+# Google News Bot - full access to news
 User-agent: Googlebot-News
+Allow: /
 Allow: /news/
 Allow: /uk/news/
 Allow: /pl/news/
 Allow: /en/news/
+Allow: /media/
+Allow: /static/
 
-# General crawlers
+# Google Image Bot - full access to images for Rich Results
+User-agent: Googlebot-Image
+Allow: /
+Allow: /media/
+Allow: /static/images/
+
+# Google Video Bot - allow videos
+User-agent: Googlebot-Video
+Allow: /
+Allow: /media/
+
+# Google Mobile Bot - full access for mobile indexing
+User-agent: Googlebot-Mobile
+Allow: /
+
+# Google Main Bot - full access
+User-agent: Googlebot
+Allow: /
+Allow: /media/
+Allow: /static/
+
+# Google AdsBot - for ads quality
+User-agent: AdsBot-Google
+Allow: /
+
+# Bing Bot - full access
+User-agent: Bingbot
+Allow: /
+
+# Yandex Bot - full access
+User-agent: Yandex
+Allow: /
+
+# General crawlers - allow everything except restricted
 User-agent: *
 Allow: /
+Allow: /media/
+Allow: /static/
+Allow: /*.js
+Allow: /*.css
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.gif
+Allow: /*.svg
+Allow: /*.webp
 
 # Sitemaps
 Sitemap: https://lazysoft.pl/sitemap.xml
@@ -30,25 +76,35 @@ Disallow: /control/
 Disallow: /account/
 Disallow: /api/
 
-# Allow important pages
+# Allow important pages and media
 Allow: /en/
 Allow: /uk/
 Allow: /pl/
 Allow: /services/
 Allow: /projects/
+Allow: /products/
 Allow: /news/
 Allow: /about/
 Allow: /contacts/
 Allow: /consultant/
 
-# Disallow static files that don't need indexing
+# Disallow only sensitive directories
 Disallow: /static/admin/
 Disallow: /static/ckeditor/
-Disallow: /media/ai_images/
-Disallow: /media/company/
-Disallow: /media/contacts/
-Disallow: /media/projects/
-Disallow: /media/services/
 
-# Crawl delay
-Crawl-delay: 1
+# Allow all media except private folders
+Allow: /media/projects/
+Allow: /media/services/
+Allow: /media/products/
+Allow: /media/hr/
+Disallow: /media/company/private/
+Disallow: /media/contacts/private/
+
+# Allow CSS and JS for proper rendering
+Allow: /*.css
+Allow: /*.js
+Allow: /*.css$
+Allow: /*.js$
+
+# No crawl delay for better indexing
+# Crawl-delay: 1

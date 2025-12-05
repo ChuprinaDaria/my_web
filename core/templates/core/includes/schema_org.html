@@ -17,7 +17,11 @@
   },
   "description": "{% if LANGUAGE_CODE == 'uk' %}Автоматизація та веб-розробка для бізнесу. Створюємо боти, AI рішення та сучасні веб-додатки.{% elif LANGUAGE_CODE == 'pl' %}Automatyzacja i tworzenie stron internetowych dla biznesu. Tworzymy boty, rozwiązania AI i nowoczesne aplikacje webowe.{% else %}Business automation and web development. We create bots, AI solutions and modern web applications.{% endif %}",
   "foundingDate": "2023",
-  "numberOfEmployees": "1-10",
+  "numberOfEmployees": {
+    "@type": "QuantitativeValue",
+    "minValue": 1,
+    "maxValue": 10
+  },
   "areaServed": [
     {
       "@type": "Country",
@@ -157,33 +161,35 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Article",
+  "@type": "NewsArticle",
   "headline": "{{ article.get_title|truncatechars:110|escapejs }}",
   "description": "{{ article.get_summary|truncatechars:160|escapejs }}",
-  "image": [
-    {% if article.featured_image %}"{{ SITE_URL }}{{ article.featured_image.url }}"{% else %}"{{ SITE_URL }}{% static 'images/default-news.png' %}"{% endif %}
-    {% if article.ai_image_url %}, "{{ article.ai_image_url }}"{% endif %}
-  ],
+  "image": {% if article.ai_image_url %}"{{ article.ai_image_url }}"{% elif article.featured_image %}"{{ SITE_URL }}{{ article.featured_image.url }}"{% else %}"{{ SITE_URL }}{% static 'images/default-news.png' %}"{% endif %},
   "datePublished": "{{ article.published_at|date:'c' }}",
   "dateModified": "{{ article.updated_at|date:'c' }}",
   "author": {
     "@type": "Organization",
     "@id": "{{ SITE_URL }}#organization",
-    "name": "{{ SITE_NAME }}"
+    "name": "{{ SITE_NAME }}",
+    "url": "{{ SITE_URL }}"
   },
   "publisher": {
     "@type": "Organization",
     "@id": "{{ SITE_URL }}#organization",
     "name": "{{ SITE_NAME }}",
+    "url": "{{ SITE_URL }}",
     "logo": {
       "@type": "ImageObject",
-      "url": "{{ SITE_URL }}{% static 'images/logo.png' %}"
+      "url": "{{ SITE_URL }}{% static 'images/logo.png' %}",
+      "width": 200,
+      "height": 60
     }
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
     "@id": "{{ SITE_URL }}{{ article.get_absolute_url }}"
   },
+  "url": "{{ SITE_URL }}{{ article.get_absolute_url }}",
   "articleSection": "{{ article.category.get_name|escapejs }}",
   "inLanguage": "{{ LANGUAGE_CODE }}",
   "keywords": "{% for takeaway in article.key_takeaways_en %}{{ takeaway|escapejs }}{% if not forloop.last %}, {% endif %}{% endfor %}",
@@ -307,36 +313,71 @@
 
 <!-- Projects List Schema (for projects listing page) -->
 {% if page_type == 'projects' and not project %}
+{% if all_projects %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
+  "@type": "ItemList",
   "name": "{% if LANGUAGE_CODE == 'uk' %}Наші проєкти{% elif LANGUAGE_CODE == 'pl' %}Nasze projekty{% else %}Our Projects{% endif %}",
   "description": "{% if LANGUAGE_CODE == 'uk' %}Портфоліо виконаних проєктів автоматизації та AI{% elif LANGUAGE_CODE == 'pl' %}Portfolio zrealizowanych projektów automatyzacji i AI{% else %}Portfolio of completed automation and AI projects{% endif %}",
   "url": "{{ SITE_URL }}{{ request.path }}",
-  "mainEntity": {
-    "@type": "ItemList",
-    "name": "{% if LANGUAGE_CODE == 'uk' %}Проєкти{% elif LANGUAGE_CODE == 'pl' %}Projekty{% else %}Projects{% endif %}"
-  }
+  "numberOfItems": {{ total_projects|default:2 }},
+  "itemListElement": [
+    {% for proj in all_projects|slice:":10" %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "CreativeWork",
+        "name": "{{ proj.title_en|default:proj.title_uk|escapejs }}",
+        "description": "{{ proj.short_description_en|default:proj.short_description_uk|truncatechars:160|escapejs }}",
+        "url": "{{ SITE_URL }}/{% if LANGUAGE_CODE != 'en' %}{{ LANGUAGE_CODE }}/{% endif %}projects/{{ proj.slug }}/",
+        "creator": {
+          "@type": "Organization",
+          "@id": "{{ SITE_URL }}#organization"
+        }{% if proj.featured_image %},
+        "image": "{{ SITE_URL }}{{ proj.featured_image.url }}"{% endif %}
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
 }
 </script>
+{% endif %}
 {% endif %}
 
 <!-- Services List Schema (for services listing page) -->
 {% if page_type == 'services' and not service_category %}
+{% if services_list %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
+  "@type": "ItemList",
   "name": "{% if LANGUAGE_CODE == 'uk' %}Наші послуги{% elif LANGUAGE_CODE == 'pl' %}Nasze usługi{% else %}Our Services{% endif %}",
   "description": "{% if LANGUAGE_CODE == 'uk' %}Комплексні послуги автоматизації та AI для бізнесу{% elif LANGUAGE_CODE == 'pl' %}Kompleksowe usługi automatyzacji i AI dla biznesu{% else %}Comprehensive automation and AI services for business{% endif %}",
   "url": "{{ SITE_URL }}{{ request.path }}",
-  "mainEntity": {
-    "@type": "ItemList",
-    "name": "{% if LANGUAGE_CODE == 'uk' %}Послуги{% elif LANGUAGE_CODE == 'pl' %}Usługi{% else %}Services{% endif %}"
-  }
+  "itemListElement": [
+    {% for serv in services_list %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "Service",
+        "name": "{{ serv.title_en|default:serv.title_uk|escapejs }}",
+        "description": "{{ serv.short_description_en|default:serv.short_description_uk|truncatechars:160|escapejs }}",
+        "url": "{{ SITE_URL }}/{% if LANGUAGE_CODE != 'en' %}{{ LANGUAGE_CODE }}/{% endif %}services/{{ serv.slug }}/",
+        "provider": {
+          "@type": "Organization",
+          "@id": "{{ SITE_URL }}#organization"
+        }{% if serv.main_image %},
+        "image": "{{ SITE_URL }}{{ serv.main_image.url }}"{% endif %}
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
 }
 </script>
+{% endif %}
 {% endif %}
 
 <!-- News/Blog List Schema (for news listing page) -->
@@ -344,18 +385,15 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "{% if LANGUAGE_CODE == 'uk' %}Новини{% elif LANGUAGE_CODE == 'pl' %}Aktualności{% else %}News{% endif %}",
+  "@type": "Blog",
+  "name": "{% if LANGUAGE_CODE == 'uk' %}Новини Lazysoft{% elif LANGUAGE_CODE == 'pl' %}Aktualności Lazysoft{% else %}Lazysoft News{% endif %}",
   "description": "{% if LANGUAGE_CODE == 'uk' %}Останні новини про AI та автоматизацію{% elif LANGUAGE_CODE == 'pl' %}Najnowsze wiadomości o AI i automatyzacji{% else %}Latest news about AI and automation{% endif %}",
   "url": "{{ SITE_URL }}{{ request.path }}",
-  "mainEntity": {
-    "@type": "Blog",
-    "name": "{% if LANGUAGE_CODE == 'uk' %}Блог Lazysoft{% elif LANGUAGE_CODE == 'pl' %}Blog Lazysoft{% else %}Lazysoft Blog{% endif %}",
-    "publisher": {
-      "@type": "Organization",
-      "@id": "{{ SITE_URL }}#organization"
-    }
-  }
+  "publisher": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization"
+  },
+  "inLanguage": "{{ LANGUAGE_CODE }}"
 }
 </script>
 {% endif %}
@@ -406,6 +444,123 @@
   }
 }
 </script>
+
+<!-- Featured Products on Homepage -->
+{% if featured_products %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{% if LANGUAGE_CODE == 'uk' %}Наші продукти{% elif LANGUAGE_CODE == 'pl' %}Nasze produkty{% else %}Our Products{% endif %}",
+  "itemListElement": [
+    {% for prod in featured_products %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "SoftwareApplication",
+        "name": "{{ prod.title|escapejs }}",
+        "description": "{{ prod.short_description|truncatechars:160|escapejs }}",
+        "url": "{{ SITE_URL }}{{ prod.url }}",
+        "applicationCategory": "BusinessApplication"{% if prod.image %},
+        "image": "{{ SITE_URL }}{{ prod.image.url }}"{% endif %}
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+
+<!-- Featured Projects on Homepage -->
+{% if featured_projects %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{% if LANGUAGE_CODE == 'uk' %}Featured проєкти{% elif LANGUAGE_CODE == 'pl' %}Wyróżnione projekty{% else %}Featured Projects{% endif %}",
+  "itemListElement": [
+    {% for proj in featured_projects %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "CreativeWork",
+        "name": "{{ proj.title_en|default:proj.title_uk|escapejs }}",
+        "description": "{{ proj.short_description_en|default:proj.short_description_uk|truncatechars:160|escapejs }}",
+        "url": "{{ SITE_URL }}/{% if LANGUAGE_CODE != 'en' %}{{ LANGUAGE_CODE }}/{% endif %}projects/{{ proj.slug }}/",
+        "creator": {
+          "@type": "Organization",
+          "@id": "{{ SITE_URL }}#organization"
+        }{% if proj.featured_image %},
+        "image": "{{ SITE_URL }}{{ proj.featured_image.url }}"{% endif %}
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+
+<!-- Latest News on Homepage -->
+{% if latest_articles %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{% if LANGUAGE_CODE == 'uk' %}Останні новини{% elif LANGUAGE_CODE == 'pl' %}Najnowsze wiadomości{% else %}Latest News{% endif %}",
+  "itemListElement": [
+    {% for article in latest_articles|slice:":5" %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "NewsArticle",
+        "headline": "{{ article.title_en|default:article.title_uk|truncatechars:110|escapejs }}",
+        "url": "{{ SITE_URL }}{{ article.get_absolute_url }}",
+        "datePublished": "{{ article.published_at|date:'c' }}",
+        "author": {
+          "@type": "Organization",
+          "@id": "{{ SITE_URL }}#organization"
+        }{% if article.ai_image_url %},
+        "image": "{{ article.ai_image_url }}"{% endif %}
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+
+<!-- Featured Services on Homepage -->
+{% if services %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "{% if LANGUAGE_CODE == 'uk' %}Наші послуги{% elif LANGUAGE_CODE == 'pl' %}Nasze usługi{% else %}Our Services{% endif %}",
+  "itemListElement": [
+    {% for serv in services|slice:":6" %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "Service",
+        "name": "{{ serv.title|escapejs }}",
+        "description": "{{ serv.short|truncatechars:160|escapejs }}",
+        "url": "{{ SITE_URL }}/{% if LANGUAGE_CODE != 'en' %}{{ LANGUAGE_CODE }}/{% endif %}services/{{ serv.slug }}/",
+        "provider": {
+          "@type": "Organization",
+          "@id": "{{ SITE_URL }}#organization"
+        }{% if serv.main_image %},
+        "image": "{{ SITE_URL }}{{ serv.main_image }}"{% endif %}
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
 {% endif %}
 
 <!-- Product Schema (for product detail pages) -->
@@ -421,27 +576,28 @@
   "offers": {
     "@type": "AggregateOffer",
     "priceCurrency": "{{ price_currency|default:'USD' }}",
-    {% if low_price and high_price %}
-    "lowPrice": "{{ low_price }}",
-    "highPrice": "{{ high_price }}",
-    {% endif %}
+    "lowPrice": "{{ low_price|default:'39' }}",
+    "highPrice": "{{ high_price|default:'99' }}",
     "availability": "https://schema.org/InStock",
     "url": "{{ SITE_URL }}{{ request.path }}",
-    "priceValidUntil": "{{ product.date_created|date:'Y' }}-12-31"
-    {% if reviews_count and reviews_count > 0 %},
-    "offerCount": "{{ pricing_packages|length }}"
-    {% endif %}
+    "priceValidUntil": "{% now 'Y' %}-12-31"{% if pricing_packages and pricing_packages|length > 0 %},
+    "offerCount": "{{ pricing_packages|length }}"{% endif %}
   },
-  {% if aggregate_rating and reviews_count %}
+  "image": {% if product.featured_image %}"{{ SITE_URL }}{{ product.featured_image.url }}"{% else %}"{{ SITE_URL }}{% static 'images/default-product.png' %}"{% endif %},
+  "provider": {
+    "@type": "Organization",
+    "@id": "{{ SITE_URL }}#organization"
+  },
+  "inLanguage": "{{ LANGUAGE_CODE }}",
+  "datePublished": "{{ product.date_created|date:'c' }}",
+  "dateModified": "{{ product.date_updated|date:'c' }}"{% if aggregate_rating and reviews_count and reviews_count > 0 %},
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "{{ aggregate_rating }}",
     "reviewCount": "{{ reviews_count }}",
     "bestRating": "5",
     "worstRating": "1"
-  },
-  {% endif %}
-  {% if reviews_count and reviews_count > 0 %}
+  }{% endif %}{% if reviews_raw and reviews_count and reviews_count > 0 %},
   "review": [
     {% for review in reviews_raw %}
     {
@@ -460,16 +616,7 @@
       "datePublished": "{{ review.date_created|date:'c' }}"
     }{% if not forloop.last %},{% endif %}
     {% endfor %}
-  ],
-  {% endif %}
-  "image": {% if product.featured_image %}"{{ SITE_URL }}{{ product.featured_image.url }}"{% else %}"{{ SITE_URL }}{% static 'images/default-product.png' %}"{% endif %},
-  "provider": {
-    "@type": "Organization",
-    "@id": "{{ SITE_URL }}#organization"
-  },
-  "inLanguage": "{{ LANGUAGE_CODE }}",
-  "datePublished": "{{ product.date_created|date:'c' }}",
-  "dateModified": "{{ product.date_updated|date:'c' }}"
+  ]{% endif %}
 }
 </script>
 {% endif %}

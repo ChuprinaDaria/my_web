@@ -139,7 +139,8 @@ def product_detail(request, slug):
     # Обчислюємо lowPrice та highPrice для AggregateOffer
     low_price = None
     high_price = None
-    price_currency = None
+    price_currency = 'USD'  # Default currency
+    
     if packages_data:
         # Збираємо всі ціни (price_from та price_to якщо є)
         prices = []
@@ -158,10 +159,14 @@ def product_detail(request, slug):
             high_price = max(prices)
             # Отримуємо валюту з першого пакету
             first_pkg = packages_data[0]['object']
-            if hasattr(first_pkg, 'currency'):
+            if hasattr(first_pkg, 'currency') and first_pkg.currency:
                 price_currency = first_pkg.currency
-            else:
-                price_currency = 'USD'  # fallback
+    
+    # Fallback значення для JSON-LD, якщо ціни не знайдено
+    if low_price is None:
+        low_price = 39.0  # Default starting price
+    if high_price is None:
+        high_price = 99.0  # Default max price
 
     context = {
         'product': product,  # Передаємо product для JSON-LD схеми

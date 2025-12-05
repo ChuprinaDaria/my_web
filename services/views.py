@@ -107,6 +107,7 @@ def services_list(request):
 
     return render(request, "services/services_list.html", {
         "services": services,
+        "services_list": items,  # Для JSON-LD ItemList схеми
         "faqs": localized_faqs,
         "related_projects": localized_projects,
         "related_articles": related_articles,
