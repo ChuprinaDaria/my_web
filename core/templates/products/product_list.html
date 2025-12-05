@@ -107,13 +107,12 @@
                   </div>
 
               {% if product_data.packages_count > 0 %}
-                    <div class="product-packages-badge" itemprop="offers" itemscope itemtype="https://schema.org/AggregateOffer">
-                      <meta itemprop="offerCount" content="{{ product_data.packages_count }}">
+                    <div class="product-packages-badge">
                   {{ product_data.packages_count }}
                   {% if CURRENT_LANG == 'uk' %}пакети
                   {% elif CURRENT_LANG == 'pl' %}pakiety
                   {% else %}packages{% endif %}
-                </div>
+                    </div>
               {% endif %}
 
                   <div class="product-cta" role="button" aria-label="{% trans 'View' %} {{ product_data.title|striptags }}">

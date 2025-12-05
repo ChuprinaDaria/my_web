@@ -84,9 +84,8 @@
               {% endif %}
               
               {% if product_data.packages_count > 0 %}
-                <span class="metric-home packages" itemprop="offers" itemscope itemtype="https://schema.org/AggregateOffer">
+                <span class="metric-home packages">
                   <i data-lucide="package" aria-hidden="true"></i>
-                  <meta itemprop="offerCount" content="{{ product_data.packages_count }}">
                   {{ product_data.packages_count }} 
                   {% if CURRENT_LANG == 'uk' %}пакети
                   {% elif CURRENT_LANG == 'pl' %}pakiety
