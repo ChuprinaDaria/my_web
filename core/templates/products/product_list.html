@@ -204,21 +204,14 @@
     "itemListElement": [
       {% for product_data in products %}
       {
-        "@type": "Product",
+        "@type": "ListItem",
         "position": {{ forloop.counter }},
-        "name": "{{ product_data.title|escapejs }}",
-        "description": "{{ product_data.short_description|striptags|escapejs|truncatewords:30 }}",
-        "url": "https://lazysoft.pl{{ product_data.url }}",
-        {% if product_data.image %}"image": "https://lazysoft.pl{{ product_data.image.url }}",{% endif %}
-        "brand": {
-          "@type": "Organization",
-          "name": "Lazysoft"
-        },
-        "offers": {
-          "@type": "AggregateOffer",
-          "priceCurrency": "USD",
-          "offerCount": "{{ product_data.packages_count }}",
-          "availability": "https://schema.org/InStock"
+        "item": {
+          "@type": "Thing",
+          "name": "{{ product_data.title|escapejs }}",
+          "description": "{{ product_data.short_description|striptags|escapejs|truncatewords:30 }}",
+          "url": "https://lazysoft.pl{{ product_data.url }}"{% if product_data.image %},
+          "image": "https://lazysoft.pl{{ product_data.image.url }}"{% endif %}
         }
       }{% if not forloop.last %},{% endif %}
       {% endfor %}
