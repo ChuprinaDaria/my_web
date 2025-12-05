@@ -403,16 +403,19 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Product",
+  "@type": ["Product", "SoftwareApplication"],
   "name": "{{ title|escapejs }}",
   "description": "{{ seo_description|escapejs }}",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web-based",
   "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}products/{{ product.slug }}/",
   "inLanguage": "{{ CURRENT_LANG }}",
-  {% if og_image %}"image": "https://lazysoft.pl{{ og_image.url }}",{% endif %}
-  {% if product.featured_image %}"image": [
-    "https://lazysoft.pl{{ product.featured_image.url }}"{% if og_image %},
-    "https://lazysoft.pl{{ og_image.url }}"{% endif %}
-  ],{% endif %}
+  {% if product.featured_image or og_image %}
+  "image": [
+    {% if product.featured_image %}"https://lazysoft.pl{{ product.featured_image.url }}"{% if og_image %},{% endif %}{% endif %}
+    {% if og_image %}"https://lazysoft.pl{{ og_image.url }}"{% endif %}
+  ],
+  {% endif %}
   "brand": {
     "@type": "Organization",
     "name": "Lazysoft",
