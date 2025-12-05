@@ -11,7 +11,7 @@
     {% if related_projects %}
       <div class="related-projects-list">
         {% for project in related_projects %}
-          <a href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" class="project-item">
+          <a href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/{{ project.slug }}/" class="project-item">
             <div class="project-icon">
               {% if project.featured_image %}
                 <img src="{{ project.featured_image.url }}" alt="{{ project.title_en }}" loading="lazy">

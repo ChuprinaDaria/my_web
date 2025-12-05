@@ -8,19 +8,19 @@
     </h2>
     
     <div class="related-grid">
-      <a href="/{{ CURRENT_LANG }}/projects/" class="related-card">
+      <a href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/" class="related-card">
         <i data-lucide="rocket" class="card-icon"></i>
         <h3>{% trans "Our Projects" %}</h3>
         <p>{% trans "See what we've created for our clients" %}</p>
       </a>
       
-      <a href="/{{ CURRENT_LANG }}/services/" class="related-card">
+      <a href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/" class="related-card">
         <i data-lucide="zap" class="card-icon"></i>
         <h3>{% trans "Our Services" %}</h3>
         <p>{% trans "Learn how we can help your business" %}</p>
       </a>
       
-      <a href="/{{ CURRENT_LANG }}/about/" class="related-card">
+      <a href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}about/" class="related-card">
         <i data-lucide="lightbulb" class="card-icon"></i>
         <h3>{% trans "About Us" %}</h3>
         <p>{% trans "Learn our story and approach" %}</p>

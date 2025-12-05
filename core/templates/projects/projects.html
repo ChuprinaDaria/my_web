@@ -6,15 +6,15 @@
 {% block meta_description %}{% if seo_description %}{{ seo_description }}{% else %}{% trans 'Discover our portfolio of automation and AI projects' %}{% endif %}{% endblock %}
 
 {% block extra_meta %}
-  <link rel="canonical" href="https://lazysoft.pl/{{ CURRENT_LANG }}/projects/" />
-  <link rel="alternate" href="https://lazysoft.pl/en/projects/" hreflang="en">
+  <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/" />
+  <link rel="alternate" href="https://lazysoft.pl/projects/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.pl/uk/projects/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.pl/pl/projects/" hreflang="pl">
   
   <meta property="og:title" content="{% if seo_title %}{{ seo_title }}{% else %}{% trans 'Projects - LazySoft' %}{% endif %}">
   <meta property="og:description" content="{% if seo_description %}{{ seo_description }}{% else %}{% trans 'Discover our portfolio of automation and AI projects' %}{% endif %}">
   <meta property="og:image" content="{{ og_image|default:'' }}">
-  <meta property="og:url" content="https://lazysoft.pl/{{ CURRENT_LANG }}/projects/">
+  <meta property="og:url" content="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/">
   <meta property="og:type" content="website">
 
   <meta property="og:site_name" content="LAZYSOFT">
@@ -83,7 +83,7 @@
   "@type": "CollectionPage",
   "name": "{{ seo_title|escapejs }}",
   "description": "{{ seo_description|escapejs }}",
-  "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/",
+  "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/",
   "inLanguage": "{{ CURRENT_LANG }}",
   "breadcrumb": {
     "@type": "BreadcrumbList",
@@ -98,7 +98,7 @@
         "@type": "ListItem",
         "position": 2,
         "name": "{% trans 'Projects' %}",
-        "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/"
+        "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/"
       }
     ]
   },
@@ -110,7 +110,7 @@
       {
         "@type": "CreativeWork",
         "position": {{ forloop.counter }},
-        "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/{{ project.slug }}/",
+        "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/{{ project.slug }}/",
         "name": "{{ project.title|escapejs }}",
         {% if project.short_description %}"description": "{{ project.short_description|striptags|escapejs|truncatewords:30 }}",{% endif %}
         {% if project.featured_image %}"image": "https://lazysoft.pl{{ project.featured_image.url }}",{% endif %}

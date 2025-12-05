@@ -32,47 +32,97 @@
           {% endfor %}
         {% else %}
           {% if 'projects' in request.path %}
-            <li class="breadcrumb-item">
-              <a href="{% url 'projects' %}" class="breadcrumb-link">
-                <i data-lucide="folder" class="breadcrumb-icon"></i>
-                {% trans "Projects" %}
-              </a>
-            </li>
-            <li class="breadcrumb-separator">→</li>
-            <li class="breadcrumb-item current" aria-current="page">
-              <span class="breadcrumb-current">
-                <i data-lucide="folder-open" class="breadcrumb-icon"></i>
-                {% if project %}{{ project.title|safe }}{% else %}{% trans "Projects" %}{% endif %}
-              </span>
-            </li>
+            {% if project %}
+              <li class="breadcrumb-item">
+                <a href="{% url 'projects' %}" class="breadcrumb-link">
+                  <i data-lucide="folder" class="breadcrumb-icon"></i>
+                  {% trans "Projects" %}
+                </a>
+              </li>
+              <li class="breadcrumb-separator">→</li>
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="folder-open" class="breadcrumb-icon"></i>
+                  {% if title %}{{ title|safe }}{% elif project.title_uk or project.title_en %}{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|safe }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|safe }}{% else %}{{ project.title_en|safe }}{% endif %}{% else %}{{ project.title|safe }}{% endif %}
+                </span>
+              </li>
+            {% else %}
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="folder" class="breadcrumb-icon"></i>
+                  {% trans "Projects" %}
+                </span>
+              </li>
+            {% endif %}
+          {% elif 'products' in request.path %}
+            {% if product or title %}
+              <li class="breadcrumb-item">
+                <a href="{% url 'products:product_list' %}" class="breadcrumb-link">
+                  <i data-lucide="package" class="breadcrumb-icon"></i>
+                  {% trans "Products" %}
+                </a>
+              </li>
+              <li class="breadcrumb-separator">→</li>
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="package-open" class="breadcrumb-icon"></i>
+                  {% if product %}{{ title|safe }}{% elif title %}{{ title|safe }}{% endif %}
+                </span>
+              </li>
+            {% else %}
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="package" class="breadcrumb-icon"></i>
+                  {% trans "Products" %}
+                </span>
+              </li>
+            {% endif %}
           {% elif 'services' in request.path %}
-            <li class="breadcrumb-item">
-              <a href="{% url 'services:services_list' %}" class="breadcrumb-link">
-                <i data-lucide="settings" class="breadcrumb-icon"></i>
-                {% trans "Services" %}
-              </a>
-            </li>
-            <li class="breadcrumb-separator">→</li>
-            <li class="breadcrumb-item current" aria-current="page">
-              <span class="breadcrumb-current">
-                <i data-lucide="cog" class="breadcrumb-icon"></i>
-                {% if service %}{{ service.title|safe }}{% else %}{% trans "Services" %}{% endif %}
-              </span>
-            </li>
+            {% if service or service_category %}
+              <li class="breadcrumb-item">
+                <a href="{% url 'services:services_list' %}" class="breadcrumb-link">
+                  <i data-lucide="settings" class="breadcrumb-icon"></i>
+                  {% trans "Services" %}
+                </a>
+              </li>
+              <li class="breadcrumb-separator">→</li>
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="cog" class="breadcrumb-icon"></i>
+                  {% if service %}{{ service.title|safe }}{% elif service_category %}{{ service_category.get_title|safe }}{% endif %}
+                </span>
+              </li>
+            {% else %}
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="settings" class="breadcrumb-icon"></i>
+                  {% trans "Services" %}
+                </span>
+              </li>
+            {% endif %}
           {% elif 'news' in request.path %}
-            <li class="breadcrumb-item">
-              <a href="{% url 'news:news_list' %}" class="breadcrumb-link">
-                <i data-lucide="newspaper" class="breadcrumb-icon"></i>
-                {% trans "News" %}
-              </a>
-            </li>
-            <li class="breadcrumb-separator">→</li>
-            <li class="breadcrumb-item current" aria-current="page">
-              <span class="breadcrumb-current">
-                <i data-lucide="file-text" class="breadcrumb-icon"></i>
-                {% if article %}{{ article.title|safe }}{% else %}{% trans "News" %}{% endif %}
-              </span>
-            </li>
+            {% if article %}
+              <li class="breadcrumb-item">
+                <a href="{% url 'news:news_list' %}" class="breadcrumb-link">
+                  <i data-lucide="newspaper" class="breadcrumb-icon"></i>
+                  {% trans "News" %}
+                </a>
+              </li>
+              <li class="breadcrumb-separator">→</li>
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="file-text" class="breadcrumb-icon"></i>
+                  {{ article.title|safe }}
+                </span>
+              </li>
+            {% else %}
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="newspaper" class="breadcrumb-icon"></i>
+                  {% trans "News" %}
+                </span>
+              </li>
+            {% endif %}
           {% elif 'contacts' in request.path %}
             <li class="breadcrumb-item current" aria-current="page">
               <span class="breadcrumb-current">

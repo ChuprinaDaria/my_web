@@ -9,15 +9,15 @@
 {% block og_image %}{% if og_image %}{{ og_image }}{% elif service.main_image %}https://lazysoft.pl{{ service.main_image.url }}{% elif service.icon %}https://lazysoft.pl{{ service.icon.url }}{% endif %}{% endblock %}
 
 {% block extra_meta %}
-  <link rel="canonical" href="https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/" />
+  <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/{{ service.slug }}/" />
   
-  <link rel="alternate" href="https://lazysoft.pl/en/services/{{ service.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/services/{{ service.slug }}/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.pl/uk/services/{{ service.slug }}/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.pl/pl/services/{{ service.slug }}/" hreflang="pl">
   
   <meta property="og:site_name" content="LAZYSOFT">
   <meta property="og:type" content="service">
-  <meta property="og:url" content="https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/">
+  <meta property="og:url" content="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/{{ service.slug }}/">
   {% if og_image or service.main_image %}<meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">{% endif %}
   
@@ -43,7 +43,7 @@
     },
     "areaServed": "Worldwide",
     {% if service.main_image %}"image": "https://lazysoft.pl{{ service.main_image.url }}",{% endif %}
-    "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/",
+    "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/{{ service.slug }}/",
     "serviceType": "{{ service.title|escapejs }}",
     "inLanguage": "{{ CURRENT_LANG }}"
   }
@@ -64,13 +64,13 @@
         "@type": "ListItem",
         "position": 2,
         "name": "{% trans 'Services' %}",
-        "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/services/"
+        "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": "{{ service.title|striptags|escapejs }}",
-        "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/services/{{ service.slug }}/"
+        "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/{{ service.slug }}/"
       }
     ]
   }

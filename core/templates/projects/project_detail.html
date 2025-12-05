@@ -21,9 +21,9 @@
 {% block og_image %}{% if og_image %}{{ og_image }}{% elif project.featured_image %}https://lazysoft.pl{{ project.featured_image.url }}{% endif %}{% endblock %}
 
 {% block extra_meta %}
-  <link rel="canonical" href="https://lazysoft.pl/{{ CURRENT_LANG }}/projects/{{ project.slug }}/" />
+  <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/{{ project.slug }}/" />
   
-  <link rel="alternate" href="https://lazysoft.pl/en/projects/{{ project.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/projects/{{ project.slug }}/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.pl/uk/projects/{{ project.slug }}/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.pl/pl/projects/{{ project.slug }}/" hreflang="pl">
   
@@ -167,7 +167,7 @@
               <i data-lucide="message-circle"></i>
               {% trans "Start Free Consultation" %}
             </button>
-            <a href="/{{ CURRENT_LANG }}/services/{{ project.category.slug }}/" class="btn-secondary">
+            <a href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/{{ project.category.slug }}/" class="btn-secondary">
               <i data-lucide="grid-3x3"></i>
               {% trans "Open Service" %}
             </a>
@@ -197,7 +197,7 @@
   "@type": "CreativeWork",
   "name": "{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}",
   "description": "{% if CURRENT_LANG == 'uk' and project.short_description_uk %}{{ project.short_description_uk|striptags|escapejs }}{% elif CURRENT_LANG == 'pl' and project.short_description_pl %}{{ project.short_description_pl|striptags|escapejs }}{% else %}{{ project.short_description_en|striptags|escapejs }}{% endif %}",
-  "url": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/{{ project.slug }}/",
+  "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/{{ project.slug }}/",
   "inLanguage": "{{ CURRENT_LANG }}",
   "dateCreated": "{{ project.project_date|date:'c' }}",
   "dateModified": "{{ project.date_updated|date:'c' }}",
@@ -236,13 +236,13 @@
       "@type": "ListItem",
       "position": 2,
       "name": "{% trans 'Projects' %}",
-      "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/"
+        "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/"
     },
     {
       "@type": "ListItem",
       "position": 3,
       "name": "{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|striptags|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|striptags|escapejs }}{% else %}{{ project.title_en|striptags|escapejs }}{% endif %}",
-      "item": "https://lazysoft.pl/{{ CURRENT_LANG }}/projects/{{ project.slug }}/"
+      "item": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/{{ project.slug }}/"
     }
   ]
 }

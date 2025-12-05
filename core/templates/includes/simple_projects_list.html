@@ -55,7 +55,7 @@
               </div>
               
               <div class="project-actions">
-                <a class="btn-primary" href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/">
+                <a class="btn-primary" href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/{{ project.slug }}/">
                   <i data-lucide="arrow-right"></i>
                   {% trans "View Details" %}
                 </a>

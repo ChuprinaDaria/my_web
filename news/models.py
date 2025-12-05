@@ -345,11 +345,16 @@ class ProcessedArticle(models.Model):
         return getattr(self, f'cta_description_{language}', '')
 
     def get_absolute_url(self, language=None):
-        if language:
-            # перемикаємо контекст мови, щоб reverse підставив префікс /uk /en /pl
-            with override(language):
-                return reverse('news:article_detail', kwargs={'uuid': self.uuid})
-        return reverse('news:article_detail', kwargs={'uuid': self.uuid})
+        """URL статті з підтримкою мов. Англійська без префікса /en/"""
+        from django.utils.translation import get_language
+        lang = (language or get_language() or 'en').lower()
+        
+        # Англійська мова не має префікса /en/
+        if lang == 'en':
+            return reverse('news:article_detail', kwargs={'uuid': self.uuid})
+        
+        # Для інших мов додаємо префікс
+        return f"/{lang}" + reverse('news:article_detail', kwargs={'uuid': self.uuid})
 
     @property 
     def original_source_name(self):

@@ -56,9 +56,9 @@
 
 /* 🖼️ Product Icon */
 .product-icon-home {
-  min-width: 180px;
-  width: 180px;
-  height: 180px;
+  min-width: 300px;
+  width: 300px;
+  height: 220px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   position: relative;
@@ -261,9 +261,20 @@
   }
 
   .product-icon-home {
-    min-width: 140px;
-    width: 140px;
-    height: 140px;
+    min-width: 100%;
+    width: 100%;
+    height: 200px;
+  }
+  
+  .product-content-home {
+    padding-right: 0; /* На мобільному badge не перекриває */
+  }
+  
+  .product-badge-home {
+    top: 12px;
+    right: 12px;
+    font-size: 0.65rem;
+    padding: 5px 12px;
   }
 
   .product-content-home h3 {
@@ -297,17 +308,23 @@
 /* 🎨 Special Badge */
 .product-badge-home {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 16px;
+  right: 16px;
   background: linear-gradient(135deg, var(--accent-green), #80ff40);
   color: #000;
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-radius: var(--radius-pill);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
   box-shadow: 0 4px 16px rgba(158, 255, 0, 0.4);
-  z-index: 2;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Забезпечуємо що контент не перекривається badge */
+.product-content-home {
+  padding-right: 80px; /* Місце для badge */
 }
 

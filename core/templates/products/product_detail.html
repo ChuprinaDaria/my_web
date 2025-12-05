@@ -31,7 +31,7 @@
 {% endblock %}
 
 {% block content %}
-<article class="product-detail-page" itemscope itemtype="https://schema.org/Product">
+<article class="product-detail-page service-detail-container" itemscope itemtype="https://schema.org/Product">
 
   <section class="product-hero">
     <div class="container">
@@ -57,43 +57,191 @@
             {% endif %}
           </div>
         </div>
-
-        {% if product.featured_image %}
-          <div class="product-hero-image" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
-            <img src="{{ product.featured_image.url }}" alt="{{ title|striptags }} - {% trans 'Main Product Image' %}" loading="lazy" itemprop="url">
-            <meta itemprop="width" content="1200">
-            <meta itemprop="height" content="800">
-          </div>
-        {% endif %}
       </div>
     </div>
   </section>
 
-  {% if description %}
-    <section class="product-description-section" aria-labelledby="about-heading">
-      <div class="container">
-        <h2 id="about-heading">
-          {% if CURRENT_LANG == 'uk' %}Про продукт
-          {% elif CURRENT_LANG == 'pl' %}O produkcie
-          {% else %}About Product{% endif %}
-        </h2>
-        <div class="content-block" itemprop="description">{{ description|safe }}</div>
-      </div>
-    </section>
+  {% if product.featured_image %}
+  <section class="project-featured-image">
+    <div class="container">
+      <img src="{{ product.featured_image.url }}" alt="{{ title|striptags }} - {% trans 'Main Product Image' %}" loading="lazy" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+      <meta itemprop="url" content="https://lazysoft.pl{{ product.featured_image.url }}">
+      <meta itemprop="width" content="1200">
+      <meta itemprop="height" content="800">
+    </div>
+  </section>
   {% endif %}
 
-  {% if features %}
-    <section class="product-features-section" aria-labelledby="features-heading">
-      <div class="container">
-        <h2 id="features-heading">
-          {% if CURRENT_LANG == 'uk' %}Ключові можливості
-          {% elif CURRENT_LANG == 'pl' %}Kluczowe funkcje
-          {% else %}Key Features{% endif %}
-        </h2>
-        <div class="features-content" itemprop="additionalProperty">{{ features|safe }}</div>
-      </div>
-    </section>
-  {% endif %}
+  
+  <section class="project-main-content">
+    <div class="container">
+      <div class="content-grid">
+        
+        <div class="main-content-column">
+          
+          {% if description %}
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="file-text"></i>
+              </div>
+              <h2>{% trans "Product Overview" %}</h2>
+            </div>
+            <div class="content-section-body" itemprop="description">
+              {{ description|safe }}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if features %}
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="sparkles"></i>
+              </div>
+              <h2>{% trans "Key Features" %}</h2>
+            </div>
+            <div class="content-section-body" itemprop="additionalProperty">
+              {{ features|safe }}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if target_audience %}
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="users"></i>
+              </div>
+              <h2>{% trans "Target Audience" %}</h2>
+            </div>
+            <div class="content-section-body">
+              {{ target_audience|safe }}
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+
+        <div class="project-sidebar">
+          
+          <div class="sidebar-section cta-sidebar">
+            <h3>
+              <i data-lucide="message-circle"></i>
+              {% trans "Quick Contact" %}
+            </h3>
+            <p class="cta-description">
+              {% trans "Ready to implement this product? Let's discuss your specific needs and create a custom solution." %}
+            </p>
+            <a href="{{ product.cta_url }}" class="sidebar-cta-button" target="_blank" rel="noopener">
+              <i data-lucide="send"></i>
+              {% trans "Start Discussion" %}
+            </a>
+          </div>
+
+          <div class="sidebar-section">
+            <h3>
+              <i data-lucide="info"></i>
+              {% trans "Product Details" %}
+            </h3>
+            <div class="project-info-list">
+              {% if product.is_featured %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Status" %}</span>
+                  <span class="info-value">⭐ {% trans "Featured" %}</span>
+                </div>
+              {% endif %}
+              
+              {% if product.priority %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Priority" %}</span>
+                  <span class="info-value">
+                    {% if product.priority >= 5 %}{% trans "Top Product" %}
+                    {% elif product.priority >= 4 %}{% trans "High Priority" %}
+                    {% elif product.priority >= 3 %}{% trans "Normal" %}
+                    {% else %}{% trans "Low" %}{% endif %}
+                  </span>
+                </div>
+              {% endif %}
+              
+              {% if product.date_created %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Available Since" %}</span>
+                  <span class="info-value">{{ product.date_created|date:"M Y" }}</span>
+                </div>
+              {% endif %}
+
+              {% if pricing_packages %}
+                <div class="info-item">
+                  <span class="info-label">{% trans "Packages" %}</span>
+                  <span class="info-value">{{ pricing_packages|length }} {% trans "available" %}</span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          {% if related_services or related_projects or related_articles %}
+          <div class="sidebar-section">
+            <h3>
+              <i data-lucide="sparkles"></i>
+              {% trans "You Might Also Like" %}
+            </h3>
+            <div class="related-content-list">
+              {% for service_data in related_services|slice:":3" %}
+                <a href="{% url 'services:service_detail' slug=service_data.slug %}" class="related-item">
+                  {% if service_data.icon %}
+                    <div class="related-image">
+                      <img src="{{ service_data.icon.url }}" alt="{{ service_data.title }}" loading="lazy">
+                    </div>
+                  {% endif %}
+                  <div class="related-content">
+                    <h4>{{ service_data.title|safe|truncatewords:8 }}</h4>
+                    <div class="related-meta">
+                      <span class="related-category">{% trans "Service" %}</span>
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+
+              {% for project_data in related_projects|slice:":3" %}
+                <a href="{{ project_data.url }}" class="related-item">
+                  {% if project_data.featured_image %}
+                    <div class="related-image">
+                      <img src="{{ project_data.featured_image.url }}" alt="{{ project_data.title }}" loading="lazy">
+                    </div>
+                  {% endif %}
+                  <div class="related-content">
+                    <h4>{{ project_data.title|safe|truncatewords:8 }}</h4>
+                    <div class="related-meta">
+                      <span class="related-category">{% trans "Project" %}</span>
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+
+              {% for article_data in related_articles|slice:":3" %}
+                <a href="{{ article_data.url }}" class="related-item">
+                  {% if article_data.image %}
+                    <div class="related-image">
+                      <img src="{{ article_data.image }}" alt="{{ article_data.title }}" loading="lazy">
+                    </div>
+                  {% endif %}
+                  <div class="related-content">
+                    <h4>{{ article_data.title|safe|truncatewords:8 }}</h4>
+                    <div class="related-meta">
+                      <span class="related-category">{% trans "Article" %}</span>
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+        </div>
+    </div>
+  </section>
 
   {% if pricing_packages %}
     <section class="product-pricing-section" id="pricing" aria-labelledby="pricing-heading">
@@ -152,19 +300,6 @@
             </div>
           {% endfor %}
         </div>
-      </div>
-    </section>
-  {% endif %}
-
-  {% if target_audience %}
-    <section class="product-target-section">
-      <div class="container">
-        <h2>
-          {% if CURRENT_LANG == 'uk' %}Для кого цей продукт
-          {% elif CURRENT_LANG == 'pl' %}Dla kogo jest ten produkt
-          {% else %}Who is this for{% endif %}
-        </h2>
-        <div class="content-block">{{ target_audience|safe }}</div>
       </div>
     </section>
   {% endif %}
@@ -229,40 +364,6 @@
     </section>
   {% endif %}
 
-  {% if related_services or related_projects or related_articles %}
-    <section class="related-content-section">
-      <div class="container">
-        <h2>
-          {% if CURRENT_LANG == 'uk' %}Пов'язаний контент
-          {% elif CURRENT_LANG == 'pl' %}Powiązana treść
-          {% else %}Related Content{% endif %}
-        </h2>
-
-        <div class="related-grid">
-          {% for service in related_services %}
-            <a href="{% url 'services:service_detail' slug=service.slug %}" class="related-card">
-              <span class="related-type">{% trans "Service" %}</span>
-              <h3>{{ service.get_title }}</h3>
-            </a>
-          {% endfor %}
-
-          {% for project in related_projects %}
-            <a href="{{ project.get_absolute_url }}" class="related-card">
-              <span class="related-type">{% trans "Project" %}</span>
-              <h3>{{ project.title_uk }}</h3>
-            </a>
-          {% endfor %}
-
-          {% for article in related_articles %}
-            <a href="{{ article.get_absolute_url }}" class="related-card">
-              <span class="related-type">{% trans "Article" %}</span>
-              <h3>{{ article.get_title }}</h3>
-            </a>
-          {% endfor %}
-        </div>
-      </div>
-    </section>
-  {% endif %}
 
   <section class="product-final-cta">
     <div class="container">
@@ -295,6 +396,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/sections/product_detail_custom.css' %}?v=1.0">
+<link rel="stylesheet" href="{% static 'css/sections/service_detail.css' %}">
 {% endblock %}
 
 {% block extra_scripts %}

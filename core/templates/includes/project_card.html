@@ -4,8 +4,8 @@
 <div class="project-card clickable" 
      data-complexity="{{ project.complexity_level }}" 
      data-priority="{{ project.priority }}" 
-     data-href="/{{ CURRENT_LANG }}/projects/{{ project.slug }}/"
-     onclick="window.location.href='/{{ CURRENT_LANG }}/projects/{{ project.slug }}/';"
+     data-href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/{{ project.slug }}/"
+     onclick="window.location.href='/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}projects/{{ project.slug }}/';"
      style="cursor: pointer;">
   
 

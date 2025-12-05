@@ -29,7 +29,7 @@
     <p class="service-description">{{ service.short|safe|truncatewords:20 }}</p>
 
     <div class="project-cta">
-      <a class="cta-button" href="/{{ CURRENT_LANG }}/services/{{ service.slug }}/">
+      <a class="cta-button" href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}services/{{ service.slug }}/">
         {% if CURRENT_LANG == 'uk' %}Детальніше
         {% elif CURRENT_LANG == 'pl' %}Szczegóły
         {% else %}Learn More{% endif %}

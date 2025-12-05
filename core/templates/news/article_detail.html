@@ -11,7 +11,7 @@
 {% block extra_meta %}
   <link rel="canonical" href="https://lazysoft.pl{{ request.path }}" />
   
-  <link rel="alternate" href="https://lazysoft.pl/en/news/{{ article.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/news/{{ article.slug }}/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.pl/uk/news/{{ article.slug }}/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.pl/pl/news/{{ article.slug }}/" hreflang="pl">
   
@@ -192,7 +192,7 @@
   <section class="article-navigation">
     <div class="container">
       <div class="nav-links">
-        <a href="/{{ CURRENT_LANG }}/news/" class="nav-link back">
+        <a href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}news/" class="nav-link back">
           <span class="nav-icon">←</span>
           {% trans "All Tech News" %}
         </a>

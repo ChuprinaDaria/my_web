@@ -48,14 +48,14 @@
       {% trans "Categories" %}
     </h3>
     <div class="categories-list">
-      <a href="/{{ CURRENT_LANG }}/news/" class="category-item {% if not current_category %}active{% endif %}">
+      <a href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}news/" class="category-item {% if not current_category %}active{% endif %}">
         <i data-lucide="newspaper"></i>
         {% trans "All news" %}
         <small>({{ total_articles }})</small>
       </a>
       
       {% for category in categories %}
-        <a href="/{{ CURRENT_LANG }}/news/category/{{ category.slug }}/" class="category-item {% if current_category and current_category.slug == category.slug %}active{% endif %}">
+        <a href="/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}news/category/{{ category.slug }}/" class="category-item {% if current_category and current_category.slug == category.slug %}active{% endif %}">
           <i data-lucide="tag"></i>
           {{ category.get_name }}
           <small>({{ category.articles_count }})</small>

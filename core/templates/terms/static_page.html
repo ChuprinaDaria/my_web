@@ -20,9 +20,9 @@
 {% block twitter_description %}{{ meta_description|default:"Lazysoft legal documents and policies" }}{% endblock %}
 
 {% block extra_meta %}
-  <link rel="canonical" href="https://lazysoft.pl/{{ CURRENT_LANG }}/{{ page.slug }}/" />
+  <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}{{ page.slug }}/" />
   
-  <link rel="alternate" href="https://lazysoft.pl/en/{{ page.slug }}/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/{{ page.slug }}/" hreflang="en">
   <link rel="alternate" href="https://lazysoft.pl/uk/{{ page.slug }}/" hreflang="uk">
   <link rel="alternate" href="https://lazysoft.pl/pl/{{ page.slug }}/" hreflang="pl">
 {% endblock %}

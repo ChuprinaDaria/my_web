@@ -71,10 +71,51 @@ def product_detail(request, slug):
             'rating': review.rating,
         })
 
-    # Пов'язаний контент
-    related_services = product.related_services.all()[:3]
-    related_projects = product.get_related_projects(limit=3)
-    related_articles = product.get_related_articles(limit=3)
+    # Пов'язаний контент - підготовка з локалізацією
+    related_services_raw = product.related_services.all()[:3]
+    related_services_data = []
+    for service in related_services_raw:
+        # Отримуємо локалізовану назву
+        service_title = getattr(service, f'title_{lang}', None) or getattr(service, 'title_en', '')
+        related_services_data.append({
+            'object': service,
+            'slug': service.slug,
+            'title': service_title,
+        })
+    
+    related_projects_raw = product.get_related_projects(limit=3)
+    related_projects_data = []
+    for project in related_projects_raw:
+        # Отримуємо локалізовану назву та URL
+        project_title = getattr(project, f'title_{lang}', None) or getattr(project, 'title_en', '')
+        project_url = project.get_absolute_url(lang)
+        related_projects_data.append({
+            'object': project,
+            'slug': project.slug,
+            'title': project_title,
+            'url': project_url,
+        })
+    
+    related_articles_raw = product.get_related_articles(limit=3)
+    related_articles_data = []
+    for article in related_articles_raw:
+        # Отримуємо локалізовану назву та URL
+        if hasattr(article, 'get_title'):
+            article_title = article.get_title(lang)
+        else:
+            article_title = getattr(article, f'title_{lang}', None) or getattr(article, 'title_uk', '')
+        
+        if hasattr(article, 'get_absolute_url'):
+            article_url = article.get_absolute_url()
+        else:
+            article_url = f'/news/{article.slug}/'
+        
+        related_articles_data.append({
+            'object': article,
+            'slug': article.slug,
+            'title': article_title,
+            'url': article_url,
+        })
 
     # Галерея
     gallery_images = product.get_gallery_images()
@@ -101,10 +142,10 @@ def product_detail(request, slug):
         # Відгуки
         'reviews': reviews_data,
 
-        # Пов'язаний контент
-        'related_services': related_services,
-        'related_projects': related_projects,
-        'related_articles': related_articles,
+        # Пов'язаний контент (локалізований)
+        'related_services': related_services_data,
+        'related_projects': related_projects_data,
+        'related_articles': related_articles_data,
 
         # SEO
         'seo_title': product.get_seo_title(lang),
