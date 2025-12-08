@@ -123,6 +123,29 @@
                 </span>
               </li>
             {% endif %}
+          {% elif 'blog' in request.path %}
+            {% if post or title %}
+              <li class="breadcrumb-item">
+                <a href="{% url 'blog:blog_list' %}" class="breadcrumb-link">
+                  <i data-lucide="book-open" class="breadcrumb-icon"></i>
+                  {% trans "Blog" %}
+                </a>
+              </li>
+              <li class="breadcrumb-separator">→</li>
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="file-text" class="breadcrumb-icon"></i>
+                  {% if title %}{{ title|safe }}{% elif post %}{{ post.get_title|safe }}{% endif %}
+                </span>
+              </li>
+            {% else %}
+              <li class="breadcrumb-item current" aria-current="page">
+                <span class="breadcrumb-current">
+                  <i data-lucide="book-open" class="breadcrumb-icon"></i>
+                  {% trans "Blog" %}
+                </span>
+              </li>
+            {% endif %}
           {% elif 'contacts' in request.path %}
             <li class="breadcrumb-item current" aria-current="page">
               <span class="breadcrumb-current">
