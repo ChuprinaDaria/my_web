@@ -93,6 +93,22 @@ class AboutCard(models.Model):
         return getattr(self, f'description_{lang}', self.description_en)
 
 
+class CoreOgImage(models.Model):
+    name = models.CharField(max_length=100, default="Default OG image")
+    image = models.ImageField(upload_to='core/og/')
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Core OG image"
+        verbose_name_plural = "Core OG images"
+        ordering = ['order', '-updated_at']
+
+    def __str__(self):
+        return self.name
+
+
 class Tag(models.Model):
     """Універсальні теги для всіх сутностей: новини, проєкти, сервіси"""
     

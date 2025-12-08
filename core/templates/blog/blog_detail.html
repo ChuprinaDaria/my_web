@@ -1,0 +1,162 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}{{ title }} - LAZYSOFT{% endblock %}
+{% block meta_description %}{{ og_description }}{% endblock %}
+{% block og_title %}{{ og_title }}{% endblock %}
+{% block og_description %}{{ og_description }}{% endblock %}
+{% block og_image %}{{ og_image|default_if_none:'' }}{% endblock %}
+
+{% block extra_meta %}
+  {{ block.super }}
+  <link rel="canonical" href="{{ og_url }}" />
+  <meta property="og:site_name" content="LAZYSOFT">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ og_url }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ og_title }}">
+  <meta name="twitter:description" content="{{ og_description }}">
+  {% if og_image %}<meta name="twitter:image" content="{{ og_image }}">{% endif %}
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "{{ title|escapejs }}",
+    "description": "{{ og_description|escapejs }}",
+    "url": "{{ og_url }}",
+    "inLanguage": "{{ CURRENT_LANG }}",
+    "image": [{% if og_image %}"{{ og_image }}"{% endif %}],
+    "datePublished": "{{ post.published_at|default:post.created_at|date:'c' }}",
+    "dateModified": "{{ post.updated_at|date:'c' }}",
+    "author": {
+      "@type": "Organization",
+      "name": "Lazysoft"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lazysoft"
+    }
+  }
+  </script>
+{% endblock %}
+
+{% block content %}
+<article class="project-detail-page service-detail-container">
+  <section class="product-hero">
+    <div class="container">
+      <div class="product-hero-content">
+        <div class="product-hero-text">
+          <h1>{{ title }}</h1>
+          {% if short %}
+            <div class="product-tagline">{{ short|safe }}</div>
+          {% endif %}
+          <div class="product-hero-cta">
+            <div class="rating-widget" data-average="{{ average_rating }}" data-count="{{ ratings_count }}">
+              <form method="post" action="{% url 'blog:rate_post' slug=post.slug %}" class="rating-form">
+                {% csrf_token %}
+                <div class="stars" data-post="{{ post.slug }}">
+                  {% for i in "12345" %}
+                    <button type="submit" name="score" value="{{ forloop.counter }}" class="star-button">★</button>
+                  {% endfor %}
+                </div>
+              </form>
+              <div class="rating-summary">
+                {% if ratings_count %}
+                  ★ {{ average_rating|floatformat:1 }} ({{ ratings_count }})
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% if main_image or gallery %}
+  <section class="project-featured-image">
+    <div class="container">
+      {% if main_image %}
+        <img src="{{ main_image.url }}" alt="{{ title }}" loading="lazy">
+      {% endif %}
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="project-main-content">
+    <div class="container">
+      <div class="content-grid">
+        <div class="main-content-column">
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="file-text"></i>
+              </div>
+              <h2>{% trans "Article" %}</h2>
+            </div>
+            <div class="content-section-body">
+              {{ content|safe }}
+            </div>
+          </div>
+
+          {% if gallery %}
+          <div class="content-section">
+            <div class="content-section-header">
+              <div class="section-icon">
+                <i data-lucide="images"></i>
+              </div>
+              <h2>{% trans "Gallery" %}</h2>
+            </div>
+            <div class="content-section-body">
+              <div class="gallery-grid">
+                {% for image in gallery %}
+                  <div class="gallery-item">
+                    <img src="{{ image.url }}" alt="{{ title }}" loading="lazy">
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <aside class="project-sidebar">
+          {% if related_services %}
+          <div class="sidebar-section">
+            <h3>
+              <i data-lucide="sparkles"></i>
+              {% trans "Related services" %}
+            </h3>
+            <div class="related-content-list">
+              {% for s in related_services %}
+                <a href="{% url 'services:service_detail' slug=s.slug %}" class="related-item">
+                  {% if s.main_image %}
+                    <div class="related-image">
+                      <img src="{{ s.main_image.url }}" alt="{{ s.title }}" loading="lazy">
+                    </div>
+                  {% endif %}
+                  <div class="related-content">
+                    <h4>{{ s.title|safe }}</h4>
+                    <div class="related-meta">
+                      <span class="related-category">{% trans "Service" %}</span>
+                    </div>
+                  </div>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </aside>
+      </div>
+    </div>
+  </section>
+</article>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'js/blog_rating.js' %}"></script>
+{% endblock %}
+
+

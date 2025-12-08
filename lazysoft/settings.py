@@ -146,6 +146,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'core.context_processors.seo_settings',
                 'core.context_processors.cookie_consent',
+                'core.context_processors.og_image_settings',
             ],
         },
     },

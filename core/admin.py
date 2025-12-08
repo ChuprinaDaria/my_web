@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from .models import Tag, HomeHero, AboutCard
+from .models import Tag, HomeHero, AboutCard, CoreOgImage
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
 from django.conf import settings
@@ -82,6 +82,12 @@ class AboutCardAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
+
+
+@admin.register(CoreOgImage)
+class CoreOgImageAdmin(admin.ModelAdmin):
+    list_display = ['name', 'is_active', 'order', 'updated_at']
+    list_editable = ['is_active', 'order']
 
     readonly_fields = ['updated_at']
 

@@ -266,9 +266,9 @@
 <section class="about-preview">
   <div class="about-card clickable"
        data-href="{% if CURRENT_LANG == 'uk' %}/uk{{ about_card.url }}{% elif CURRENT_LANG == 'pl' %}/pl{{ about_card.url }}{% else %}{{ about_card.url }}{% endif %}">
-    {% if about_card.image %}
+    {% if about_card.image and about_card.image.url %}
       <img src="{{ about_card.image.url }}"
-           alt="{{ about_card.get_title }}"
+           alt="{{ about_card_title }}"
            class="about-image"
            loading="lazy" />
     {% else %}
@@ -278,8 +278,8 @@
            loading="lazy" />
     {% endif %}
     <div class="about-text">
-      <h3>{{ about_card.get_title }}</h3>
-      <p>{{ about_card.get_description }}</p>
+      <h3>{{ about_card_title }}</h3>
+      <p>{{ about_card_description }}</p>
     </div>
   </div>
 </section>
@@ -301,6 +301,54 @@
 </section>
 {% endif %}
 
+
+{% if home_blog_posts %}
+<section id="blog" class="projects">
+  <div class="container-reg">
+    <h2>
+      {% if CURRENT_LANG == 'uk' %}📝 Блог{% elif CURRENT_LANG == 'pl' %}📝 Blog{% else %}📝 Blog{% endif %}
+    </h2>
+
+    <div class="projects-carousel">
+      <div class="projects-container">
+        {% for post in home_blog_posts %}
+          <article class="news-card clickable" data-href="{{ post.url }}">
+            {% if post.main_image %}
+              <img src="{{ post.main_image.url }}" alt="{{ post.title }}" loading="lazy">
+            {% endif %}
+
+            <div class="news-card-meta" style="margin-bottom: 15px;">
+              <span class="chip">
+                📝 {% trans "Blog" %}
+              </span>
+              {% if post.ratings_count %}
+                <span class="chip priority-high">
+                  ★ {{ post.average_rating|floatformat:1 }} ({{ post.ratings_count }})
+                </span>
+              {% endif %}
+            </div>
+
+            <h3 class="news-article-title">
+              {{ post.title|safe }}
+            </h3>
+
+            <p>
+              {{ post.short|striptags|truncatewords:25 }}
+            </p>
+
+            <div class="news-card-meta">
+              {% if post.published_at %}
+                <time datetime="{{ post.published_at|date:'c' }}">📅 {{ post.published_at|date:'j.m' }}</time>
+              {% endif %}
+              <span class="cta-arrow">→</span>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
 
 <section id="news" class="projects">
   <div class="container-reg">

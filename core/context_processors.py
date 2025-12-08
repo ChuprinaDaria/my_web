@@ -92,3 +92,14 @@ def seo_settings(request):
         'page_type': page_type,
         'breadcrumbs': breadcrumbs,
     }
+
+
+def og_image_settings(request):
+    from .models import CoreOgImage
+
+    og = CoreOgImage.objects.filter(is_active=True).order_by('order', '-updated_at').first()
+    url = og.image.url if og and og.image else None
+
+    return {
+        'GLOBAL_OG_IMAGE_URL': url,
+    }

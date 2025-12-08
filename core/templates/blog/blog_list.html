@@ -1,0 +1,128 @@
+{% extends "core/base.html" %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANG %}
+
+{% block title %}
+  {% if CURRENT_LANG == 'uk' %}Блог - LAZYSOFT{% elif CURRENT_LANG == 'pl' %}Blog - LAZYSOFT{% else %}Blog - LAZYSOFT{% endif %}
+{% endblock %}
+
+{% block meta_description %}
+  {% if CURRENT_LANG == 'uk' %}Статті, кейси та гайди про автоматизацію, ШІ продукти та проєкти Lazysoft.{% elif CURRENT_LANG == 'pl' %}Artykuły, case studies i poradniki o automatyzacji, AI i projektach Lazysoft.{% else %}Articles, case studies and guides about automation, AI products and Lazysoft projects.{% endif %}
+{% endblock %}
+
+{% block og_title %}
+  {% if CURRENT_LANG == 'uk' %}Блог Lazysoft{% elif CURRENT_LANG == 'pl' %}Blog Lazysoft{% else %}Lazysoft Blog{% endif %}
+{% endblock %}
+
+{% block og_description %}{% block meta_description %}{% endblock %}{% endblock %}
+{% block og_type %}website{% endblock %}
+
+{% block extra_meta %}
+  {{ block.super }}
+  <link rel="canonical" href="https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}blog/" />
+  <link rel="alternate" href="https://lazysoft.pl/blog/" hreflang="en">
+  <link rel="alternate" href="https://lazysoft.pl/uk/blog/" hreflang="uk">
+  <link rel="alternate" href="https://lazysoft.pl/pl/blog/" hreflang="pl">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "{% if CURRENT_LANG == 'uk' %}Блог Lazysoft{% elif CURRENT_LANG == 'pl' %}Blog Lazysoft{% else %}Lazysoft Blog{% endif %}",
+    "description": "{% if CURRENT_LANG == 'uk' %}Статті, кейси та гайди про автоматизацію, ШІ продукти та проєкти Lazysoft.{% elif CURRENT_LANG == 'pl' %}Artykuły, case studies i poradniki o automatyzacji, AI i projektach Lazysoft.{% else %}Articles, case studies and guides about automation, AI products and Lazysoft projects.{% endif %}",
+    "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}blog/",
+    "mainEntity": {
+      "@type": "ItemList",
+      "numberOfItems": {{ posts|length }},
+      "itemListElement": [
+        {% for item in posts %}
+        {
+          "@type": "BlogPosting",
+          "position": {{ forloop.counter }},
+          "headline": "{{ item.title|escapejs }}",
+          "description": "{{ item.short|striptags|truncatechars:200|escapejs }}",
+          "url": "https://lazysoft.pl/{% if CURRENT_LANG != 'en' %}{{ CURRENT_LANG }}/{% endif %}blog/{{ item.slug }}/"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }
+  }
+  </script>
+{% endblock %}
+
+{% block breadcrumbs %}
+  {% include 'includes/breadcrumbs.html' %}
+{% endblock %}
+
+{% block content %}
+<main class="services-page">
+  <section class="hero services-hero">
+    <div class="container">
+      <div class="hero-content">
+        <h1>
+          {% if CURRENT_LANG == 'uk' %}Блог{% elif CURRENT_LANG == 'pl' %}Blog{% else %}Blog{% endif %}
+        </h1>
+        <p class="description">
+          {% if CURRENT_LANG == 'uk' %}Інсайти, кейси та статті про автоматизацію, ШІ та продукти Lazysoft.{% elif CURRENT_LANG == 'pl' %}Wpisy o automatyzacji, AI i projektach Lazysoft.{% else %}Insights, case studies and articles about automation, AI and Lazysoft projects.{% endif %}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="services-categories">
+    <div class="container">
+      <div class="services-layout">
+        <div class="services-main">
+          <div class="services-grid">
+            {% for item in posts %}
+              <article class="service-card clickable" data-href="{% url 'blog:blog_detail' slug=item.slug %}">
+                {% if item.main_image %}
+                  <div class="service-icon service-icon--cover">
+                    <img src="{{ item.main_image.url }}" alt="{{ item.title }}" loading="lazy">
+                  </div>
+                {% endif %}
+                <div class="service-content">
+                  <h3>{{ item.title|safe }}</h3>
+                  <p class="service-description">{{ item.short|striptags|truncatewords:24 }}</p>
+                  <div class="service-metrics">
+                    {% if item.ratings_count %}
+                      <span class="metric">
+                        ★ {{ item.average_rating|floatformat:1 }} ({{ item.ratings_count }})
+                      </span>
+                    {% endif %}
+                  </div>
+                  <div class="service-cta">
+                    <a href="{% url 'blog:blog_detail' slug=item.slug %}" class="cta-button">
+                      {% trans "Read article" %}
+                      <span class="cta-arrow">→</span>
+                    </a>
+                  </div>
+                </div>
+              </article>
+            {% empty %}
+              <p>{% trans "Blog posts will appear here soon." %}</p>
+            {% endfor %}
+          </div>
+
+          {% if page_obj.has_other_pages %}
+            <div class="pagination">
+              {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+              {% endif %}
+              <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+              {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+              {% endif %}
+            </div>
+          {% endif %}
+        </div>
+
+        {% include "includes/services_sidebar_standalone.html" %}
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
+
+

@@ -361,12 +361,7 @@
 @media (max-width: 768px) {
   .product-image,
   .product-icon {
-    height: 200px;
-  }
-  
-  .product-image img,
-  .product-icon img {
-    object-fit: contain;
+    height: 140px;
   }
 }
 

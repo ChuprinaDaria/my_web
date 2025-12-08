@@ -115,6 +115,7 @@ urlpatterns += i18n_patterns(
     path('services/', include(('services.urls', 'services'), namespace='services')),
     path('products/', include(('products.urls', 'products'), namespace='products')),
     path('about/', include('about.urls')),
+    path('blog/', include(('blog.urls', 'blog'), namespace='blog')),
     path('news/', include(('news.urls', 'news'), namespace='news')),
     path('consultant/', include('consultant.urls')),
     path('contacts/', include('contacts.urls')),

@@ -19,6 +19,10 @@ def home(request):
     from news.models import ProcessedArticle
     from projects.models import Project
     from services.models import ServiceCategory
+    try:
+        from blog.models import BlogPost
+    except Exception:
+        BlogPost = None
     
     # Топ-5 новин: спочатку за сьогоднішнім відбором, якщо є; інакше останні топ-статті
     today = timezone.now().date()
@@ -171,13 +175,39 @@ def home(request):
     except Exception:
         pass
 
-    # Отримуємо AboutCard для відображення на головній
+    # Отримуємо AboutCard для відображення на головній (з локалізацією)
     about_card = None
+    about_card_title = None
+    about_card_description = None
     try:
         from .models import AboutCard
         about_card = AboutCard.objects.filter(is_active=True).order_by('order', '-updated_at').first()
+        if about_card:
+            about_card_title = about_card.get_title(language)
+            about_card_description = about_card.get_description(language)
     except Exception:
         pass
+
+    # Останні пости блогу для головної
+    home_blog_posts = []
+    if BlogPost is not None:
+        try:
+            blog_qs = BlogPost.objects.filter(is_published=True).order_by('-published_at', '-created_at')[:3]
+            for post in blog_qs:
+                avg, count = post.get_average_rating()
+                home_blog_posts.append({
+                    'object': post,
+                    'slug': post.slug,
+                    'title': post.get_title(language),
+                    'short': post.get_short(language) or '',
+                    'main_image': post.main_image,
+                    'published_at': post.published_at or post.created_at,
+                    'average_rating': avg,
+                    'ratings_count': count,
+                    'url': f'/{language}/blog/{post.slug}/' if language != 'en' else f'/blog/{post.slug}/',
+                })
+        except Exception:
+            home_blog_posts = []
 
     # Нормалізуємо до списку для шаблону та прапорця наявності
     latest_articles_list = list(latest_articles)
@@ -193,6 +223,9 @@ def home(request):
         'featured_product': featured_product,  # Додано для ProductCard (один)
         'featured_products': featured_products,  # Додано для Products Home Section (список)
         'about_card': about_card,  # Додано для AboutCard
+        'about_card_title': about_card_title,
+        'about_card_description': about_card_description,
+        'home_blog_posts': home_blog_posts,
     }
 
     return render(request, 'core/home.html', context)
