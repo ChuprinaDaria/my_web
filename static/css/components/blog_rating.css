@@ -1,0 +1,66 @@
+.rating-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.rating-form {
+  display: inline-block;
+}
+
+.stars {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 36px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.25);
+  transition: all 0.2s ease;
+  position: relative;
+  outline: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.star-button:hover {
+  color: var(--accent-green);
+  text-shadow: 0 0 15px var(--green-glow-primary);
+  transform: scale(1.2);
+}
+
+.star-button.active {
+  color: var(--accent-green);
+  text-shadow: 0 0 15px var(--green-glow-primary);
+  transform: scale(1.1);
+}
+
+.star-button.hover-active {
+  color: var(--accent-green);
+  text-shadow: 0 0 15px var(--green-glow-primary);
+  transform: scale(1.15);
+}
+
+.rating-summary {
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rating-summary .star {
+  color: var(--accent-green);
+  font-size: 16px;
+}
+

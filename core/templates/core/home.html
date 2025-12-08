@@ -264,38 +264,50 @@
 
 {% if about_card %}
 <section class="about-preview">
-  <div class="about-card clickable"
-       data-href="{% if CURRENT_LANG == 'uk' %}/uk{{ about_card.url }}{% elif CURRENT_LANG == 'pl' %}/pl{{ about_card.url }}{% else %}{{ about_card.url }}{% endif %}">
-    {% if about_card.image and about_card.image.url %}
-      <img src="{{ about_card.image.url }}"
-           alt="{{ about_card_title }}"
-           class="about-image"
-           loading="lazy" />
-    {% else %}
-      <img src="{% static 'images/about-preview-optimized.jpg' %}"
-           alt="{% trans 'About Lazysoft' %}"
-           class="about-image"
-           loading="lazy" />
-    {% endif %}
-    <div class="about-text">
-      <h3>{{ about_card_title }}</h3>
-      <p>{{ about_card_description }}</p>
+  <div class="container">
+    <div class="about-card clickable"
+         data-href="{% if CURRENT_LANG == 'uk' %}/uk{{ about_card.url }}{% elif CURRENT_LANG == 'pl' %}/pl{{ about_card.url }}{% else %}{{ about_card.url }}{% endif %}">
+      {% if about_card.image and about_card.image.url %}
+        <img src="{{ about_card.image.url }}"
+             alt="{{ about_card_title|default:'About Lazysoft' }}"
+             class="about-image"
+             loading="lazy" />
+      {% else %}
+        <img src="{% static 'images/about-preview-optimized.jpg' %}"
+             alt="{% trans 'About Lazysoft' %}"
+             class="about-image"
+             loading="lazy" />
+      {% endif %}
+      <div class="about-text">
+        {% if about_card_title %}
+          <h3>{{ about_card_title }}</h3>
+        {% else %}
+          <h3>{% trans "Born to automate. Fired for it." %}</h3>
+        {% endif %}
+        {% if about_card_description %}
+          <p>{{ about_card_description }}</p>
+        {% else %}
+          <p>{% trans "The story of how laziness became a philosophy, a tech stack, and an efficient business model. Discover Lazysoft — where automation meets rebellion." %}</p>
+        {% endif %}
+      </div>
     </div>
   </div>
 </section>
 {% else %}
 <section class="about-preview">
-  <div class="about-card clickable"
-       data-href="{% if CURRENT_LANG == 'uk' %}/uk/about/{% elif CURRENT_LANG == 'pl' %}/pl/about/{% else %}/about/{% endif %}">
-    <img src="{% static 'images/about-preview-optimized.jpg' %}"
-         alt="{% trans 'About Lazysoft' %}"
-         class="about-image"
-         loading="lazy"
-         width="600"
-         height="400" />
-    <div class="about-text">
-      <h3>{% trans "Born to automate. Fired for it." %}</h3>
-      <p>{% trans "The story of how laziness became a philosophy, a tech stack, and an efficient business model. Discover Lazysoft — where automation meets rebellion." %}</p>
+  <div class="container">
+    <div class="about-card clickable"
+         data-href="{% if CURRENT_LANG == 'uk' %}/uk/about/{% elif CURRENT_LANG == 'pl' %}/pl/about/{% else %}/about/{% endif %}">
+      <img src="{% static 'images/about-preview-optimized.jpg' %}"
+           alt="{% trans 'About Lazysoft' %}"
+           class="about-image"
+           loading="lazy"
+           width="600"
+           height="400" />
+      <div class="about-text">
+        <h3>{% trans "Born to automate. Fired for it." %}</h3>
+        <p>{% trans "The story of how laziness became a philosophy, a tech stack, and an efficient business model. Discover Lazysoft — where automation meets rebellion." %}</p>
+      </div>
     </div>
   </div>
 </section>

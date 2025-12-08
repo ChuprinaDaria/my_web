@@ -328,6 +328,7 @@ Sitemap: {site_url}/sitemap-projects.xml
 Sitemap: {site_url}/sitemap-articles.xml
 Sitemap: {site_url}/sitemap-news.xml
 Sitemap: {site_url}/sitemap-categories.xml
+Sitemap: {site_url}/sitemap-blog.xml
 
 # Disallow admin and control panels
 Disallow: /admin/

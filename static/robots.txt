@@ -69,6 +69,7 @@ Sitemap: https://lazysoft.pl/sitemap-projects.xml
 Sitemap: https://lazysoft.pl/sitemap-articles.xml
 Sitemap: https://lazysoft.pl/sitemap-news.xml
 Sitemap: https://lazysoft.pl/sitemap-categories.xml
+Sitemap: https://lazysoft.pl/sitemap-blog.xml
 
 # Disallow admin and control panels
 Disallow: /admin/
@@ -84,6 +85,7 @@ Allow: /services/
 Allow: /projects/
 Allow: /products/
 Allow: /news/
+Allow: /blog/
 Allow: /about/
 Allow: /contacts/
 Allow: /consultant/

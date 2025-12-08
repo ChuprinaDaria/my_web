@@ -21,6 +21,7 @@ class StaticViewSitemap(Sitemap):
             'projects',                  # projects/urls.py (без namespace у include)
             'contacts:contact_page',     # contacts/urls.py (namespaced)
             'news:news_list',            # news/urls.py (namespaced)
+            'blog:blog_list',            # blog/urls.py (namespaced)
             'consultant:chat',           # consultant/urls.py (namespaced)
         ]
 
@@ -206,3 +207,26 @@ class NewsCategorySitemap(Sitemap):
     
     def lastmod(self, obj):
         return obj.updated_at if hasattr(obj, 'updated_at') else None
+
+
+class BlogDetailSitemap(Sitemap):
+    """Sitemap для детальних сторінок блогу"""
+    priority = 0.8
+    changefreq = 'weekly'
+    i18n = True
+    
+    def items(self):
+        """Отримуємо всі опубліковані пости блогу"""
+        try:
+            from blog.models import BlogPost
+            return BlogPost.objects.filter(is_published=True)
+        except ImportError:
+            return []
+    
+    def location(self, obj):
+        """URL детальної сторінки поста блогу"""
+        return reverse('blog:blog_detail', kwargs={'slug': obj.slug})
+    
+    def lastmod(self, obj):
+        """Дата останньої модифікації"""
+        return obj.updated_at or obj.published_at or obj.created_at
