@@ -58,6 +58,7 @@ class AboutCardAdmin(admin.ModelAdmin):
     list_display = ['title_en', 'is_active', 'order', 'updated_at']
     list_display_links = ['title_en']
     list_editable = ['is_active', 'order']
+    readonly_fields = ['updated_at']
 
     fieldsets = (
         ('📋 Статус', {

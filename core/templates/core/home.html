@@ -306,7 +306,8 @@
 <section id="blog" class="projects">
   <div class="container-reg">
     <h2>
-      {% if CURRENT_LANG == 'uk' %}📝 Блог{% elif CURRENT_LANG == 'pl' %}📝 Blog{% else %}📝 Blog{% endif %}
+      <i data-lucide="book-open"></i>
+      {% if CURRENT_LANG == 'uk' %}Блог{% elif CURRENT_LANG == 'pl' %}Blog{% else %}Blog{% endif %}
     </h2>
 
     <div class="projects-carousel">
@@ -319,7 +320,8 @@
 
             <div class="news-card-meta" style="margin-bottom: 15px;">
               <span class="chip">
-                📝 {% trans "Blog" %}
+                <i data-lucide="book-open"></i>
+                {% trans "Blog" %}
               </span>
               {% if post.ratings_count %}
                 <span class="chip priority-high">
@@ -352,7 +354,10 @@
 
 <section id="news" class="projects">
   <div class="container-reg">
-    <h2>{% trans "🚀 Top Tech News" %}</h2>
+    <h2>
+      <i data-lucide="rocket"></i>
+      {% trans "Top Tech News" %}
+    </h2>
 
     {% include "includes/ai_spend_banner.html" %}
 

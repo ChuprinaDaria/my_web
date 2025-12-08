@@ -83,6 +83,20 @@
   transform: scale(1.03);
 }
 
+/* 📝 ЗОБРАЖЕННЯ В BLOG CARD */
+#blog .news-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  transition: transform var(--transition-normal);
+}
+
+#blog .news-card:hover img {
+  transform: scale(1.03);
+}
+
 /* 📝 ЗАГОЛОВКИ НА ГОЛОВНІЙ */
 #news .news-card h4 {
   font-size: 1.1rem;
@@ -201,6 +215,10 @@
     height: 160px;
   }
   
+  #blog .news-card img {
+    height: 160px;
+  }
+  
   #news .news-card h4 {
     font-size: 1rem;
   }
@@ -218,6 +236,10 @@
   }
   
   #news .news-card img {
+    height: 140px;
+  }
+  
+  #blog .news-card img {
     height: 140px;
   }
   
