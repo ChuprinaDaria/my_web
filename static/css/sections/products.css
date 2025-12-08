@@ -128,7 +128,6 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-/* 📝 PRODUCT CONTENT */
 .product-content {
   padding: 24px;
   flex: 1;
@@ -152,17 +151,49 @@
   flex: 1;
 }
 
-/* 🏷️ PACKAGES BADGE */
-.product-packages-badge {
+.product-badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.product-packages-badge,
+.product-featured-badge,
+.product-priority-badge {
   display: inline-block;
   padding: 6px 12px;
-  background: rgba(102, 255, 0, 0.1);
-  border: 1px solid rgba(102, 255, 0, 0.3);
   border-radius: var(--radius-full);
   font-size: 0.875rem;
-  color: var(--accent-green);
-  margin-bottom: 16px;
   font-weight: 600;
+}
+
+.product-packages-badge {
+  background: rgba(102, 255, 0, 0.1);
+  border: 1px solid rgba(102, 255, 0, 0.3);
+  color: var(--accent-green);
+}
+
+.product-featured-badge {
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  color: #ffd700;
+}
+
+.product-priority-badge {
+  background: rgba(255, 0, 107, 0.15);
+  border: 1px solid rgba(255, 0, 107, 0.4);
+  color: var(--accent-pink);
+}
+
+.product-packages-badge i,
+.product-featured-badge i,
+.product-priority-badge i {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 4px;
 }
 
 /* 🎯 PRODUCT CTA */
@@ -245,6 +276,48 @@
   .stat-number {
     font-size: 2.5rem;
   }
+
+  .product-content {
+    text-align: center;
+    padding: 20px;
+  }
+
+  .product-content h3 {
+    text-align: center;
+  }
+
+  .product-description {
+    text-align: center;
+  }
+
+  .product-badges-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .product-packages-badge,
+  .product-featured-badge,
+  .product-priority-badge {
+    width: 100%;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 6px 8px;
+    box-sizing: border-box;
+  }
+
+  .product-packages-badge i,
+  .product-featured-badge i,
+  .product-priority-badge i {
+    width: 12px;
+    height: 12px;
+    margin-right: 3px;
+  }
+
+  .product-cta {
+    justify-content: center;
+  }
 }
 
 /* 🎪 SMOOTH ANIMATIONS */
@@ -285,11 +358,15 @@
   color: var(--text-secondary);
 }
 
-/* 📱 MOBILE: вирівнюємо розмір зображення продукту з карткою сервісу */
 @media (max-width: 768px) {
   .product-image,
   .product-icon {
-    height: 100px;
+    height: 200px;
+  }
+  
+  .product-image img,
+  .product-icon img {
+    object-fit: contain;
   }
 }
 

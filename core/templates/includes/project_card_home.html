@@ -53,23 +53,8 @@
     {% else %}{{ project.title_en|safe }}{% endif %}
   </h3>
 
-  {% if project.client_request_uk or project.client_request_en or project.client_request_pl %}
+  {% if project.short_description_uk or project.short_description_pl or project.short_description_en %}
   <div class="section-box">
-    <div class="section-label">{% trans "CLIENT WANTED:" %}</div>
-    <div class="section-text">
-      {% if CURRENT_LANG == 'uk' and project.client_request_uk %}
-        {{ project.client_request_uk|safe|truncatechars:250 }}
-      {% elif CURRENT_LANG == 'pl' and project.client_request_pl %}
-        {{ project.client_request_pl|safe|truncatechars:250 }}
-      {% else %}
-        {{ project.client_request_en|safe|truncatechars:250 }}
-      {% endif %}
-    </div>
-  </div>
-  {% endif %}
-
-  <div class="section-box">
-    <div class="section-label">{% trans "WE DID:" %}</div>
     <div class="section-text">
       {% if CURRENT_LANG == 'uk' and project.short_description_uk %}
         {{ project.short_description_uk|safe|truncatechars:250 }}
@@ -80,6 +65,7 @@
       {% endif %}
     </div>
   </div>
+  {% endif %}
 
   <div class="metrics">
     {% if project.budget_range %}
@@ -95,13 +81,6 @@
   </div>
 
   <div class="cta-row">
-    <button class="cta-primary"
-            data-project-title="{% if CURRENT_LANG == 'uk' and project.title_uk %}{{ project.title_uk|escapejs }}{% elif CURRENT_LANG == 'pl' and project.title_pl %}{{ project.title_pl|escapejs }}{% else %}{{ project.title_en|escapejs }}{% endif %}"
-            onclick="event.stopPropagation(); window.ctaModal && window.ctaModal.show('project_card_home', 'Проєкт: ' + this.dataset.projectTitle);">
-      <span class="cta-icon">💬</span>
-      <span class="cta-text">{% trans "ORDER YOUR OWN" %}</span>
-      <span class="cta-arrow">→</span>
-    </button>
     <div class="secondary-actions">
       <button class="details-link" 
               onclick="event.stopPropagation(); window.location.href=this.closest('.project-card-home').dataset.href;">

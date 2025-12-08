@@ -449,11 +449,15 @@
 
   .product-hero-cta {
     flex-direction: column;
+    align-items: center;
+    width: 100%;
   }
 
   .cta-button {
     width: 100%;
+    max-width: 100%;
     justify-content: center;
+    text-align: center;
   }
 
   .pricing-grid {

@@ -8,7 +8,6 @@ def product_list(request):
     products = Product.objects.filter(is_active=True).order_by('-priority', 'order')
     lang = get_language() or 'uk'
 
-    # Підготовка даних для шаблону
     products_data = []
     for product in products:
         products_data.append({
@@ -21,6 +20,8 @@ def product_list(request):
             'cta_text': product.get_cta_text(lang),
             'cta_url': product.cta_url,
             'packages_count': product.pricing_packages.filter(is_active=True).count(),
+            'is_featured': product.is_featured,
+            'priority': product.priority,
         })
 
     context = {

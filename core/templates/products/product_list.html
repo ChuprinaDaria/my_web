@@ -106,12 +106,35 @@
                     {{ product_data.short_description|striptags|truncatewords:25 }}
                   </div>
 
+              {% if product_data.is_featured or product_data.priority >= 4 or product_data.packages_count > 0 %}
+                    <div class="product-badges-container">
+              {% if product_data.is_featured %}
+                    <span class="product-featured-badge">
+                  <i data-lucide="star" aria-hidden="true"></i>
+                  {% if CURRENT_LANG == 'uk' %}Рекомендовано
+                  {% elif CURRENT_LANG == 'pl' %}Polecane
+                  {% else %}Featured{% endif %}
+                    </span>
+              {% endif %}
+              
+              {% if product_data.priority >= 4 %}
+                    <span class="product-priority-badge">
+                  <i data-lucide="zap" aria-hidden="true"></i>
+                  {% if CURRENT_LANG == 'uk' %}Пріоритет
+                  {% elif CURRENT_LANG == 'pl' %}Priorytet
+                  {% else %}Priority{% endif %}
+                    </span>
+              {% endif %}
+              
               {% if product_data.packages_count > 0 %}
-                    <div class="product-packages-badge">
+                    <span class="product-packages-badge">
+                  <i data-lucide="package" aria-hidden="true"></i>
                   {{ product_data.packages_count }}
                   {% if CURRENT_LANG == 'uk' %}пакети
                   {% elif CURRENT_LANG == 'pl' %}pakiety
                   {% else %}packages{% endif %}
+                    </span>
+              {% endif %}
                     </div>
               {% endif %}
 
