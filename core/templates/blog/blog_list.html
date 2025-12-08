@@ -14,7 +14,9 @@
   {% if CURRENT_LANG == 'uk' %}Блог Lazysoft{% elif CURRENT_LANG == 'pl' %}Blog Lazysoft{% else %}Lazysoft Blog{% endif %}
 {% endblock %}
 
-{% block og_description %}{% block meta_description %}{% endblock %}{% endblock %}
+{% block og_description %}
+  {% if CURRENT_LANG == 'uk' %}Статті, кейси та гайди про автоматизацію, ШІ продукти та проєкти Lazysoft.{% elif CURRENT_LANG == 'pl' %}Artykuły, case studies i poradniki o automatyzacji, AI i projektach Lazysoft.{% else %}Articles, case studies and guides about automation, AI products and Lazysoft projects.{% endif %}
+{% endblock %}
 {% block og_type %}website{% endblock %}
 
 {% block extra_meta %}

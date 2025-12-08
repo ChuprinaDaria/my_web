@@ -265,6 +265,9 @@
 {% if about_card %}
 <section class="about-preview">
   <div class="container">
+    <h2>
+      {% if CURRENT_LANG == 'uk' %}Про нас{% elif CURRENT_LANG == 'pl' %}O nas{% else %}About{% endif %}
+    </h2>
     <div class="about-card clickable"
          data-href="{% if CURRENT_LANG == 'uk' %}/uk{{ about_card.url }}{% elif CURRENT_LANG == 'pl' %}/pl{{ about_card.url }}{% else %}{{ about_card.url }}{% endif %}">
       {% if about_card.image and about_card.image.url %}
@@ -296,6 +299,9 @@
 {% else %}
 <section class="about-preview">
   <div class="container">
+    <h2>
+      {% if CURRENT_LANG == 'uk' %}Про нас{% elif CURRENT_LANG == 'pl' %}O nas{% else %}About{% endif %}
+    </h2>
     <div class="about-card clickable"
          data-href="{% if CURRENT_LANG == 'uk' %}/uk/about/{% elif CURRENT_LANG == 'pl' %}/pl/about/{% else %}/about/{% endif %}">
       <img src="{% static 'images/about-preview-optimized.jpg' %}"
