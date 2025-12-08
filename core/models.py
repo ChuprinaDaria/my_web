@@ -87,10 +87,16 @@ class AboutCard(models.Model):
         return self.title_en or "About Card"
 
     def get_title(self, lang='uk'):
-        return getattr(self, f'title_{lang}', self.title_en)
+        title = getattr(self, f'title_{lang}', None)
+        if title and title.strip():
+            return title
+        return self.title_en or ""
 
     def get_description(self, lang='uk'):
-        return getattr(self, f'description_{lang}', self.description_en)
+        description = getattr(self, f'description_{lang}', None)
+        if description and description.strip():
+            return description
+        return self.description_en or ""
 
 
 class CoreOgImage(models.Model):

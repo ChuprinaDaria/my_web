@@ -70,7 +70,8 @@ def home(request):
     
     # Отримуємо категорії сервісів та адаптуємо під шаблон services_grid.html
     from django.utils.translation import get_language
-    language = get_language() or 'uk'
+    language_raw = get_language() or 'uk'
+    language = language_raw.split('-')[0] if language_raw else 'uk'
     services = []
     categories = list(ServiceCategory.objects.all().order_by('-priority', '-order')[:6])
     if categories:
@@ -183,9 +184,10 @@ def home(request):
         from .models import AboutCard
         about_card = AboutCard.objects.filter(is_active=True).order_by('order', '-updated_at').first()
         if about_card:
-            about_card_title = about_card.get_title(language)
-            about_card_description = about_card.get_description(language)
-    except Exception:
+            lang_code = language.split('-')[0] if language else 'uk'
+            about_card_title = about_card.get_title(lang_code)
+            about_card_description = about_card.get_description(lang_code)
+    except Exception as e:
         pass
 
     # Останні пости блогу для головної

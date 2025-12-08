@@ -87,10 +87,12 @@
 
   .about-image {
     height: 250px;
+    order: 2;
   }
 
   .about-text {
     text-align: center;
+    order: 1;
   }
 
   .about-text h3 {
@@ -105,15 +107,24 @@
 /* Mobile */
 @media (max-width: 768px) {
   .about-preview {
-    padding: 60px 0;
+    padding: 60px var(--spacing-md);
   }
 
   .about-card {
+    width: 100%;
+    max-width: 100%;
     padding: 1.25rem;
+    box-sizing: border-box;
+    margin: 0;
   }
 
   .about-image {
     height: 200px;
+    order: 2;
+  }
+
+  .about-text {
+    order: 1;
   }
 
   .about-text h3 {
@@ -127,12 +138,25 @@
 
 /* Small mobile */
 @media (max-width: 480px) {
+  .about-preview {
+    padding: 40px var(--spacing-sm);
+  }
+
   .about-card {
+    width: 100%;
+    max-width: 100%;
     padding: 1rem;
+    box-sizing: border-box;
+    margin: 0;
   }
 
   .about-image {
     height: 180px;
+    order: 2;
+  }
+
+  .about-text {
+    order: 1;
   }
 
   .about-text h3 {
