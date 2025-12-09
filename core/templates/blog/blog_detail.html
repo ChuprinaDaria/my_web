@@ -11,6 +11,7 @@
 {% block extra_meta %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'css/components/blog_rating.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components/blog_comments.css' %}">
   <link rel="canonical" href="{{ og_url }}" />
   <meta property="og:site_name" content="LAZYSOFT">
   <meta property="og:type" content="article">
@@ -122,7 +123,7 @@
           </div>
           {% endif %}
 
-          <div class="content-section">
+          <div class="content-section blog-comments-section">
             <div class="content-section-header">
               <div class="section-icon">
                 <i data-lucide="message-circle"></i>
@@ -134,52 +135,73 @@
                 <div class="comments-list">
                   {% for comment in comments %}
                     <div class="comment-item">
-                      <div class="comment-header">
-                        <strong>{{ comment.nickname }}</strong>
-                        <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                      <div class="comment-avatar">
+                        <i data-lucide="user"></i>
                       </div>
-                      <div class="comment-text">
-                        {{ comment.text|linebreaksbr }}
+                      <div class="comment-content">
+                        <div class="comment-header">
+                          <strong class="comment-author">{{ comment.nickname }}</strong>
+                          <span class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</span>
+                        </div>
+                        <div class="comment-text">
+                          {{ comment.text|linebreaksbr }}
+                        </div>
                       </div>
                     </div>
                   {% endfor %}
                 </div>
               {% else %}
-                <p>{% trans "No comments yet. Be the first to comment." %}</p>
+                <div class="comments-empty">
+                  <i data-lucide="message-square"></i>
+                  <p>{% trans "No comments yet. Be the first to comment." %}</p>
+                </div>
               {% endif %}
 
-              <form method="post" action="" class="comment-form">
-                {% csrf_token %}
-                <div class="form-row">
-                  <label for="id_nickname">{% trans "Nickname" %}</label>
-                  {{ comment_form.nickname }}
-                  {% if comment_form.nickname.errors %}
-                    <div class="form-error">
-                      {{ comment_form.nickname.errors|join:", " }}
-                    </div>
-                  {% endif %}
-                </div>
-                <div class="form-row">
-                  <label for="id_text">{% trans "Comment" %}</label>
-                  {{ comment_form.text }}
-                  {% if comment_form.text.errors %}
-                    <div class="form-error">
-                      {{ comment_form.text.errors|join:", " }}
-                    </div>
-                  {% endif %}
-                </div>
-                <div style="display:none;">
-                  {{ comment_form.website }}
-                </div>
-                {% if comment_form.non_field_errors %}
-                  <div class="form-error">
-                    {{ comment_form.non_field_errors|join:", " }}
+              <div class="comment-form-wrapper">
+                <h3>{% trans "Leave a comment" %}</h3>
+                <form method="post" action="" class="comment-form">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="id_nickname" class="form-label">
+                      <i data-lucide="user"></i>
+                      {% trans "Nickname" %}
+                    </label>
+                    {{ comment_form.nickname }}
+                    {% if comment_form.nickname.errors %}
+                      <div class="form-error">
+                        <i data-lucide="alert-circle"></i>
+                        {{ comment_form.nickname.errors|join:", " }}
+                      </div>
+                    {% endif %}
                   </div>
-                {% endif %}
-                <button type="submit" class="cta-button cta-primary">
-                  {% trans "Submit comment" %}
-                </button>
-              </form>
+                  <div class="form-group">
+                    <label for="id_text" class="form-label">
+                      <i data-lucide="message-square"></i>
+                      {% trans "Your comment" %}
+                    </label>
+                    {{ comment_form.text }}
+                    {% if comment_form.text.errors %}
+                      <div class="form-error">
+                        <i data-lucide="alert-circle"></i>
+                        {{ comment_form.text.errors|join:", " }}
+                      </div>
+                    {% endif %}
+                  </div>
+                  <div style="display:none;">
+                    {{ comment_form.website }}
+                  </div>
+                  {% if comment_form.non_field_errors %}
+                    <div class="form-error">
+                      <i data-lucide="alert-circle"></i>
+                      {{ comment_form.non_field_errors|join:", " }}
+                    </div>
+                  {% endif %}
+                  <button type="submit" class="comment-submit-btn">
+                    <i data-lucide="send"></i>
+                    <span>{% trans "Submit comment" %}</span>
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -219,6 +241,13 @@
 
 {% block extra_scripts %}
   <script src="{% static 'js/blog_rating.js' %}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    });
+  </script>
 {% endblock %}
 
 
