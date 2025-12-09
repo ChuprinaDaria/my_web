@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BlogPost, BlogPostRating
+from .models import BlogPost, BlogPostRating, BlogComment
 
 
 class BlogPostRatingInline(admin.TabularInline):
@@ -26,3 +26,10 @@ class BlogPostAdmin(admin.ModelAdmin):
         ("Images", {"fields": ("main_image", "gallery_image_1", "gallery_image_2", "gallery_image_3", "gallery_image_4", "og_image")}),
         ("Relations", {"fields": ("related_services",)}),
     )
+
+
+@admin.register(BlogComment)
+class BlogCommentAdmin(admin.ModelAdmin):
+    list_display = ["post", "nickname", "created_at"]
+    list_filter = ["created_at", "post"]
+    search_fields = ["nickname", "text", "post__title_en", "post__title_uk", "post__title_pl"]

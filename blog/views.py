@@ -4,7 +4,8 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 
-from .models import BlogPost, BlogPostRating
+from .models import BlogPost, BlogPostRating, BlogComment
+from .forms import BlogCommentForm
 from services.models import ServiceCategory
 
 
@@ -57,6 +58,19 @@ def blog_detail(request, slug):
     content = post.get_content(lang)
     gallery = post.get_gallery_images()
     avg, count = post.get_average_rating()
+    comments_qs = BlogComment.objects.filter(post=post).order_by("created_at")
+
+    if request.method == "POST":
+        form = BlogCommentForm(request.POST)
+        if form.is_valid():
+            BlogComment.objects.create(
+                post=post,
+                nickname=form.cleaned_data["nickname"],
+                text=form.cleaned_data["text"],
+            )
+            return redirect("blog:blog_detail", slug=post.slug)
+    else:
+        form = BlogCommentForm()
 
     related_services = []
     for s in post.related_services.all():
@@ -91,6 +105,8 @@ def blog_detail(request, slug):
             "related_services": related_services,
             "average_rating": avg,
             "ratings_count": count,
+        "comments": comments_qs,
+        "comment_form": form,
             "CURRENT_LANG": lang,
             "og_title": og_title,
             "og_description": og_description,

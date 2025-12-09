@@ -115,3 +115,15 @@ class BlogPostRating(models.Model):
         verbose_name = "Blog post rating"
         verbose_name_plural = "Blog post ratings"
 
+
+class BlogComment(models.Model):
+    post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name="comments")
+    nickname = models.CharField(max_length=80)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+        verbose_name = "Blog comment"
+        verbose_name_plural = "Blog comments"
+

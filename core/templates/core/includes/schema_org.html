@@ -638,7 +638,13 @@
         "url": "{{ SITE_URL }}{{ product.get_absolute_url }}",
         "image": {% if product.featured_image %}"{{ SITE_URL }}{{ product.featured_image.url }}"{% else %}"{{ SITE_URL }}{% static 'images/default-product.png' %}"{% endif %},
         "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web-based"
+        "operatingSystem": "Web-based",
+        "offers": {
+          "@type": "Offer",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "url": "{{ SITE_URL }}{{ product.get_absolute_url }}"
+        }
       }
     }{% if not forloop.last %},{% endif %}
     {% endfor %}

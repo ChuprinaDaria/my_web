@@ -34,7 +34,7 @@
   {% else %}Transform your business with cutting-edge AI solutions, intelligent chatbots, and custom web development. We specialize in AI automation services that drive growth, efficiency, and innovation for modern businesses.{% endif %}
 {% endblock %}
 
-{% block og_image %}{% static 'images/lazysoft-home-og.jpg' %}{% endblock %}
+{% block og_image %}{% if GLOBAL_OG_IMAGE_URL %}{{ GLOBAL_OG_IMAGE_URL }}{% else %}{% static 'images/lazysoft-home-og.jpg' %}{% endif %}{% endblock %}
 {% block og_type %}website{% endblock %}
 
 {% block twitter_title %}

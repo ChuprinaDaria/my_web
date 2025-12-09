@@ -2,7 +2,7 @@ from django.db import models
 from ckeditor.fields import RichTextField
 from django.utils.text import slugify
 from django.urls import reverse
-from django.utils.translation import get_language
+from django.utils.translation import get_language, override
 from services.models import ServiceCategory
 
 
@@ -175,9 +175,13 @@ class Product(models.Model):
     def get_absolute_url(self, language: str = None):
         """URL продукту з підтримкою мов"""
         lang = (language or get_language() or 'en').lower()
+        with override(lang):
+            url = reverse('products:product_detail', kwargs={'slug': self.slug})
         if lang == 'en':
-            return reverse('products:product_detail', kwargs={'slug': self.slug})
-        return f"/{lang}" + reverse('products:product_detail', kwargs={'slug': self.slug})
+            return url
+        if not url.startswith(f'/{lang}/'):
+            return f"/{lang}{url}"
+        return url
 
     def get_title(self, lang='uk'):
         return getattr(self, f'title_{lang}', self.title_en)
