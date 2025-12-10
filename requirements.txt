@@ -109,3 +109,9 @@ PyJWT==2.8.0
 django-cryptography==1.1
 weasyprint==61.2
 
+# WeasyPrint dependency pin to avoid pydyf 0.11+ breaking changes:
+# помилка типу "PDF.__init__() takes 1 positional argument but 3 were given"
+# виникає через не сумісну версію pydyf, тому фіксуємо стабільну версію
+pydyf==0.10.0
+
+

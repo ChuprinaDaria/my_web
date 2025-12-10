@@ -24,11 +24,17 @@ class NewsUkrainianSitemap(Sitemap):
             return []
 
     def lastmod(self, obj):
-        """Повертає дату публікації в UTC"""
+        """Повертає datetime останньої модифікації в UTC для Django Sitemap.
+
+        ВАЖЛИВО: Django очікує об'єкт date/datetime, а не рядок.
+        Форматування у W3C-формат робить сам sitemap, тому не використовуємо strftime().
+        """
         lastmod = obj.published_at or obj.updated_at
         if lastmod:
-            return lastmod.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
-        return timezone.now().astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+            # Повертаємо aware datetime в UTC
+            return lastmod.astimezone(timezone.utc)
+        # fallback: поточний час в UTC
+        return timezone.now().astimezone(timezone.utc)
 
     def location(self, obj):
         """URL детальної сторінки статті українською"""
@@ -55,11 +61,11 @@ class NewsPolishSitemap(Sitemap):
             return []
 
     def lastmod(self, obj):
-        """Повертає дату публікації в UTC"""
+        """Повертає datetime останньої модифікації в UTC"""
         lastmod = obj.published_at or obj.updated_at
         if lastmod:
-            return lastmod.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
-        return timezone.now().astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+            return lastmod.astimezone(timezone.utc)
+        return timezone.now().astimezone(timezone.utc)
 
     def location(self, obj):
         """URL детальної сторінки статті польською"""
@@ -86,11 +92,11 @@ class NewsEnglishSitemap(Sitemap):
             return []
 
     def lastmod(self, obj):
-        """Повертає дату публікації в UTC"""
+        """Повертає datetime останньої модифікації в UTC"""
         lastmod = obj.published_at or obj.updated_at
         if lastmod:
-            return lastmod.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
-        return timezone.now().astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+            return lastmod.astimezone(timezone.utc)
+        return timezone.now().astimezone(timezone.utc)
 
     def location(self, obj):
         """URL детальної сторінки статті англійською"""
