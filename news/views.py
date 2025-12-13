@@ -375,12 +375,16 @@ class ArticleDetailView(DetailView):
         # Breadcrumbs для structured data
         context['breadcrumbs'] = [
             {
+                'name': 'Home' if language == 'en' else ('Головна' if language == 'uk' else 'Strona główna'),
+                'url': f'/{language}/' if language != 'en' else '/'
+            },
+            {
                 'name': 'News' if language == 'en' else ('Новини' if language == 'uk' else 'Wiadomości'),
                 'url': f'/{language}/news/' if language != 'en' else '/news/'
             },
             {
                 'name': article.get_title(language),
-                'url': self.request.path
+                'url': None  # Поточна сторінка - без посилання
             }
         ]
 
