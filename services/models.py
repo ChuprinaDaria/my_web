@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+from django.utils.translation import get_language, override
 from ckeditor.fields import RichTextField
 from django.utils.text import slugify
 
@@ -132,6 +134,12 @@ class ServiceCategory(models.Model):
         if self.gallery_image_4:
             images.append(self.gallery_image_4)
         return images
+
+    def get_absolute_url(self, language: str = None):
+        """URL сервісу з підтримкою мов. Англійська без /en/, uk/pl з префіксом."""
+        lang = (language or get_language() or 'en').lower()
+        with override(lang):
+            return reverse('services:service_detail', kwargs={'slug': self.slug})
 
 
 class Service(models.Model):

@@ -346,15 +346,21 @@ class ProcessedArticle(models.Model):
 
     def get_absolute_url(self, language=None):
         """URL статті з підтримкою мов. Англійська без префікса /en/"""
-        from django.utils.translation import get_language
+        from django.utils.translation import get_language, override
+
         lang = (language or get_language() or 'en').lower()
-        
-        # Англійська мова не має префікса /en/
-        if lang == 'en':
-            return reverse('news:article_detail', kwargs={'uuid': self.uuid})
-        
-        # Для інших мов додаємо префікс
-        return f"/{lang}" + reverse('news:article_detail', kwargs={'uuid': self.uuid})
+
+        # ВАЖЛИВО: Не додаємо `/{lang}` вручну.
+        # `reverse()` у проєкті працює з `i18n_patterns`, тож мовний префікс
+        # (наприклад `/uk/` або `/pl/`) має додаватись рівно один раз.
+        # Для дефолтної мови (en) префікса не буде, якщо
+        # `prefix_default_language=False`.
+        with override(lang):
+            # Використовуємо slug для SEO-friendly URL
+            if self.slug:
+                return reverse('news:article_detail', kwargs={'slug': self.slug})
+            # Fallback на uuid для старих статей без slug
+            return reverse('news:article_detail_uuid', kwargs={'uuid': self.uuid})
 
     @property 
     def original_source_name(self):
@@ -620,11 +626,17 @@ class ProcessedArticle(models.Model):
         return content[:limit]
     
 
-    def save(self, *args, **kwargs):    # автослаг тільки якщо немає й стаття топова або дуже релевантна
+    def save(self, *args, **kwargs):
+        # Автослаг з англійського заголовка (SEO-friendly)
         if not self.slug:
-            base = (self.meta_title_uk or self.title_uk or self.title_en or self.title_pl or '')[:180]
+            # Пріоритет: title_en → title_uk → title_pl
+            base = (self.title_en or self.title_uk or self.title_pl or '')[:180]
             if base:
-                self.slug = slugify(f"{base}-{str(self.uuid)[:8]}")
+                candidate = slugify(base)
+                # Унікальність: якщо такий slug вже є — додаємо 8 символів UUID
+                if candidate and ProcessedArticle.objects.filter(slug=candidate).exists():
+                    candidate = f"{candidate}-{str(self.uuid)[:8]}"
+                self.slug = candidate or slugify(f"article-{str(self.uuid)[:8]}")
   # захист правила генерації зображення:
   # зображення дозволене для всіх статей (видалено обмеження на топові статті)
   # if self.ai_image_url and not (self.is_top_article and self.full_content_parsed):

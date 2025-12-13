@@ -173,15 +173,10 @@ class Product(models.Model):
         return self.title_en
 
     def get_absolute_url(self, language: str = None):
-        """URL продукту з підтримкою мов"""
+        """URL продукту з підтримкою мов. Англійська без /en/, uk/pl з префіксом."""
         lang = (language or get_language() or 'en').lower()
         with override(lang):
-            url = reverse('products:product_detail', kwargs={'slug': self.slug})
-        if lang == 'en':
-            return url
-        if not url.startswith(f'/{lang}/'):
-            return f"/{lang}{url}"
-        return url
+            return reverse('products:product_detail', kwargs={'slug': self.slug})
 
     def get_title(self, lang='uk'):
         return getattr(self, f'title_{lang}', self.title_en)

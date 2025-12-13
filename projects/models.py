@@ -312,10 +312,12 @@ class Project(models.Model):
     
     def get_absolute_url(self, language: str = None):
         """Англійська без префікса, інші мови з префіксом, як у сервісах."""
+        from django.utils.translation import get_language, override
+
         lang = (language or get_language() or 'en').lower()
-        if lang == 'en':
+        # Не додаємо `/{lang}` вручну — `reverse()` вже враховує `i18n_patterns`.
+        with override(lang):
             return reverse('project_detail', kwargs={'slug': self.slug})
-        return f"/{lang}" + reverse('project_detail', kwargs={'slug': self.slug})
 
     def get_related_articles(self, limit=3):
         """Повертає новини: спочатку по категорії, потім по тегах"""

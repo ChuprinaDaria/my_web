@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.http import JsonResponse  
 from django.utils import timezone 
 from .views import (
-    NewsListView, ArticleDetailView, news_digest_view, 
+    NewsListView, ArticleDetailView, ArticleDetailByUUIDView, news_digest_view, 
     news_api_view, NewsSitemap, NewsCategorySitemap,
     
     ROIDashboardView, NewsWidgetView, SocialMediaStatsView, NewsAnalyticsAPIView, ProcessedArticle, RawArticle
@@ -22,8 +22,8 @@ urlpatterns = [
     # Новини по категоріях
     path('category/<slug:category_slug>/', NewsListView.as_view(), name='news_category'),
     
-    # Детальна сторінка статті
-    path('article/<uuid:uuid>/', ArticleDetailView.as_view(), name='article_detail'),
+    # Legacy URL для старих посилань (301 редірект на slug-версію)
+    path('article/<uuid:uuid>/', ArticleDetailByUUIDView.as_view(), name='article_detail_uuid'),
     
     # Щоденні дайджести
     path('digest/', news_digest_view, name='digest_today'),
@@ -31,7 +31,6 @@ urlpatterns = [
     
     # API для новин
     path('api/articles/', news_api_view, name='api_articles'),
-    
     
     # RSS фід
     path('rss.xml', TemplateView.as_view(template_name='news/rss_feed.xml', content_type='application/rss+xml'), name='rss_feed'),
@@ -49,7 +48,9 @@ urlpatterns = [
     # News Widget API - для головної сторінки
     path('api/news-widget/', NewsWidgetView.as_view(), name='news_widget'),
     path('api/news-widget/<int:widget_id>/', NewsWidgetView.as_view(), name='news_widget_detail'),
-    path('<str:date>/', NewsByDateView.as_view(), name='news_by_date'),
+    
+    # Архів новин по даті (формат YYYY-MM-DD)
+    path('archive/<str:date>/', NewsByDateView.as_view(), name='news_by_date'),
     # Social Media Analytics API
     path('api/social-stats/', SocialMediaStatsView.as_view(), name='social_media_stats'),
     
@@ -69,4 +70,8 @@ urlpatterns = [
              'timestamp': timezone.now().isoformat()
          }), 
          name='live_counters'),
+    
+    # Детальна сторінка статті (основний URL - slug-based для SEO)
+    # ВАЖЛИВО: має бути останнім, бо <slug:slug> є catch-all для невідомих шляхів
+    path('<slug:slug>/', ArticleDetailView.as_view(), name='article_detail'),
 ]

@@ -220,12 +220,12 @@ from django.views.generic import DetailView
 from django.utils import timezone
 
 class ArticleDetailView(DetailView):
-    """Детальна сторінка статті з SEO"""
+    """Детальна сторінка статті з SEO (slug-based URL)"""
     model = ProcessedArticle
     template_name = 'news/article_detail.html'
     context_object_name = 'article'
-    slug_field = 'uuid'
-    slug_url_kwarg = 'uuid'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
 
     def get_object(self, queryset=None):
         article = super().get_object(queryset)
@@ -234,6 +234,19 @@ class ArticleDetailView(DetailView):
         language = get_language() or 'uk'
         article.increment_views(language)
         return article
+
+
+class ArticleDetailByUUIDView(DetailView):
+    """Legacy UUID URL → 301 редірект на slug-based URL"""
+    model = ProcessedArticle
+    slug_field = 'uuid'
+    slug_url_kwarg = 'uuid'
+
+    def get(self, request, *args, **kwargs):
+        from django.shortcuts import redirect
+        article = self.get_object()
+        # 301 Permanent Redirect на новий slug-based URL
+        return redirect(article.get_absolute_url(), permanent=True)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

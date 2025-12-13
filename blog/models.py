@@ -1,7 +1,8 @@
 from django.db import models
+from django.urls import reverse
 from ckeditor.fields import RichTextField
 from django.utils.text import slugify
-from django.utils.translation import get_language
+from django.utils.translation import get_language, override
 
 
 class BlogPost(models.Model):
@@ -102,6 +103,12 @@ class BlogPost(models.Model):
             count=models.Count("id"),
         )
         return agg.get("avg") or 0, agg.get("count") or 0
+
+    def get_absolute_url(self, language: str = None):
+        """URL поста блогу з підтримкою мов. Англійська без /en/, uk/pl з префіксом."""
+        lang = (language or get_language() or 'en').lower()
+        with override(lang):
+            return reverse('blog:blog_detail', kwargs={'slug': self.slug})
 
 
 class BlogPostRating(models.Model):
