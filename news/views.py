@@ -235,19 +235,6 @@ class ArticleDetailView(DetailView):
         article.increment_views(language)
         return article
 
-
-class ArticleDetailByUUIDView(DetailView):
-    """Legacy UUID URL → 301 редірект на slug-based URL"""
-    model = ProcessedArticle
-    slug_field = 'uuid'
-    slug_url_kwarg = 'uuid'
-
-    def get(self, request, *args, **kwargs):
-        from django.shortcuts import redirect
-        article = self.get_object()
-        # 301 Permanent Redirect на новий slug-based URL
-        return redirect(article.get_absolute_url(), permanent=True)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         article = context['article']
@@ -398,6 +385,19 @@ class ArticleDetailByUUIDView(DetailView):
         ]
 
         return context
+
+
+class ArticleDetailByUUIDView(DetailView):
+    """Legacy UUID URL → 301 редірект на slug-based URL"""
+    model = ProcessedArticle
+    slug_field = 'uuid'
+    slug_url_kwarg = 'uuid'
+
+    def get(self, request, *args, **kwargs):
+        from django.shortcuts import redirect
+        article = self.get_object()
+        # 301 Permanent Redirect на новий slug-based URL
+        return redirect(article.get_absolute_url(), permanent=True)
 
 
 @cache_page(60 * 15)  # Кешуємо на 15 хвилин
